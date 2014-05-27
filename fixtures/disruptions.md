@@ -56,8 +56,8 @@ Return all visible disruptions.
                         "state": "published",
                         "contributor": "shortterm.tn",
                         "cause": {
-                            id": 23,
-                            wording": "Condition météo"
+                            "id": 23,
+                            "wording": "Condition météo"
                         },
                         "tags": ["rer", "meteo", "probleme"],
                         "localization": [
@@ -80,8 +80,15 @@ Return all visible disruptions.
                                 },
                             }
                         ],
-                        "nb_impacts": 3,
-                        "impact_url" : "https://chaos.example.com/disruptions/1/impacts",
+                        "impacts": {
+                            "pagination": {
+                                "start_index": 1,
+                                "items_per_page": 20,
+                                "total_results": 3,
+                                "prev": null,
+                                "next": "https://chaos.example.com/disruptions/1/impacts?start_index=1&item_per_page=20",
+                            },
+                        },
                     },
                     {
                         "id": 4,
@@ -93,13 +100,20 @@ Return all visible disruptions.
                         "state": "published",
                         "contributor": "shortterm.tn",
                         "cause": {
-                            id": 2,
-                            wording": "train cassé"
+                            "id": 2,
+                            "wording": "train cassé"
                         },
                         "tags": ["rer", "probleme"],
                         "localization": [],
-                        "nb_impacts": 5,
-                        "impact_url" : "chaos.example.com/disruptions/4/impacts",
+                        "impacts": {
+                            "pagination": {
+                                "start_index": 1,
+                                "items_per_page": 20,
+                                "total_results": 5,
+                                "prev": null,
+                                "next": "https://chaos.example.com/disruptions/4/impacts?start_index=1&item_per_page=20"
+                            },
+                        },
                     },
                     {
                         "id": 2,
@@ -111,8 +125,8 @@ Return all visible disruptions.
                         "state": "published",
                         "contributor": "shortterm.tn",
                         "cause": {
-                            id": 4,
-                            wording": "émeute"
+                            "id": 4,
+                            "wording": "émeute"
                         },
                         "tags": ["rer", "metro", "probleme"],
                         "localization": [
@@ -126,8 +140,15 @@ Return all visible disruptions.
                                 },
                             },
                         ],
-                        "nb_impacts": 15,
-                        "impact_url" : "chaos.example.com/disruptions/2/impacts",
+                        "impacts": {
+                            "pagination": {
+                                "start_index": 1,
+                                "items_per_page": 20,
+                                "total_results": 15,
+                                "prev": null,
+                                "next": "https://chaos.example.com/disruptions/2/impacts?start_index=1&item_per_page=20"
+                            },
+                        },
                     },
 
                 ],
@@ -136,6 +157,8 @@ Return all visible disruptions.
                         "start_index": 1,
                         "items_per_page": 3,
                         "total_results": 6,
+                        "prev": null,
+                        "next": "https://chaos.example.com/disruptions/?start_index=1&item_per_page=3"
                     },
                 }
 
@@ -171,8 +194,8 @@ Retrieve one existing disruption:
                     "state": "published",
                     "contributor": "shortterm.tn",
                     "cause": {
-                        id": 23,
-                        wording": "Condition météo"
+                        "id": 23,
+                        "wording": "Condition météo"
                     },
                     "tags": ["rer", "meteo", "probleme"],
                     "localization": [
@@ -195,8 +218,15 @@ Retrieve one existing disruption:
                             },
                         }
                     ],
-                    "nb_impacts": 3,
-                    "impact_url" : "https://chaos.example.com/disruptions/1/impacts",
+                    "impacts": {
+                        "pagination": {
+                            "start_index": 1,
+                            "items_per_page": 20,
+                            "total_results": 3,
+                            "prev": null,
+                            "next": "https://chaos.example.com/disruptions/1/impacts?start_index=1&item_per_page=20",
+                        },
+                    },
                 },
                 "meta": {}
             }
@@ -276,8 +306,8 @@ Create one valid disruption without impacts
                     "state": "published",
                     "contributor": "shortterm.tn",
                     "cause": {
-                        id": 23,
-                        wording": "Condition météo"
+                        "id": 23,
+                        "wording": "Condition météo"
                     },
                     "tags": ["rer", "meteo", "probleme"],
                     "localization": [
@@ -300,8 +330,15 @@ Create one valid disruption without impacts
                             },
                         }
                     ],
-                    "nb_impacts": 0,
-                    "impact_url" : "https://chaos.example.com/disruptions/1/impacts",
+                    "impacts": {
+                        "pagination": {
+                            "start_index": 1,
+                            "items_per_page": 20,
+                            "total_results": 0,
+                            "prev": null,
+                            "next": null,
+                        },
+                    },
                 },
                 "meta": {}
             }
@@ -364,8 +401,8 @@ Update one disruption without impacts
                     "state": "published",
                     "contributor": "shortterm.tn",
                     "cause": {
-                        id": 23,
-                        wording": "Condition météo"
+                        "id": 23,
+                        "wording": "Condition météo"
                     },
                     "tags": ["rer", "meteo", "probleme"],
                     "localization": [
@@ -388,8 +425,15 @@ Update one disruption without impacts
                             },
                         }
                     ],
-                    "nb_impacts": 0,
-                    "impact_url" : "https://chaos.example.com/disruptions/4/impacts",
+                    "impacts": {
+                        "pagination": {
+                            "start_index": 1,
+                            "items_per_page": 20,
+                            "total_results": 0,
+                            "prev": null,
+                            "next": null,
+                        },
+                    },
                 },
                 "meta": {}
             }
@@ -439,6 +483,8 @@ Return all impacts of a disruption.
                         "start_index": 1,
                         "items_per_page": 20,
                         "total_results": 0,
+                        "prev": null,
+                        "next": null
                     },
                 }
 
@@ -498,7 +544,7 @@ Return all impacts of a disruption.
                                 },
                                 "publication_date" : null,
                                 "channel": {
-                                    "id": 3,
+                                    "id": 2,
                                     "name": "message long",
                                     "content_type": "text/markdown",
                                     "max_size": null
@@ -531,6 +577,8 @@ Return all impacts of a disruption.
                         "start_index": 1,
                         "items_per_page": 3,
                         "total_results": 6,
+                        "prev": null,
+                        "next": "https://chaos.example.com/disruptions?start_index=4&items_per_page=3"
                     },
                 }
 
