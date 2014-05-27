@@ -1,6 +1,6 @@
 # disruptions
 
-##Retrieve disruptions
+##Retrieve disruptions [GET /disruption]
 Return all visible disruptions.
 ###Parameters
 
@@ -13,7 +13,7 @@ Return all visible disruptions.
 
 ###Examples
 
-GET /disruptions
+**GET** /disruptions
 
 - response 200
     * Headers
@@ -35,7 +35,7 @@ GET /disruptions
             }
 
 
-GET /disruptions?limit=3
+**GET** /disruptions?limit=3
 
 - response 200
     * Headers
@@ -143,14 +143,15 @@ GET /disruptions?limit=3
 
 
 
-##Retrieve one disruption
+##Retrieve one disruption [GET /disruption/{id}]
 
 ###Parameters
 
 ###Examples
 
 Retrieve one existing disruption:
-GET /disruptions/1
+
+**GET** /disruptions/1
 
 - response 200
     * Headers
@@ -201,7 +202,8 @@ GET /disruptions/1
 
 
 Retrieve a non existing (or deleted) disruption:
-GET /disruptions/25
+
+**GET** /disruptions/25
 
 - response 404
     * Headers
@@ -214,7 +216,7 @@ GET /disruptions/25
             }
 
 
-##Create a disruption
+##Create a disruption [POST /disruption]
 
 ###Parameters
 
@@ -222,7 +224,8 @@ GET /disruptions/25
 
 
 Create one valid disruption without impacts
-POST /disruptions
+
+**POST** /disruptions
 
 - Request
 
