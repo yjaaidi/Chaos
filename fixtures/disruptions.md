@@ -4,17 +4,20 @@
 
 ####Parameters
 
-Name | description | required | default
---- | --- | ---
-limit | max numbers of disruptions on a response | false | 20
-page | index of the page | false | 1
+| Name  | description                              | required | default |
+| ----- | ---------------------------------------- | -------- | ------- |
+| limit | max numbers of disruptions on a response | false    | 20      |
+| page  | index of the page                        | false    | 1       |
 
 ####Examples
 
 GET /disruptions
+
 - response 200
     * Headers
     * Body
+
+            {
                 "disruptions": [],
                 "meta": {
                     "pagination": {
@@ -28,6 +31,7 @@ GET /disruptions
 
 
 GET /disruptions?limit=3
+
 - response 200
     * Headers
     * Body
