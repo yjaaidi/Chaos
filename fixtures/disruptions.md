@@ -17,6 +17,9 @@ GET /disruptions
 
 - response 200
     * Headers
+
+            Content-Type: application/json
+
     * Body
 
             {
@@ -36,6 +39,9 @@ GET /disruptions?limit=3
 
 - response 200
     * Headers
+
+            Content-Type: application/json
+
     * Body
 
             {
@@ -148,48 +154,51 @@ GET /disruptions/1
 
 - response 200
     * Headers
+
+            Content-Type: application/json
+
     * Body
 
             {
-                "disruption":
-                    {
-                        "id": 1,
-                        "url": "https://chaos.example.com/disruptions/1",
-                        "reference": "RER B en panne",
-                        "created_at": "2014-04-31T16:52:18Z",
-                        "updated_at": "2014-04-31T16:55:18Z",
-                        "note": "blablbla",
-                        "state": "published",
-                        "contributor": "shortterm.tn",
-                        "cause": {
-                            id": 23,
-                            wording": "Condition météo"
-                        },
-                        "tags": ["rer", "meteo", "probleme"],
-                        "localization": [
-                            {
-                                "id": "stop_area:RTP:SA:3786125",
-                                "name": "HENRI THIRARD - LEON JOUHAUX",
-                                "type": "stop_area",
-                                "coord": {
-                                    "lat": "48.778867",
-                                    "lon": "2.340927"
-                                },
-                            },
-                            {
-                                "id": "stop_area:RTP:SA:3786123",
-                                "name": "DE GAULLE - GOUNOD - TABANOU",
-                                "type": "stop_area",
-                                "coord": {
-                                    "lat": "48.780179",
-                                    "lon": "2.340886"
-                                },
-                            }
-                        ],
-                        "nb_impacts": 3,
-                        "impact_url" : "https://chaos.example.com/disruptions/1/impacts",
+                "disruption": {
+                    "id": 1,
+                    "url": "https://chaos.example.com/disruptions/1",
+                    "reference": "RER B en panne",
+                    "created_at": "2014-04-31T16:52:18Z",
+                    "updated_at": "2014-04-31T16:55:18Z",
+                    "note": "blablbla",
+                    "state": "published",
+                    "contributor": "shortterm.tn",
+                    "cause": {
+                        id": 23,
+                        wording": "Condition météo"
                     },
+                    "tags": ["rer", "meteo", "probleme"],
+                    "localization": [
+                        {
+                            "id": "stop_area:RTP:SA:3786125",
+                            "name": "HENRI THIRARD - LEON JOUHAUX",
+                            "type": "stop_area",
+                            "coord": {
+                                "lat": "48.778867",
+                                "lon": "2.340927"
+                            },
+                        },
+                        {
+                            "id": "stop_area:RTP:SA:3786123",
+                            "name": "DE GAULLE - GOUNOD - TABANOU",
+                            "type": "stop_area",
+                            "coord": {
+                                "lat": "48.780179",
+                                "lon": "2.340886"
+                            },
+                        }
+                    ],
+                    "nb_impacts": 3,
+                    "impact_url" : "https://chaos.example.com/disruptions/1/impacts",
+                },
             }
+
 
 Retrieve a non existing (or deleted) disruption:
 GET /disruptions/25
@@ -204,3 +213,89 @@ GET /disruptions/25
                 }
             }
 
+
+##Create a disruption
+
+###Parameters
+
+###Examples
+
+
+Create one valid disruption without impacts
+POST /disruptions
+
+- Request
+
+    * Headers
+
+            Content-Type: application/json
+
+    * Body
+
+            {
+                "reference": "foo",
+                "note": null,
+                "state": "published",
+                "contributor": "shortterm.tn",
+                "cause": 23, //child?
+                "tags": ["rer", "meteo", "probleme"],
+                "localization": [
+                    {
+                        "id": "stop_area:RTP:SA:3786125",
+                        "type": "stop_area"
+                    },
+                    {
+                        "id": "stop_area:RTP:SA:3786123",
+                        "type": "stop_area" //needed?
+                    }
+                ]
+            }
+
+
+
+- response 201
+    * Headers
+
+            Content-Type: application/json
+
+    * Body
+
+            {
+                "disruption":{
+                    "id": 1,
+                    "url": "https://chaos.example.com/disruptions/1",
+                    "reference": "foo",
+                    "created_at": "2014-04-31T16:52:18Z",
+                    "updated_at": null,
+                    "note": null,
+                    "state": "published",
+                    "contributor": "shortterm.tn",
+                    "cause": {
+                        id": 23,
+                        wording": "Condition météo"
+                    },
+                    "tags": ["rer", "meteo", "probleme"],
+                    "localization": [
+                        {
+                            "id": "stop_area:RTP:SA:3786125",
+                            "name": "HENRI THIRARD - LEON JOUHAUX",
+                            "type": "stop_area",
+                            "coord": {
+                                "lat": "48.778867",
+                                "lon": "2.340927"
+                            },
+                        },
+                        {
+                            "id": "stop_area:RTP:SA:3786123",
+                            "name": "DE GAULLE - GOUNOD - TABANOU",
+                            "type": "stop_area",
+                            "coord": {
+                                "lat": "48.780179",
+                                "lon": "2.340886"
+                            },
+                        }
+                    ],
+                    "nb_impacts": 0,
+                    "impact_url" : "https://chaos.example.com/disruptions/1/impacts",
+                },
+            }
