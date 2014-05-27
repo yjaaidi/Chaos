@@ -1,15 +1,17 @@
 # disruptions
 
-###Retrieve disruptions
+##Retrieve disruptions
+Return all visible disruptions.
+###Parameters
 
-####Parameters
+| Name           | description                                      | required | default |
+| -------------- | ------------------------------------------------ | -------- | ------- |
+| start_index    | index of the first element returned (start at 1) | false    | 1       |
+| items_per_page | number of items per page                         | false    | 20      |
 
-| Name  | description                              | required | default |
-| ----- | ---------------------------------------- | -------- | ------- |
-| limit | max numbers of disruptions on a response | false    | 20      |
-| page  | index of the page                        | false    | 1       |
+@TODO: search and sort
 
-####Examples
+###Examples
 
 GET /disruptions
 
@@ -21,9 +23,9 @@ GET /disruptions
                 "disruptions": [],
                 "meta": {
                     "pagination": {
-                        "limit": 20,
-                        "page": 1,
-                        "pages": 1,
+                        "start_index": 1,
+                        "items_per_page": 20,
+                        "total_results": 0,
                     },
                 }
 
@@ -125,10 +127,80 @@ GET /disruptions?limit=3
                 ],
                 "meta": {
                     "pagination": {
-                        "limit": 3,
-                        "page": 1,
-                        "pages": 2,
+                        "start_index": 1,
+                        "items_per_page": 3,
+                        "total_results": 6,
                     },
                 }
 
             }
+
+
+
+##Retrieve one disruption
+
+###Parameters
+
+###Examples
+
+Retrieve one existing disruption:
+GET /disruptions/1
+
+- response 200
+    * Headers
+    * Body
+
+            {
+                "disruption":
+                    {
+                        "id": 1,
+                        "url": "https://chaos.example.com/disruptions/1",
+                        "reference": "RER B en panne",
+                        "created_at": "2014-04-31T16:52:18Z",
+                        "updated_at": "2014-04-31T16:55:18Z",
+                        "note": "blablbla",
+                        "state": "published",
+                        "contributor": "shortterm.tn",
+                        "cause": {
+                            id": 23,
+                            wording": "Condition météo"
+                        },
+                        "tags": ["rer", "meteo", "probleme"],
+                        "localization": [
+                            {
+                                "id": "stop_area:RTP:SA:3786125",
+                                "name": "HENRI THIRARD - LEON JOUHAUX",
+                                "type": "stop_area",
+                                "coord": {
+                                    "lat": "48.778867",
+                                    "lon": "2.340927"
+                                },
+                            },
+                            {
+                                "id": "stop_area:RTP:SA:3786123",
+                                "name": "DE GAULLE - GOUNOD - TABANOU",
+                                "type": "stop_area",
+                                "coord": {
+                                    "lat": "48.780179",
+                                    "lon": "2.340886"
+                                },
+                            }
+                        ],
+                        "nb_impacts": 3,
+                        "impact_url" : "https://chaos.example.com/disruptions/1/impacts",
+                    },
+            }
+
+Retrieve a non existing (or deleted) disruption:
+GET /disruptions/25
+
+- response 404
+    * Headers
+    * Body
+
+            {
+                "error": {
+                    "message": "No disruption"
+                }
+            }
+
