@@ -19,10 +19,7 @@ Return all visible disruptions.
 @TODO: search and sort
 
 
-- response 200
-    * Headers
-
-            Content-Type: application/json
+- response 200 (application/json)
 
     * Body
 
@@ -30,7 +27,7 @@ Return all visible disruptions.
                 "disruptions": [
                     {
                         "id": 1,
-                        "href": "https://chaos.navitia.io/disruptions/1",
+                        "url": "https://chaos.navitia.io/disruptions/1",
                         "reference": "RER B en panne",
                         "created_at": "2014-04-31T16:52:18Z",
                         "updated_at": "2014-04-31T16:55:18Z",
@@ -64,11 +61,13 @@ Return all visible disruptions.
                         ],
                         "impacts": {
                             "pagination": {
-                                "start_index": 1,
+                                "start_index": 0,
                                 "items_per_page": 20,
                                 "total_results": 3,
                                 "prev": null,
-                                "next": "https://chaos.example.com/disruptions/1/impacts?start_index=1&item_per_page=20"
+                                "next": "https://chaos.example.com/disruptions/1/impacts?start_index=1&item_per_page=20",
+                                "first": "https://chaos.example.com/disruptions/1/impacts?start_index=1&item_per_page=20",
+                                "last": "https://chaos.example.com/disruptions/1/impacts?start_index=1&item_per_page=20"
                             }
                         }
                     },
@@ -89,11 +88,13 @@ Return all visible disruptions.
                         "localization": [],
                         "impacts": {
                             "pagination": {
-                                "start_index": 1,
+                                "start_index": 0,
                                 "items_per_page": 20,
                                 "total_results": 5,
                                 "prev": null,
                                 "next": "https://chaos.example.com/disruptions/4/impacts?start_index=1&item_per_page=20"
+                                "first": "https://chaos.example.com/disruptions/4/impacts?start_index=1&item_per_page=20",
+                                "last": "https://chaos.example.com/disruptions/4/impacts?start_index=1&item_per_page=20"
                             }
                         }
                     },
@@ -124,11 +125,13 @@ Return all visible disruptions.
                         ],
                         "impacts": {
                             "pagination": {
-                                "start_index": 1,
+                                "start_index": 0,
                                 "items_per_page": 20,
-                                "total_results": 15,
+                                "total_results": 25,
                                 "prev": null,
                                 "next": "https://chaos.example.com/disruptions/2/impacts?start_index=1&item_per_page=20"
+                                "first": "https://chaos.example.com/disruptions/2/impacts?start_index=1&item_per_page=20",
+                                "last": "https://chaos.example.com/disruptions/2/impacts?start_index=21&item_per_page=20"
                             }
                         }
                     }
@@ -140,12 +143,14 @@ Return all visible disruptions.
                         "items_per_page": 3,
                         "total_results": 6,
                         "prev": null,
-                        "next": "https://chaos.example.com/disruptions/?start_index=1&item_per_page=3"
+                        "next": "https://chaos.example.com/disruptions/?start_index=4&item_per_page=3"
+                        "first": "https://chaos.example.com/disruptions/?start_index=1&item_per_page=3",
+                        "last": "https://chaos.example.com/disruptions/?start_index=4&item_per_page=3"
                     }
                 }
 
             }
-            
+
 ##Create a disruption [POST]
 
 ###Parameters
@@ -154,11 +159,7 @@ Create one valid disruption without impacts
 
 **POST** /disruptions
 
-- Request
-
-    * Headers
-
-            Content-Type: application/json
+- Request (application/json)
 
     * Body
 
@@ -183,10 +184,7 @@ Create one valid disruption without impacts
 
 
 
-- response 201
-    * Headers
-
-            Content-Type: application/json
+- response 201 (application/json)
 
     * Body
 
@@ -227,17 +225,19 @@ Create one valid disruption without impacts
                     ],
                     "impacts": {
                         "pagination": {
-                            "start_index": 1,
+                            "start_index": 0,
                             "items_per_page": 20,
                             "total_results": 0,
                             "prev": null,
-                            "next": null
+                            "next": null,
+                            "first": "null",
+                            "last": "null"
                         }
                     }
                 },
                 "meta": {}
             }
-         
+
 # Disruptions [/disruptions/{id}]
 ##Retrieve one disruption [GET]
 
@@ -290,7 +290,9 @@ Retrieve one existing disruption:
                             "items_per_page": 20,
                             "total_results": 3,
                             "prev": null,
-                            "next": "https://chaos.example.com/disruptions/1/impacts?start_index=1&item_per_page=20"
+                            "next": "https://chaos.example.com/disruptions/1/impacts?start_index=1&item_per_page=20",
+                            "first": "https://chaos.example.com/disruptions/1/impacts?start_index=1&item_per_page=20",
+                            "last": "https://chaos.example.com/disruptions/1/impacts?start_index=1&item_per_page=20"
                         }
                     }
                 },
@@ -342,7 +344,6 @@ Retrieve one existing disruption:
             }
 
 
-
 - Response 200 (application/json)
 
     * Body
@@ -384,13 +385,25 @@ Retrieve one existing disruption:
                     ],
                     "impacts": {
                         "pagination": {
-                            "start_index": 1,
+                            "start_index": 0,
                             "items_per_page": 20,
                             "total_results": 0,
                             "prev": null,
-                            "next": null
+                            "next": null,
+                            "first": null,
+                            "last": null
                         }
                     }
+                },
+                "meta": {}
+            }
+
+- response 404 (application/json)
+    * Body
+
+            {
+                "error": {
+                    "message": "No disruption"
                 },
                 "meta": {}
             }
@@ -401,6 +414,16 @@ Delete one disruption.
 
 
 - Response 204
+
+- response 404 (application/json)
+    * Body
+
+            {
+                "error": {
+                    "message": "No disruption"
+                },
+                "meta": {}
+            }
 
 
 # List of Impacts [/disruptions/1/impacts]
@@ -499,7 +522,9 @@ Return all impacts of a disruption.
                         "items_per_page": 3,
                         "total_results": 6,
                         "prev": null,
-                        "next": "https://chaos.example.com/disruptions?start_index=4&items_per_page=3"
+                        "next": "https://chaos.example.com/disruptions?start_index=4&items_per_page=3",
+                        "first": "https://chaos.example.com/disruptions?start_index=1&items_per_page=3",
+                        "last": "https://chaos.example.com/disruptions?start_index=4&items_per_page=3"
                     }
                 }
 
