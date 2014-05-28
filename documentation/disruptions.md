@@ -1,8 +1,15 @@
-# disruptions
+FORMAT: 1A
+HOST: https://chaos.navitia.io
 
-##Retrieve disruptions [GET /disruptions]
+#Chaos
+It's an api for blabla
+
+
+# List of disruptions [/disruptions]
+
+##Retrieve disruptions [GET]
 Return all visible disruptions.
-###Parameters
+##Parameters
 
 | Name           | description                                      | required | default |
 | -------------- | ------------------------------------------------ | -------- | ------- |
@@ -11,31 +18,6 @@ Return all visible disruptions.
 
 @TODO: search and sort
 
-###Examples
-
-**GET** /disruptions
-
-- response 200
-    * Headers
-
-            Content-Type: application/json
-
-    * Body
-
-            {
-                "disruptions": [],
-                "meta": {
-                    "pagination": {
-                        "start_index": 1,
-                        "items_per_page": 20,
-                        "total_results": 0,
-                    },
-                }
-
-            }
-
-
-**GET** /disruptions?items_per_page=3
 
 - response 200
     * Headers
@@ -48,7 +30,7 @@ Return all visible disruptions.
                 "disruptions": [
                     {
                         "id": 1,
-                        "url": "https://chaos.example.com/disruptions/1",
+                        "href": "https://chaos.navitia.io/disruptions/1",
                         "reference": "RER B en panne",
                         "created_at": "2014-04-31T16:52:18Z",
                         "updated_at": "2014-04-31T16:55:18Z",
@@ -68,7 +50,7 @@ Return all visible disruptions.
                                 "coord": {
                                     "lat": "48.778867",
                                     "lon": "2.340927"
-                                },
+                                }
                             },
                             {
                                 "id": "stop_area:RTP:SA:3786123",
@@ -77,7 +59,7 @@ Return all visible disruptions.
                                 "coord": {
                                     "lat": "48.780179",
                                     "lon": "2.340886"
-                                },
+                                }
                             }
                         ],
                         "impacts": {
@@ -86,9 +68,9 @@ Return all visible disruptions.
                                 "items_per_page": 20,
                                 "total_results": 3,
                                 "prev": null,
-                                "next": "https://chaos.example.com/disruptions/1/impacts?start_index=1&item_per_page=20",
-                            },
-                        },
+                                "next": "https://chaos.example.com/disruptions/1/impacts?start_index=1&item_per_page=20"
+                            }
+                        }
                     },
                     {
                         "id": 4,
@@ -112,8 +94,8 @@ Return all visible disruptions.
                                 "total_results": 5,
                                 "prev": null,
                                 "next": "https://chaos.example.com/disruptions/4/impacts?start_index=1&item_per_page=20"
-                            },
-                        },
+                            }
+                        }
                     },
                     {
                         "id": 2,
@@ -137,8 +119,8 @@ Return all visible disruptions.
                                 "coord": {
                                     "lat": "48.778867",
                                     "lon": "2.340927"
-                                },
-                            },
+                                }
+                            }
                         ],
                         "impacts": {
                             "pagination": {
@@ -147,9 +129,9 @@ Return all visible disruptions.
                                 "total_results": 15,
                                 "prev": null,
                                 "next": "https://chaos.example.com/disruptions/2/impacts?start_index=1&item_per_page=20"
-                            },
-                        },
-                    },
+                            }
+                        }
+                    }
 
                 ],
                 "meta": {
@@ -159,101 +141,14 @@ Return all visible disruptions.
                         "total_results": 6,
                         "prev": null,
                         "next": "https://chaos.example.com/disruptions/?start_index=1&item_per_page=3"
-                    },
+                    }
                 }
 
             }
-
-
-
-##Retrieve one disruption [GET /disruptions/{id}]
+            
+##Create a disruption [POST]
 
 ###Parameters
-
-###Examples
-
-Retrieve one existing disruption:
-
-**GET** /disruptions/1
-
-- response 200
-    * Headers
-
-            Content-Type: application/json
-
-    * Body
-
-            {
-                "disruption": {
-                    "id": 1,
-                    "url": "https://chaos.example.com/disruptions/1",
-                    "reference": "RER B en panne",
-                    "created_at": "2014-04-31T16:52:18Z",
-                    "updated_at": "2014-04-31T16:55:18Z",
-                    "note": "blablbla",
-                    "state": "published",
-                    "contributor": "shortterm.tn",
-                    "cause": {
-                        "id": 23,
-                        "wording": "Condition météo"
-                    },
-                    "tags": ["rer", "meteo", "probleme"],
-                    "localization": [
-                        {
-                            "id": "stop_area:RTP:SA:3786125",
-                            "name": "HENRI THIRARD - LEON JOUHAUX",
-                            "type": "stop_area",
-                            "coord": {
-                                "lat": "48.778867",
-                                "lon": "2.340927"
-                            },
-                        },
-                        {
-                            "id": "stop_area:RTP:SA:3786123",
-                            "name": "DE GAULLE - GOUNOD - TABANOU",
-                            "type": "stop_area",
-                            "coord": {
-                                "lat": "48.780179",
-                                "lon": "2.340886"
-                            },
-                        }
-                    ],
-                    "impacts": {
-                        "pagination": {
-                            "start_index": 1,
-                            "items_per_page": 20,
-                            "total_results": 3,
-                            "prev": null,
-                            "next": "https://chaos.example.com/disruptions/1/impacts?start_index=1&item_per_page=20",
-                        },
-                    },
-                },
-                "meta": {}
-            }
-
-
-Retrieve a non existing (or deleted) disruption:
-
-**GET** /disruptions/25
-
-- response 404
-    * Headers
-    * Body
-
-            {
-                "error": {
-                    "message": "No disruption"
-                },
-                "meta": {}
-            }
-
-
-##Create a disruption [POST /disruptions]
-
-###Parameters
-
-###Examples
-
 
 Create one valid disruption without impacts
 
@@ -318,7 +213,7 @@ Create one valid disruption without impacts
                             "coord": {
                                 "lat": "48.778867",
                                 "lon": "2.340927"
-                            },
+                            }
                         },
                         {
                             "id": "stop_area:RTP:SA:3786123",
@@ -327,7 +222,7 @@ Create one valid disruption without impacts
                             "coord": {
                                 "lat": "48.780179",
                                 "lon": "2.340886"
-                            },
+                            }
                         }
                     ],
                     "impacts": {
@@ -336,23 +231,88 @@ Create one valid disruption without impacts
                             "items_per_page": 20,
                             "total_results": 0,
                             "prev": null,
-                            "next": null,
-                        },
+                            "next": null
+                        }
+                    }
+                },
+                "meta": {}
+            }
+         
+# Disruptions [/disruptions/{id}]
+##Retrieve one disruption [GET]
+
+##Parameters
+
+Retrieve one existing disruption:
+
+- response 200 (application/json)
+
+    * Body
+
+            {
+                "disruption": {
+                    "id": 1,
+                    "url": "https://chaos.example.com/disruptions/1",
+                    "reference": "RER B en panne",
+                    "created_at": "2014-04-31T16:52:18Z",
+                    "updated_at": "2014-04-31T16:55:18Z",
+                    "note": "blablbla",
+                    "state": "published",
+                    "contributor": "shortterm.tn",
+                    "cause": {
+                        "id": 23,
+                        "wording": "Condition météo"
                     },
+                    "tags": ["rer", "meteo", "probleme"],
+                    "localization": [
+                        {
+                            "id": "stop_area:RTP:SA:3786125",
+                            "name": "HENRI THIRARD - LEON JOUHAUX",
+                            "type": "stop_area",
+                            "coord": {
+                                "lat": "48.778867",
+                                "lon": "2.340927"
+                            }
+                        },
+                        {
+                            "id": "stop_area:RTP:SA:3786123",
+                            "name": "DE GAULLE - GOUNOD - TABANOU",
+                            "type": "stop_area",
+                            "coord": {
+                                "lat": "48.780179",
+                                "lon": "2.340886"
+                            }
+                        }
+                    ],
+                    "impacts": {
+                        "pagination": {
+                            "start_index": 1,
+                            "items_per_page": 20,
+                            "total_results": 3,
+                            "prev": null,
+                            "next": "https://chaos.example.com/disruptions/1/impacts?start_index=1&item_per_page=20"
+                        }
+                    }
                 },
                 "meta": {}
             }
 
-##Update a disruption [PUT /disruptions/{id}]
+
+- response 404 (application/json)
+    * Body
+
+            {
+                "error": {
+                    "message": "No disruption"
+                },
+                "meta": {}
+            }
+
+
+##Update a disruption [PUT]
 
 ###Parameters
 
-###Examples
-
-
-Update one disruption without impacts
-
-**PUT** /disruptions/4
 
 - Request
 
@@ -376,17 +336,14 @@ Update one disruption without impacts
                     },
                     {
                         "id": "stop_area:RTP:SA:3786123",
-                        "type": "stop_area" //needed?
+                        "type": "stop_area"
                     }
                 ]
             }
 
 
 
-- Response 200
-    * Headers
-
-            Content-Type: application/json
+- Response 200 (application/json)
 
     * Body
 
@@ -413,7 +370,7 @@ Update one disruption without impacts
                             "coord": {
                                 "lat": "48.778867",
                                 "lon": "2.340927"
-                            },
+                            }
                         },
                         {
                             "id": "stop_area:RTP:SA:3786123",
@@ -422,7 +379,7 @@ Update one disruption without impacts
                             "coord": {
                                 "lat": "48.780179",
                                 "lon": "2.340886"
-                            },
+                            }
                         }
                     ],
                     "impacts": {
@@ -431,30 +388,24 @@ Update one disruption without impacts
                             "items_per_page": 20,
                             "total_results": 0,
                             "prev": null,
-                            "next": null,
-                        },
-                    },
+                            "next": null
+                        }
+                    }
                 },
                 "meta": {}
             }
 
-
-##Delete a disruption [DELETE /disruptions/{id}]
-
+##Delete a disruption [DELETE]
+Delete one disruption.
 ###Parameters
 
-###Examples
-
-delete one disruption.
-
-**DELETE** /disruptions/4
 
 - Response 204
 
 
-# Impacts
+# List of Impacts [/disruptions/1/impacts]
 
-##Retrieve impacts [GET /disruptions/{disruption_id}/impacts]
+##Retrieve impacts [GET]
 Return all impacts of a disruption.
 ###Parameters
 
@@ -465,38 +416,8 @@ Return all impacts of a disruption.
 
 @TODO: search and sort
 
-###Examples
 
-**GET** /disruptions/2/impacts
-
-- response 200
-    * Headers
-
-            Content-Type: application/json
-
-    * Body
-
-            {
-                "impacts": [],
-                "meta": {
-                    "pagination": {
-                        "start_index": 1,
-                        "items_per_page": 20,
-                        "total_results": 0,
-                        "prev": null,
-                        "next": null
-                    },
-                }
-
-            }
-
-
-**GET** /disruptions/3/impacts?items_per_page=3
-
-- response 200
-    * Headers
-
-            Content-Type: application/json
+- response 200 (application/json)
 
     * Body
 
@@ -510,7 +431,7 @@ Return all impacts of a disruption.
                         "sevirity": {
                             "id": 2,
                             "wording": "Bonne nouvelle",
-                            "is_blocking": false,
+                            "is_blocking": false
                         },
                         "application_periods": [
                             {
@@ -531,7 +452,7 @@ Return all impacts of a disruption.
                                     "name": "message court",
                                     "content_type": "text/plain",
                                     "max_size": 140
-                                },
+                                }
                             },
                             {
                                 "id": 2,
@@ -540,7 +461,7 @@ Return all impacts of a disruption.
                                 "text": "#Youpi\n**aujourd'hui c'est ptit dej en gare",
                                 "publication_period" : {
                                     "begin":"2014-04-31T17:00:00Z",
-                                    "begin":"2014-05-01T17:00:00Z"
+                                    "end":"2014-05-01T17:00:00Z"
                                 },
                                 "publication_date" : null,
                                 "channel": {
@@ -548,7 +469,7 @@ Return all impacts of a disruption.
                                     "name": "message long",
                                     "content_type": "text/markdown",
                                     "max_size": null
-                                },
+                                }
                             }
                         ],
                         "objects": [
@@ -559,18 +480,18 @@ Return all impacts of a disruption.
                                 "coord": {
                                     "lat": "48.778867",
                                     "lon": "2.340927"
-                                },
+                                }
                             },
                             {
                                 "id": "line:RTP:LI:378",
                                 "name": "DE GAULLE - GOUNOD - TABANOU",
                                 "type": "line",
                                 "code": 2,
-                                "color": "FFFFFF",
+                                "color": "FFFFFF"
                             }
                         ],
-                        "disruption_url" : "https://chaos.example.com/disruptions/3
-                    },
+                        "disruption_url" : "https://chaos.example.com/disruptions/3"
+                    }
                 ],
                 "meta": {
                     "pagination": {
@@ -579,9 +500,10 @@ Return all impacts of a disruption.
                         "total_results": 6,
                         "prev": null,
                         "next": "https://chaos.example.com/disruptions?start_index=4&items_per_page=3"
-                    },
+                    }
                 }
 
             }
+
 
 
