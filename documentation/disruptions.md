@@ -41,7 +41,7 @@ Return all visible disruptions.
                 "disruptions": [
                     {
                         "id": 1,
-                        "url": "https://chaos.apiary-mock.com/disruptions/1",
+                        "self": {"href": "https://chaos.apiary-mock.com/disruptions/1"},
                         "reference": "RER B en panne",
                         "created_at": "2014-04-31T16:52:18Z",
                         "updated_at": "2014-04-31T16:55:18Z",
@@ -79,15 +79,15 @@ Return all visible disruptions.
                                 "items_per_page": 20,
                                 "total_results": 3,
                                 "prev": null,
-                                "next": "https://chaos.apiary-mock.com/disruptions/1/impacts?start_index=1&item_per_page=20",
-                                "first": "https://chaos.apiary-mock.com/disruptions/1/impacts?start_index=1&item_per_page=20",
-                                "last": "https://chaos.apiary-mock.com/disruptions/1/impacts?start_index=1&item_per_page=20"
+                                "next": {"href": "https://chaos.apiary-mock.com/disruptions/1/impacts?start_index=1&item_per_page=20"},
+                                "first": {"href": "https://chaos.apiary-mock.com/disruptions/1/impacts?start_index=1&item_per_page=20"},
+                                "last": {"href": "https://chaos.apiary-mock.com/disruptions/1/impacts?start_index=1&item_per_page=20}"
                             }
                         }
                     },
                     {
                         "id": 4,
-                        "url": "https://chaos.apiary-mock.com/disruptions/4",
+                        "self": {"href": "https://chaos.apiary-mock.com/disruptions/4"},
                         "reference": "RER A en panne",
                         "created_at": "2014-05-31T16:52:18Z",
                         "updated_at": null,
@@ -106,15 +106,15 @@ Return all visible disruptions.
                                 "items_per_page": 20,
                                 "total_results": 5,
                                 "prev": null,
-                                "next": "https://chaos.apiary-mock.com/disruptions/4/impacts?start_index=1&item_per_page=20",
-                                "first": "https://chaos.apiary-mock.com/disruptions/4/impacts?start_index=1&item_per_page=20",
-                                "last": "https://chaos.apiary-mock.com/disruptions/4/impacts?start_index=1&item_per_page=20"
+                                "next": {"href": "https://chaos.apiary-mock.com/disruptions/4/impacts?start_index=1&item_per_page=20"},
+                                "first": {"href": "https://chaos.apiary-mock.com/disruptions/4/impacts?start_index=1&item_per_page=20"},
+                                "last": {"href": "https://chaos.apiary-mock.com/disruptions/4/impacts?start_index=1&item_per_page=20"}
                             }
                         }
                     },
                     {
                         "id": 2,
-                        "url": "https://chaos.apiary-mock.com/disruptions/2",
+                        "self": {"href": "https://chaos.apiary-mock.com/disruptions/2"},
                         "reference": "Chatelet fermé",
                         "created_at": "2014-05-17T16:52:18Z",
                         "update_at": "2014-05-31T06:55:18Z",
@@ -143,9 +143,9 @@ Return all visible disruptions.
                                 "items_per_page": 20,
                                 "total_results": 25,
                                 "prev": null,
-                                "next": "https://chaos.apiary-mock.com/disruptions/2/impacts?start_index=1&item_per_page=20",
-                                "first": "https://chaos.apiary-mock.com/disruptions/2/impacts?start_index=1&item_per_page=20",
-                                "last": "https://chaos.apiary-mock.com/disruptions/2/impacts?start_index=21&item_per_page=20"
+                                "next": {"href": "https://chaos.apiary-mock.com/disruptions/2/impacts?start_index=1&item_per_page=20"},
+                                "first": {"href": "https://chaos.apiary-mock.com/disruptions/2/impacts?start_index=1&item_per_page=20"},
+                                "last": {"href": "https://chaos.apiary-mock.com/disruptions/2/impacts?start_index=21&item_per_page=20"}
                             }
                         }
                     }
@@ -157,9 +157,9 @@ Return all visible disruptions.
                         "items_per_page": 3,
                         "total_results": 6,
                         "prev": null,
-                        "next": "https://chaos.apiary-mock.com/disruptions/?start_index=4&item_per_page=3",
-                        "first": "https://chaos.apiary-mock.com/disruptions/?start_index=1&item_per_page=3",
-                        "last": "https://chaos.apiary-mock.com/disruptions/?start_index=4&item_per_page=3"
+                        "next": {"href": "https://chaos.apiary-mock.com/disruptions/?start_index=4&item_per_page=3"},
+                        "first": {"href": "https://chaos.apiary-mock.com/disruptions/?start_index=1&item_per_page=3"},
+                        "last": {"href": "https://chaos.apiary-mock.com/disruptions/?start_index=4&item_per_page=3"}
                     }
                 }
 
@@ -207,7 +207,7 @@ Create one valid disruption without impacts
             {
                 "disruption":{
                     "id": 1,
-                    "url": "https://chaos.apiary-mock.com/disruptions/1",
+                    "self": {"href": "https://chaos.apiary-mock.com/disruptions/1"},
                     "reference": "foo",
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": null,
@@ -268,7 +268,7 @@ Retrieve one existing disruption:
             {
                 "disruption": {
                     "id": 1,
-                    "url": "https://chaos.apiary-mock.com/disruptions/1",
+                    "self": {"href": "https://chaos.apiary-mock.com/disruptions/1"},
                     "reference": "RER B en panne",
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": "2014-04-31T16:55:18Z",
@@ -306,9 +306,9 @@ Retrieve one existing disruption:
                             "items_per_page": 20,
                             "total_results": 3,
                             "prev": null,
-                            "next": "https://chaos.apiary-mock.com/disruptions/1/impacts?start_index=1&item_per_page=20",
-                            "first": "https://chaos.apiary-mock.com/disruptions/1/impacts?start_index=1&item_per_page=20",
-                            "last": "https://chaos.apiary-mock.com/disruptions/1/impacts?start_index=1&item_per_page=20"
+                            "next": {"href": "https://chaos.apiary-mock.com/disruptions/1/impacts?start_index=1&item_per_page=20"},
+                            "first": {"href": "https://chaos.apiary-mock.com/disruptions/1/impacts?start_index=1&item_per_page=20"},
+                            "last": {"href": "https://chaos.apiary-mock.com/disruptions/1/impacts?start_index=1&item_per_page=20"}
                         }
                     }
                 },
@@ -369,7 +369,7 @@ Retrieve one existing disruption:
             {
                 "disruption":{
                     "id": 4,
-                    "url": "https://chaos.apiary-mock.com/disruptions/4",
+                    "self": {"href": "https://chaos.apiary-mock.com/disruptions/4"},
                     "reference": "foo",
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": "2014-04-31T16:55:18Z",
@@ -466,7 +466,7 @@ Return all impacts of a disruption.
                 "impacts": [
                     {
                         "id": 1,
-                        "url": "https://chaos.apiary-mock.com/disruptions/3/impacts/1",
+                        "self": {"href": "https://chaos.apiary-mock.com/disruptions/3/impacts/1"},
                         "created_at": "2014-04-31T16:52:18Z",
                         "updated_at": "2014-04-31T16:55:18Z",
                         "severity": {
@@ -531,7 +531,7 @@ Return all impacts of a disruption.
                                 "color": "FFFFFF"
                             }
                         ],
-                        "disruption_url" : "https://chaos.apiary-mock.com/disruptions/3"
+                        "disruption" : {"href": "https://chaos.apiary-mock.com/disruptions/3"}
                     }
                 ],
                 "meta": {
@@ -540,9 +540,9 @@ Return all impacts of a disruption.
                         "items_per_page": 3,
                         "total_results": 6,
                         "prev": null,
-                        "next": "https://chaos.apiary-mock.com/disruptions?start_index=4&items_per_page=3",
-                        "first": "https://chaos.apiary-mock.com/disruptions?start_index=1&items_per_page=3",
-                        "last": "https://chaos.apiary-mock.com/disruptions?start_index=4&items_per_page=3"
+                        "next": {"href": "https://chaos.apiary-mock.com/disruptions?start_index=4&items_per_page=3"},
+                        "first": {"href": "https://chaos.apiary-mock.com/disruptions?start_index=1&items_per_page=3"},
+                        "last": {"href": "https://chaos.apiary-mock.com/disruptions?start_index=4&items_per_page=3"}
                     }
                 }
             }
@@ -610,7 +610,7 @@ Create a new impact.
             {
                 "impact": {
                     "id": 1,
-                    "url": "https://chaos.apiary-mock.com/disruptions/3/impacts/1",
+                    "self": {"href": "https://chaos.apiary-mock.com/disruptions/3/impacts/1"},
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": "2014-04-31T16:55:18Z",
                     "severity": {
@@ -675,7 +675,7 @@ Create a new impact.
                             "color": "FFFFFF"
                         }
                     ],
-                    "disruption_url" : "https://chaos.apiary-mock.com/disruptions/3"
+                    "disruption" : {"href": "https://chaos.apiary-mock.com/disruptions/3"}
                 }
             }
 
