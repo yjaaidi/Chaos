@@ -40,8 +40,8 @@ Return all visible disruptions.
             {
                 "disruptions": [
                     {
-                        "id": 1,
-                        "self": {"href": "https://chaos.apiary-mock.com/disruptions/1"},
+                        "id": "d30502d2-e8de-11e3-8c3e-0008ca8657ea",
+                        "self": {"href": "https://chaos.apiary-mock.com/disruptions/d30502d2-e8de-11e3-8c3e-0008ca8657ea"},
                         "reference": "RER B en panne",
                         "created_at": "2014-04-31T16:52:18Z",
                         "updated_at": "2014-04-31T16:55:18Z",
@@ -49,7 +49,7 @@ Return all visible disruptions.
                         "state": "published",
                         "contributor": "shortterm.tn",
                         "cause": {
-                            "id": 23,
+                            "id": "3d1f34b2-e8df-11e3-8c3e-0008ca8657ea",
                             "wording": "Condition météo"
                         },
                         "tags": ["rer", "meteo", "probleme"],
@@ -79,15 +79,15 @@ Return all visible disruptions.
                                 "items_per_page": 20,
                                 "total_results": 3,
                                 "prev": null,
-                                "next": {"href": "https://chaos.apiary-mock.com/disruptions/1/impacts?start_index=1&item_per_page=20"},
-                                "first": {"href": "https://chaos.apiary-mock.com/disruptions/1/impacts?start_index=1&item_per_page=20"},
-                                "last": {"href": "https://chaos.apiary-mock.com/disruptions/1/impacts?start_index=1&item_per_page=20}"
+                                "next": {"href": "https://chaos.apiary-mock.com/disruptions/d30502d2-e8de-11e3-8c3e-0008ca8657ea/impacts?start_index=1&item_per_page=20"},
+                                "first": {"href": "https://chaos.apiary-mock.com/disruptions/d30502d2-e8de-11e3-8c3e-0008ca8657ea/impacts?start_index=1&item_per_page=20"},
+                                "last": {"href": "https://chaos.apiary-mock.com/disruptions/d30502d2-e8de-11e3-8c3e-0008ca8657ea/impacts?start_index=1&item_per_page=20}"
                             }
                         }
                     },
                     {
-                        "id": 4,
-                        "self": {"href": "https://chaos.apiary-mock.com/disruptions/4"},
+                        "id": "d30502d2-e8de-11e3-8c3e-0008ca8657eb",
+                        "self": {"href": "https://chaos.apiary-mock.com/disruptions/d30502d2-e8de-11e3-8c3e-0008ca8657eb"},
                         "reference": "RER A en panne",
                         "created_at": "2014-05-31T16:52:18Z",
                         "updated_at": null,
@@ -95,7 +95,7 @@ Return all visible disruptions.
                         "state": "published",
                         "contributor": "shortterm.tn",
                         "cause": {
-                            "id": 2,
+                            "id": "3d1f34b2-e8ef-11e3-8c3e-0008ca8657ea",
                             "wording": "train cassé"
                         },
                         "tags": ["rer", "probleme"],
@@ -106,15 +106,15 @@ Return all visible disruptions.
                                 "items_per_page": 20,
                                 "total_results": 5,
                                 "prev": null,
-                                "next": {"href": "https://chaos.apiary-mock.com/disruptions/4/impacts?start_index=1&item_per_page=20"},
-                                "first": {"href": "https://chaos.apiary-mock.com/disruptions/4/impacts?start_index=1&item_per_page=20"},
-                                "last": {"href": "https://chaos.apiary-mock.com/disruptions/4/impacts?start_index=1&item_per_page=20"}
+                                "next": {"href": "https://chaos.apiary-mock.com/disruptions/d30502d2-e8de-11e3-8c3e-0008ca8657eb/impacts?start_index=1&item_per_page=20"},
+                                "first": {"href": "https://chaos.apiary-mock.com/disruptions/d30502d2-e8de-11e3-8c3e-0008ca8657eb/impacts?start_index=1&item_per_page=20"},
+                                "last": {"href": "https://chaos.apiary-mock.com/disruptions/d30502d2-e8de-11e3-8c3e-0008ca8657eb/impacts?start_index=1&item_per_page=20"}
                             }
                         }
                     },
                     {
-                        "id": 2,
-                        "self": {"href": "https://chaos.apiary-mock.com/disruptions/2"},
+                        "id": "d30502d2-e8de-11e3-8c3e-0008ca8657ec",
+                        "self": {"href": "https://chaos.apiary-mock.com/disruptions/d30502d2-e8de-11e3-8c3e-0008ca8657ec"},
                         "reference": "Chatelet fermé",
                         "created_at": "2014-05-17T16:52:18Z",
                         "update_at": "2014-05-31T06:55:18Z",
@@ -122,7 +122,7 @@ Return all visible disruptions.
                         "state": "published",
                         "contributor": "shortterm.tn",
                         "cause": {
-                            "id": 4,
+                            "id": "3d1f34b2-e2df-11e3-8c3e-0008ca8657ea",
                             "wording": "émeute"
                         },
                         "tags": ["rer", "metro", "probleme"],
@@ -143,9 +143,9 @@ Return all visible disruptions.
                                 "items_per_page": 20,
                                 "total_results": 25,
                                 "prev": null,
-                                "next": {"href": "https://chaos.apiary-mock.com/disruptions/2/impacts?start_index=1&item_per_page=20"},
-                                "first": {"href": "https://chaos.apiary-mock.com/disruptions/2/impacts?start_index=1&item_per_page=20"},
-                                "last": {"href": "https://chaos.apiary-mock.com/disruptions/2/impacts?start_index=21&item_per_page=20"}
+                                "next": {"href": "https://chaos.apiary-mock.com/disruptions/d30502d2-e8de-11e3-8c3e-0008ca8657ec/impacts?start_index=1&item_per_page=20"},
+                                "first": {"href": "https://chaos.apiary-mock.com/disruptions/d30502d2-e8de-11e3-8c3e-0008ca8657ec/impacts?start_index=1&item_per_page=20"},
+                                "last": {"href": "https://chaos.apiary-mock.com/disruptions/d30502d2-e8de-11e3-8c3e-0008ca8657ec/impacts?start_index=21&item_per_page=20"}
                             }
                         }
                     }
@@ -183,7 +183,7 @@ Create one valid disruption without impacts
                 "state": "published",
                 "contributor": "shortterm.tn",
                 "cause": {
-                       "id": 23
+                       "id": "3d1f34b2-e8df-1ae3-8c3e-0008ca8657ea"
                 }
                 "tags": ["rer", "meteo", "probleme"],
                 "localization": [
@@ -206,8 +206,8 @@ Create one valid disruption without impacts
 
             {
                 "disruption":{
-                    "id": 1,
-                    "self": {"href": "https://chaos.apiary-mock.com/disruptions/1"},
+                    "id": "3d1f32b2-e8df-11e3-8c3e-0008ca8657ea",
+                    "self": {"href": "https://chaos.apiary-mock.com/disruptions/3d1f32b2-e8df-11e3-8c3e-0008ca8657ea"},
                     "reference": "foo",
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": null,
@@ -215,7 +215,7 @@ Create one valid disruption without impacts
                     "state": "published",
                     "contributor": "shortterm.tn",
                     "cause": {
-                        "id": 23,
+                        "id": "3d1f34b2-e8df-1ae3-8c3e-0008ca8657ea",
                         "wording": "Condition météo"
                     },
                     "tags": ["rer", "meteo", "probleme"],
@@ -267,8 +267,8 @@ Retrieve one existing disruption:
 
             {
                 "disruption": {
-                    "id": 1,
-                    "self": {"href": "https://chaos.apiary-mock.com/disruptions/1"},
+                    "id": "3d1f32b2-e8df-11e3-8c3e-0008ca8657ea",
+                    "self": {"href": "https://chaos.apiary-mock.com/disruptions/3d1f32b2-e8df-11e3-8c3e-0008ca8657ea"},
                     "reference": "RER B en panne",
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": "2014-04-31T16:55:18Z",
@@ -276,7 +276,7 @@ Retrieve one existing disruption:
                     "state": "published",
                     "contributor": "shortterm.tn",
                     "cause": {
-                        "id": 23,
+                        "id": "3d1e32b2-e8df-11e3-8c3e-0008ca8657ea",
                         "wording": "Condition météo"
                     },
                     "tags": ["rer", "meteo", "probleme"],
@@ -306,9 +306,9 @@ Retrieve one existing disruption:
                             "items_per_page": 20,
                             "total_results": 3,
                             "prev": null,
-                            "next": {"href": "https://chaos.apiary-mock.com/disruptions/1/impacts?start_index=1&item_per_page=20"},
-                            "first": {"href": "https://chaos.apiary-mock.com/disruptions/1/impacts?start_index=1&item_per_page=20"},
-                            "last": {"href": "https://chaos.apiary-mock.com/disruptions/1/impacts?start_index=1&item_per_page=20"}
+                            "next": {"href": "https://chaos.apiary-mock.com/disruptions/3d1f32b2-e8df-11e3-8c3e-0008ca8657ea/impacts?start_index=1&item_per_page=20"},
+                            "first": {"href": "https://chaos.apiary-mock.com/disruptions/3d1f32b2-e8df-11e3-8c3e-0008ca8657ea/impacts?start_index=1&item_per_page=20"},
+                            "last": {"href": "https://chaos.apiary-mock.com/disruptions/3d1f32b2-e8df-11e3-8c3e-0008ca8657ea/impacts?start_index=1&item_per_page=20"}
                         }
                     }
                 },
@@ -346,7 +346,7 @@ Retrieve one existing disruption:
                 "state": "published",
                 "contributor": "shortterm.tn",
                 "cause": {
-                    "id": 23
+                    "id": "3d1f32b2-e8df-11e3-8c3e-0008ca86c7ea"
                 }
                 "tags": ["rer", "meteo", "probleme"],
                 "localization": [
@@ -368,8 +368,8 @@ Retrieve one existing disruption:
 
             {
                 "disruption":{
-                    "id": 4,
-                    "self": {"href": "https://chaos.apiary-mock.com/disruptions/4"},
+                    "id": "3d1f32b2-e8df-11e3-8c3e-0008ca8657ea",
+                    "self": {"href": "https://chaos.apiary-mock.com/disruptions/3d1f32b2-e8df-11e3-8c3e-0008ca8657ea"},
                     "reference": "foo",
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": "2014-04-31T16:55:18Z",
@@ -377,7 +377,7 @@ Retrieve one existing disruption:
                     "state": "published",
                     "contributor": "shortterm.tn",
                     "cause": {
-                        "id": 23,
+                        "id": "3d1f32b2-e8df-11e3-8c3e-0008ca8657ea",
                         "wording": "Condition météo"
                     },
                     "tags": ["rer", "meteo", "probleme"],
@@ -444,7 +444,7 @@ Delete one disruption.
             }
 
 
-# List of Impacts [/disruptions/1/impacts]
+# List of Impacts [/disruptions/3d1f32b2-e8df-11e3-8c3e-0008ca8657ea/impacts]
 
 ##Retrieve impacts [GET]
 Return all impacts of a disruption.
@@ -465,12 +465,12 @@ Return all impacts of a disruption.
             {
                 "impacts": [
                     {
-                        "id": 1,
-                        "self": {"href": "https://chaos.apiary-mock.com/disruptions/3/impacts/1"},
+                        "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657ea",
+                        "self": {"href": "https://chaos.apiary-mock.com/disruptions/3d1f32b2-e8df-11e3-8c3e-0008ca8657ea/impacts/3d1f42b2-e8df-11e3-8c3e-0008ca8657ea"},
                         "created_at": "2014-04-31T16:52:18Z",
                         "updated_at": "2014-04-31T16:55:18Z",
                         "severity": {
-                            "id": 2,
+                            "id": "3d1f42b2-e8df-11e3-8c3e-0008ca86c7ea",
                             "wording": "Bonne nouvelle",
                             "is_blocking": false
                         },
@@ -482,21 +482,21 @@ Return all impacts of a disruption.
                         ],
                         "messages": [
                             {
-                                "id": 1,
+                                "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657ca",
                                 "created_at": "2014-04-31T16:52:18Z",
                                 "updated_at": "2014-04-31T16:55:18Z",
                                 "text": "ptit dej à la gare!!",
                                 "publication_date": ["2014-04-31T16:52:18Z"],
                                 "publication_period": null,
                                 "channel": {
-                                    "id": 3,
+                                    "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657da",
                                     "name": "message court",
                                     "content_type": "text/plain",
                                     "max_size": 140
                                 }
                             },
                             {
-                                "id": 2,
+                                "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8257ea",
                                 "created_at": "2014-04-31T16:52:18Z",
                                 "updated_at": "2014-04-31T16:55:18Z",
                                 "text": "#Youpi\n**aujourd'hui c'est ptit dej en gare",
@@ -506,7 +506,7 @@ Return all impacts of a disruption.
                                 },
                                 "publication_date" : null,
                                 "channel": {
-                                    "id": 2,
+                                    "id": "3d1f42b2-e8df-11e3-8c3e-0008cb8657ea",
                                     "name": "message long",
                                     "content_type": "text/markdown",
                                     "max_size": null
@@ -531,7 +531,7 @@ Return all impacts of a disruption.
                                 "color": "FFFFFF"
                             }
                         ],
-                        "disruption" : {"href": "https://chaos.apiary-mock.com/disruptions/3"}
+                        "disruption" : {"href": "https://chaos.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-823e-0008ca8657ea"}
                     }
                 ],
                 "meta": {
@@ -562,7 +562,7 @@ Create a new impact.
 
             {
                 "severity": {
-                    "id": 2
+                    "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657ea"
                 },
                 "application_periods": [
                     {
@@ -576,7 +576,7 @@ Create a new impact.
                         "publication_date": ["2014-04-31T16:52:18Z"],
                         "publication_period": null,
                         "channel": {
-                            "id": 3
+                            "id": "3d1f42b2-e8df-11e3-8c3e-0008ca86c7ea"
                         }
                     },
                     {
@@ -587,7 +587,7 @@ Create a new impact.
                         },
                         "publication_date" : null,
                         "channel": {
-                            "id": 2
+                            "id": "3d1f42b2-e8df-11e3-8c3e-0002ca8657ea"
                         }
                     }
                 ],
@@ -609,12 +609,12 @@ Create a new impact.
 
             {
                 "impact": {
-                    "id": 1,
-                    "self": {"href": "https://chaos.apiary-mock.com/disruptions/3/impacts/1"},
+                    "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8617ea",
+                    "self": {"href": "https://chaos.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-8c3e-0008ca8647ea/impacts/3d1f42b2-e8df-11e3-8c3e-0008ca8617ea"},
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": "2014-04-31T16:55:18Z",
                     "severity": {
-                        "id": 2,
+                        "id": "3d1f42b2-e8df-11e3-8c3e-0008ca861aea",
                         "wording": "Bonne nouvelle",
                         "is_blocking": false
                     },
@@ -626,21 +626,21 @@ Create a new impact.
                     ],
                     "messages": [
                         {
-                            "id": 1,
+                            "id": 3d1f42b2-e8df-11e3-8c3e-0008ca8631ea",
                             "created_at": "2014-04-31T16:52:18Z",
                             "updated_at": "2014-04-31T16:55:18Z",
                             "text": "ptit dej à la gare!!",
                             "publication_date": ["2014-04-31T16:52:18Z"],
                             "publication_period": null,
                             "channel": {
-                                "id": 3,
+                                "id": "3d1f42b2-e8df-11e3-8c3e-0008ca86a7ea",
                                 "name": "message court",
                                 "content_type": "text/plain",
                                 "max_size": 140
                             }
                         },
                         {
-                            "id": 2,
+                            "id": "3d1f42b2-e8df-11a3-8c3e-0008ca8617ea",
                             "created_at": "2014-04-31T16:52:18Z",
                             "updated_at": "2014-04-31T16:55:18Z",
                             "text": "#Youpi\n**aujourd'hui c'est ptit dej en gare",
@@ -650,7 +650,7 @@ Create a new impact.
                             },
                             "publication_date" : null,
                             "channel": {
-                                "id": 2,
+                                "id": "3d1f42b2-e8af-11e3-8c3e-0008ca8617ea",
                                 "name": "message long",
                                 "content_type": "text/markdown",
                                 "max_size": null
@@ -675,7 +675,7 @@ Create a new impact.
                             "color": "FFFFFF"
                         }
                     ],
-                    "disruption" : {"href": "https://chaos.apiary-mock.com/disruptions/3"}
+                    "disruption" : {"href": "https://chaos.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-1c3e-0008ca8617ea"}
                 }
             }
 
