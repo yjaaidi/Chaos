@@ -15,7 +15,8 @@ It's an api for blabla
                 "disruptions": {"href": "https://chaos.apiary-mock.com/disruptions"},
                 "disruption": {"href": "https://chaos.apiary-mock.com/disruptions/{id}", "templated": true},
                 "severities": {"href": "https://chaos.apiary-mock.com/severities"},
-                "causes": {"href": "https://chaos.apiary-mock.com/causes"}
+                "causes": {"href": "https://chaos.apiary-mock.com/causes"},
+                "channels": {"href": "https://chaos.apiary-mock.com/channels"}
             }
 
 
@@ -745,17 +746,23 @@ Create a new impact.
                     {
                         "id": "3d1f42b3-e8df-11e3-8c3e-0008ca8617ea",
                         "wording": "normal",
-                        "effect": "none"
+                        "effect": "none",
+                        "created_at": "2014-04-31T16:52:18Z",
+                        "updated_at": "2014-04-31T16:55:18Z"
                     },
                     {
                         "id": "3d1f42b4-e8df-11e3-8c3e-0008ca8617ea",
                         "wording": "majeur",
-                        "effect": "none"
+                        "effect": "none",
+                        "created_at": "2014-04-31T16:52:18Z",
+                        "updated_at": "2014-04-31T16:55:18Z"
                     },
                     {
                         "id": "3d1f42b5-e8df-11e3-8c3e-0008ca8617ea",
                         "wording": "bloquant",
-                        "effect": "bocking"
+                        "effect": "bocking",
+                        "created_at": "2014-04-31T16:52:18Z",
+                        "updated_at": "2014-04-31T16:55:18Z"
                     }
                 ]
             }
@@ -772,15 +779,58 @@ Create a new impact.
                 "causes": [
                     {
                         "id": "3d1f42b2-e8df-11e4-8c3e-0008ca8617ea",
-                        "wording": "météo"
+                        "wording": "météo",
+                        "created_at": "2014-04-31T16:52:18Z",
+                        "updated_at": "2014-04-31T16:55:18Z"
                     },
                     {
                         "id": "3d1f42b2-e8df-11e5-8c3e-0008ca8617ea",
-                        "wording": "gréve"
+                        "wording": "gréve",
+                        "created_at": "2014-04-31T16:52:18Z",
+                        "updated_at": "2014-04-31T16:55:18Z"
                     },
                     {
                         "id": "3d1f42b2-e8df-11e6-8c3e-0008ca8617ea",
-                        "wording": "accident voyageur"
+                        "wording": "accident voyageur",
+                        "created_at": "2014-04-31T16:52:18Z",
+                        "updated_at": "2014-04-31T16:55:18Z"
+                    }
+                ]
+            }
+
+#List of channels [/channels]
+
+##Retrieve the list of all channels [GET]
+
+- response 200 (application/json)
+
+    * Body
+
+            {
+                "channels": [
+                    {
+                        "id": "3d1f42b2-e8df-11e4-8c3e-0008ca8617ea",
+                        "name": "court",
+                        "max_size": 140,
+                        "content_type": "text/plain",
+                        "created_at": "2014-04-31T16:52:18Z",
+                        "updated_at": "2014-04-31T16:55:18Z"
+                    },
+                    {
+                        "id": "3d1a42b7-e8df-11e4-8c3e-0008ca8617ea",
+                        "name": "long",
+                        "max_size": 512,
+                        "content_type": "text/plain",
+                        "created_at": "2014-04-31T16:52:18Z",
+                        "updated_at": "2014-04-31T16:55:18Z"
+                    },
+                    {
+                        "id": "3d1f42b2-e8df-11e4-8c3e-0008ca8617ea",
+                        "name": "long riche",
+                        "max_size": null,
+                        "content_type": "text/markdown",
+                        "created_at": "2014-04-31T16:52:18Z",
+                        "updated_at": "2014-04-31T16:55:18Z"
                     }
                 ]
             }
