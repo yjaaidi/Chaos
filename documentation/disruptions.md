@@ -25,10 +25,12 @@ It's an api for blabla
 Return all visible disruptions.
 ##Parameters
 
-| Name           | description                                      | required | default |
-| -------------- | ------------------------------------------------ | -------- | ------- |
-| start_index    | index of the first element returned (start at 1) | false    | 1       |
-| items_per_page | number of items per page                         | false    | 20      |
+| Name                 | description                                                                    | required | default                 |
+| -------------------- | ------------------------------------------------------------------------------ | -------- | ----------------------- |
+| start_index          | index of the first element returned (start at 1)                               | false    | 1                       |
+| items_per_page       | number of items per page                                                       | false    | 20                      |
+| publication_status[] | filter by publication_status, possible value are: past, ongoing, coming        | false    | [past, ongoing, coming] |
+| current_time         | parameter for settings the use by this request, mostly for debugging purpose   | false    | NOW                     |
 
 @TODO: search and sort
 
@@ -47,6 +49,7 @@ Return all visible disruptions.
                         "updated_at": "2014-04-31T16:55:18Z",
                         "note": "blablbla",
                         "status": "published",
+                        "publication_status": "ongoing",
                         "contributor": "shortterm.tn",
                         "cause": {
                             "id": 23,
@@ -93,6 +96,7 @@ Return all visible disruptions.
                         "updated_at": null,
                         "note": null,
                         "status": "published",
+                        "publication_status": "coming",
                         "contributor": "shortterm.tn",
                         "cause": {
                             "id": 2,
@@ -120,6 +124,7 @@ Return all visible disruptions.
                         "update_at": "2014-05-31T06:55:18Z",
                         "note": "retour probable d'ici 5H",
                         "status": "published",
+                        "publication_status": "past",
                         "contributor": "shortterm.tn",
                         "cause": {
                             "id": 4,
@@ -255,6 +260,7 @@ Create one valid disruption with impacts
                     "updated_at": null,
                     "note": null,
                     "status": "published",
+                    "publication_status": "ongoing",
                     "contributor": "shortterm.tn",
                     "cause": {
                         "id": 23,
@@ -317,6 +323,7 @@ Retrieve one existing disruption:
                     "updated_at": "2014-04-31T16:55:18Z",
                     "note": "blablbla",
                     "status": "published",
+                    "publication_status": "ongoing",
                     "contributor": "shortterm.tn",
                     "cause": {
                         "id": 23,
@@ -418,6 +425,7 @@ Retrieve one existing disruption:
                     "updated_at": "2014-04-31T16:55:18Z",
                     "note": null,
                     "status": "published",
+                    "publication_status": "ongoing",
                     "contributor": "shortterm.tn",
                     "cause": {
                         "id": 23,
