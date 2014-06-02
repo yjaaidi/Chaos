@@ -709,3 +709,27 @@ Create a new impact.
                 ]
             }
 
+#List of causes [/causes]
+
+##Retrieve the list of all causes [GET]
+
+- response 200 (application/json)
+
+    * Body
+
+            {
+                "causes": [
+                    {
+                        "id": 1,
+                        "wording": "météo"
+                    },
+                    {
+                        "id": 2,
+                        "wording": "gréve"
+                    },
+                    {
+                        "id": 3,
+                        "wording": "accident voyageur"
+                    }
+                ]
+            }
