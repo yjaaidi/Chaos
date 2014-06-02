@@ -728,7 +728,8 @@ Create a new impact.
                         }
                     ],
                     "disruption" : {"href": "https://chaos.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-1c3e-0008ca8617ea"}
-                }
+                },
+                "meta": {}
             }
 
 
@@ -764,7 +765,8 @@ Create a new impact.
                         "created_at": "2014-04-31T16:52:18Z",
                         "updated_at": "2014-04-31T16:55:18Z"
                     }
-                ]
+                ],
+                "meta": {}
             }
 
 #List of causes [/causes]
@@ -795,7 +797,8 @@ Create a new impact.
                         "created_at": "2014-04-31T16:52:18Z",
                         "updated_at": "2014-04-31T16:55:18Z"
                     }
-                ]
+                ],
+                "meta": {}
             }
 
 #List of channels [/channels]
@@ -832,5 +835,6 @@ Create a new impact.
                         "created_at": "2014-04-31T16:52:18Z",
                         "updated_at": "2014-04-31T16:55:18Z"
                     }
-                ]
+                ],
+                "meta": {}
             }
