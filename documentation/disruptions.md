@@ -169,9 +169,7 @@ Return all visible disruptions.
 
 ###Parameters
 
-Create one valid disruption without impacts
-
-**POST** /disruptions
+Create one valid disruption with impacts
 
 - Request (application/json)
 
@@ -193,7 +191,51 @@ Create one valid disruption without impacts
                     },
                     {
                         "id": "stop_area:RTP:SA:3786123",
-                        "type": "stop_area" //needed?
+                        "type": "stop_area"
+                    }
+                ],
+                "impacts": [
+                    {
+                        "severity": {
+                            "id": 2
+                        },
+                        "application_periods": [
+                            {
+                                "begin": "2014-04-31T16:52:00Z",
+                                "end": "2014-05-22T02:15:00Z"
+                            }
+                        ],
+                        "messages": [
+                            {
+                                "text": "ptit dej à la gare!!",
+                                "publication_date": ["2014-04-31T16:52:18Z"],
+                                "publication_period": null,
+                                "channel": {
+                                    "id": 3
+                                }
+                            },
+                            {
+                                "text": "#Youpi\n**aujourd'hui c'est ptit dej en gare",
+                                "publication_period" : {
+                                    "begin":"2014-04-31T17:00:00Z",
+                                    "end":"2014-05-01T17:00:00Z"
+                                },
+                                "publication_date" : null,
+                                "channel": {
+                                    "id": 2
+                                }
+                            }
+                        ],
+                        "objects": [
+                            {
+                                "id": "stop_area:RTP:SA:3786125",
+                                "type": "stop_area"
+                            },
+                            {
+                                "id": "line:RTP:LI:378",
+                                "type": "line"
+                            }
+                        ]
                     }
                 ]
             }
@@ -243,16 +285,17 @@ Create one valid disruption without impacts
                         "pagination": {
                             "start_index": 0,
                             "items_per_page": 20,
-                            "total_results": 0,
+                            "total_results": 1,
                             "prev": null,
                             "next": null,
-                            "first": "null",
-                            "last": "null"
+                            "first": {"href": "https://chaos.apiary-mock.com/disruptions/1/impacts?start_index=1&item_per_page=20"},
+                            "last": null
                         }
                     }
                 },
                 "meta": {}
             }
+
 
 # Disruptions [/disruptions/{id}]
 ##Retrieve one disruption [GET]
