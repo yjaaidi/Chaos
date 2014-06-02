@@ -202,7 +202,7 @@ Create one valid disruption with impacts
                 "impacts": [
                     {
                         "severity": {
-                            "id": 2
+                            "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657ea"
                         },
                         "application_periods": [
                             {
@@ -216,7 +216,7 @@ Create one valid disruption with impacts
                                 "publication_date": ["2014-04-31T16:52:18Z"],
                                 "publication_period": null,
                                 "channel": {
-                                    "id": 3
+                                    "id": "3d1f42b6-e8df-11e3-8c3e-0008ca8657ea"
                                 }
                             },
                             {
@@ -227,7 +227,7 @@ Create one valid disruption with impacts
                                 },
                                 "publication_date" : null,
                                 "channel": {
-                                    "id": 2
+                                    "id": "3d1f42b6-e8df-11e3-8c3e-0008ca8657ea"
                                 }
                             }
                         ],
@@ -591,9 +591,9 @@ Return all impacts of a disruption.
                         "items_per_page": 3,
                         "total_results": 6,
                         "prev": null,
-                        "next": {"href": "https://chaos.apiary-mock.com/disruptions?start_index=4&items_per_page=3"},
-                        "first": {"href": "https://chaos.apiary-mock.com/disruptions?start_index=1&items_per_page=3"},
-                        "last": {"href": "https://chaos.apiary-mock.com/disruptions?start_index=4&items_per_page=3"}
+                        "next": {"href": "https://chaos.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-823e-0008ca8657ea/impacts?start_index=4&items_per_page=3"},
+                        "first": {"href": "https://chaos.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-823e-0008ca8657ea/impacts?start_index=1&items_per_page=3"},
+                        "last": {"href": "https://chaos.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-823e-0008ca8657ea/impacts?start_index=4&items_per_page=3"}
                     }
                 }
             }
@@ -743,17 +743,17 @@ Create a new impact.
             {
                 "severities": [
                     {
-                        "id": 1,
+                        "id": "3d1f42b3-e8df-11e3-8c3e-0008ca8617ea",
                         "wording": "normal",
                         "effect": "none"
                     },
                     {
-                        "id": 2,
+                        "id": "3d1f42b4-e8df-11e3-8c3e-0008ca8617ea",
                         "wording": "majeur",
                         "effect": "none"
                     },
                     {
-                        "id": 3,
+                        "id": "3d1f42b5-e8df-11e3-8c3e-0008ca8617ea",
                         "wording": "bloquant",
                         "effect": "bocking"
                     }
@@ -771,15 +771,15 @@ Create a new impact.
             {
                 "causes": [
                     {
-                        "id": 1,
+                        "id": "3d1f42b2-e8df-11e4-8c3e-0008ca8617ea",
                         "wording": "météo"
                     },
                     {
-                        "id": 2,
+                        "id": "3d1f42b2-e8df-11e5-8c3e-0008ca8617ea",
                         "wording": "gréve"
                     },
                     {
-                        "id": 3,
+                        "id": "3d1f42b2-e8df-11e6-8c3e-0008ca8617ea",
                         "wording": "accident voyageur"
                     }
                 ]
