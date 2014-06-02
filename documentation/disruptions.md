@@ -681,3 +681,31 @@ Create a new impact.
 
 
 
+#List of severities [/severities]
+
+##Retrieve the list of all severities [GET]
+
+- response 200 (application/json)
+
+    * Body
+
+            {
+                "severities": [
+                    {
+                        "id": 1,
+                        "wording": "normal",
+                        "effect": "none"
+                    },
+                    {
+                        "id": 2,
+                        "wording": "majeur",
+                        "effect": "none",
+                    },
+                    {
+                        "id": 3,
+                        "wording": "bloquant",
+                        "effect": "bocking"
+                    }
+                ]
+            }
+
