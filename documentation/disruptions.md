@@ -84,7 +84,7 @@ Return all visible disruptions.
                                 "prev": null,
                                 "next": {"href": "https://chaos.apiary-mock.com/disruptions/d30502d2-e8de-11e3-8c3e-0008ca8657ea/impacts?start_index=1&item_per_page=20"},
                                 "first": {"href": "https://chaos.apiary-mock.com/disruptions/d30502d2-e8de-11e3-8c3e-0008ca8657ea/impacts?start_index=1&item_per_page=20"},
-                                "last": {"href": "https://chaos.apiary-mock.com/disruptions/d30502d2-e8de-11e3-8c3e-0008ca8657ea/impacts?start_index=1&item_per_page=20}"
+                                "last": {"href": "https://chaos.apiary-mock.com/disruptions/d30502d2-e8de-11e3-8c3e-0008ca8657ea/impacts?start_index=1&item_per_page=20"}
                             }
                         }
                     },
@@ -750,7 +750,7 @@ Create a new impact.
                     {
                         "id": 2,
                         "wording": "majeur",
-                        "effect": "none",
+                        "effect": "none"
                     },
                     {
                         "id": 3,
