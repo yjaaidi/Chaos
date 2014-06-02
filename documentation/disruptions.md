@@ -46,7 +46,7 @@ Return all visible disruptions.
                         "created_at": "2014-04-31T16:52:18Z",
                         "updated_at": "2014-04-31T16:55:18Z",
                         "note": "blablbla",
-                        "state": "published",
+                        "status": "published",
                         "contributor": "shortterm.tn",
                         "cause": {
                             "id": 23,
@@ -92,7 +92,7 @@ Return all visible disruptions.
                         "created_at": "2014-05-31T16:52:18Z",
                         "updated_at": null,
                         "note": null,
-                        "state": "published",
+                        "status": "published",
                         "contributor": "shortterm.tn",
                         "cause": {
                             "id": 2,
@@ -119,7 +119,7 @@ Return all visible disruptions.
                         "created_at": "2014-05-17T16:52:18Z",
                         "update_at": "2014-05-31T06:55:18Z",
                         "note": "retour probable d'ici 5H",
-                        "state": "published",
+                        "status": "published",
                         "contributor": "shortterm.tn",
                         "cause": {
                             "id": 4,
@@ -178,7 +178,7 @@ Create one valid disruption with impacts
             {
                 "reference": "foo",
                 "note": null,
-                "state": "published",
+                "status": "published",
                 "contributor": "shortterm.tn",
                 "cause": {
                        "id": 23
@@ -254,7 +254,7 @@ Create one valid disruption with impacts
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": null,
                     "note": null,
-                    "state": "published",
+                    "status": "published",
                     "contributor": "shortterm.tn",
                     "cause": {
                         "id": 23,
@@ -316,7 +316,7 @@ Retrieve one existing disruption:
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": "2014-04-31T16:55:18Z",
                     "note": "blablbla",
-                    "state": "published",
+                    "status": "published",
                     "contributor": "shortterm.tn",
                     "cause": {
                         "id": 23,
@@ -386,7 +386,7 @@ Retrieve one existing disruption:
             {
                 "reference": "foo",
                 "note": null,
-                "state": "published",
+                "status": "published",
                 "contributor": "shortterm.tn",
                 "cause": {
                     "id": 23
@@ -417,7 +417,7 @@ Retrieve one existing disruption:
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": "2014-04-31T16:55:18Z",
                     "note": null,
-                    "state": "published",
+                    "status": "published",
                     "contributor": "shortterm.tn",
                     "cause": {
                         "id": 23,
