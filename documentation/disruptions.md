@@ -496,7 +496,7 @@ Delete one disruption.
             }
 
 
-# List of Impacts [/disruptions/3d1f32b2-e8df-11e3-8c3e-0008ca8657ea/impacts]
+# List of Impacts [/disruptions/{disruption_id}/impacts]
 
 ##Retrieve impacts [GET]
 Return all impacts of a disruption.
@@ -678,7 +678,7 @@ Create a new impact.
                     ],
                     "messages": [
                         {
-                            "id": 3d1f42b2-e8df-11e3-8c3e-0008ca8631ea",
+                            "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8631ea",
                             "created_at": "2014-04-31T16:52:18Z",
                             "updated_at": "2014-04-31T16:55:18Z",
                             "text": "ptit dej à la gare!!",
@@ -733,6 +733,96 @@ Create a new impact.
             }
 
 
+#Impact [/disruptions/{disruption_id}/impacts/{id}]
+##Retrieve a impact [GET]
+###Parameters
+
+- response 200 (application/json)
+
+    * Body
+
+            {
+                "impact": {
+                    "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8617ea",
+                    "self": {"href": "https://chaos.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-8c3e-0008ca8647ea/impacts/3d1f42b2-e8df-11e3-8c3e-0008ca8617ea"},
+                    "created_at": "2014-04-31T16:52:18Z",
+                    "updated_at": "2014-04-31T16:55:18Z",
+                    "severity": {
+                        "id": "3d1f42b2-e8df-11e3-8c3e-0008ca861aea",
+                        "wording": "Bonne nouvelle",
+                        "is_blocking": false
+                    },
+                    "application_periods": [
+                        {
+                            "begin": "2014-04-31T16:52:00Z",
+                            "end": "2014-05-22T02:15:00Z"
+                        }
+                    ],
+                    "messages": [
+                        {
+                            "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8631ea",
+                            "created_at": "2014-04-31T16:52:18Z",
+                            "updated_at": "2014-04-31T16:55:18Z",
+                            "text": "ptit dej à la gare!!",
+                            "publication_date": ["2014-04-31T16:52:18Z"],
+                            "publication_period": null,
+                            "channel": {
+                                "id": "3d1f42b2-e8df-11e3-8c3e-0008ca86a7ea",
+                                "name": "message court",
+                                "content_type": "text/plain",
+                                "max_size": 140
+                            }
+                        },
+                        {
+                            "id": "3d1f42b2-e8df-11a3-8c3e-0008ca8617ea",
+                            "created_at": "2014-04-31T16:52:18Z",
+                            "updated_at": "2014-04-31T16:55:18Z",
+                            "text": "#Youpi\n**aujourd'hui c'est ptit dej en gare",
+                            "publication_period" : {
+                                "begin":"2014-04-31T17:00:00Z",
+                                "end":"2014-05-01T17:00:00Z"
+                            },
+                            "publication_date" : null,
+                            "channel": {
+                                "id": "3d1f42b2-e8af-11e3-8c3e-0008ca8617ea",
+                                "name": "message long",
+                                "content_type": "text/markdown",
+                                "max_size": null
+                            }
+                        }
+                    ],
+                    "objects": [
+                        {
+                            "id": "stop_area:RTP:SA:3786125",
+                            "name": "HENRI THIRARD - LEON JOUHAUX",
+                            "type": "stop_area",
+                            "coord": {
+                                "lat": "48.778867",
+                                "lon": "2.340927"
+                            }
+                        },
+                        {
+                            "id": "line:RTP:LI:378",
+                            "name": "DE GAULLE - GOUNOD - TABANOU",
+                            "type": "line",
+                            "code": 2,
+                            "color": "FFFFFF"
+                        }
+                    ],
+                    "disruption" : {"href": "https://chaos.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-1c3e-0008ca8617ea"}
+                },
+                "meta": {}
+            }
+
+- response 404 (application/json)
+    * Body
+
+            {
+                "error": {
+                    "message": "No disruption or impact"
+                },
+                "meta": {}
+            }
 
 #List of severities [/severities]
 
