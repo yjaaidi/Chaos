@@ -524,6 +524,8 @@ Return all impacts of a disruption.
                         "severity": {
                             "id": "3d1f42b2-e8df-11e3-8c3e-0008ca86c7ea",
                             "wording": "Bonne nouvelle",
+                            "created_at": "2014-04-31T16:52:18Z",
+                            "updated_at": "2014-04-31T16:55:18Z",
                             "effect": "none"
                         },
                         "application_periods": [
@@ -672,6 +674,8 @@ Create a new impact.
                     "severity": {
                         "id": "3d1f42b2-e8df-11e3-8c3e-0008ca861aea",
                         "wording": "Bonne nouvelle",
+                        "created_at": "2014-04-31T16:52:18Z",
+                        "updated_at": "2014-04-31T16:55:18Z",
                         "effect": "none"
                     },
                     "application_periods": [
@@ -758,6 +762,8 @@ Create a new impact.
                     "severity": {
                         "id": "3d1f42b2-e8df-11e3-8c3e-0008ca861aea",
                         "wording": "Bonne nouvelle",
+                        "created_at": "2014-04-31T16:52:18Z",
+                        "updated_at": "2014-04-31T16:55:18Z",
                         "effect": "none"
                     },
                     "application_periods": [
