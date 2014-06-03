@@ -544,6 +544,8 @@ Return all impacts of a disruption.
                                     "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657da",
                                     "name": "message court",
                                     "content_type": "text/plain",
+                                    "created_at": "2014-04-31T16:52:18Z",
+                                    "updated_at": "2014-04-31T16:55:18Z",
                                     "max_size": 140
                                 }
                             },
@@ -561,6 +563,8 @@ Return all impacts of a disruption.
                                     "id": "3d1f42b2-e8df-11e3-8c3e-0008cb8657ea",
                                     "name": "message long",
                                     "content_type": "text/markdown",
+                                    "created_at": "2014-04-31T16:52:18Z",
+                                    "updated_at": "2014-04-31T16:55:18Z",
                                     "max_size": null
                                 }
                             }
@@ -688,6 +692,8 @@ Create a new impact.
                                 "id": "3d1f42b2-e8df-11e3-8c3e-0008ca86a7ea",
                                 "name": "message court",
                                 "content_type": "text/plain",
+                                "created_at": "2014-04-31T16:52:18Z",
+                                "updated_at": "2014-04-31T16:55:18Z",
                                 "max_size": 140
                             }
                         },
@@ -705,6 +711,8 @@ Create a new impact.
                                 "id": "3d1f42b2-e8af-11e3-8c3e-0008ca8617ea",
                                 "name": "message long",
                                 "content_type": "text/markdown",
+                                "created_at": "2014-04-31T16:52:18Z",
+                                "updated_at": "2014-04-31T16:55:18Z",
                                 "max_size": null
                             }
                         }
@@ -770,6 +778,8 @@ Create a new impact.
                                 "id": "3d1f42b2-e8df-11e3-8c3e-0008ca86a7ea",
                                 "name": "message court",
                                 "content_type": "text/plain",
+                                "created_at": "2014-04-31T16:52:18Z",
+                                "updated_at": "2014-04-31T16:55:18Z",
                                 "max_size": 140
                             }
                         },
@@ -787,6 +797,8 @@ Create a new impact.
                                 "id": "3d1f42b2-e8af-11e3-8c3e-0008ca8617ea",
                                 "name": "message long",
                                 "content_type": "text/markdown",
+                                "created_at": "2014-04-31T16:52:18Z",
+                                "updated_at": "2014-04-31T16:55:18Z",
                                 "max_size": null
                             }
                         }
