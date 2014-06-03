@@ -928,3 +928,32 @@ Create a new impact.
                 ],
                 "meta": {}
             }
+
+##Create a channels [POST]
+- request
+    + headers
+
+            Content-Type: application/json
+    * Body
+
+                {
+                    "name": "court",
+                    "max_size": 140,
+                    "content_type": "text/plain"
+                }
+
+- response 200 (application/json)
+
+    * Body
+
+            {
+                "channel": {
+                    "id": "3d1f42b2-e8df-11e4-8c3e-0008ca8617ea",
+                    "name": "court",
+                    "max_size": 140,
+                    "content_type": "text/plain",
+                    "created_at": "2014-04-31T16:52:18Z",
+                    "updated_at": "2014-04-31T16:55:18Z"
+                },
+                "meta": {}
+            }
