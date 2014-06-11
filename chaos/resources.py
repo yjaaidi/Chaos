@@ -27,11 +27,12 @@
 # https://groups.google.com/d/forum/navitia
 # www.navitia.io
 
-from flask import abort, current_app
+from flask import abort, current_app, request
 import flask_restful
 from flask_restful import fields, marshal_with, marshal, reqparse, types
 import sqlalchemy
 from chaos import models, db
+from jsonschema import validate
 
 import logging
 
@@ -53,11 +54,36 @@ disruption_fields = {'id': fields.Raw,
                      'updated_at': FieldDateTime,
                      }
 
+
 disruptions_fields = {'disruptions': fields.List(fields.Nested(disruption_fields))
                      }
+
+one_disruption_fields = {'disruption': fields.Nested(disruption_fields)
+                     }
+
+#see http://json-schema.org/
+disruptions_input_format = {'type': 'object',
+                            'properties': {'reference': {'type': 'string'},
+                                            'note': {'type': 'string'},
+                                        }
+        }
 
 class Disruptions(flask_restful.Resource):
 
     @marshal_with(disruptions_fields)
     def get(self):
         return {'disruptions': models.Disruption.query.all()}
+
+    @marshal_with(one_disruption_fields)
+    def post(self):
+        json = request.get_json()
+        logging.getLogger(__name__).debug(json)
+        validate(json, disruptions_input_format)
+
+        disruption = models.Disruption()
+        disruption.reference = json['reference']
+        disruption.note = json['note']
+        db.session.add(disruption)
+        db.session.commit()
+
+        return {'disruption': disruption}
