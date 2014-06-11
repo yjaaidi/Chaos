@@ -48,5 +48,5 @@ class Disruption(TimestampMixin, db.Model):
         return '<Disruption %r>' % self.id
 
     def __init__(self):
-        self.id = uuid.uuid1()
+        self.id = str(uuid.uuid1())
 
