@@ -30,10 +30,19 @@
 from flask import Flask
 import flask_restful
 from flask_sqlalchemy import SQLAlchemy
+import logging.config
 
 app = Flask(__name__)
 app.config.from_object('chaos.default_settings')
 app.config.from_envvar('CHAOS_CONFIG_FILE')
+
+if 'LOGGER' in app.config:
+    logging.config.dictConfig(app.config['LOGGER'])
+else:  # Default is std out
+    handler = logging.StreamHandler(stream=sys.stdout)
+    app.logger.addHandler(handler)
+    app.logger.setLevel('INFO')
+
 
 db = SQLAlchemy(app)
 
