@@ -48,7 +48,7 @@ class FieldDateTime(fields.Raw):
 
 
 disruption_fields = {'id': fields.Raw,
-                     'self': {'href': fields.Url('disruption')},
+                     'self': {'href': fields.Url('disruption', absolute=True)},
                      'reference': fields.Raw,
                      'note': fields.Raw,
                      'status': fields.Raw,
