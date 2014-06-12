@@ -31,7 +31,8 @@ from chaos import resources
 
 from chaos import app, api
 
-api.add_resource(resources.Disruptions, '/disruptions')
+api.add_resource(resources.Disruptions, '/disruptions',
+                 '/disruptions/<string:id>', endpoint='disruption')
 
 @app.errorhandler(Exception)
 def error_handler(exception):

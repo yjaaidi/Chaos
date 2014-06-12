@@ -36,6 +36,7 @@ app = Flask(__name__)
 app.config.from_object('chaos.default_settings')
 app.config.from_envvar('CHAOS_CONFIG_FILE')
 
+
 if 'LOGGER' in app.config:
     logging.config.dictConfig(app.config['LOGGER'])
 else:  # Default is std out

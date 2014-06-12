@@ -50,3 +50,11 @@ class Disruption(TimestampMixin, db.Model):
     def __init__(self):
         self.id = str(uuid.uuid1())
 
+    def fill_from_json(self, json):
+        fields = ['reference', 'note']
+        for field in fields:
+            if field in json:
+                setattr(self, field, json[field])
+            else:
+                setattr(self, field, None)
+
