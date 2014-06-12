@@ -51,6 +51,7 @@ disruption_fields = {'id': fields.Raw,
                      'self': {'href': fields.Url('disruption')},
                      'reference': fields.Raw,
                      'note': fields.Raw,
+                     'status': fields.Raw,
                      'created_at': FieldDateTime,
                      'updated_at': FieldDateTime,
                      }
@@ -74,12 +75,11 @@ disruptions_input_format = {'type': 'object',
 class Disruptions(flask_restful.Resource):
 
     def get(self, id=None):
-        logging.debug(current_app.debug)
         if id:
-            return marshal({'disruption': models.Disruption.query.get_or_404(id)},
+            return marshal({'disruption': models.Disruption.get(id)},
                            one_disruption_fields)
         else:
-            return marshal({'disruptions': models.Disruption.query.all()},
+            return marshal({'disruptions': models.Disruption.all()},
                            disruptions_fields)
 
 
@@ -104,7 +104,7 @@ class Disruptions(flask_restful.Resource):
 
 
     def put(self, id):
-        disruption = models.Disruption.query.get_or_404(id)
+        disruption = models.Disruption.get(id)
         json = request.get_json()
         logging.getLogger(__name__).debug(json)
 
@@ -118,9 +118,11 @@ class Disruptions(flask_restful.Resource):
                     400
 
         disruption.fill_from_json(json)
-        logging.getLogger(__name__).debug(disruption.reference)
-        logging.getLogger(__name__).debug(disruption.id)
         db.session.commit()
-        logging.getLogger(__name__).debug(disruption.reference)
-        logging.getLogger(__name__).debug(disruption.id)
         return marshal({'disruption': disruption}, one_disruption_fields), 200
+
+    def delete(self, id):
+        disruption = models.Disruption.get(id)
+        disruption.archive()
+        db.session.commit()
+        return None, 204

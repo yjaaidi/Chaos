@@ -38,11 +38,13 @@ class TimestampMixin(object):
     created_at = db.Column(db.DateTime(), default=datetime.utcnow, nullable=False)
     updated_at = db.Column(db.DateTime(), default=None, onupdate=datetime.utcnow)
 
+DisruptionStatus = db.Enum('published', 'archived', name='disruption_status')
 
 class Disruption(TimestampMixin, db.Model):
     id = db.Column(UUID, primary_key=True)
     reference = db.Column(db.Text, unique=False, nullable=True)
     note = db.Column(db.Text, unique=False, nullable=True)
+    status = db.Column(DisruptionStatus, nullable=False, default='published', index=True)
 
     def __repr__(self):
         return '<Disruption %r>' % self.id
@@ -57,4 +59,19 @@ class Disruption(TimestampMixin, db.Model):
                 setattr(self, field, json[field])
             else:
                 setattr(self, field, None)
+
+    def archive(self):
+        """
+        archive the disruption, it will not be visible on any media
+        """
+        self.status = 'archived'
+
+    @classmethod
+    def get(cls, id):
+        return cls.query.filter_by(id=id, status='published').first_or_404()
+
+    @classmethod
+    def all(cls):
+        return cls.query.filter_by(status='published').all()
+
 
