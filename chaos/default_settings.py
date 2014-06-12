@@ -3,6 +3,8 @@
 #http://docs.sqlalchemy.org/en/rel_0_9/dialects/postgresql.html#psycopg2
 SQLALCHEMY_DATABASE_URI = 'postgresql://navitia:navitia@localhost/chaos'
 
+DEBUG = True
+
 #Log Level available
 # - DEBUG
 # - INFO
@@ -36,17 +38,17 @@ LOGGER = {
         'sqlalchemy.engine': {
             'handlers': ['default'],
             'level': 'WARN',
-            'propagate': True
+            'propagate': False
         },
         'sqlalchemy.pool': {
             'handlers': ['default'],
             'level': 'WARN',
-            'propagate': True
+            'propagate': False
         },
         'sqlalchemy.dialects.postgresql': {
             'handlers': ['default'],
             'level': 'WARN',
-            'propagate': True
+            'propagate': False
         },
     }
 }
