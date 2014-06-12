@@ -28,8 +28,11 @@
 # www.navitia.io
 
 from chaos import resources
+import flask_restful
 
-from chaos import app, api
+from chaos import app
+
+api = flask_restful.Api(app, catch_all_404s=True)
 
 api.add_resource(resources.Disruptions, '/disruptions',
                  '/disruptions/<string:id>', endpoint='disruption')

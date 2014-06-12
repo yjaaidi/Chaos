@@ -28,7 +28,6 @@
 # www.navitia.io
 
 from flask import Flask
-import flask_restful
 from flask_sqlalchemy import SQLAlchemy
 import logging.config
 
@@ -47,6 +46,5 @@ else:  # Default is std out
 
 db = SQLAlchemy(app)
 
-api = flask_restful.Api(app, catch_all_404s=True)
 
 import chaos.api
