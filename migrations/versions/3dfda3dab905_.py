@@ -1,4 +1,4 @@
-"""empty message
+"""create table disruption
 
 Revision ID: 3dfda3dab905
 Revises: None

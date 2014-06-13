@@ -27,11 +27,12 @@
 # https://groups.google.com/d/forum/navitia
 # www.navitia.io
 
-from flask import abort, current_app
+from flask import abort, current_app, request
 import flask_restful
 from flask_restful import fields, marshal_with, marshal, reqparse, types
 import sqlalchemy
 from chaos import models, db
+from jsonschema import validate, ValidationError
 
 import logging
 
@@ -47,17 +48,81 @@ class FieldDateTime(fields.Raw):
 
 
 disruption_fields = {'id': fields.Raw,
+                     'self': {'href': fields.Url('disruption', absolute=True)},
                      'reference': fields.Raw,
                      'note': fields.Raw,
+                     'status': fields.Raw,
                      'created_at': FieldDateTime,
                      'updated_at': FieldDateTime,
                      }
 
+
 disruptions_fields = {'disruptions': fields.List(fields.Nested(disruption_fields))
                      }
 
+one_disruption_fields = {'disruption': fields.Nested(disruption_fields)
+                     }
+
+error_fields = {'error': fields.Nested({'message': fields.String})}
+
+#see http://json-schema.org/
+disruptions_input_format = {'type': 'object',
+                            'properties': {'reference': {'type': 'string'},
+                                            'note': {'type': 'string'},
+                                        }
+        }
+
 class Disruptions(flask_restful.Resource):
 
-    @marshal_with(disruptions_fields)
-    def get(self):
-        return {'disruptions': models.Disruption.query.all()}
+    def get(self, id=None):
+        if id:
+            return marshal({'disruption': models.Disruption.get(id)},
+                           one_disruption_fields)
+        else:
+            return marshal({'disruptions': models.Disruption.all()},
+                           disruptions_fields)
+
+
+
+    def post(self):
+        json = request.get_json()
+        logging.getLogger(__name__).debug(json)
+        try:
+            validate(json, disruptions_input_format)
+        except ValidationError, e:
+            logging.debug(str(e))
+            #TODO: generate good error messages
+            return marshal({'error': {'message': str(e).replace("\n", " ")}},
+                           error_fields), \
+                    400
+
+        disruption = models.Disruption()
+        disruption.fill_from_json(json)
+        db.session.add(disruption)
+        db.session.commit()
+        return marshal({'disruption': disruption}, one_disruption_fields), 201
+
+
+    def put(self, id):
+        disruption = models.Disruption.get(id)
+        json = request.get_json()
+        logging.getLogger(__name__).debug(json)
+
+        try:
+            validate(json, disruptions_input_format)
+        except ValidationError, e:
+            logging.getLogger(__name__).debug(str(e))
+            #TODO: generate good error messages
+            return marshal({'error': {'message': str(e).replace("\n", " ")}},
+                           error_fields), \
+                    400
+
+        disruption.fill_from_json(json)
+        db.session.commit()
+        return marshal({'disruption': disruption}, one_disruption_fields), 200
+
+    def delete(self, id):
+        disruption = models.Disruption.get(id)
+        disruption.archive()
+        db.session.commit()
+        return None, 204
