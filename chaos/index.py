@@ -1,4 +1,6 @@
-# Copyright (c) 2001-2014, Canal TP and/or its affiliates. All rights reserved.
+# coding=utf-8
+
+#  Copyright (c) 2001-2014, Canal TP and/or its affiliates. All rights reserved.
 #
 # This file is part of Navitia,
 #     the software to build cool stuff with public transport.
@@ -27,25 +29,15 @@
 # https://groups.google.com/d/forum/navitia
 # www.navitia.io
 
-from chaos import resources
-import flask_restful
+from flask.ext.restful import Resource
 
-from chaos import app
-from chaos import index
 
-api = flask_restful.Api(app, catch_all_404s=True)
+class Index(Resource):
 
-api.add_resource(index.Index,
-                 '/',
-                 '/',
-                 endpoint='index')
-                     
-api.add_resource(resources.Disruptions, '/disruptions',
-                 '/disruptions/<string:id>', endpoint='disruption')
+    def get(self):
+        response = {
+            "disruptions": {"href": "https://chaos.apiary-mock.com/disruptions"},
+            "disruption": {"href": "https://chaos.apiary-mock.com/disruptions/{id}", "templated": True}
+        }
+        return response, 200
 
-@app.errorhandler(Exception)
-def error_handler(exception):
-    """
-    log all exceptions not catch before
-    """
-    app.logger.exception('')
