@@ -68,10 +68,8 @@ error_fields = {'error': fields.Nested({'message': fields.String})}
 
 #see http://json-schema.org/
 disruptions_input_format = {'type': 'object',
-                            'properties': {'reference': {'type': 'string'},
-                                           'note': {'type': 'string'},
-                                           'status': {'type': 'string', 'default': 'published'},
-                                           'contributor': {'type': 'string'}
+                            'properties': {'reference': {'type': 'string', 'maxLength': 250},
+                                           'note': {'type': 'string'}
                             },
                             'required': ['reference']
         }
