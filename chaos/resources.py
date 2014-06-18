@@ -27,7 +27,7 @@
 # https://groups.google.com/d/forum/navitia
 # www.navitia.io
 
-from flask import abort, current_app, request
+from flask import abort, current_app, request, url_for
 import flask_restful
 from flask_restful import fields, marshal_with, marshal, reqparse, types
 import sqlalchemy
@@ -71,6 +71,16 @@ disruptions_input_format = {'type': 'object',
                                             'note': {'type': 'string'},
                                         }
         }
+
+class Index(flask_restful.Resource):
+
+    def get(self):
+        url = url_for('disruption', _external=True)
+        response = {
+            "disruptions": {"href": url},
+            "disruption": {"href": url + '/{id}', "templated": True}
+        }
+        return response, 200
 
 class Disruptions(flask_restful.Resource):
 
