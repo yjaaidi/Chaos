@@ -65,11 +65,15 @@ one_disruption_fields = {'disruption': fields.Nested(disruption_fields)
 
 error_fields = {'error': fields.Nested({'message': fields.String})}
 
+
 #see http://json-schema.org/
 disruptions_input_format = {'type': 'object',
                             'properties': {'reference': {'type': 'string'},
-                                            'note': {'type': 'string'},
-                                        }
+                                           'note': {'type': 'string'},
+                                           'status': {'type': 'string', 'default': 'published'},
+                                           'contributor': {'type': 'string'}
+                            },
+                            'required': ['reference']
         }
 
 class Index(flask_restful.Resource):
