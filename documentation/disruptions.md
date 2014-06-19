@@ -184,7 +184,6 @@ Create one valid disruption with impacts
             {
                 "reference": "foo",
                 "note": null,
-                "status": "published",
                 "contributor": "shortterm.tn",
                 "cause": {
                        "id": "3d1f34b2-e8df-1ae3-8c3e-0008ca8657ea"
@@ -394,7 +393,6 @@ Retrieve one existing disruption:
             {
                 "reference": "foo",
                 "note": null,
-                "status": "published",
                 "contributor": "shortterm.tn",
                 "cause": {
                     "id": "3d1f32b2-e8df-11e3-8c3e-0008ca86c7ea"
@@ -479,7 +477,7 @@ Retrieve one existing disruption:
             }
 
 ##Delete a disruption [DELETE]
-Delete one disruption.
+Archive one disruption.
 ###Parameters
 
 
