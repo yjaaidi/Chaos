@@ -77,6 +77,10 @@ Return all visible disruptions.
                                 }
                             }
                         ],
+                        "publication_period" : {
+                            "begin":"2014-04-31T17:00:00Z",
+                            "end":"2014-05-01T17:00:00Z"
+                        },
                         "impacts": {
                             "pagination": {
                                 "start_index": 0,
@@ -105,6 +109,10 @@ Return all visible disruptions.
                         },
                         "tags": ["rer", "probleme"],
                         "localization": [],
+                        "publication_period" : {
+                            "begin": "2014-04-31T17:00:00Z",
+                            "end": null
+                        },
                         "impacts": {
                             "pagination": {
                                 "start_index": 0,
@@ -143,6 +151,10 @@ Return all visible disruptions.
                                 }
                             }
                         ],
+                        "publication_period" : {
+                            "begin": "2014-04-31T17:00:00Z",
+                            "end": null
+                        },
                         "impacts": {
                             "pagination": {
                                 "start_index": 0,
@@ -199,6 +211,10 @@ Create one valid disruption with impacts
                         "type": "stop_area"
                     }
                 ],
+                "publication_period" : {
+                    "begin": "2014-04-31T17:00:00Z",
+                    "end": null
+                },
                 "impacts": [
                     {
                         "severity": {
@@ -287,6 +303,10 @@ Create one valid disruption with impacts
                             }
                         }
                     ],
+                    "publication_period" : {
+                        "begin": "2014-04-31T17:00:00Z",
+                        "end": null
+                    },
                     "impacts": {
                         "pagination": {
                             "start_index": 0,
@@ -350,6 +370,10 @@ Retrieve one existing disruption:
                             }
                         }
                     ],
+                    "publication_period" : {
+                        "begin": "2014-04-31T17:00:00Z",
+                        "end": null
+                    },
                     "impacts": {
                         "pagination": {
                             "start_index": 1,
@@ -407,7 +431,11 @@ Retrieve one existing disruption:
                         "id": "stop_area:RTP:SA:3786123",
                         "type": "stop_area"
                     }
-                ]
+                ],
+                "publication_period" : {
+                    "begin": "2014-04-31T17:00:00Z",
+                    "end": null
+                }
             }
 
 
@@ -451,6 +479,10 @@ Retrieve one existing disruption:
                             }
                         }
                     ],
+                    "publication_period" : {
+                        "begin": "2014-04-31T17:00:00Z",
+                        "end": null
+                    },
                     "impacts": {
                         "pagination": {
                             "start_index": 0,
