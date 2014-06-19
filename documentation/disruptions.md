@@ -77,6 +77,10 @@ Return all visible disruptions.
                                 }
                             }
                         ],
+                        "publication_period" : {
+                            "begin":"2014-04-31T17:00:00Z",
+                            "end":"2014-05-01T17:00:00Z"
+                        },
                         "impacts": {
                             "pagination": {
                                 "start_index": 0,
@@ -105,6 +109,10 @@ Return all visible disruptions.
                         },
                         "tags": ["rer", "probleme"],
                         "localization": [],
+                        "publication_period" : {
+                            "begin": "2014-04-31T17:00:00Z",
+                            "end": null
+                        },
                         "impacts": {
                             "pagination": {
                                 "start_index": 0,
@@ -143,6 +151,10 @@ Return all visible disruptions.
                                 }
                             }
                         ],
+                        "publication_period" : {
+                            "begin": "2014-04-31T17:00:00Z",
+                            "end": null
+                        },
                         "impacts": {
                             "pagination": {
                                 "start_index": 0,
@@ -184,7 +196,6 @@ Create one valid disruption with impacts
             {
                 "reference": "foo",
                 "note": null,
-                "status": "published",
                 "contributor": "shortterm.tn",
                 "cause": {
                        "id": "3d1f34b2-e8df-1ae3-8c3e-0008ca8657ea"
@@ -200,6 +211,10 @@ Create one valid disruption with impacts
                         "type": "stop_area"
                     }
                 ],
+                "publication_period" : {
+                    "begin": "2014-04-31T17:00:00Z",
+                    "end": null
+                },
                 "impacts": [
                     {
                         "severity": {
@@ -288,6 +303,10 @@ Create one valid disruption with impacts
                             }
                         }
                     ],
+                    "publication_period" : {
+                        "begin": "2014-04-31T17:00:00Z",
+                        "end": null
+                    },
                     "impacts": {
                         "pagination": {
                             "start_index": 0,
@@ -351,6 +370,10 @@ Retrieve one existing disruption:
                             }
                         }
                     ],
+                    "publication_period" : {
+                        "begin": "2014-04-31T17:00:00Z",
+                        "end": null
+                    },
                     "impacts": {
                         "pagination": {
                             "start_index": 1,
@@ -394,7 +417,6 @@ Retrieve one existing disruption:
             {
                 "reference": "foo",
                 "note": null,
-                "status": "published",
                 "contributor": "shortterm.tn",
                 "cause": {
                     "id": "3d1f32b2-e8df-11e3-8c3e-0008ca86c7ea"
@@ -409,7 +431,11 @@ Retrieve one existing disruption:
                         "id": "stop_area:RTP:SA:3786123",
                         "type": "stop_area"
                     }
-                ]
+                ],
+                "publication_period" : {
+                    "begin": "2014-04-31T17:00:00Z",
+                    "end": null
+                }
             }
 
 
@@ -453,6 +479,10 @@ Retrieve one existing disruption:
                             }
                         }
                     ],
+                    "publication_period" : {
+                        "begin": "2014-04-31T17:00:00Z",
+                        "end": null
+                    },
                     "impacts": {
                         "pagination": {
                             "start_index": 0,
@@ -479,7 +509,7 @@ Retrieve one existing disruption:
             }
 
 ##Delete a disruption [DELETE]
-Delete one disruption.
+Archive one disruption.
 ###Parameters
 
 
