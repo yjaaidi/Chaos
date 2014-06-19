@@ -85,51 +85,6 @@ class Index(flask_restful.Resource):
         }
         return response, 200
 
-    def paginate(self, start_index, items_per_page, total, response):
-
-        page_idx = start_index - 1
-        page_count= int(ceil(total / float(items_per_page)))
-
-        if page_idx < 1:
-            prev = None
-        else:
-            prev = url_for('disruption',
-                           start_index=page_idx,
-                           items_per_page=items_per_page,
-                           _external=True)
-
-
-        if page_count < start_index + 1:
-            next = None
-        else:
-            next = url_for('disruption',
-                           start_index=start_index + 1,
-                           items_per_page=items_per_page,
-                           _external=True)
-
-        last = url_for('disruption',
-                           start_index=page_idx,
-                           items_per_page=items_per_page,
-                           _external=True)
-
-        first = url_for('disruption',
-                           start_index= 1,
-                           items_per_page=items_per_page,
-                           _external=True)
-
-        response["meta"] = {
-            "pagination":{
-            "start_index": start_index,
-            "items_per_page": items_per_page,
-            "total_results": total,
-            "prev": {"href": prev},
-            "next": {"href": next},
-            "first": {"href": first},
-            "last": {"href": last}
-            }
-        }
-        return response
-
 class Disruptions(flask_restful.Resource):
     def __init__(self):
         self.parsers = {}
