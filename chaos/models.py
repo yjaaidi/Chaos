@@ -76,5 +76,4 @@ class Disruption(TimestampMixin, db.Model):
 
     @classmethod
     def paginate(cls, page_index, items_per_page):
-        result = cls.query.filter_by(status='published').paginate(page_index, items_per_page)
-        return result.items, result.total
+        return cls.query.filter_by(status='published').paginate(page_index, items_per_page)

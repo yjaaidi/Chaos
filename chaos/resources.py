@@ -35,7 +35,6 @@ from math import ceil
 from chaos import models, db, argument
 from jsonschema import validate, ValidationError
 from flask.ext.restful import abort
-
 import logging
 
 __all__ = ['Disruptions']
@@ -146,42 +145,37 @@ class Disruptions(flask_restful.Resource):
         else:
             return default
 
-    def paginate(self, start_index, items_per_page, total, response):
+    def paginate(self, result, response):
 
-        page_idx = start_index - 1
-        page_count = int(ceil(total / float(items_per_page)))
-
-        if page_idx < 1:
-            prev = None
-        else:
+        prev = None
+        next = None
+        if result.has_prev:
             prev = url_for('disruption',
-                           start_index=page_idx,
-                           items_per_page=items_per_page,
+                           start_index=result.prev_num,
+                           items_per_page=result.per_page,
                            _external=True)
 
-        if page_count < start_index + 1:
-            next = None
-        else:
+        if result.has_next:
             next = url_for('disruption',
-                           start_index=start_index + 1,
-                           items_per_page=items_per_page,
+                           start_index=result.next_num,
+                           items_per_page=result.per_page,
                            _external=True)
 
         last = url_for('disruption',
-                           start_index=page_count,
-                           items_per_page=items_per_page,
-                           _external=True)
+                       start_index=result.pages,
+                       items_per_page=result.per_page,
+                       _external=True)
 
         first = url_for('disruption',
-                           start_index= 1,
-                           items_per_page=items_per_page,
-                           _external=True)
+                        start_index=1,
+                        items_per_page=result.per_page,
+                        _external=True)
 
         response["meta"] = {
             "pagination":{
-            "start_index": start_index,
-            "items_per_page": items_per_page,
-            "total_results": total,
+            "start_index": result.page,
+            "items_per_page": result.per_page,
+            "total_results": result.total,
             "prev": {"href": prev},
             "next": {"href": next},
             "first": {"href": first},
@@ -202,13 +196,11 @@ class Disruptions(flask_restful.Resource):
             items_per_page = self.get_value(args, 'items_per_page', 20)
             if items_per_page == 0:
                 abort(400, message="items_per_page argument value is not valid")
-            items, total = models.Disruption.paginate(page_index, items_per_page)
-            response = marshal({'disruptions': items},
+            result = models.Disruption.paginate(page_index, items_per_page)
+            response = marshal({'disruptions': result.items},
                             disruptions_fields)
 
-            return self.paginate(page_index, items_per_page, total, response)
-
-
+            return self.paginate(result, response)
 
     def post(self):
         json = request.get_json()
