@@ -22,3 +22,4 @@ psycopg2==2.5.2
 pytz==2013.9
 wsgiref==0.1.2
 jsonschema==2.3.0
+lettuce==0.2.19
