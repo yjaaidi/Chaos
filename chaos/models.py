@@ -71,9 +71,5 @@ class Disruption(TimestampMixin, db.Model):
         return cls.query.filter_by(id=id, status='published').first_or_404()
 
     @classmethod
-    def all(cls):
-        return cls.query.filter_by(status='published').all()
-
-    @classmethod
     def paginate(cls, page_index, items_per_page):
         return cls.query.filter_by(status='published').paginate(page_index, items_per_page)
