@@ -90,10 +90,8 @@ class Disruptions(flask_restful.Resource):
         self.parsers = {}
         self.parsers["get"] = reqparse.RequestParser()
         parser_get = self.parsers["get"]
-        parser_get.add_argument("start_index", type=int, default=1)
-        parser_get.add_argument("items_per_page", type=int, default=20)
-
-
+        parser_get.add_argument("start_page", type=int, default=1)
+        parser_get.add_argument("count", type=int, default=20)
 
     def get(self, id=None):
         if id:
@@ -101,10 +99,10 @@ class Disruptions(flask_restful.Resource):
                            one_disruption_fields)
         else:
             args = self.parsers['get'].parse_args()
-            start_index = args['start_index']
+            start_index = args['start_page']
             if start_index == 0:
                 abort(400, message="page_index argument value is not valid")
-            items_per_page = args['items_per_page']
+            items_per_page = args['count']
             if items_per_page == 0:
                 abort(400, message="items_per_page argument value is not valid")
             result = models.Disruption.paginate(start_index, items_per_page)

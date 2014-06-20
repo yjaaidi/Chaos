@@ -32,8 +32,8 @@ from flask import url_for
 
 def format_url(endpoint, start_index, per_page):
     return url_for(endpoint,
-                   start_index=start_index,
-                   items_per_page=per_page,
+                   start_page=start_index,
+                   count=per_page,
                    _external=True)
 
 def get_meta(result):
