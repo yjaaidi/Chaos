@@ -52,9 +52,10 @@ def get_meta(result):
 
     return {
         "pagination": {
-        "start_index": result.page,
+        "start_page": result.page,
+        "items_on_page": len(result.items),
         "items_per_page": result.per_page,
-        "total_results": result.total,
+        "total_result": result.total,
         "prev": {"href": prev},
         "next": {"href": next},
         "first": {"href": first},
