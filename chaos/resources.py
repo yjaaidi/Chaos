@@ -27,73 +27,17 @@
 # https://groups.google.com/d/forum/navitia
 # www.navitia.io
 
-from flask import current_app, request, url_for
+from flask import request, url_for
 import flask_restful
-from flask_restful import fields, marshal_with, marshal, reqparse, types
-import sqlalchemy
-from chaos import models, db, utils
+from flask_restful import marshal, reqparse
+from chaos import models, db
 from jsonschema import validate, ValidationError
 from flask.ext.restful import abort
+from fields import one_disruption_fields, disruptions_fields,\
+    disruptions_input_format, error_fields
 import logging
 
 __all__ = ['Disruptions']
-
-
-class FieldDateTime(fields.Raw):
-    def format(self, value):
-        if value:
-            return value.strftime('%Y-%m-%dT%H:%M:%SZ')
-        else:
-            return 'null'
-
-
-disruption_fields = {'id': fields.Raw,
-                     'self': {'href': fields.Url('disruption', absolute=True)},
-                     'reference': fields.Raw,
-                     'note': fields.Raw,
-                     'status': fields.Raw,
-                     'created_at': FieldDateTime,
-                     'updated_at': FieldDateTime,
-                     }
-
-
-href_field = {
-    "href": fields.String
-}
-
-paginate_fields = {
-        "start_page": fields.String,
-        "items_on_page": fields.String,
-        "items_per_page": fields.String,
-        "total_result": fields.String,
-        "prev": fields.Nested(href_field),
-        "next": fields.Nested(href_field),
-        "first": fields.Nested(href_field),
-        "last": fields.Nested(href_field)
-
-}
-
-meta_fields = {
-    "pagination": fields.Nested(paginate_fields)
-}
-
-disruptions_fields = {"meta": fields.Nested(meta_fields),
-                      "disruptions": fields.Nested(disruption_fields)
-                     }
-
-one_disruption_fields = {'disruption': fields.Nested(disruption_fields)
-                     }
-
-error_fields = {'error': fields.Nested({'message': fields.String})}
-
-
-#see http://json-schema.org/
-disruptions_input_format = {'type': 'object',
-                            'properties': {'reference': {'type': 'string', 'maxLength': 250},
-                                           'note': {'type': 'string'}
-                            },
-                            'required': ['reference']
-        }
 
 
 class Index(flask_restful.Resource):

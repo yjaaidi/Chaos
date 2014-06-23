@@ -1,0 +1,82 @@
+# Copyright (c) 2001-2014, Canal TP and/or its affiliates. All rights reserved.
+#
+# This file is part of Navitia,
+#     the software to build cool stuff with public transport.
+#
+# Hope you'll enjoy and contribute to this project,
+#     powered by Canal TP (www.canaltp.fr).
+# Help us simplify mobility and open public transport:
+#     a non ending quest to the responsive locomotion way of traveling!
+#
+# LICENCE: This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program. If not, see <http://www.gnu.org/licenses/>.
+#
+# Stay tuned using
+# twitter @navitia
+# IRC #navitia on freenode
+# https://groups.google.com/d/forum/navitia
+# www.navitia.io
+
+from flask_restful import fields
+
+class FieldDateTime(fields.Raw):
+    def format(self, value):
+        if value:
+            return value.strftime('%Y-%m-%dT%H:%M:%SZ')
+        else:
+            return 'null'
+
+disruption_fields = {'id': fields.Raw,
+                     'self': {'href': fields.Url('disruption', absolute=True)},
+                     'reference': fields.Raw,
+                     'note': fields.Raw,
+                     'status': fields.Raw,
+                     'created_at': FieldDateTime,
+                     'updated_at': FieldDateTime,
+                     }
+
+href_field = {
+    "href": fields.String
+}
+
+paginate_fields = {
+        "start_page": fields.String,
+        "items_on_page": fields.String,
+        "items_per_page": fields.String,
+        "total_result": fields.String,
+        "prev": fields.Nested(href_field),
+        "next": fields.Nested(href_field),
+        "first": fields.Nested(href_field),
+        "last": fields.Nested(href_field)
+}
+
+meta_fields = {
+    "pagination": fields.Nested(paginate_fields)
+}
+
+disruptions_fields = {"meta": fields.Nested(meta_fields),
+                      "disruptions": fields.Nested(disruption_fields)
+                     }
+
+one_disruption_fields = {'disruption': fields.Nested(disruption_fields)
+                     }
+
+error_fields = {'error': fields.Nested({'message': fields.String})}
+
+#see http://json-schema.org/
+disruptions_input_format = {'type': 'object',
+                            'properties': {'reference': {'type': 'string', 'maxLength': 250},
+                                           'note': {'type': 'string'}
+                            },
+                            'required': ['reference']
+        }
