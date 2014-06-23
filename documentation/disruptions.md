@@ -556,6 +556,7 @@ Return all impacts of a disruption.
                             "wording": "Bonne nouvelle",
                             "created_at": "2014-04-31T16:52:18Z",
                             "updated_at": "2014-04-31T16:55:18Z",
+                            "color": "#123456",
                             "effect": "none"
                         },
                         "application_periods": [
@@ -706,6 +707,7 @@ Create a new impact.
                         "wording": "Bonne nouvelle",
                         "created_at": "2014-04-31T16:52:18Z",
                         "updated_at": "2014-04-31T16:55:18Z",
+                        "color": "#123456",
                         "effect": "none"
                     },
                     "application_periods": [
@@ -794,6 +796,7 @@ Create a new impact.
                         "wording": "Bonne nouvelle",
                         "created_at": "2014-04-31T16:52:18Z",
                         "updated_at": "2014-04-31T16:55:18Z",
+                        "color": "#123456",
                         "effect": "none"
                     },
                     "application_periods": [
@@ -886,6 +889,7 @@ Create a new impact.
                         "id": "3d1f42b3-e8df-11e3-8c3e-0008ca8617ea",
                         "wording": "normal",
                         "effect": "none",
+                        "color": "#123456",
                         "created_at": "2014-04-31T16:52:18Z",
                         "updated_at": "2014-04-31T16:55:18Z"
                     },
@@ -893,6 +897,7 @@ Create a new impact.
                         "id": "3d1f42b4-e8df-11e3-8c3e-0008ca8617ea",
                         "wording": "majeur",
                         "effect": "none",
+                        "color": "#123456",
                         "created_at": "2014-04-31T16:52:18Z",
                         "updated_at": "2014-04-31T16:55:18Z"
                     },
@@ -900,6 +905,7 @@ Create a new impact.
                         "id": "3d1f42b5-e8df-11e3-8c3e-0008ca8617ea",
                         "wording": "bloquant",
                         "effect": "blocking",
+                        "color": "#123456",
                         "created_at": "2014-04-31T16:52:18Z",
                         "updated_at": "2014-04-31T16:55:18Z"
                     }
