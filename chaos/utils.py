@@ -28,37 +28,45 @@
 # www.navitia.io
 
 from flask import url_for
+from functools import wraps
 
 
 def format_url(endpoint, start_index, per_page):
     return url_for(endpoint,
                    start_page=start_index,
-                   count=per_page,
+                   items_per_page=per_page,
                    _external=True)
 
-def get_meta(result):
+class make_pager(object):
 
-    prev = None
-    next = None
-    if result.has_prev:
-        prev = format_url('disruption', result.prev_num, result.per_page)
+    def __call__(self, f):
+        @wraps(f)
+        def wrapper(*args, **kwargs):
+            objects = f(*args, **kwargs)
+            prev = None
+            next = None
+            if objects.has_prev:
+                prev = format_url('disruption', objects.prev_num, objects.per_page)
 
-    if result.has_next:
-        next = format_url('disruption', result.next_num, result.per_page)
+            if objects.has_next:
+                next = format_url('disruption', objects.next_num, objects.per_page)
 
-    last = format_url('disruption', result.pages, result.per_page)
+            last = format_url('disruption', objects.pages, objects.per_page)
 
-    first = format_url('disruption', 1, result.per_page)
-
-    return {
-        "pagination": {
-        "start_page": result.page,
-        "items_on_page": len(result.items),
-        "items_per_page": result.per_page,
-        "total_result": result.total,
-        "prev": {"href": prev},
-        "next": {"href": next},
-        "first": {"href": first},
-        "last": {"href": last}
-        }
-    }
+            first = format_url('disruption', 1, objects.per_page)
+            result = {}
+            result["disruptions"] = objects.items
+            result["meta"] = {
+                "pagination":{
+                        "start_page": objects.page,
+                        "items_on_page": len(objects.items),
+                        "items_per_page": objects.per_page,
+                        "total_result": objects.total,
+                        "prev": {"href": prev},
+                        "next": {"href": next},
+                        "first": {"href": first},
+                        "last": {"href": last}
+                }
+            }
+            return result
+        return wrapper
