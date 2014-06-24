@@ -34,8 +34,10 @@ from chaos import models, db
 from jsonschema import validate, ValidationError
 from flask.ext.restful import abort
 from fields import one_disruption_fields, disruptions_fields,\
-    disruptions_input_format, error_fields
+    error_fields
+from formats import disruptions_input_format
 import logging
+from utils import make_pager
 
 __all__ = ['Disruptions']
 
@@ -66,14 +68,15 @@ class Disruptions(flask_restful.Resource):
                            one_disruption_fields)
         else:
             args = self.parsers['get'].parse_args()
-            start_index = args['start_page']
-            if start_index == 0:
+            page_index = args['start_page']
+            if page_index == 0:
                 abort(400, message="page_index argument value is not valid")
             items_per_page = args['items_per_page']
             if items_per_page == 0:
                 abort(400, message="items_per_page argument value is not valid")
-
-            return marshal(models.Disruption.paginate(start_index, items_per_page), disruptions_fields)
+            result = models.Disruption.all(page_index=page_index, items_per_page=items_per_page)
+            response = {'disruptions': result.items, 'meta': make_pager(result, 'disruption')}
+            return marshal(response, disruptions_fields)
 
     def post(self):
         json = request.get_json()

@@ -30,43 +30,53 @@
 from flask import url_for
 from functools import wraps
 
+def make_pager(resultset, endpoint):
+    prev_link = None
+    next_link = None
+    if resultset.has_prev:
+        prev_link = url_for(endpoint,
+                            start_page=resultset.prev_num,
+                            items_per_page=resultset.per_page,
+                            _external=True)
 
-def format_url(endpoint, start_index, per_page):
-    return url_for(endpoint,
-                   start_page=start_index,
-                   items_per_page=per_page,
-                   _external=True)
+    if resultset.has_next:
+        next_link= url_for(endpoint,
+                           start_page=resultset.next_num,
+                           items_per_page=resultset.per_page,
+                           _external=True)
 
-class make_pager(object):
+    last_link= url_for(endpoint,
+                       start_page=resultset.pages,
+                       items_per_page=resultset.per_page,
+                       _external=True)
 
-    def __call__(self, f):
-        @wraps(f)
-        def wrapper(*args, **kwargs):
-            objects = f(*args, **kwargs)
-            prev = None
-            next = None
-            if objects.has_prev:
-                prev = format_url('disruption', objects.prev_num, objects.per_page)
-
-            if objects.has_next:
-                next = format_url('disruption', objects.next_num, objects.per_page)
-
-            last = format_url('disruption', objects.pages, objects.per_page)
-
-            first = format_url('disruption', 1, objects.per_page)
-            result = {}
-            result["disruptions"] = objects.items
-            result["meta"] = {
-                "pagination":{
-                        "start_page": objects.page,
-                        "items_on_page": len(objects.items),
-                        "items_per_page": objects.per_page,
-                        "total_result": objects.total,
-                        "prev": {"href": prev},
-                        "next": {"href": next},
-                        "first": {"href": first},
-                        "last": {"href": last}
+    first_link = url_for(endpoint,
+                         start_page=1,
+                         items_per_page=resultset.per_page,
+                         _external=True)
+    result = {}
+    result["pagination"] = {
+                "start_page": resultset.page,
+                "items_on_page": len(resultset.items),
+                "items_per_page": resultset.per_page,
+                "total_result": resultset.total,
+                "prev": {"href": prev_link},
+                "next": {"href": next_link},
+                "first": {"href": first_link},
+                "last": {"href": last_link
                 }
-            }
+    }
+    return result
+
+class paginate(object):
+    def __call__(self, func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            page_index = kwargs['page_index']
+            items_per_page = kwargs['items_per_page']
+            del kwargs['page_index']
+            del kwargs['items_per_page']
+            objects = func(*args, **kwargs)
+            result = objects.paginate(page_index, items_per_page)
             return result
         return wrapper
