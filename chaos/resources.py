@@ -33,6 +33,7 @@ from flask_restful import fields, marshal_with, marshal, reqparse, types
 import sqlalchemy
 from chaos import models, db
 from jsonschema import validate, ValidationError
+from chaos import mapper
 
 import logging
 
@@ -54,6 +55,10 @@ disruption_fields = {'id': fields.Raw,
                      'status': fields.Raw,
                      'created_at': FieldDateTime,
                      'updated_at': FieldDateTime,
+                     'publication_period': {
+                            'begin': FieldDateTime(attribute='start_publication_date'),
+                            'end': FieldDateTime(attribute='end_publication_date'),
+                         }
                      }
 
 
@@ -67,11 +72,32 @@ error_fields = {'error': fields.Nested({'message': fields.String})}
 
 
 #see http://json-schema.org/
+
+datetime_pattern = '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$'
+
+date_period_format = {
+        'type': 'object',
+        'properties': {
+            'begin': {'type': ['string'], 'pattern': datetime_pattern},
+            'end': {'type': ['string', 'null'], 'pattern': datetime_pattern},
+            },
+        'required': ['begin', 'end']
+        }
+
 disruptions_input_format = {'type': 'object',
-                            'properties': {'reference': {'type': 'string', 'maxLength': 250},
-                                           'note': {'type': 'string'}
-                            },
-                            'required': ['reference']
+        'properties': {'reference': {'type': 'string', 'maxLength': 250},
+            'note': {'type': 'string'},
+            'publication_period': date_period_format
+        },
+        'required': ['reference']
+}
+
+disruption_mapping = {'reference': None,
+        'note': None,
+        'publication_period': {
+            'begin': mapper.Datetime(attribute='start_publication_date'),
+            'end': mapper.Datetime(attribute='end_publication_date')
+            }
         }
 
 class Index(flask_restful.Resource):
@@ -109,7 +135,7 @@ class Disruptions(flask_restful.Resource):
                     400
 
         disruption = models.Disruption()
-        disruption.fill_from_json(json)
+        mapper.fill_from_json(disruption, json, disruption_mapping)
         db.session.add(disruption)
         db.session.commit()
         return marshal({'disruption': disruption}, one_disruption_fields), 201
@@ -129,7 +155,7 @@ class Disruptions(flask_restful.Resource):
                            error_fields), \
                     400
 
-        disruption.fill_from_json(json)
+        mapper.fill_from_json(disruption, json, disruption_mapping)
         db.session.commit()
         return marshal({'disruption': disruption}, one_disruption_fields), 200
 
