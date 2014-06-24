@@ -33,6 +33,15 @@ import uuid
 from chaos import db
 from sqlalchemy.dialects.postgresql import UUID
 from datetime import datetime
+from aniso8601 import parse_datetime
+
+#force the server to use UTC time for each connection
+import sqlalchemy
+def set_utc_on_connect(dbapi_con, con_record):
+    c = dbapi_con.cursor()
+    c.execute("SET TIME ZONE UTC")
+    c.close()
+sqlalchemy.event.listen(sqlalchemy.pool.Pool, 'connect', set_utc_on_connect)
 
 class TimestampMixin(object):
     created_at = db.Column(db.DateTime(), default=datetime.utcnow, nullable=False)
@@ -45,6 +54,8 @@ class Disruption(TimestampMixin, db.Model):
     reference = db.Column(db.Text, unique=False, nullable=True)
     note = db.Column(db.Text, unique=False, nullable=True)
     status = db.Column(DisruptionStatus, nullable=False, default='published', index=True)
+    start_publication_date = db.Column(db.DateTime(), nullable=True)
+    end_publication_date = db.Column(db.DateTime(), nullable=True)
 
     def __repr__(self):
         return '<Disruption %r>' % self.id
@@ -53,10 +64,16 @@ class Disruption(TimestampMixin, db.Model):
         self.id = str(uuid.uuid1())
 
     def fill_from_json(self, json):
-        fields = ['reference', 'note']
+        fields = ['reference', 'note', 'publication_period']
         for field in fields:
             if field in json:
-                setattr(self, field, json[field])
+                if field == 'publication_period':
+                    if json[field]['begin']:
+                        self.start_publication_date = parse_datetime(json[field]['begin'])
+                    if json[field]['end']:
+                        self.end_publication_date = parse_datetime(json[field]['end'])
+                else:
+                    setattr(self, field, json[field])
             else:
                 setattr(self, field, None)
 

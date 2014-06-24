@@ -54,6 +54,10 @@ disruption_fields = {'id': fields.Raw,
                      'status': fields.Raw,
                      'created_at': FieldDateTime,
                      'updated_at': FieldDateTime,
+                     'publication_period': {
+                            'begin': FieldDateTime(attribute='start_publication_date'),
+                            'end': FieldDateTime(attribute='end_publication_date'),
+                         }
                      }
 
 
@@ -67,12 +71,25 @@ error_fields = {'error': fields.Nested({'message': fields.String})}
 
 
 #see http://json-schema.org/
-disruptions_input_format = {'type': 'object',
-                            'properties': {'reference': {'type': 'string', 'maxLength': 250},
-                                           'note': {'type': 'string'}
-                            },
-                            'required': ['reference']
+
+datetime_pattern = '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$'
+
+date_period_format = {
+        'type': 'object',
+        'properties': {
+            'begin': {'type': ['string'], 'pattern': datetime_pattern},
+            'end': {'type': ['string', 'null'], 'pattern': datetime_pattern},
+            },
+        'required': ['begin', 'end']
         }
+
+disruptions_input_format = {'type': 'object',
+        'properties': {'reference': {'type': 'string', 'maxLength': 250},
+            'note': {'type': 'string'},
+            'publication_period': date_period_format
+        },
+        'required': ['reference']
+}
 
 class Index(flask_restful.Resource):
 

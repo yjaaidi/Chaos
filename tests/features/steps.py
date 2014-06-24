@@ -51,6 +51,8 @@ def given_i_have_the_folowing_disruptions_in_my_database(step):
     for disruption_dict in step.hashes:
         disruption = Disruption()
         for key, value in disruption_dict.iteritems():
+            if value == 'None':
+                value = None
             setattr(disruption, key, value)
         db.session.add(disruption)
     db.session.commit()
