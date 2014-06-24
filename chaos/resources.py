@@ -33,14 +33,23 @@ from flask_restful import marshal, reqparse
 from chaos import models, db
 from jsonschema import validate, ValidationError
 from flask.ext.restful import abort
-from fields import one_disruption_fields, disruptions_fields,\
-    error_fields
+from fields import *
 from formats import disruptions_input_format
+from chaos import mapper
+
 import logging
 from utils import make_pager
 
 __all__ = ['Disruptions']
 
+
+disruption_mapping = {'reference': None,
+        'note': None,
+        'publication_period': {
+            'begin': mapper.Datetime(attribute='start_publication_date'),
+            'end': mapper.Datetime(attribute='end_publication_date')
+            }
+        }
 
 class Index(flask_restful.Resource):
 
@@ -91,7 +100,7 @@ class Disruptions(flask_restful.Resource):
                     400
 
         disruption = models.Disruption()
-        disruption.fill_from_json(json)
+        mapper.fill_from_json(disruption, json, disruption_mapping)
         db.session.add(disruption)
         db.session.commit()
         return marshal({'disruption': disruption}, one_disruption_fields), 201
@@ -111,7 +120,7 @@ class Disruptions(flask_restful.Resource):
                            error_fields), \
                     400
 
-        disruption.fill_from_json(json)
+        mapper.fill_from_json(disruption, json, disruption_mapping)
         db.session.commit()
         return marshal({'disruption': disruption}, one_disruption_fields), 200
 

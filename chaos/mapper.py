@@ -27,24 +27,29 @@
 # https://groups.google.com/d/forum/navitia
 # www.navitia.io
 
+from aniso8601 import parse_datetime
+from collections import Mapping
 
-#see http://json-schema.org/
 
-datetime_pattern = '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$'
+class Datetime(object):
+    def __init__(self, attribute):
+        self.attribute = attribute
 
-date_period_format = {
-        'type': 'object',
-        'properties': {
-            'begin': {'type': ['string'], 'pattern': datetime_pattern},
-            'end': {'type': ['string', 'null'], 'pattern': datetime_pattern},
-            },
-        'required': ['begin', 'end']
-        }
+    def __call__(self, item, field, value):
+        if value:
+            setattr(item, self.attribute, parse_datetime(value))
+        else:
+            setattr(item, self.attribute, None)
 
-disruptions_input_format = {'type': 'object',
-        'properties': {'reference': {'type': 'string', 'maxLength': 250},
-            'note': {'type': 'string'},
-            'publication_period': date_period_format
-        },
-        'required': ['reference']
-}
+
+def fill_from_json(item, json, fields):
+    for field, formater in fields.iteritems():
+        if field not in json:
+            setattr(item, field, None)
+            continue
+        if isinstance(formater, Mapping):
+            fill_from_json(item, json[field], fields=formater)
+        elif not formater:
+            setattr(item, field, json[field])
+        elif formater:
+            formater(item, field, json[field])

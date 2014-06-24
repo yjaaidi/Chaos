@@ -35,7 +35,13 @@ from utils import paginate
 from sqlalchemy.dialects.postgresql import UUID
 from datetime import datetime
 
-
+#force the server to use UTC time for each connection
+import sqlalchemy
+def set_utc_on_connect(dbapi_con, con_record):
+    c = dbapi_con.cursor()
+    c.execute("SET TIME ZONE UTC")
+    c.close()
+sqlalchemy.event.listen(sqlalchemy.pool.Pool, 'connect', set_utc_on_connect)
 
 class TimestampMixin(object):
     created_at = db.Column(db.DateTime(), default=datetime.utcnow, nullable=False)
@@ -48,20 +54,14 @@ class Disruption(TimestampMixin, db.Model):
     reference = db.Column(db.Text, unique=False, nullable=True)
     note = db.Column(db.Text, unique=False, nullable=True)
     status = db.Column(DisruptionStatus, nullable=False, default='published', index=True)
+    start_publication_date = db.Column(db.DateTime(), nullable=True)
+    end_publication_date = db.Column(db.DateTime(), nullable=True)
 
     def __repr__(self):
         return '<Disruption %r>' % self.id
 
     def __init__(self):
         self.id = str(uuid.uuid1())
-
-    def fill_from_json(self, json):
-        fields = ['reference', 'note']
-        for field in fields:
-            if field in json:
-                setattr(self, field, json[field])
-            else:
-                setattr(self, field, None)
 
     def archive(self):
         """
@@ -72,8 +72,6 @@ class Disruption(TimestampMixin, db.Model):
     @classmethod
     def get(cls, id):
         return cls.query.filter_by(id=id, status='published').first_or_404()
-
-
 
     @classmethod
     @paginate()
