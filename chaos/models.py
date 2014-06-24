@@ -33,7 +33,6 @@ import uuid
 from chaos import db
 from sqlalchemy.dialects.postgresql import UUID
 from datetime import datetime
-from aniso8601 import parse_datetime
 
 #force the server to use UTC time for each connection
 import sqlalchemy
@@ -62,20 +61,6 @@ class Disruption(TimestampMixin, db.Model):
 
     def __init__(self):
         self.id = str(uuid.uuid1())
-
-    def fill_from_json(self, json):
-        fields = ['reference', 'note', 'publication_period']
-        for field in fields:
-            if field in json:
-                if field == 'publication_period':
-                    if json[field]['begin']:
-                        self.start_publication_date = parse_datetime(json[field]['begin'])
-                    if json[field]['end']:
-                        self.end_publication_date = parse_datetime(json[field]['end'])
-                else:
-                    setattr(self, field, json[field])
-            else:
-                setattr(self, field, None)
 
     def archive(self):
         """

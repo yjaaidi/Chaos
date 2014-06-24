@@ -33,6 +33,7 @@ from flask_restful import fields, marshal_with, marshal, reqparse, types
 import sqlalchemy
 from chaos import models, db
 from jsonschema import validate, ValidationError
+from chaos import mapper
 
 import logging
 
@@ -91,6 +92,14 @@ disruptions_input_format = {'type': 'object',
         'required': ['reference']
 }
 
+disruption_mapping = {'reference': None,
+        'note': None,
+        'publication_period': {
+            'begin': mapper.Datetime(attribute='start_publication_date'),
+            'end': mapper.Datetime(attribute='end_publication_date')
+            }
+        }
+
 class Index(flask_restful.Resource):
 
     def get(self):
@@ -126,7 +135,7 @@ class Disruptions(flask_restful.Resource):
                     400
 
         disruption = models.Disruption()
-        disruption.fill_from_json(json)
+        mapper.fill_from_json(disruption, json, disruption_mapping)
         db.session.add(disruption)
         db.session.commit()
         return marshal({'disruption': disruption}, one_disruption_fields), 201
@@ -146,7 +155,7 @@ class Disruptions(flask_restful.Resource):
                            error_fields), \
                     400
 
-        disruption.fill_from_json(json)
+        mapper.fill_from_json(disruption, json, disruption_mapping)
         db.session.commit()
         return marshal({'disruption': disruption}, one_disruption_fields), 200
 
