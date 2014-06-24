@@ -65,18 +65,11 @@ meta_fields = {
 }
 
 disruptions_fields = {"meta": fields.Nested(meta_fields),
-                      "disruptions": fields.Nested(disruption_fields)
-                     }
+                      "disruptions": fields.List(fields.Nested(disruption_fields))
+                    }
 
 one_disruption_fields = {'disruption': fields.Nested(disruption_fields)
-                     }
+                        }
 
 error_fields = {'error': fields.Nested({'message': fields.String})}
 
-#see http://json-schema.org/
-disruptions_input_format = {'type': 'object',
-                            'properties': {'reference': {'type': 'string', 'maxLength': 250},
-                                           'note': {'type': 'string'}
-                            },
-                            'required': ['reference']
-        }
