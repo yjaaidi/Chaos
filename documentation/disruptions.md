@@ -913,6 +913,35 @@ Create a new impact.
                 "meta": {}
             }
 
+##Create a severity [POST]
+- request
+    + headers
+
+            Content-Type: application/json
+    * Body
+
+                {
+                    "wording": "normal",
+                    "color": "#123456",
+                    "effect": "none"
+                }
+
+- response 200 (application/json)
+
+    * Body
+
+            {
+                "severity": {
+                    "id": "3d1f42b3-e8df-11e3-8c3e-0008ca8617ea",
+                    "wording": "normal",
+                    "created_at": "2014-04-31T16:52:18Z",
+                    "updated_at": null,
+                    "color": "#123456",
+                    "effect": "none"
+                },
+                "meta": {}
+            }
+
 #List of causes [/causes]
 
 ##Retrieve the list of all causes [GET]
@@ -942,6 +971,31 @@ Create a new impact.
                         "updated_at": "2014-04-31T16:55:18Z"
                     }
                 ],
+                "meta": {}
+            }
+
+##Create a cause [POST]
+- request
+    + headers
+
+            Content-Type: application/json
+    * Body
+
+                {
+                    "wording": "météo"
+                }
+
+- response 200 (application/json)
+
+    * Body
+
+            {
+                "cause": {
+                    "id": "3d1f42b2-e8df-11e4-8c3e-0008ca8617ea",
+                    "wording": "météo",
+                    "created_at": "2014-04-31T16:52:18Z",
+                    "updated_at": null
+                },
                 "meta": {}
             }
 
@@ -1011,37 +1065,6 @@ Create a new impact.
                 },
                 "meta": {}
             }
-
-
-##Create a severity [POST]
-- request
-    + headers
-
-            Content-Type: application/json
-    * Body
-
-                {
-                    "wording": "normal",
-                    "color": "#123456",
-                    "effect": "none"
-                }
-
-- response 200 (application/json)
-
-    * Body
-
-            {
-                "severity": {
-                    "id": "3d1f42b3-e8df-11e3-8c3e-0008ca8617ea",
-                    "wording": "normal",
-                    "created_at": "2014-04-31T16:52:18Z",
-                    "updated_at": null,
-                    "color": "#123456",
-                    "effect": "none"
-                },
-                "meta": {}
-            }
-
 
 # Severities [/severities/{id}]
 ##Retrieve one severity [GET]
@@ -1138,32 +1161,6 @@ Archive one severity.
                 },
                 "meta": {}
             }
-
-##Create a cause [POST]
-- request
-    + headers
-
-            Content-Type: application/json
-    * Body
-
-                {
-                    "wording": "météo"
-                }
-
-- response 200 (application/json)
-
-    * Body
-
-            {
-                "cause": {
-                    "id": "3d1f42b2-e8df-11e4-8c3e-0008ca8617ea",
-                    "wording": "météo",
-                    "created_at": "2014-04-31T16:52:18Z",
-                    "updated_at": null
-                },
-                "meta": {}
-            }
-
 
 # Causes [/causes/{id}]
 ##Retrieve one cause [GET]
