@@ -63,9 +63,8 @@ def and_the_field_should_have_a_size_of_n(step, fields, size):
 
 @step(u'And the field "([^"]*)" should exist')
 def and_the_field_should_exist(step, fields):
-    assert_equals(len(find_field(world.response_json, fields)), 1)
+    assert_not_equals(len(find_field(world.response_json, fields)), 0)
 
 @step(u'And the field "([^"]*)" should be (\d+)')
 def and_in_the_json_the_field_is_set_to(step, fields, value):
-    value = pythonify(value)
     eq_(int(find_field(world.response_json, fields)), int(value))
