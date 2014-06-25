@@ -46,8 +46,8 @@ def and_in_the_json_the_field_is_set_to(step, fields):
 def and_field_should_be_empty(step, fields):
     assert_equals(len(find_field(world.response_json, fields)), 0)
 
-@step(u'Given I have the folowing disruptions in my database:')
-def given_i_have_the_folowing_disruptions_in_my_database(step):
+@step(u'Given I have the following disruptions in my database:')
+def given_i_have_the_following_disruptions_in_my_database(step):
     for disruption_dict in step.hashes:
         disruption = Disruption()
         for key, value in disruption_dict.iteritems():
