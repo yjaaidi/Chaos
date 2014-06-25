@@ -46,8 +46,8 @@ def and_in_the_json_the_field_is_set_to(step, fields):
 def and_field_should_be_empty(step, fields):
     assert_equals(len(find_field(world.response_json, fields)), 0)
 
-@step(u'Given I have the folowing disruptions in my database:')
-def given_i_have_the_folowing_disruptions_in_my_database(step):
+@step(u'Given I have the following disruptions in my database:')
+def given_i_have_the_following_disruptions_in_my_database(step):
     for disruption_dict in step.hashes:
         disruption = Disruption()
         for key, value in disruption_dict.iteritems():
@@ -61,3 +61,10 @@ def given_i_have_the_folowing_disruptions_in_my_database(step):
 def and_the_field_should_have_a_size_of_n(step, fields, size):
     eq_(len(find_field(world.response_json, fields)), int(size))
 
+@step(u'And the field "([^"]*)" should exist')
+def and_the_field_should_exist(step, fields):
+    assert_not_equals(len(find_field(world.response_json, fields)), 0)
+
+@step(u'And the field "([^"]*)" should be (\d+)')
+def and_in_the_json_the_field_is_set_to(step, fields, value):
+    eq_(int(find_field(world.response_json, fields)), int(value))

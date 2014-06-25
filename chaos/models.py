@@ -31,6 +31,7 @@
 
 import uuid
 from chaos import db
+from utils import paginate
 from sqlalchemy.dialects.postgresql import UUID
 from datetime import datetime
 
@@ -73,7 +74,7 @@ class Disruption(TimestampMixin, db.Model):
         return cls.query.filter_by(id=id, status='published').first_or_404()
 
     @classmethod
+    @paginate()
     def all(cls):
-        return cls.query.filter_by(status='published').all()
-
+        return cls.query.filter_by(status='published')
 

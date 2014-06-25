@@ -7,7 +7,7 @@ Feature: list disruptions
         and "disruptions" should be empty
 
     Scenario: list of two disruptions
-        Given I have the folowing disruptions in my database:
+        Given I have the following disruptions in my database:
             | reference | note  | created_at          | updated_at          | status    | id                                   |
             | foo       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |
             | bar       | bye   | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | published | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |
@@ -16,8 +16,8 @@ Feature: list disruptions
         And the header "Content-Type" should be "application/json"
         And the field "disruptions" should have a size of 2
 
-    Scenario: only published disrutpions have to be return
-        Given I have the folowing disruptions in my database:
+    Scenario: only published disruptions have to be return
+        Given I have the following disruptions in my database:
             | reference | note  | created_at          | updated_at          | status    | id                                   |
             | foo       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |
             | bar       | bye   | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | published | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |
@@ -31,7 +31,7 @@ Feature: list disruptions
 
 
     Scenario: Disruption have a publication_period
-        Given I have the folowing disruptions in my database:
+        Given I have the following disruptions in my database:
             | reference | note  | created_at          | updated_at          | status    | id                                   | start_publication_date | end_publication_date |
             | foo       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |  2014-04-02T14:00:00   | None                 |
             | bar       | bye   | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | published | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |  2014-04-02T14:00:00   | 2014-04-02T19:00:00  |

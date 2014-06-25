@@ -27,70 +27,21 @@
 # https://groups.google.com/d/forum/navitia
 # www.navitia.io
 
-from flask import abort, current_app, request, url_for
+from flask import request, url_for
 import flask_restful
-from flask_restful import fields, marshal_with, marshal, reqparse, types
-import sqlalchemy
+from flask_restful import marshal, reqparse
 from chaos import models, db
 from jsonschema import validate, ValidationError
+from flask.ext.restful import abort
+from fields import *
+from formats import disruptions_input_format
 from chaos import mapper
 
 import logging
+from utils import make_pager
 
 __all__ = ['Disruptions']
 
-
-class FieldDateTime(fields.Raw):
-    def format(self, value):
-        if value:
-            return value.strftime('%Y-%m-%dT%H:%M:%SZ')
-        else:
-            return 'null'
-
-
-disruption_fields = {'id': fields.Raw,
-                     'self': {'href': fields.Url('disruption', absolute=True)},
-                     'reference': fields.Raw,
-                     'note': fields.Raw,
-                     'status': fields.Raw,
-                     'created_at': FieldDateTime,
-                     'updated_at': FieldDateTime,
-                     'publication_period': {
-                            'begin': FieldDateTime(attribute='start_publication_date'),
-                            'end': FieldDateTime(attribute='end_publication_date'),
-                         }
-                     }
-
-
-disruptions_fields = {'disruptions': fields.List(fields.Nested(disruption_fields))
-                     }
-
-one_disruption_fields = {'disruption': fields.Nested(disruption_fields)
-                     }
-
-error_fields = {'error': fields.Nested({'message': fields.String})}
-
-
-#see http://json-schema.org/
-
-datetime_pattern = '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$'
-
-date_period_format = {
-        'type': 'object',
-        'properties': {
-            'begin': {'type': ['string'], 'pattern': datetime_pattern},
-            'end': {'type': ['string', 'null'], 'pattern': datetime_pattern},
-            },
-        'required': ['begin', 'end']
-        }
-
-disruptions_input_format = {'type': 'object',
-        'properties': {'reference': {'type': 'string', 'maxLength': 250},
-            'note': {'type': 'string'},
-            'publication_period': date_period_format
-        },
-        'required': ['reference']
-}
 
 disruption_mapping = {'reference': None,
         'note': None,
@@ -111,16 +62,30 @@ class Index(flask_restful.Resource):
         return response, 200
 
 class Disruptions(flask_restful.Resource):
+    def __init__(self):
+        self.parsers = {}
+        self.parsers["get"] = reqparse.RequestParser()
+        parser_get = self.parsers["get"]
+
+        parser_get.add_argument("start_page", type=int, default=1)
+        parser_get.add_argument("items_per_page", type=int, default=20)
+
 
     def get(self, id=None):
         if id:
             return marshal({'disruption': models.Disruption.get(id)},
                            one_disruption_fields)
         else:
-            return marshal({'disruptions': models.Disruption.all()},
-                           disruptions_fields)
-
-
+            args = self.parsers['get'].parse_args()
+            page_index = args['start_page']
+            if page_index == 0:
+                abort(400, message="page_index argument value is not valid")
+            items_per_page = args['items_per_page']
+            if items_per_page == 0:
+                abort(400, message="items_per_page argument value is not valid")
+            result = models.Disruption.all(page_index=page_index, items_per_page=items_per_page)
+            response = {'disruptions': result.items, 'meta': make_pager(result, 'disruption')}
+            return marshal(response, disruptions_fields)
 
     def post(self):
         json = request.get_json()
