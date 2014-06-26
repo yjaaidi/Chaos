@@ -111,3 +111,13 @@ def get_current_time():
         return g.current_time
     else:
         return datetime.utcnow()
+
+def option_value(values):
+    def to_return(value, name):
+        if not (value in values):
+            error = "The {} argument must be in list {}, you gave {}".\
+                format(name, str(values), value)
+            raise ValueError(error)
+        return value
+    return to_return
+

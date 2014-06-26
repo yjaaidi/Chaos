@@ -34,6 +34,7 @@ from chaos import db, utils
 from utils import paginate
 from sqlalchemy.dialects.postgresql import UUID
 from datetime import datetime
+from formats import publication_status_values
 
 #force the server to use UTC time for each connection
 import sqlalchemy
@@ -75,8 +76,12 @@ class Disruption(TimestampMixin, db.Model):
 
     @classmethod
     @paginate()
-    def all(cls):
-        return cls.query.filter_by(status='published')
+    def all(cls, publication_status):
+        to_return = cls.query.filter_by(status='published')
+        intersect = set(publication_status) & set(publication_status_values)
+        if len(intersect) == len(publication_status_values):
+            return to_return
+        return to_return
 
     @property
     def publication_status(self):
@@ -90,3 +95,4 @@ class Disruption(TimestampMixin, db.Model):
         # Coming
         if self.start_publication_date > current_time:
             return "coming"
+

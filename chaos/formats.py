@@ -48,3 +48,5 @@ disruptions_input_format = {'type': 'object',
         },
         'required': ['reference']
 }
+#Here Order of values is strict and is used to create query filters.
+publication_status_values = ["past", "ongoing", "coming"]
