@@ -94,7 +94,7 @@ def date_time(value, name):
                          .format(name, value))
 
 
-def get_current_time():
-    if g.current_time:
+def get_current_time(default_utc_time = datetime.utcnow()):
+    if 'current_time' in g and g.current_time:
         return g.current_time
-    else : return datetime.utcnow()
+    else : return default_utc_time
