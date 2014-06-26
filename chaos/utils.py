@@ -27,8 +27,11 @@
 # https://groups.google.com/d/forum/navitia
 # www.navitia.io
 
-from flask import url_for
+from flask import url_for, g
 from functools import wraps
+from datetime import datetime
+from aniso8601 import parse_datetime
+
 
 def make_pager(resultset, endpoint):
     prev_link = None
@@ -68,6 +71,7 @@ def make_pager(resultset, endpoint):
     }
     return result
 
+
 class paginate(object):
     def __call__(self, func):
         @wraps(func)
@@ -80,3 +84,17 @@ class paginate(object):
             result = objects.paginate(page_index, items_per_page)
             return result
         return wrapper
+
+
+def date_time(value, name):
+    try:
+        return parse_datetime(value).replace(tzinfo=None)
+    except:
+        raise ValueError("The {} argument value is not valid, you gave: {}"
+                         .format(name, value))
+
+
+def get_current_time():
+    if g.current_time:
+        return g.current_time
+    else : return datetime.utcnow()

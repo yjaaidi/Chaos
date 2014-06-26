@@ -27,7 +27,7 @@
 # https://groups.google.com/d/forum/navitia
 # www.navitia.io
 
-from flask import request, url_for
+from flask import request, url_for, g
 import flask_restful
 from flask_restful import marshal, reqparse
 from chaos import models, db
@@ -36,6 +36,7 @@ from flask.ext.restful import abort
 from fields import *
 from formats import disruptions_input_format
 from chaos import mapper
+from chaos import utils
 
 import logging
 from utils import make_pager
@@ -69,6 +70,7 @@ class Disruptions(flask_restful.Resource):
 
         parser_get.add_argument("start_page", type=int, default=1)
         parser_get.add_argument("items_per_page", type=int, default=20)
+        parser_get.add_argument("current_time", type=utils.date_time)
 
 
     def get(self, id=None):
@@ -83,6 +85,7 @@ class Disruptions(flask_restful.Resource):
             items_per_page = args['items_per_page']
             if items_per_page == 0:
                 abort(400, message="items_per_page argument value is not valid")
+            g.current_time = args['current_time']
             result = models.Disruption.all(page_index=page_index, items_per_page=items_per_page)
             response = {'disruptions': result.items, 'meta': make_pager(result, 'disruption')}
             return marshal(response, disruptions_fields)

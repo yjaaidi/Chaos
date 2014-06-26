@@ -46,7 +46,9 @@ disruption_fields = {'id': fields.Raw,
                      'publication_period': {
                             'begin': FieldDateTime(attribute='start_publication_date'),
                             'end': FieldDateTime(attribute='end_publication_date'),
-                         }
+                         },
+
+                     'publication_status': fields.Raw
                      }
 
 href_field = {

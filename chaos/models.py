@@ -30,7 +30,7 @@
 # www.navitia.io
 
 import uuid
-from chaos import db
+from chaos import db, utils
 from utils import paginate
 from sqlalchemy.dialects.postgresql import UUID
 from datetime import datetime
@@ -78,3 +78,15 @@ class Disruption(TimestampMixin, db.Model):
     def all(cls):
         return cls.query.filter_by(status='published')
 
+    @property
+    def publication_status(self):
+        current_time = utils.get_current_time()
+        # Past
+        if self.end_publication_date < current_time:
+            return "past"
+        # ongoing
+        if (self.start_publication_date <= current_time) and (current_time <= self.end_publication_date):
+            return "ongoing"
+        # Coming
+        if self.start_publication_date > current_time:
+            return "coming"
