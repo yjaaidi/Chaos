@@ -39,7 +39,7 @@ from datetime import datetime
 import sqlalchemy
 def set_utc_on_connect(dbapi_con, con_record):
     c = dbapi_con.cursor()
-    c.execute("SET TIME ZONE UTC")
+    c.execute("SET timezone='utc'")
     c.close()
 sqlalchemy.event.listen(sqlalchemy.pool.Pool, 'connect', set_utc_on_connect)
 
