@@ -70,7 +70,7 @@ class Disruptions(flask_restful.Resource):
 
         parser_get.add_argument("start_page", type=int, default=1)
         parser_get.add_argument("items_per_page", type=int, default=20)
-        parser_get.add_argument("current_time", type=utils.date_time)
+        parser_get.add_argument("current_time", type=utils.get_datetime)
 
 
     def get(self, id=None):

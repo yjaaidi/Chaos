@@ -86,8 +86,9 @@ class paginate(object):
         return wrapper
 
 
-def date_time(value, name):
+def get_datetime(value, name):
     try:
+        # Convert string to datetime : datetime format '2014-04-31T16:52:00'
         return parse_datetime(value).replace(tzinfo=None)
     except:
         raise ValueError("The {} argument value is not valid, you gave: {}"
