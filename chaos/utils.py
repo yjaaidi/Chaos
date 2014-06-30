@@ -87,8 +87,15 @@ class paginate(object):
 
 
 def get_datetime(value, name):
+    """
+        Convert string to datetime
+
+        :param value: string to convert
+        :param name: attribute name
+        :return: DateTime format '2014-04-31T16:52:00'
+        tzinfo=None : information about the offset from UTC time
+    """
     try:
-        # Convert string to datetime : datetime format '2014-04-31T16:52:00'
         return parse_datetime(value).replace(tzinfo=None)
     except:
         raise ValueError("The {} argument value is not valid, you gave: {}"
@@ -96,6 +103,11 @@ def get_datetime(value, name):
 
 
 def get_current_time():
+    """
+        Get current time global variable
+        :return: DateTime format '2014-04-31T16:52:00'
+    """
     if 'current_time' in g and g.current_time:
         return g.current_time
-    else : return datetime.utcnow()
+    else:
+        return datetime.utcnow()
