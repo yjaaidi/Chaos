@@ -4,11 +4,6 @@ from aniso8601 import parse_datetime
 from datetime import datetime
 import chaos
 
-
-class Obj(object):
-    pass
-
-
 #current_time exists
 def test_current_time():
     with chaos.app.app_context():
