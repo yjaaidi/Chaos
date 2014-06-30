@@ -78,8 +78,8 @@ class Disruption(TimestampMixin, db.Model):
     @paginate()
     def all(cls, publication_status):
         to_return = cls.query.filter_by(status='published')
-        intersect = set(publication_status) & set(publication_status_values)
-        if len(intersect) == len(publication_status_values):
+        publication_status = set(publication_status)
+        if len(publication_status) == len(publication_status_values):
             return to_return
         return to_return
 
