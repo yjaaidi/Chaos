@@ -31,7 +31,7 @@
 
 import uuid
 from chaos import db, utils
-from utils import paginate
+from utils import paginate, get_current_time
 from sqlalchemy.dialects.postgresql import UUID
 from datetime import datetime
 from formats import publication_status_values
@@ -80,38 +80,39 @@ class Disruption(TimestampMixin, db.Model):
     def all(cls, publication_status):
         to_return = cls.query.filter_by(status='published')
         publication_status = set(publication_status)
+
         if len(publication_status) == len(publication_status_values):
             return to_return
         elif len(publication_status) == 1:
             #past
             # Filter all disruption with end_publication_date < now.
-            if publication_status_values[0] in publication_status:
-                to_return = to_return.filter(cls.end_publication_date < datetime.utcnow())
+            if 'past' in publication_status:
+                to_return = to_return.filter(cls.end_publication_date < get_current_time())
             #ongoing
             # Filter all disruption with start_publication_date <= now <= end_publication_date.
-            if publication_status_values[1] in publication_status:
-                to_return = to_return.filter(cls.start_publication_date <= datetime.utcnow()).filter(cls.end_publication_date >= datetime.utcnow())
+            if 'ongoing' in publication_status:
+                to_return = to_return.filter(cls.start_publication_date <= get_current_time()).filter(cls.end_publication_date >= get_current_time())
             #coming
             # Filter all disruption with start_publication_date > now.
-            elif publication_status_values[2] in publication_status:
-                to_return = to_return.filter(cls.start_publication_date > datetime.utcnow())
+            elif 'coming' in publication_status:
+                to_return = to_return.filter(cls.start_publication_date > get_current_time())
         elif len(publication_status) == 2:
             #past and ongoing
             #Filter with (end_publication_date < now) or (start_publication_date < now and end_publication_date > now)
-            if publication_status_values[0] in publication_status and publication_status_values[1] in publication_status:
-                to_return = to_return.filter(or_(cls.end_publication_date < datetime.utcnow(),
-                                                 and_(cls.start_publication_date < datetime.utcnow(),
-                                                      cls.end_publication_date > datetime.utcnow())))
+            if 'past' in publication_status and 'ongoing' in publication_status:
+                to_return = to_return.filter(or_(cls.end_publication_date < get_current_time(),
+                                                 and_(cls.start_publication_date < get_current_time(),
+                                                      cls.end_publication_date > get_current_time())))
             # ongoing and coming
             #Filter with  (start_publication_date > now) (start_publication_date < now and end_publication_date > now)
-            elif publication_status_values[1] in publication_status and publication_status_values[2] in publication_status:
-                to_return = to_return.filter(or_(cls.start_publication_date > datetime.utcnow(),
-                                                 and_(cls.start_publication_date < datetime.utcnow(),
-                                                      cls.end_publication_date > datetime.utcnow())))
+            elif 'ongoing' in publication_status and 'coming' in publication_status:
+                to_return = to_return.filter(or_(cls.start_publication_date > get_current_time(),
+                                                 and_(cls.start_publication_date < get_current_time(),
+                                                      cls.end_publication_date > get_current_time())))
             # past and coming
             #Filter with  (end_publication_date < now) or (start_publication_date > now)
-            elif publication_status_values[0] in publication_status and publication_status_values[2] in publication_status:
-                to_return = to_return.filter(or_(cls.end_publication_date < datetime.utcnow(),cls.start_publication_date > datetime.utcnow()))
+            elif 'past' in publication_status and 'coming' in publication_status:
+                to_return = to_return.filter(or_(cls.end_publication_date < get_current_time(),cls.start_publication_date > get_current_time()))
 
         return to_return
 
