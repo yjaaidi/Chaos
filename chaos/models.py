@@ -31,9 +31,11 @@
 
 import uuid
 from chaos import db, utils
-from utils import paginate
+from utils import paginate, get_current_time
 from sqlalchemy.dialects.postgresql import UUID
 from datetime import datetime
+from formats import publication_status_values
+from sqlalchemy import or_, and_
 
 #force the server to use UTC time for each connection
 import sqlalchemy
@@ -75,8 +77,20 @@ class Disruption(TimestampMixin, db.Model):
 
     @classmethod
     @paginate()
-    def all(cls):
-        return cls.query.filter_by(status='published')
+    def all_with_filter(cls, publication_status):
+        availlable_filters = {'past': and_(cls.end_publication_date != None, cls.end_publication_date < get_current_time()),
+                      'ongoing': and_(cls.start_publication_date <= get_current_time(),
+                                      or_(cls.end_publication_date == None, cls.end_publication_date >= get_current_time())),
+                      'coming': Disruption.start_publication_date > get_current_time()
+        }
+        query = cls.query.filter_by(status='published')
+        publication_status = set(publication_status)
+        if len(publication_status) == len(publication_status_values):
+            return query
+        else:
+            filters = [availlable_filters[status] for status in publication_status]
+            query = query.filter(or_(*filters))
+            return query
 
     @property
     def publication_status(self):
@@ -90,3 +104,4 @@ class Disruption(TimestampMixin, db.Model):
         # Coming
         if self.start_publication_date > current_time:
             return "coming"
+
