@@ -51,6 +51,7 @@ disruption_fields = {'id': fields.Raw,
                             'begin': FieldDateTime(attribute='start_publication_date'),
                             'end': FieldDateTime(attribute='end_publication_date'),
                          },
+                     'publication_status': fields.Raw,
                      'impacts': {'href': fields.String('https://chaos.apiary-mock.com/disruptions/3d1f32b2-e8df-11e3-8c3e-0008ca8657ea/impacts/3d1f42b2-e8df-11e3-8c3e-0008ca8657ea')}
 }
 
