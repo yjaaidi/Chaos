@@ -89,7 +89,7 @@ class Disruptions(flask_restful.Resource):
                 abort(400, message="items_per_page argument value is not valid")
             publication_status = args['publication_status[]']
             g.current_time = args['current_time']
-            result = models.Disruption.all(page_index=page_index, items_per_page=items_per_page, publication_status=publication_status)
+            result = models.Disruption.all_with_filter(page_index=page_index, items_per_page=items_per_page, publication_status=publication_status)
             response = {'disruptions': result.items, 'meta': make_pager(result, 'disruption')}
             return marshal(response, disruptions_fields)
 

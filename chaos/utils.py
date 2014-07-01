@@ -114,7 +114,7 @@ def get_current_time():
 
 def option_value(values):
     def to_return(value, name):
-        if not (value in values):
+        if not value in values:
             error = "The {} argument must be in list {}, you gave {}".\
                 format(name, str(values), value)
             raise ValueError(error)
