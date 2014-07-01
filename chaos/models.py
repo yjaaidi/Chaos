@@ -85,14 +85,12 @@ class Disruption(TimestampMixin, db.Model):
         }
         query = cls.query.filter_by(status='published')
         publication_status = set(publication_status)
-        filters = []
         if len(publication_status) == len(publication_status_values):
             return query
         else:
-            for status in publication_status:
-                filters.append(availlable_filters[status])
-        query = query.filter(or_(*filters))
-        return query
+            filters = [availlable_filters[status] for status in publication_status]
+            query = query.filter(or_(*filters))
+            return query
 
     @property
     def publication_status(self):
