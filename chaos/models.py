@@ -45,6 +45,20 @@ def set_utc_on_connect(dbapi_con, con_record):
     c.close()
 sqlalchemy.event.listen(sqlalchemy.pool.Pool, 'connect', set_utc_on_connect)
 
+def get_filter(cls, status_value):
+        #past
+        # Filter all disruption with (end_publication_date is not NULL AND end_publication_date < now)
+        if status_value == 'past':
+            return and_(cls.end_publication_date != None, cls.end_publication_date < get_current_time(), )
+        #ongoing
+        # Filter all disruption with start_publication_date <= now <= end_publication_date (end_publication_date IS null)
+        elif status_value == 'ongoing':
+            return and_(cls.start_publication_date <= get_current_time(), or_(cls.end_publication_date == None, cls.end_publication_date >= get_current_time()))
+        #coming
+        # Filter all disruption with start_publication_date > now.
+        elif status_value == 'coming':
+            return cls.start_publication_date > get_current_time()
+
 class TimestampMixin(object):
     created_at = db.Column(db.DateTime(), default=datetime.utcnow, nullable=False)
     updated_at = db.Column(db.DateTime(), default=None, onupdate=datetime.utcnow)
@@ -80,40 +94,15 @@ class Disruption(TimestampMixin, db.Model):
     def all(cls, publication_status):
         to_return = cls.query.filter_by(status='published')
         publication_status = set(publication_status)
-
+        filters = []
         if len(publication_status) == len(publication_status_values):
             return to_return
-        elif len(publication_status) == 1:
-            #past
-            # Filter all disruption with end_publication_date < now.
-            if 'past' in publication_status:
-                to_return = to_return.filter(cls.end_publication_date < get_current_time())
-            #ongoing
-            # Filter all disruption with start_publication_date <= now <= end_publication_date.
-            if 'ongoing' in publication_status:
-                to_return = to_return.filter(cls.start_publication_date <= get_current_time()).filter(cls.end_publication_date >= get_current_time())
-            #coming
-            # Filter all disruption with start_publication_date > now.
-            elif 'coming' in publication_status:
-                to_return = to_return.filter(cls.start_publication_date > get_current_time())
-        elif len(publication_status) == 2:
-            #past and ongoing
-            #Filter with (end_publication_date < now) or (start_publication_date < now and end_publication_date > now)
-            if 'past' in publication_status and 'ongoing' in publication_status:
-                to_return = to_return.filter(or_(cls.end_publication_date < get_current_time(),
-                                                 and_(cls.start_publication_date < get_current_time(),
-                                                      cls.end_publication_date > get_current_time())))
-            # ongoing and coming
-            #Filter with  (start_publication_date > now) (start_publication_date < now and end_publication_date > now)
-            elif 'ongoing' in publication_status and 'coming' in publication_status:
-                to_return = to_return.filter(or_(cls.start_publication_date > get_current_time(),
-                                                 and_(cls.start_publication_date < get_current_time(),
-                                                      cls.end_publication_date > get_current_time())))
-            # past and coming
-            #Filter with  (end_publication_date < now) or (start_publication_date > now)
-            elif 'past' in publication_status and 'coming' in publication_status:
-                to_return = to_return.filter(or_(cls.end_publication_date < get_current_time(),cls.start_publication_date > get_current_time()))
+        else:
+            for status in publication_status:
+                filters.append(get_filter(cls, status))
+        to_return = to_return.filter(or_(*filters))
 
+        print to_return
         return to_return
 
     @property
@@ -128,4 +117,3 @@ class Disruption(TimestampMixin, db.Model):
         # Coming
         if self.start_publication_date > current_time:
             return "coming"
-
