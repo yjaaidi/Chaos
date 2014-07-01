@@ -35,6 +35,7 @@ from utils import paginate
 from sqlalchemy.dialects.postgresql import UUID
 from datetime import datetime
 from formats import publication_status_values
+from sqlalchemy import or_, and_
 
 #force the server to use UTC time for each connection
 import sqlalchemy
@@ -81,6 +82,37 @@ class Disruption(TimestampMixin, db.Model):
         publication_status = set(publication_status)
         if len(publication_status) == len(publication_status_values):
             return to_return
+        elif len(publication_status) == 1:
+            #past
+            # Filter all disruption with end_publication_date < now.
+            if publication_status_values[0] in publication_status:
+                to_return = to_return.filter(cls.end_publication_date < datetime.utcnow())
+            #ongoing
+            # Filter all disruption with start_publication_date <= now <= end_publication_date.
+            if publication_status_values[1] in publication_status:
+                to_return = to_return.filter(cls.start_publication_date <= datetime.utcnow()).filter(cls.end_publication_date >= datetime.utcnow())
+            #coming
+            # Filter all disruption with start_publication_date > now.
+            elif publication_status_values[2] in publication_status:
+                to_return = to_return.filter(cls.start_publication_date > datetime.utcnow())
+        elif len(publication_status) == 2:
+            #past and ongoing
+            #Filter with (end_publication_date < now) or (start_publication_date < now and end_publication_date > now)
+            if publication_status_values[0] in publication_status and publication_status_values[1] in publication_status:
+                to_return = to_return.filter(or_(cls.end_publication_date < datetime.utcnow(),
+                                                 and_(cls.start_publication_date < datetime.utcnow(),
+                                                      cls.end_publication_date > datetime.utcnow())))
+            # ongoing and coming
+            #Filter with  (start_publication_date > now) (start_publication_date < now and end_publication_date > now)
+            elif publication_status_values[1] in publication_status and publication_status_values[2] in publication_status:
+                to_return = to_return.filter(or_(cls.start_publication_date > datetime.utcnow(),
+                                                 and_(cls.start_publication_date < datetime.utcnow(),
+                                                      cls.end_publication_date > datetime.utcnow())))
+            # past and coming
+            #Filter with  (end_publication_date < now) or (start_publication_date > now)
+            elif publication_status_values[0] in publication_status and publication_status_values[2] in publication_status:
+                to_return = to_return.filter(or_(cls.end_publication_date < datetime.utcnow(),cls.start_publication_date > datetime.utcnow()))
+
         return to_return
 
     @property
