@@ -51,6 +51,18 @@ class TimestampMixin(object):
 
 DisruptionStatus = db.Enum('published', 'archived', name='disruption_status')
 
+class Severity(TimestampMixin, db.Model):
+    """
+    represent the severity of an impact
+    """
+    id = db.Column(UUID, primary_key=True)
+    wording = db.Column(db.Text, unique=False, nullable=False)
+    color = db.Column(db.Text, unique=False, nullable=True)
+    is_visible = db.Column(db.Boolean, unique=False, nullable=False, default=True)
+
+    def __repr__(self):
+        return '<Severity %r>' % self.id
+
 class Disruption(TimestampMixin, db.Model):
     id = db.Column(UUID, primary_key=True)
     reference = db.Column(db.Text, unique=False, nullable=True)
