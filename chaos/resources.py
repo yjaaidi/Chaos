@@ -142,6 +142,9 @@ class Disruptions(flask_restful.Resource):
 
     def get(self, id=None):
         if id:
+            if not id_format.match(id):
+                return marshal({'error': {'message': "id invalid"}},
+                               error_fields), 400
             return marshal({'disruption': models.Disruption.get(id)},
                            one_disruption_fields)
         else:
@@ -178,6 +181,9 @@ class Disruptions(flask_restful.Resource):
 
 
     def put(self, id):
+        if not id_format.match(id):
+            return marshal({'error': {'message': "id invalid"}},
+                           error_fields), 400
         disruption = models.Disruption.get(id)
         json = request.get_json()
         logging.getLogger(__name__).debug(json)
@@ -196,6 +202,9 @@ class Disruptions(flask_restful.Resource):
         return marshal({'disruption': disruption}, one_disruption_fields), 200
 
     def delete(self, id):
+        if not id_format.match(id):
+            return marshal({'error': {'message': "id invalid"}},
+                           error_fields), 400
         disruption = models.Disruption.get(id)
         disruption.archive()
         db.session.commit()
