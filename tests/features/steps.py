@@ -3,10 +3,15 @@ from nose.tools import *
 import json
 from chaos import db
 from chaos.models import Disruption, Severity
+import chaos
 
 def pythonify(value):
     if value.isdigit():
         return int(value)
+    if value == 'False':
+        return False
+    if value == 'True':
+        return True
     return value
 
 def find_field(json, fields):
@@ -79,3 +84,11 @@ def given_i_have_the_following_severities_in_my_database(step):
             setattr(severity, key, value)
         db.session.add(severity)
     db.session.commit()
+
+@step(u'And in the database for the severity "([^"]*)" the field "([^"]*)" should be "([^"]*)"')
+def and_in_the_database_the_severity_group1_the_field_group2_should_be_group3(step, id, field, value):
+    #this way flask manage the sqlalchemy session
+    with chaos.app.app_context():
+        severity = Severity.query.filter_by(id=id).first()
+        eq_(getattr(severity, field), pythonify(value))
+

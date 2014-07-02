@@ -7,7 +7,7 @@ Feature: Severity can be deleted
             | good news | #654321 | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | True       | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |
         When I delete "/severities/7ffab230-3d48-4eea-aa2c-22f8680230b6"
         Then the status code should be "204"
-        #@TODO: it will be nice to check if the row in the db is at false
+        And in the database for the severity "7ffab230-3d48-4eea-aa2c-22f8680230b6" the field "is_visible" should be "False"
 
     Scenario: deletion of non existing severity fail
         Given I have the following severities in my database:

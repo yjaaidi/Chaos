@@ -23,6 +23,7 @@ def setup_tester(scenario):
 def teardown_db(scenario):
     with chaos.app.app_context():
         flask_migrate.downgrade(revision='base', directory='../migrations')
+
 @before.each_step
 def retrieve_json_response(step):
     if hasattr(world, 'response'):
