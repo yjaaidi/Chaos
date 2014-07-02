@@ -79,3 +79,18 @@ one_disruption_fields = {'disruption': fields.Nested(disruption_fields)
 
 error_fields = {'error': fields.Nested({'message': fields.String})}
 
+
+severity_fields = {'id': fields.Raw,
+                   'wording': fields.Raw,
+                   'color': fields.Raw,
+                   'created_at': FieldDateTime,
+                   'updated_at': FieldDateTime,
+                   'self': {'href': fields.Url('severity', absolute=True)},
+}
+
+severities_fields = {'severities': fields.List(fields.Nested(severity_fields)),
+                     'meta': {},
+}
+
+one_severity_fields = {'severity': fields.Nested(severity_fields)
+                        }

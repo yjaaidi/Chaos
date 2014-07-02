@@ -25,5 +25,8 @@ def teardown_db(scenario):
         flask_migrate.downgrade(revision='base', directory='../migrations')
 @before.each_step
 def retrieve_json_response(step):
-    if hasattr(world, 'response') and not hasattr(world, 'reponse_json'):
-        world.response_json = json.loads(world.response.get_data())
+    if hasattr(world, 'response'):
+        try:
+            world.response_json = json.loads(world.response.get_data())
+        except ValueError:
+            pass

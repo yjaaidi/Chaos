@@ -34,7 +34,7 @@ from chaos import models, db
 from jsonschema import validate, ValidationError
 from flask.ext.restful import abort
 from fields import *
-from formats import disruptions_input_format, publication_status_values
+from formats import disruptions_input_format, publication_status_values, severity_input_format, id_format
 from chaos import mapper
 from chaos import utils
 
@@ -52,15 +52,80 @@ disruption_mapping = {'reference': None,
             }
         }
 
+severity_mapping = {'wording': None,
+                    'color': None,
+}
+
 class Index(flask_restful.Resource):
 
     def get(self):
         url = url_for('disruption', _external=True)
         response = {
             "disruptions": {"href": url},
-            "disruption": {"href": url + '/{id}', "templated": True}
+            "disruption": {"href": url + '/{id}', "templated": True},
+            "severities": {"href": url_for('severity', _external=True)},
         }
         return response, 200
+
+class Severity(flask_restful.Resource):
+
+    def get(self, id=None):
+        if id:
+            if not id_format.match(id):
+                return marshal({'error': {'message': "id invalid"}},
+                           error_fields), 400
+            response = {'severity': models.Severity.get(id)}
+            return marshal(response, one_severity_fields)
+        else:
+            response = {'severities': models.Severity.all(), 'meta': {}}
+            return marshal(response, severities_fields)
+
+    def post(self):
+        json = request.get_json()
+        logging.getLogger(__name__).debug('Post severity: %s', json)
+        try:
+            validate(json, severity_input_format)
+        except ValidationError, e:
+            logging.debug(str(e))
+            #TODO: generate good error messages
+            return marshal({'error': {'message': str(e).replace("\n", " ")}},
+                           error_fields), 400
+
+        severity = models.Severity()
+        mapper.fill_from_json(severity, json, severity_mapping)
+        db.session.add(severity)
+        db.session.commit()
+        return marshal({'severity': severity}, one_severity_fields), 201
+
+    def put(self, id):
+        if not id_format.match(id):
+            return marshal({'error': {'message': "id invalid"}},
+                    error_fields), 400
+        severity = models.Severity.get(id)
+        json = request.get_json()
+        logging.getLogger(__name__).debug('PUT severity: %s', json)
+
+        try:
+            validate(json, severity_input_format)
+        except ValidationError, e:
+            logging.debug(str(e))
+            #TODO: generate good error messages
+            return marshal({'error': {'message': str(e).replace("\n", " ")}},
+                           error_fields), 400
+
+        mapper.fill_from_json(severity, json, severity_mapping)
+        db.session.commit()
+        return marshal({'severity': severity}, one_severity_fields), 200
+
+    def delete(self, id):
+        if not id_format.match(id):
+            return marshal({'error': {'message': "id invalid"}},
+                           error_fields), 400
+        severity = models.Severity.get(id)
+        severity.is_visible = False
+        db.session.commit()
+        return None, 204
+
 
 class Disruptions(flask_restful.Resource):
     def __init__(self):
