@@ -28,6 +28,7 @@
 # www.navitia.io
 
 
+import re
 #see http://json-schema.org/
 
 datetime_pattern = '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$'
@@ -50,3 +51,12 @@ disruptions_input_format = {'type': 'object',
 }
 #Here Order of values is strict and is used to create query filters.
 publication_status_values = ["past", "ongoing", "coming"]
+
+severity_input_format = {'type': 'object',
+        'properties': {'wording': {'type': 'string', 'maxLength': 250},
+            'color': {'type': ['string', 'null'], 'mawLength': 20},
+        },
+        'required': ['wording']
+}
+
+id_format = re.compile('[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}')
