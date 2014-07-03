@@ -110,3 +110,22 @@ causes_fields = {'causes': fields.List(fields.Nested(cause_fields)),
 
 one_cause_fields = {'cause': fields.Nested(cause_fields)
                         }
+
+objectTC_fields = {'id' : fields.Raw,
+                   'type' : fields.Raw
+}
+
+impact_fields = {'id': fields.Raw,
+                 'created_at': FieldDateTime,
+                 'updated_at': FieldDateTime,
+                 'status': fields.Raw,
+                 'objects': fields.List(fields.Nested(objectTC_fields))
+}
+
+one_impact_fields = {'impact': fields.Nested(impact_fields)
+
+}
+
+impacts_fields = {'meta': fields.Nested(meta_fields),
+                  'impacts': fields.List(fields.Nested(impact_fields))
+}

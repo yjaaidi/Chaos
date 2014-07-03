@@ -46,6 +46,9 @@ api.add_resource(resources.Severity, '/severities',
 api.add_resource(resources.Cause, '/causes',
                  '/causes/<string:id>', endpoint='cause')
 
+api.add_resource(resources.Impacts, '/disruptions/<string:id>/impacts',
+                 '/disruptions/<string:id>/impacts/<string:impact_id>', endpoint='impact')
+
 
 @app.errorhandler(Exception)
 def error_handler(exception):

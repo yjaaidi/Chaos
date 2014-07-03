@@ -51,6 +51,7 @@ class TimestampMixin(object):
 
 DisruptionStatus = db.Enum('published', 'archived', name='disruption_status')
 SeverityEffect = db.Enum('blocking', name='severity_effect')
+ImpactStatus = db.Enum('published', 'archived', name='impact_status')
 
 class Severity(TimestampMixin, db.Model):
     """
@@ -155,3 +156,68 @@ class Cause(TimestampMixin, db.Model):
     @classmethod
     def get(cls, id):
         return cls.query.filter_by(id=id, is_visible=True).first_or_404()
+
+class Impact(TimestampMixin, db.Model):
+    id = db.Column(UUID, primary_key=True)
+    status = db.Column(ImpactStatus, nullable=False, default='published', index=True)
+    disruption_id = db.Column(UUID, db.ForeignKey(Disruption.id))
+    objects = db.relationship('ObjectTC', backref='Impact', lazy='dynamic')
+
+    def __repr__(self):
+        return '<Impact %r>' % self.id
+
+    def __init__(self, objects=None):
+        self.id = str(uuid.uuid1())
+        if objects:
+            self.objects = objects
+
+    def archive(self):
+        """
+        archive the impact, it will not be visible on any media
+        """
+        self.status = 'archived'
+
+    def add_objectTC(self, id, type, code):
+        """
+        Adds an objectTC in a imapct.
+        """
+        object = ObjectTC(id, type, code)
+        self.objects.append(object)
+        return object
+
+    def post_object(self, object):
+        """
+        Adds an objectTC in a imapct.
+        """
+        self.objects.append(object)
+        db.session.add(object)
+
+    @classmethod
+    def get(cls, id):
+        return cls.query.filter_by(id=id, status='published').first_or_404()
+
+    @classmethod
+    def all(cls, disruption_id):
+        query = cls.query.filter_by(status='published')
+        query = query.filter(and_(cls.disruption_id == disruption_id))
+        result = query.all()
+        return result
+
+class ObjectTC(TimestampMixin, db.Model):
+    object_id = db.Column(UUID, primary_key=True)
+    type = db.Column(db.Text, unique=False, nullable=True)
+    id =  db.Column(db.Text, unique=False, nullable=True)
+    impact_id = db.Column(UUID, db.ForeignKey(Impact.id))
+
+    def __repr__(self):
+        return '<ObjectTC %r>' % self.id
+
+    def __init__(self, impact_id=None, type=None, code=None):
+        self.object_id = str(uuid.uuid1())
+        self.impact_id = impact_id
+        self.type = type
+        self.id = code
+
+    @classmethod
+    def get(cls, id):
+        return cls.query.filter_by(id=id).first_or_404()
