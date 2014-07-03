@@ -2,8 +2,16 @@ from lettuce import *
 from nose.tools import *
 import json
 from chaos import db
-from chaos.models import Disruption, Severity
+from chaos.models import Disruption, Severity, Cause
 import chaos
+
+model_classes = {'disruption': Disruption,
+               'severity': Severity,
+               'cause': Cause,
+               'disruptions': Disruption,
+               'severities': Severity,
+               'causes': Cause,
+}
 
 def pythonify(value):
     if value.isdigit():
@@ -51,17 +59,6 @@ def and_in_the_json_the_field_is_set_to(step, fields):
 def and_field_should_be_empty(step, fields):
     assert_equals(len(find_field(world.response_json, fields)), 0)
 
-@step(u'Given I have the following disruptions in my database:')
-def given_i_have_the_following_disruptions_in_my_database(step):
-    for disruption_dict in step.hashes:
-        disruption = Disruption()
-        for key, value in disruption_dict.iteritems():
-            if value == 'None':
-                value = None
-            setattr(disruption, key, value)
-        db.session.add(disruption)
-    db.session.commit()
-
 @step(u'And the field "([^"]*)" should have a size of (\d+)')
 def and_the_field_should_have_a_size_of_n(step, fields, size):
     eq_(len(find_field(world.response_json, fields)), int(size))
@@ -74,21 +71,20 @@ def and_the_field_should_exist(step, fields):
 def and_in_the_json_the_field_is_set_to(step, fields, value):
     eq_(int(find_field(world.response_json, fields)), int(value))
 
-@step(u'Given I have the following severities in my database:')
-def given_i_have_the_following_severities_in_my_database(step):
-    for severity_dict in step.hashes:
-        severity = Severity()
-        for key, value in severity_dict.iteritems():
-            if value == 'None':
-                value = None
-            setattr(severity, key, value)
-        db.session.add(severity)
-    db.session.commit()
-
-@step(u'And in the database for the severity "([^"]*)" the field "([^"]*)" should be "([^"]*)"')
-def and_in_the_database_the_severity_group1_the_field_group2_should_be_group3(step, id, field, value):
+@step(u'And in the database for the (\w+) "([^"]+)" the field "([^"]*)" should be "([^"]*)"')
+def and_in_the_database_the_severity_group1_the_field_group2_should_be_group3(step, cls, id, field, value):
     #this way flask manage the sqlalchemy session
     with chaos.app.app_context():
-        severity = Severity.query.filter_by(id=id).first()
-        eq_(getattr(severity, field), pythonify(value))
+        row = model_classes[cls].query.filter_by(id=id).first()
+        eq_(getattr(row, field), pythonify(value))
 
+@step(u'Given I have the following (\w+) in my database:')
+def given_i_have_the_following_causes_in_my_database(step, cls):
+    for values_dict in step.hashes:
+        row = model_classes[cls]()
+        for key, value in values_dict.iteritems():
+            if value == 'None':
+                value = None
+            setattr(row, key, value)
+        db.session.add(row)
+    db.session.commit()

@@ -27,7 +27,8 @@
 # https://groups.google.com/d/forum/navitia
 # www.navitia.io
 
-
+__all__ = ['disruptions_input_format', 'publication_status_values',
+           'severity_input_format', 'id_format', 'cause_input_format']
 import re
 #see http://json-schema.org/
 
@@ -62,3 +63,9 @@ severity_input_format = {'type': 'object',
 }
 
 id_format = re.compile('[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}')
+
+cause_input_format = {'type': 'object',
+        'properties': {'wording': {'type': 'string', 'maxLength': 250},
+        },
+        'required': ['wording']
+}

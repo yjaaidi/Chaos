@@ -133,3 +133,25 @@ class Disruption(TimestampMixin, db.Model):
         if self.start_publication_date > current_time:
             return "coming"
 
+
+class Cause(TimestampMixin, db.Model):
+    """
+    represent the cause of a disruption
+    """
+    id = db.Column(UUID, primary_key=True)
+    wording = db.Column(db.Text, unique=False, nullable=False)
+    is_visible = db.Column(db.Boolean, unique=False, nullable=False, default=True)
+
+    def __init__(self):
+        self.id = str(uuid.uuid1())
+
+    def __repr__(self):
+        return '<Cause %r>' % self.id
+
+    @classmethod
+    def all(cls):
+        return cls.query.filter_by(is_visible=True).all()
+
+    @classmethod
+    def get(cls, id):
+        return cls.query.filter_by(id=id, is_visible=True).first_or_404()
