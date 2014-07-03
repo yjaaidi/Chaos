@@ -558,7 +558,7 @@ Return all impacts of a disruption.
                             "updated_at": "2014-04-31T16:55:18Z",
                             "color": "#123456",
                             "priority": null,
-                            "effect": "none"
+                            "effect": null
                         },
                         "application_periods": [
                             {
@@ -710,7 +710,7 @@ Create a new impact.
                         "updated_at": "2014-04-31T16:55:18Z",
                         "color": "#123456",
                         "priority": 1,
-                        "effect": "none"
+                        "effect": null
                     },
                     "application_periods": [
                         {
@@ -800,7 +800,7 @@ Create a new impact.
                         "updated_at": "2014-04-31T16:55:18Z",
                         "color": "#123456",
                         "priority": 1,
-                        "effect": "none"
+                        "effect": null
                     },
                     "application_periods": [
                         {
@@ -881,6 +881,7 @@ Create a new impact.
 #List of severities [/severities]
 
 ##Retrieve the list of all severities [GET]
+Return all the severities ordered by priority.
 
 - response 200 (application/json)
 
@@ -891,7 +892,8 @@ Create a new impact.
                     {
                         "id": "3d1f42b3-e8df-11e3-8c3e-0008ca8617ea",
                         "wording": "normal",
-                        "effect": "none",
+                        "effect": null,
+                        "priority": 1,
                         "color": "#123456",
                         "created_at": "2014-04-31T16:52:18Z",
                         "updated_at": "2014-04-31T16:55:18Z"
@@ -899,7 +901,8 @@ Create a new impact.
                     {
                         "id": "3d1f42b4-e8df-11e3-8c3e-0008ca8617ea",
                         "wording": "majeur",
-                        "effect": "none",
+                        "effect": null,
+                        "priority": 2,
                         "color": "#123456",
                         "created_at": "2014-04-31T16:52:18Z",
                         "updated_at": "2014-04-31T16:55:18Z"
@@ -908,6 +911,7 @@ Create a new impact.
                         "id": "3d1f42b5-e8df-11e3-8c3e-0008ca8617ea",
                         "wording": "bloquant",
                         "effect": "blocking",
+                        "priority": 3,
                         "color": "#123456",
                         "created_at": "2014-04-31T16:52:18Z",
                         "updated_at": "2014-04-31T16:55:18Z"
@@ -927,7 +931,7 @@ Create a new impact.
                     "wording": "normal",
                     "color": "#123456",
                     "priority": 1,
-                    "effect": "none"
+                    "effect": null
                 }
 
 - response 200 (application/json)
@@ -942,7 +946,7 @@ Create a new impact.
                     "updated_at": null,
                     "color": "#123456",
                     "priority": 1,
-                    "effect": "none"
+                    "effect": null
                 },
                 "meta": {}
             }
@@ -1090,7 +1094,7 @@ Retrieve one existing severity:
                     "updated_at": null,
                     "color": "#123456",
                     "priority": 1,
-                    "effect": "none"
+                    "effect": null
                 },
                 "meta": {}
             }
@@ -1121,7 +1125,7 @@ Retrieve one existing severity:
             {
                 "wording": "Bonne nouvelle",
                 "color": "#123456",
-                "effect": "none"
+                "effect": null
             }
 
 
@@ -1137,7 +1141,7 @@ Retrieve one existing severity:
                     "updated_at": "2014-04-31T16:55:18Z",
                     "color": "#123456",
                     "priority": 1,
-                    "effect": "none"
+                    "effect": null
                 },
                 "meta": {}
             }
