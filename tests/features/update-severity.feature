@@ -33,6 +33,21 @@ Feature: update severity
         And the field "severity.wording" should be "foo"
         And the field "severity.color" should be "blue"
 
+    Scenario: I can update the effect of a severity
+        Given I have the following severities in my database:
+            | wording   | color   | created_at          | updated_at          | is_visible | id                                   | effect |
+            | blocking  | #123456 | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | True       | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | None   |
+            | good news | #654321 | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | True       | 7ffab232-3d48-4eea-aa2c-22f8680230b6 | None   |
+        When I put to "/severities/7ffab230-3d48-4eea-aa2c-22f8680230b6" with:
+        """
+        {"wording": "foo", "color": "blue", "effect": "blocking"}
+        """
+        Then the status code should be "200"
+        And the header "Content-Type" should be "application/json"
+        And the field "severity.wording" should be "foo"
+        And the field "severity.effect" should be "blocking"
+        And in the database for the severity "7ffab230-3d48-4eea-aa2c-22f8680230b6" the field "effect" should be "blocking"
+
     Scenario: I can't update a invisible severity
         Given I have the following severities in my database:
             | wording   | color   | created_at          | updated_at          | is_visible | id                                   |
