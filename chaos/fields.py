@@ -86,6 +86,8 @@ severity_fields = {'id': fields.Raw,
                    'created_at': FieldDateTime,
                    'updated_at': FieldDateTime,
                    'self': {'href': fields.Url('severity', absolute=True)},
+                   'priority': fields.Integer(default=None),
+                   'effect': fields.Raw(),
 }
 
 severities_fields = {'severities': fields.List(fields.Nested(severity_fields)),

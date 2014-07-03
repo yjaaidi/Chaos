@@ -50,6 +50,7 @@ class TimestampMixin(object):
     updated_at = db.Column(db.DateTime(), default=None, onupdate=datetime.utcnow)
 
 DisruptionStatus = db.Enum('published', 'archived', name='disruption_status')
+SeverityEffect = db.Enum('blocking', name='severity_effect')
 
 class Severity(TimestampMixin, db.Model):
     """
@@ -59,6 +60,8 @@ class Severity(TimestampMixin, db.Model):
     wording = db.Column(db.Text, unique=False, nullable=False)
     color = db.Column(db.Text, unique=False, nullable=True)
     is_visible = db.Column(db.Boolean, unique=False, nullable=False, default=True)
+    priority = db.Column(db.Integer, unique=False, nullable=True)
+    effect = db.Column(SeverityEffect, nullable=True)
 
     def __init__(self):
         self.id = str(uuid.uuid1())
@@ -68,7 +71,7 @@ class Severity(TimestampMixin, db.Model):
 
     @classmethod
     def all(cls):
-        return cls.query.filter_by(is_visible=True).all()
+        return cls.query.filter_by(is_visible=True).order_by(cls.priority).all()
 
     @classmethod
     def get(cls, id):
