@@ -54,6 +54,7 @@ disruption_mapping = {'reference': None,
 
 severity_mapping = {'wording': None,
                     'color': None,
+                    'priority': None,
 }
 
 class Index(flask_restful.Resource):

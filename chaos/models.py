@@ -71,7 +71,7 @@ class Severity(TimestampMixin, db.Model):
 
     @classmethod
     def all(cls):
-        return cls.query.filter_by(is_visible=True).all()
+        return cls.query.filter_by(is_visible=True).order_by(cls.priority).all()
 
     @classmethod
     def get(cls, id):

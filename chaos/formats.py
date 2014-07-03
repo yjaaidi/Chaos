@@ -55,6 +55,7 @@ publication_status_values = ["past", "ongoing", "coming"]
 severity_input_format = {'type': 'object',
         'properties': {'wording': {'type': 'string', 'maxLength': 250},
             'color': {'type': ['string', 'null'], 'mawLength': 20},
+            'priority': {'type': ['integer', 'null']},
         },
         'required': ['wording']
 }

@@ -557,6 +557,7 @@ Return all impacts of a disruption.
                             "created_at": "2014-04-31T16:52:18Z",
                             "updated_at": "2014-04-31T16:55:18Z",
                             "color": "#123456",
+                            "priority": null,
                             "effect": "none"
                         },
                         "application_periods": [
@@ -708,6 +709,7 @@ Create a new impact.
                         "created_at": "2014-04-31T16:52:18Z",
                         "updated_at": "2014-04-31T16:55:18Z",
                         "color": "#123456",
+                        "priority": 1,
                         "effect": "none"
                     },
                     "application_periods": [
@@ -797,6 +799,7 @@ Create a new impact.
                         "created_at": "2014-04-31T16:52:18Z",
                         "updated_at": "2014-04-31T16:55:18Z",
                         "color": "#123456",
+                        "priority": 1,
                         "effect": "none"
                     },
                     "application_periods": [
@@ -923,6 +926,7 @@ Create a new impact.
                 {
                     "wording": "normal",
                     "color": "#123456",
+                    "priority": 1,
                     "effect": "none"
                 }
 
@@ -937,6 +941,7 @@ Create a new impact.
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": null,
                     "color": "#123456",
+                    "priority": 1,
                     "effect": "none"
                 },
                 "meta": {}
@@ -1084,6 +1089,7 @@ Retrieve one existing severity:
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": null,
                     "color": "#123456",
+                    "priority": 1,
                     "effect": "none"
                 },
                 "meta": {}
@@ -1130,6 +1136,7 @@ Retrieve one existing severity:
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": "2014-04-31T16:55:18Z",
                     "color": "#123456",
+                    "priority": 1,
                     "effect": "none"
                 },
                 "meta": {}
