@@ -150,9 +150,8 @@ class Cause(TimestampMixin, db.Model):
 
     @classmethod
     def all(cls):
-        return cls.query.all()
+        return cls.query.filter_by(is_visible=True).all()
 
     @classmethod
     def get(cls, id):
-        return cls.query.filter_by(id=id).first_or_404()
-
+        return cls.query.filter_by(id=id, is_visible=True).first_or_404()

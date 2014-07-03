@@ -34,14 +34,14 @@ from chaos import models, db
 from jsonschema import validate, ValidationError
 from flask.ext.restful import abort
 from fields import *
-from formats import disruptions_input_format, publication_status_values, severity_input_format, id_format
+from formats import *
 from chaos import mapper
 from chaos import utils
 
 import logging
 from utils import make_pager, option_value
 
-__all__ = ['Disruptions']
+__all__ = ['Disruptions', 'Index', 'Severity', 'Cause']
 
 
 disruption_mapping = {'reference': None,
@@ -58,6 +58,8 @@ severity_mapping = {'wording': None,
                     'effect': None,
 }
 
+cause_mapping = {'wording': None,}
+
 class Index(flask_restful.Resource):
 
     def get(self):
@@ -66,6 +68,7 @@ class Index(flask_restful.Resource):
             "disruptions": {"href": url},
             "disruption": {"href": url + '/{id}', "templated": True},
             "severities": {"href": url_for('severity', _external=True)},
+            "causes": {"href": url_for('cause', _external=True)},
         }
         return response, 200
 
@@ -209,5 +212,64 @@ class Disruptions(flask_restful.Resource):
                            error_fields), 400
         disruption = models.Disruption.get(id)
         disruption.archive()
+        db.session.commit()
+        return None, 204
+
+class Cause(flask_restful.Resource):
+
+    def get(self, id=None):
+        if id:
+            if not id_format.match(id):
+                return marshal({'error': {'message': "id invalid"}},
+                           error_fields), 400
+            response = {'cause': models.Cause.get(id)}
+            return marshal(response, one_cause_fields)
+        else:
+            response = {'causes': models.Cause.all(), 'meta': {}}
+            return marshal(response, causes_fields)
+
+    def post(self):
+        json = request.get_json()
+        logging.getLogger(__name__).debug('Post cause: %s', json)
+        try:
+            validate(json, cause_input_format)
+        except ValidationError, e:
+            logging.debug(str(e))
+            #TODO: generate good error messages
+            return marshal({'error': {'message': str(e).replace("\n", " ")}},
+                           error_fields), 400
+
+        cause = models.Cause()
+        mapper.fill_from_json(cause, json, cause_mapping)
+        db.session.add(cause)
+        db.session.commit()
+        return marshal({'cause': cause}, one_cause_fields), 201
+
+    def put(self, id):
+        if not id_format.match(id):
+            return marshal({'error': {'message': "id invalid"}},
+                    error_fields), 400
+        cause = models.Cause.get(id)
+        json = request.get_json()
+        logging.getLogger(__name__).debug('PUT cause: %s', json)
+
+        try:
+            validate(json, cause_input_format)
+        except ValidationError, e:
+            logging.debug(str(e))
+            #TODO: generate good error messages
+            return marshal({'error': {'message': str(e).replace("\n", " ")}},
+                           error_fields), 400
+
+        mapper.fill_from_json(cause, json, cause_mapping)
+        db.session.commit()
+        return marshal({'cause': cause}, one_cause_fields), 200
+
+    def delete(self, id):
+        if not id_format.match(id):
+            return marshal({'error': {'message': "id invalid"}},
+                           error_fields), 400
+        cause = models.Cause.get(id)
+        cause.is_visible = False
         db.session.commit()
         return None, 204

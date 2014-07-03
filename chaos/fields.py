@@ -96,3 +96,17 @@ severities_fields = {'severities': fields.List(fields.Nested(severity_fields)),
 
 one_severity_fields = {'severity': fields.Nested(severity_fields)
                         }
+
+cause_fields = {'id': fields.Raw,
+                   'wording': fields.Raw,
+                   'created_at': FieldDateTime,
+                   'updated_at': FieldDateTime,
+                   'self': {'href': fields.Url('cause', absolute=True)},
+}
+
+causes_fields = {'causes': fields.List(fields.Nested(cause_fields)),
+                     'meta': {},
+}
+
+one_cause_fields = {'cause': fields.Nested(cause_fields)
+                        }

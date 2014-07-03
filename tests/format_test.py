@@ -13,8 +13,8 @@ def test_validate_disruption_format():
 def test_validate_severity_format():
     Draft4Validator.check_schema(formats.severity_input_format)
 
-def test_validate_severity_format():
-    Draft4Validator.check_schema(formats.severity_input_format)
+def test_validate_cause_format():
+    Draft4Validator.check_schema(formats.cause_input_format)
 
 def test_severities_validation():
     json = {'wording': 'foo', 'color': 'a'*20}
@@ -64,3 +64,21 @@ def test_severities_validation_priority_is_int_or_null():
 def test_severities_validation_is_int_or_null_2():
     json = {'wording': 'aa', 'priority': '1'}
     validate(json, formats.severity_input_format)
+
+def test_causes_validation():
+    json = {'wording': 'foo'}
+    validate(json, formats.cause_input_format)
+
+    json = {'wording': 'a'*250}
+    validate(json, formats.cause_input_format)
+
+
+@raises(ValidationError)
+def test_causes_validation_wording_is_required():
+    json = {}
+    validate(json, formats.cause_input_format)
+
+@raises(ValidationError)
+def test_causes_validation_wording_has_max_length():
+    json = {'wording': 'a'*251}
+    validate(json, formats.cause_input_format)
