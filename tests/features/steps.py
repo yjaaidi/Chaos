@@ -11,6 +11,9 @@ model_classes = {'disruption': Disruption,
                'disruptions': Disruption,
                'severities': Severity,
                'causes': Cause,
+               'impact': Impact,
+               'impacts': Impact,
+               'objectTC': ObjectTC,
 }
 
 def pythonify(value):
