@@ -115,11 +115,17 @@ objectTC_fields = {'id' : fields.Raw,
                    'type' : fields.Raw
 }
 
+application_period_fields = {
+    'begin': FieldDateTime(attribute='start_application_date'),
+    'end': FieldDateTime(attribute='end_application_date')
+}
+
 impact_fields = {'id': fields.Raw,
                  'created_at': FieldDateTime,
                  'updated_at': FieldDateTime,
                  'status': fields.Raw,
-                 'objects': fields.List(fields.Nested(objectTC_fields))
+                 'objects': fields.List(fields.Nested(objectTC_fields)),
+                 'application_periods': fields.List(fields.Nested(application_period_fields))
 }
 
 one_impact_fields = {'impact': fields.Nested(impact_fields)
