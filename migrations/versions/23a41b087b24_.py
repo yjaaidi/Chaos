@@ -1,4 +1,4 @@
-"""empty message
+"""Add table ptobject
 
 Revision ID: 23a41b087b24
 Revises: 6f3aadb613f
@@ -23,7 +23,7 @@ def upgrade():
     sa.Column('object_id', postgresql.UUID(), nullable=False),
     sa.Column('type', sa.Text(), nullable=True),
     sa.Column('id', sa.Text(), nullable=True),
-    sa.Column('impact_id', postgresql.UUID(), nullable=True),
+    sa.Column('impact_id', postgresql.UUID(), nullable=False),
     sa.ForeignKeyConstraint(['impact_id'], [u'impact.id'] ),
     sa.PrimaryKeyConstraint('object_id')
     )

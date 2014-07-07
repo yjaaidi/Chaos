@@ -321,7 +321,18 @@ class Impacts(flask_restful.Resource):
         if not id_format.match(id):
             return marshal({'error': {'message': "id invalid"}},
                            error_fields), 400
+        json = request.get_json()
+        logging.getLogger(__name__).debug(json)
         impact = models.Impact.get(id)
+
+        #Add all objects present in Json
+        if json:
+            for obj in  json['objects']:
+                object = models.PTobject()
+                object.impact_id = impact.id
+                mapper.fill_from_json(object, obj, object_mapping)
+                impact.insert_object(object)
+
         db.session.commit()
         return marshal({'impact': impact}, one_impact_fields), 200
 
