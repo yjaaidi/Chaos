@@ -161,7 +161,7 @@ class Impact(TimestampMixin, db.Model):
     id = db.Column(UUID, primary_key=True)
     status = db.Column(ImpactStatus, nullable=False, default='published', index=True)
     disruption_id = db.Column(UUID, db.ForeignKey(Disruption.id))
-    objects = db.relationship('ObjectTC', backref='Impact', lazy='dynamic')
+    objects = db.relationship('PTobject', backref='Impact')
 
     def __repr__(self):
         return '<Impact %r>' % self.id
@@ -177,15 +177,7 @@ class Impact(TimestampMixin, db.Model):
         """
         self.status = 'archived'
 
-    def add_objectTC(self, id, type, code):
-        """
-        Adds an objectTC in a imapct.
-        """
-        object = ObjectTC(id, type, code)
-        self.objects.append(object)
-        return object
-
-    def post_object(self, object):
+    def insert_object(self, object):
         """
         Adds an objectTC in a imapct.
         """
@@ -203,14 +195,17 @@ class Impact(TimestampMixin, db.Model):
         result = query.all()
         return result
 
-class ObjectTC(TimestampMixin, db.Model):
+class PTobject(TimestampMixin, db.Model):
+    __tablename__ = 'ptobject'
     object_id = db.Column(UUID, primary_key=True)
     type = db.Column(db.Text, unique=False, nullable=True)
     id =  db.Column(db.Text, unique=False, nullable=True)
     impact_id = db.Column(UUID, db.ForeignKey(Impact.id))
 
+
+
     def __repr__(self):
-        return '<ObjectTC %r>' % self.id
+        return '<PTobject %r>' % self.id
 
     def __init__(self, impact_id=None, type=None, code=None):
         self.object_id = str(uuid.uuid1())

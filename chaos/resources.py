@@ -283,36 +283,36 @@ class Impacts(flask_restful.Resource):
     def __init__(self):
         self.parsers = {}
 
-    def get(self, id, impact_id=None):
-        if impact_id:
-            if not id_format.match(impact_id):
+    def get(self, disruption_id=None, id=None):
+        if id:
+            if not id_format.match(id):
                 return marshal({'error': {'message': "id invalid"}},
                            error_fields), 400
-            query = models.Impact.get(impact_id)
-            return marshal({'impact': query},
+            response = models.Impact.get(id)
+            return marshal({'impact': response},
                            one_impact_fields)
         else:
-            response = {'impacts' : models.Impact.all(id), 'meta': {}}
+            response = {'impacts' : models.Impact.all(disruption_id), 'meta': {}}
             return marshal(response, impacts_fields)
 
-    def post(self, id):
-        if not id_format.match(id):
+    def post(self, disruption_id):
+        if not id_format.match(disruption_id):
             return marshal({'error': {'message': "id invalid"}},
                            error_fields), 400
         json = request.get_json()
         logging.getLogger(__name__).debug(json)
 
         impact = models.Impact()
-        impact.disruption_id = id
+        impact.disruption_id = disruption_id
         db.session.add(impact)
 
         #Add all objects present in Json
         if json:
             for obj in  json['objects']:
-                object = models.ObjectTC()
+                object = models.PTobject()
                 object.impact_id = impact.id
                 mapper.fill_from_json(object, obj, object_mapping)
-                impact.post_object(object)
+                impact.insert_object(object)
 
         db.session.commit()
         return marshal({'impact': impact}, one_impact_fields), 201
@@ -325,11 +325,11 @@ class Impacts(flask_restful.Resource):
         db.session.commit()
         return marshal({'impact': impact}, one_impact_fields), 200
 
-    def delete(self, id, impact_id):
-        if not id_format.match(impact_id):
+    def delete(self, id):
+        if not id_format.match(id):
                 return marshal({'error': {'message': "id invalid"}},
                                error_fields), 400
-        impact = models.Impact.get(impact_id)
+        impact = models.Impact.get(id)
         impact.archive()
         db.session.commit()
         return None, 204
