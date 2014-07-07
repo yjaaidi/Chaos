@@ -317,11 +317,15 @@ class Impacts(flask_restful.Resource):
         db.session.commit()
         return marshal({'impact': impact}, one_impact_fields), 201
 
-    def put(self, id, impact_id):
+    def put(self, disruption_id, id):
+        if not id_format.match(disruption_id):
+            return marshal({'error': {'message': "id invalid"}},
+                           error_fields), 400
+
         if not id_format.match(id):
             return marshal({'error': {'message': "id invalid"}},
                            error_fields), 400
-        impact = models.Impact.get(impact_id)
+        impact = models.Impact.get(id)
         db.session.commit()
         return marshal({'impact': impact}, one_impact_fields), 200
 
