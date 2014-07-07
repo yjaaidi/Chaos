@@ -1,14 +1,27 @@
 FORMAT: 1A
-HOST: https://chaos.apiary-mock.com
+HOST: https://ogv2ws.apiary-mock.com
 
-#Chaos
-Chaos est une API qui permet de @TODO
+#Web Services Ogesper v2
+Les web Services Ogesper v2 permettent la gestion des perturbations sur un référentiel de transport.
+Les entités manipulées par le web service sont:
+
+   - les perturbations (disruptions), qui représentent toutes situations affectant positivement ou négativement le réseau de transport.
+   - les impacts (impacts), qui représentent toute application d'une perturbation sur une entité du référentiel de transport (ligne, zone d'arrêt, ...).
+   - les sévérités, ou conséquences (severities), qui représentent les conséquences d'un impact sur l'entité du référentiel affectée (bloquant, information, ...)
+   - les causes, ou motif (causes), qui représentent les origine de la perturbation (obstacle sur les voies, accident de voyageur, ...)
+   - les canaux de diffusion (channels), qui représentent les medias vers lesquels les informations seront transmises.
+
+Pour chacune des entités présentées, les web services proposent les fonctions de création, suppression, édition, liste, et recherche unitaire. Sauf mention contraire, seules les fonctions de liste et de recherche sont proposées à l'implémentation.
+
+L'ensemble des services retournent les URLs nécessaires à une séquence d'appel. Par exemple, l'API disruptions retourne une URL permettant d'accéder au détail de chaque perturbation retournée (attribut "self"), des liens vers la liste des impacts de la perturbation ("impacts"); il est donc inutile de retravailler les paramètres d'appels côté media entre deux interrogations.
 Dans ce document, toutes les sections décrivent les différents points d'entrée.
+
 Dans chacune des APIs il est décrit les méthodes http qui sont implémentées
 
-En général les APIs implémente sur les méthodes GET la pagination. On peut alors préciser l'id du 
+En général les APIs implémentent sur les méthodes GET la pagination. On peut alors préciser l'id du 
 premier item de la page grâce au paramètre start_index, puis préciser le
 nombre d'items que l'on veut par page à l'aide du paramètre items_per_page.
+
 Le nom des paramètres respecte : www.opensearch.org
 
 Certaines des urls contiennent des places holders, ils sont contenus entre { },
@@ -17,8 +30,6 @@ Exemple : /disruptions/{disruption_id}/impacts
 Cette url n'est pas valide, il faut remplacer {disruption_id} par un id de
 disruption valide.
 
-Note : les perturbations sont traduites dans l'API par disruption
-
 # Racine [/]
 ##Récupérer la liste des API [GET]
 
@@ -26,18 +37,18 @@ Note : les perturbations sont traduites dans l'API par disruption
     * Body
 
             {
-                "disruptions": {"href": "https://chaos.apiary-mock.com/disruptions"},
-                "disruption": {"href": "https://chaos.apiary-mock.com/disruptions/{id}", "templated": true},
-                "severities": {"href": "https://chaos.apiary-mock.com/severities"},
-                "causes": {"href": "https://chaos.apiary-mock.com/causes"},
-                "channels": {"href": "https://chaos.apiary-mock.com/channels"}
+                "disruptions": {"href": "https://ogv2ws.apiary-mock.com/disruptions"},
+                "disruption": {"href": "https://ogv2ws.apiary-mock.com/disruptions/{id}", "templated": true},
+                "severities": {"href": "https://ogv2ws.apiary-mock.com/severities"},
+                "causes": {"href": "https://ogv2ws.apiary-mock.com/causes"},
+                "channels": {"href": "https://ogv2ws.apiary-mock.com/channels"}
             }
 
 
 # Liste des perturbations [/disruptions]
 
 ##Récupérer les disruptions [GET]
-Retourne la liste de toutes les perturbations visibles
+Retourne la liste de toutes les perturbations visibles.
 ##Paramètres
 
 | Name                 | description                                                                               | required | default                 |
@@ -49,6 +60,7 @@ Retourne la liste de toutes les perturbations visibles
 
 @TODO: search and sort
 
+Le champs ```publication_status``` permet, par rapport à l'heure de référence passée en paramètre, de retourner les perturbations en cours (c'est à dire ayant des dates/heures de publications encadrant la date/heure de référence), à venir (qui ont des dates/heures de publications postérieures à la date/heure de référence) ou passées (ayant des dates/heures de publications antérieures à la date/heure de référence).
 
 - response 200 (application/json)
 
@@ -58,7 +70,7 @@ Retourne la liste de toutes les perturbations visibles
                 "disruptions": [
                     {
                         "id": "d30502d2-e8de-11e3-8c3e-0008ca8657ea",
-                        "self": {"href": "https://chaos.apiary-mock.com/disruptions/d30502d2-e8de-11e3-8c3e-0008ca8657ea"},
+                        "self": {"href": "https://ogv2ws.apiary-mock.com/disruptions/d30502d2-e8de-11e3-8c3e-0008ca8657ea"},
                         "reference": "RER B en panne",
                         "created_at": "2014-04-31T16:52:18Z",
                         "updated_at": "2014-04-31T16:55:18Z",
@@ -101,15 +113,15 @@ Retourne la liste de toutes les perturbations visibles
                                 "items_per_page": 20,
                                 "total_results": 3,
                                 "prev": null,
-                                "next": {"href": "https://chaos.apiary-mock.com/disruptions/d30502d2-e8de-11e3-8c3e-0008ca8657ea/impacts?start_index=1&item_per_page=20"},
-                                "first": {"href": "https://chaos.apiary-mock.com/disruptions/d30502d2-e8de-11e3-8c3e-0008ca8657ea/impacts?start_index=1&item_per_page=20"},
-                                "last": {"href": "https://chaos.apiary-mock.com/disruptions/d30502d2-e8de-11e3-8c3e-0008ca8657ea/impacts?start_index=1&item_per_page=20"}
+                                "next": {"href": "https://ogv2ws.apiary-mock.com/disruptions/d30502d2-e8de-11e3-8c3e-0008ca8657ea/impacts?start_index=1&item_per_page=20"},
+                                "first": {"href": "https://ogv2ws.apiary-mock.com/disruptions/d30502d2-e8de-11e3-8c3e-0008ca8657ea/impacts?start_index=1&item_per_page=20"},
+                                "last": {"href": "https://ogv2ws.apiary-mock.com/disruptions/d30502d2-e8de-11e3-8c3e-0008ca8657ea/impacts?start_index=1&item_per_page=20"}
                             }
                         }
                     },
                     {
                         "id": "d30502d2-e8de-11e3-8c3e-0008ca8657eb",
-                        "self": {"href": "https://chaos.apiary-mock.com/disruptions/d30502d2-e8de-11e3-8c3e-0008ca8657eb"},
+                        "self": {"href": "https://ogv2ws.apiary-mock.com/disruptions/d30502d2-e8de-11e3-8c3e-0008ca8657eb"},
                         "reference": "RER A en panne",
                         "created_at": "2014-05-31T16:52:18Z",
                         "updated_at": null,
@@ -133,15 +145,15 @@ Retourne la liste de toutes les perturbations visibles
                                 "items_per_page": 20,
                                 "total_results": 5,
                                 "prev": null,
-                                "next": {"href": "https://chaos.apiary-mock.com/disruptions/d30502d2-e8de-11e3-8c3e-0008ca8657eb/impacts?start_index=1&item_per_page=20"},
-                                "first": {"href": "https://chaos.apiary-mock.com/disruptions/d30502d2-e8de-11e3-8c3e-0008ca8657eb/impacts?start_index=1&item_per_page=20"},
-                                "last": {"href": "https://chaos.apiary-mock.com/disruptions/d30502d2-e8de-11e3-8c3e-0008ca8657eb/impacts?start_index=1&item_per_page=20"}
+                                "next": {"href": "https://ogv2ws.apiary-mock.com/disruptions/d30502d2-e8de-11e3-8c3e-0008ca8657eb/impacts?start_index=1&item_per_page=20"},
+                                "first": {"href": "https://ogv2ws.apiary-mock.com/disruptions/d30502d2-e8de-11e3-8c3e-0008ca8657eb/impacts?start_index=1&item_per_page=20"},
+                                "last": {"href": "https://ogv2ws.apiary-mock.com/disruptions/d30502d2-e8de-11e3-8c3e-0008ca8657eb/impacts?start_index=1&item_per_page=20"}
                             }
                         }
                     },
                     {
                         "id": "d30502d2-e8de-11e3-8c3e-0008ca8657ec",
-                        "self": {"href": "https://chaos.apiary-mock.com/disruptions/d30502d2-e8de-11e3-8c3e-0008ca8657ec"},
+                        "self": {"href": "https://ogv2ws.apiary-mock.com/disruptions/d30502d2-e8de-11e3-8c3e-0008ca8657ec"},
                         "reference": "Chatelet fermé",
                         "created_at": "2014-05-17T16:52:18Z",
                         "update_at": "2014-05-31T06:55:18Z",
@@ -175,9 +187,9 @@ Retourne la liste de toutes les perturbations visibles
                                 "items_per_page": 20,
                                 "total_results": 25,
                                 "prev": null,
-                                "next": {"href": "https://chaos.apiary-mock.com/disruptions/d30502d2-e8de-11e3-8c3e-0008ca8657ec/impacts?start_index=1&item_per_page=20"},
-                                "first": {"href": "https://chaos.apiary-mock.com/disruptions/d30502d2-e8de-11e3-8c3e-0008ca8657ec/impacts?start_index=1&item_per_page=20"},
-                                "last": {"href": "https://chaos.apiary-mock.com/disruptions/d30502d2-e8de-11e3-8c3e-0008ca8657ec/impacts?start_index=21&item_per_page=20"}
+                                "next": {"href": "https://ogv2ws.apiary-mock.com/disruptions/d30502d2-e8de-11e3-8c3e-0008ca8657ec/impacts?start_index=1&item_per_page=20"},
+                                "first": {"href": "https://ogv2ws.apiary-mock.com/disruptions/d30502d2-e8de-11e3-8c3e-0008ca8657ec/impacts?start_index=1&item_per_page=20"},
+                                "last": {"href": "https://ogv2ws.apiary-mock.com/disruptions/d30502d2-e8de-11e3-8c3e-0008ca8657ec/impacts?start_index=21&item_per_page=20"}
                             }
                         }
                     }
@@ -189,9 +201,9 @@ Retourne la liste de toutes les perturbations visibles
                         "items_per_page": 3,
                         "total_results": 6,
                         "prev": null,
-                        "next": {"href": "https://chaos.apiary-mock.com/disruptions/?start_index=4&item_per_page=3"},
-                        "first": {"href": "https://chaos.apiary-mock.com/disruptions/?start_index=1&item_per_page=3"},
-                        "last": {"href": "https://chaos.apiary-mock.com/disruptions/?start_index=4&item_per_page=3"}
+                        "next": {"href": "https://ogv2ws.apiary-mock.com/disruptions/?start_index=4&item_per_page=3"},
+                        "first": {"href": "https://ogv2ws.apiary-mock.com/disruptions/?start_index=1&item_per_page=3"},
+                        "last": {"href": "https://ogv2ws.apiary-mock.com/disruptions/?start_index=4&item_per_page=3"}
                     }
                 }
 
@@ -200,8 +212,7 @@ Retourne la liste de toutes les perturbations visibles
 ##Créer une perturbation [POST]
 
 ###Paramètres
-
-Création d'une perturbation avec des impacts
+Création d'une perturbation avec des impacts.
 
 - Request (application/json)
 
@@ -284,7 +295,7 @@ Création d'une perturbation avec des impacts
             {
                 "disruption":{
                     "id": "3d1f32b2-e8df-11e3-8c3e-0008ca8657ea",
-                    "self": {"href": "https://chaos.apiary-mock.com/disruptions/3d1f32b2-e8df-11e3-8c3e-0008ca8657ea"},
+                    "self": {"href": "https://ogv2ws.apiary-mock.com/disruptions/3d1f32b2-e8df-11e3-8c3e-0008ca8657ea"},
                     "reference": "foo",
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": null,
@@ -328,7 +339,7 @@ Création d'une perturbation avec des impacts
                             "total_results": 1,
                             "prev": null,
                             "next": null,
-                            "first": {"href": "https://chaos.apiary-mock.com/disruptions/1/impacts?start_index=1&item_per_page=20"},
+                            "first": {"href": "https://ogv2ws.apiary-mock.com/disruptions/1/impacts?start_index=1&item_per_page=20"},
                             "last": null
                         }
                     }
@@ -342,7 +353,7 @@ Création d'une perturbation avec des impacts
 
 ##Paramètres
 
-Retourn une perturbation (si elle existe):
+Retourne une perturbation (si elle existe):
 
 - response 200 (application/json)
 
@@ -351,7 +362,7 @@ Retourn une perturbation (si elle existe):
             {
                 "disruption": {
                     "id": "3d1f32b2-e8df-11e3-8c3e-0008ca8657ea",
-                    "self": {"href": "https://chaos.apiary-mock.com/disruptions/3d1f32b2-e8df-11e3-8c3e-0008ca8657ea"},
+                    "self": {"href": "https://ogv2ws.apiary-mock.com/disruptions/3d1f32b2-e8df-11e3-8c3e-0008ca8657ea"},
                     "reference": "RER B en panne",
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": "2014-04-31T16:55:18Z",
@@ -394,9 +405,9 @@ Retourn une perturbation (si elle existe):
                             "items_per_page": 20,
                             "total_results": 3,
                             "prev": null,
-                            "next": {"href": "https://chaos.apiary-mock.com/disruptions/3d1f32b2-e8df-11e3-8c3e-0008ca8657ea/impacts?start_index=1&item_per_page=20"},
-                            "first": {"href": "https://chaos.apiary-mock.com/disruptions/3d1f32b2-e8df-11e3-8c3e-0008ca8657ea/impacts?start_index=1&item_per_page=20"},
-                            "last": {"href": "https://chaos.apiary-mock.com/disruptions/3d1f32b2-e8df-11e3-8c3e-0008ca8657ea/impacts?start_index=1&item_per_page=20"}
+                            "next": {"href": "https://ogv2ws.apiary-mock.com/disruptions/3d1f32b2-e8df-11e3-8c3e-0008ca8657ea/impacts?start_index=1&item_per_page=20"},
+                            "first": {"href": "https://ogv2ws.apiary-mock.com/disruptions/3d1f32b2-e8df-11e3-8c3e-0008ca8657ea/impacts?start_index=1&item_per_page=20"},
+                            "last": {"href": "https://ogv2ws.apiary-mock.com/disruptions/3d1f32b2-e8df-11e3-8c3e-0008ca8657ea/impacts?start_index=1&item_per_page=20"}
                         }
                     }
                 },
@@ -460,7 +471,7 @@ Retourn une perturbation (si elle existe):
             {
                 "disruption":{
                     "id": "3d1f32b2-e8df-11e3-8c3e-0008ca8657ea",
-                    "self": {"href": "https://chaos.apiary-mock.com/disruptions/3d1f32b2-e8df-11e3-8c3e-0008ca8657ea"},
+                    "self": {"href": "https://ogv2ws.apiary-mock.com/disruptions/3d1f32b2-e8df-11e3-8c3e-0008ca8657ea"},
                     "reference": "foo",
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": "2014-04-31T16:55:18Z",
@@ -523,7 +534,7 @@ Retourn une perturbation (si elle existe):
             }
 
 ##Effacer une perturbation [DELETE]
-Cette fonction archive une perturbation, elle pourra être restaurée par la suite
+Cette fonction archive une perturbation, elle pourra être restaurée par la suite. 
 ###Paramètres
 
 
@@ -551,8 +562,8 @@ Retourne tous les impacts d'une perturbation
 | start_index          | Index du premier item de la page (commence par 1)  | false    | 1                       |
 | items_per_page       | Nombre d'items par page                            | false    | 20                      |
 
-@TODO: search and sort
-
+@TODO: recherche et tri.
+Aucun filtre actuellement sur la récupération de liste des impacts: l'interrogation se fait seulement avec un identifiant de perturbation, afin de récupérer l'ensemble des impacts déclarés pour la perturbation demandée.
 
 - response 200 (application/json)
 
@@ -562,7 +573,7 @@ Retourne tous les impacts d'une perturbation
                 "impacts": [
                     {
                         "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657ea",
-                        "self": {"href": "https://chaos.apiary-mock.com/disruptions/3d1f32b2-e8df-11e3-8c3e-0008ca8657ea/impacts/3d1f42b2-e8df-11e3-8c3e-0008ca8657ea"},
+                        "self": {"href": "https://ogv2ws.apiary-mock.com/disruptions/3d1f32b2-e8df-11e3-8c3e-0008ca8657ea/impacts/3d1f42b2-e8df-11e3-8c3e-0008ca8657ea"},
                         "created_at": "2014-04-31T16:52:18Z",
                         "updated_at": "2014-04-31T16:55:18Z",
                         "severity": {
@@ -634,7 +645,7 @@ Retourne tous les impacts d'une perturbation
                                 "color": "FFFFFF"
                             }
                         ],
-                        "disruption" : {"href": "https://chaos.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-823e-0008ca8657ea"}
+                        "disruption" : {"href": "https://ogv2ws.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-823e-0008ca8657ea"}
                     }
                 ],
                 "meta": {
@@ -643,9 +654,9 @@ Retourne tous les impacts d'une perturbation
                         "items_per_page": 3,
                         "total_results": 6,
                         "prev": null,
-                        "next": {"href": "https://chaos.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-823e-0008ca8657ea/impacts?start_index=4&items_per_page=3"},
-                        "first": {"href": "https://chaos.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-823e-0008ca8657ea/impacts?start_index=1&items_per_page=3"},
-                        "last": {"href": "https://chaos.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-823e-0008ca8657ea/impacts?start_index=4&items_per_page=3"}
+                        "next": {"href": "https://ogv2ws.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-823e-0008ca8657ea/impacts?start_index=4&items_per_page=3"},
+                        "first": {"href": "https://ogv2ws.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-823e-0008ca8657ea/impacts?start_index=1&items_per_page=3"},
+                        "last": {"href": "https://ogv2ws.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-823e-0008ca8657ea/impacts?start_index=4&items_per_page=3"}
                     }
                 }
             }
@@ -653,7 +664,7 @@ Retourne tous les impacts d'une perturbation
 
 
 ##Créer un impact [POST]
-Création d'un nouvel impact
+Création d'un nouvel impact.
 ###Paramètres
 
 - request
@@ -713,7 +724,7 @@ Création d'un nouvel impact
             {
                 "impact": {
                     "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8617ea",
-                    "self": {"href": "https://chaos.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-8c3e-0008ca8647ea/impacts/3d1f42b2-e8df-11e3-8c3e-0008ca8617ea"},
+                    "self": {"href": "https://ogv2ws.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-8c3e-0008ca8647ea/impacts/3d1f42b2-e8df-11e3-8c3e-0008ca8617ea"},
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": "2014-04-31T16:55:18Z",
                     "severity": {
@@ -785,7 +796,7 @@ Création d'un nouvel impact
                             "color": "FFFFFF"
                         }
                     ],
-                    "disruption" : {"href": "https://chaos.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-1c3e-0008ca8617ea"}
+                    "disruption" : {"href": "https://ogv2ws.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-1c3e-0008ca8617ea"}
                 },
                 "meta": {}
             }
@@ -802,7 +813,7 @@ Création d'un nouvel impact
             {
                 "impact": {
                     "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8617ea",
-                    "self": {"href": "https://chaos.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-8c3e-0008ca8647ea/impacts/3d1f42b2-e8df-11e3-8c3e-0008ca8617ea"},
+                    "self": {"href": "https://ogv2ws.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-8c3e-0008ca8647ea/impacts/3d1f42b2-e8df-11e3-8c3e-0008ca8617ea"},
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": "2014-04-31T16:55:18Z",
                     "severity": {
@@ -874,7 +885,7 @@ Création d'un nouvel impact
                             "color": "FFFFFF"
                         }
                     ],
-                    "disruption" : {"href": "https://chaos.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-1c3e-0008ca8617ea"}
+                    "disruption" : {"href": "https://ogv2ws.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-1c3e-0008ca8617ea"}
                 },
                 "meta": {}
             }
@@ -892,6 +903,7 @@ Création d'un nouvel impact
 #Liste des sévérités [/severities]
 
 ##Retourne la liste de toutes les sévérités [GET]
+Permet de récupérer l'ensemble des sévérités (ou conséquences) déclarées. Les propriétés à noter sont: le wording (utilisé dans l'IHM Ogesper v2), l'identifiant unique, l'effet (bloquant ou pas) et le code couleur.
 
 - response 200 (application/json)
 
@@ -958,11 +970,11 @@ Création d'un nouvel impact
 
 
 # Severities [/severities/{id}]
-##Retrieve one severity [GET]
+##Retourne une sévérité [GET]
 
 ##Paramètres
 
-Retrieve one existing severity:
+Retourne une sévérité existante.
 
 - response 200 (application/json)
 
@@ -991,7 +1003,7 @@ Retrieve one existing severity:
                 "meta": {}
             }
 
-##Update a severity [PUT]
+##Mise à jour d'une sévérité [PUT]
 
 ###Paramètres
 
@@ -1036,8 +1048,8 @@ Retrieve one existing severity:
                 "meta": {}
             }
 
-##Delete a severity [DELETE]
-Archive one severity.
+##Archive une sévérité [DELETE]
+Archive une sévérité.
 ###Paramètres
 
 
@@ -1111,11 +1123,11 @@ Archive one severity.
             }
 
 # Causes [/causes/{id}]
-##Retrieve one cause [GET]
+##Retourne une cause. [GET]
 
 ##Paramètres
 
-Retrieve one existing cause:
+Retourne une cause existante.
 
 - response 200 (application/json)
 
@@ -1142,7 +1154,7 @@ Retrieve one existing cause:
                 "meta": {}
             }
 
-##Update a cause [PUT]
+##Mise à jour d'une cause [PUT]
 ###Paramètres
 
 
@@ -1182,8 +1194,8 @@ Retrieve one existing cause:
                 "meta": {}
             }
 
-##Delete a cause [DELETE]
-Archive a cause.
+##Archive une cause [DELETE]
+Archive une cause.
 ###Paramètres
 
 
