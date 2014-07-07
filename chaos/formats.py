@@ -88,3 +88,12 @@ impact_input_format = {'type': 'object',
         }
 
 }
+
+channel_input_format = {'type': 'object',
+        'properties': {'name': {'type': 'string', 'maxLength': 250},
+            'max_size': {'type': ['integer', 'null']},
+            'content_type': {'type': 'string', 'maxLength': 250}
+        },
+        'required': ['name', 'max_size', 'content_type']
+}
+

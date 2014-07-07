@@ -239,3 +239,27 @@ class ApplicationPeriods(TimestampMixin, db.Model):
 
     def __repr__(self):
         return '<ApplicationPeriods %r>' % self.id
+
+class Channel(TimestampMixin, db.Model):
+    """
+    represent the channel for the message of an impact
+    """
+    id = db.Column(UUID, primary_key=True)
+    name = db.Column(db.Text, unique=False, nullable=False)
+    max_size = db.Column(db.Integer, unique=False, nullable=True)
+    content_type = db.Column(db.Text, unique=False, nullable=True)
+
+    def __init__(self):
+        self.id = str(uuid.uuid1())
+
+    def __repr__(self):
+        return '<Channel %r>' % self.id
+
+    @classmethod
+    def all(cls):
+        return cls.query.all()
+
+    @classmethod
+    def get(cls, id):
+        return cls.query.filter_by(id=id).first_or_404()
+

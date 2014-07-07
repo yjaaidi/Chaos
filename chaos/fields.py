@@ -134,3 +134,21 @@ one_impact_fields = {'impact': fields.Nested(impact_fields)
 impacts_fields = {'meta': fields.Nested(meta_fields),
                   'impacts': fields.List(fields.Nested(impact_fields))
 }
+
+channel_fields = {'id': fields.Raw,
+                   'name': fields.Raw,
+                   'max_size': fields.Integer(default=None),
+                   'content_type': fields.Raw,
+                   'created_at': FieldDateTime,
+                   'updated_at': FieldDateTime,
+                   'self': {'href': fields.Url('channel', absolute=True)}
+}
+
+channels_fields = {'channels': fields.List(fields.Nested(channel_fields)),
+                     'meta': {},
+}
+
+
+one_channel_fields = {'channel': fields.Nested(channel_fields)
+}
+
