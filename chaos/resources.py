@@ -35,7 +35,7 @@ from jsonschema import validate, ValidationError
 from flask.ext.restful import abort
 from fields import *
 from formats import *
-from formats import impact_input_format
+from formats import impact_input_format, channel_input_format
 from chaos import mapper
 from chaos import utils
 
@@ -70,6 +70,12 @@ application_period_mapping = {
     'begin': mapper.Datetime(attribute='start_date'),
     'end': mapper.Datetime(attribute='end_date')
 }
+
+channel_mapping = {'name': None,
+                    'max_size': None,
+                    'content_type': None
+}
+
 
 class Index(flask_restful.Resource):
 
@@ -365,5 +371,65 @@ class Impacts(flask_restful.Resource):
         impact.archive()
         db.session.commit()
         return None, 204
+
+class Channel(flask_restful.Resource):
+
+    def get(self, id=None):
+        if id:
+            if not id_format.match(id):
+                return marshal({'error': {'message': "id invalid"}},
+                           error_fields), 400
+            response = {'channel': models.Channel.get(id)}
+            return marshal(response, one_channel_fields)
+        else:
+            response = {'channels': models.Channel.all(), 'meta': {}}
+            return marshal(response, channels_fields)
+
+    def post(self):
+        json = request.get_json()
+        logging.getLogger(__name__).debug('Post channel: %s', json)
+        try:
+            validate(json, channel_input_format)
+        except ValidationError, e:
+            logging.debug(str(e))
+            #TODO: generate good error messages
+            return marshal({'error': {'message': str(e).replace("\n", " ")}},
+                           error_fields), 400
+
+        channel = models.Channel()
+        mapper.fill_from_json(channel, json, channel_mapping)
+        db.session.add(channel)
+        db.session.commit()
+        return marshal({'channel': channel}, one_channel_fields), 201
+
+    def put(self, id):
+        if not id_format.match(id):
+            return marshal({'error': {'message': "id invalid"}},
+                    error_fields), 400
+        channel = models.Channel.get(id)
+        json = request.get_json()
+        logging.getLogger(__name__).debug('PUT channel: %s', json)
+
+        try:
+            validate(json, channel_input_format)
+        except ValidationError, e:
+            logging.debug(str(e))
+            #TODO: generate good error messages
+            return marshal({'error': {'message': str(e).replace("\n", " ")}},
+                           error_fields), 400
+
+        mapper.fill_from_json(channel, json, channel_mapping)
+        db.session.commit()
+        return marshal({'channel': channel}, one_channel_fields), 200
+
+    def delete(self, id):
+        if not id_format.match(id):
+            return marshal({'error': {'message': "id invalid"}},
+                           error_fields), 400
+        channel = models.Channel.get(id)
+        channel.is_visible = False
+        db.session.commit()
+        return None, 204
+
 
 
