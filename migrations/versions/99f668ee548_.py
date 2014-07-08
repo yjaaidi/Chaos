@@ -20,8 +20,8 @@ def upgrade():
     sa.Column('created_at', sa.DateTime(), nullable=False),
     sa.Column('updated_at', sa.DateTime(), nullable=True),
     sa.Column('id', postgresql.UUID(), nullable=False),
-    sa.Column('start_application_date', sa.DateTime(), nullable=True),
-    sa.Column('end_application_date', sa.DateTime(), nullable=True),
+    sa.Column('start_date', sa.DateTime(), nullable=True),
+    sa.Column('end_date', sa.DateTime(), nullable=True),
     sa.Column('impact_id', postgresql.UUID(), nullable=False),
     sa.ForeignKeyConstraint(['impact_id'], [u'impact.id'], ),
     sa.PrimaryKeyConstraint('id')

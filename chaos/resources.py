@@ -62,13 +62,13 @@ severity_mapping = {'wording': None,
 cause_mapping = {'wording': None,}
 
 object_mapping = {
-    "id": None,
+    "uri": fields.String(attribute='id'),
     "type": None
 }
 
 application_period_mapping = {
-    'begin': mapper.Datetime(attribute='start_application_date'),
-    'end': mapper.Datetime(attribute='end_application_date')
+    'begin': mapper.Datetime(attribute='start_date'),
+    'end': mapper.Datetime(attribute='end_date')
 }
 
 class Index(flask_restful.Resource):

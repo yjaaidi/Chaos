@@ -111,13 +111,13 @@ causes_fields = {'causes': fields.List(fields.Nested(cause_fields)),
 one_cause_fields = {'cause': fields.Nested(cause_fields)
                         }
 
-objectTC_fields = {'id' : fields.Raw,
+objectTC_fields = {'id' : fields.Raw(attribute='uri'),
                    'type' : fields.Raw
 }
 
 application_period_fields = {
-    'begin': FieldDateTime(attribute='start_application_date'),
-    'end': FieldDateTime(attribute='end_application_date')
+    'begin': FieldDateTime(attribute='start_date'),
+    'end': FieldDateTime(attribute='end_date')
 }
 
 impact_fields = {'id': fields.Raw,

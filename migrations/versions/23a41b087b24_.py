@@ -20,13 +20,12 @@ def upgrade():
     op.create_table('pt_object',
     sa.Column('created_at', sa.DateTime(), nullable=False),
     sa.Column('updated_at', sa.DateTime(), nullable=True),
-    sa.Column('object_id', postgresql.UUID(), nullable=False),
+    sa.Column('id', postgresql.UUID(), nullable=False),
     sa.Column('type', sa.Text(), nullable=True),
-    #Represents code (uri) of PTobject
-    sa.Column('id', sa.Text(), nullable=True),
+    sa.Column('uri', sa.Text(), nullable=True),
     sa.Column('impact_id', postgresql.UUID(), nullable=False),
     sa.ForeignKeyConstraint(['impact_id'], [u'impact.id'] ),
-    sa.PrimaryKeyConstraint('object_id')
+    sa.PrimaryKeyConstraint('id')
     )
     ### end Alembic commands ###
 

@@ -74,7 +74,7 @@ object_input_format = {'type': 'object',
         'properties': {'id': {'type': 'string', 'maxLength': 250},
                        'type': {'type': 'string', 'maxLength': 20}
                        },
-        'required': ['type']
+        'required': ['id', 'type']
 }
 
 impact_input_format = {'type': 'object',

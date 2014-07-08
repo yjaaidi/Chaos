@@ -87,7 +87,7 @@ class Disruption(TimestampMixin, db.Model):
     status = db.Column(DisruptionStatus, nullable=False, default='published', index=True)
     start_publication_date = db.Column(db.DateTime(), nullable=True)
     end_publication_date = db.Column(db.DateTime(), nullable=True)
-    impacts = db.relationship('Impact', backref='Disruption', lazy='select')
+    impacts = db.relationship('Impact', backref='disruption', lazy='select')
 
     def __repr__(self):
         return '<Disruption %r>' % self.id
@@ -162,8 +162,8 @@ class Impact(TimestampMixin, db.Model):
     id = db.Column(UUID, primary_key=True)
     status = db.Column(ImpactStatus, nullable=False, default='published', index=True)
     disruption_id = db.Column(UUID, db.ForeignKey(Disruption.id))
-    objects = db.relationship('PTobject', backref='Impact', lazy='select')
-    application_periods = db.relationship('ApplicationPeriods', backref='Impact', lazy='select')
+    objects = db.relationship('PTobject', backref='impact', lazy='select')
+    application_periods = db.relationship('ApplicationPeriods', backref='impact', lazy='select')
 
     def __repr__(self):
         return '<Impact %r>' % self.id
@@ -206,20 +206,19 @@ class Impact(TimestampMixin, db.Model):
 
 class PTobject(TimestampMixin, db.Model):
     __tablename__ = 'pt_object'
-    object_id = db.Column(UUID, primary_key=True)
+    id = db.Column(UUID, primary_key=True)
     type = db.Column(db.Text, unique=False, nullable=True)
-    #Represents code (uri) of PTobject
-    id =  db.Column(db.Text, unique=False, nullable=True)
+    uri =  db.Column(db.Text, primary_key=True)
     impact_id = db.Column(UUID, db.ForeignKey(Impact.id))
 
     def __repr__(self):
         return '<PTobject %r>' % self.id
 
     def __init__(self, impact_id=None, type=None, code=None):
-        self.object_id = str(uuid.uuid1())
+        self.id = str(uuid.uuid1())
         self.impact_id = impact_id
         self.type = type
-        self.id = code
+        self.uri = code
 
     @classmethod
     def get(cls, id):
@@ -230,8 +229,8 @@ class ApplicationPeriods(TimestampMixin, db.Model):
     represents the application periods of an impact
     """
     id = db.Column(UUID, primary_key=True)
-    start_application_date = db.Column(db.DateTime(), nullable=True)
-    end_application_date = db.Column(db.DateTime(), nullable=True)
+    start_date = db.Column(db.DateTime(), nullable=True)
+    end_date = db.Column(db.DateTime(), nullable=True)
     impact_id = db.Column(UUID, db.ForeignKey(Impact.id))
 
     def __init__(self, impact_id = None):
