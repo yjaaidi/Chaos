@@ -123,7 +123,6 @@ application_period_fields = {
 impact_fields = {'id': fields.Raw,
                  'created_at': FieldDateTime,
                  'updated_at': FieldDateTime,
-                 'status': fields.Raw,
                  'objects': fields.List(fields.Nested(objectTC_fields)),
                  'application_periods': fields.List(fields.Nested(application_period_fields))
 }

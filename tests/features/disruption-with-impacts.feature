@@ -12,7 +12,7 @@ Feature: Manipulate impacts in a Disruption
         """
         Then the status code should be "201"
         And the header "Content-Type" should be "application/json"
-        And the field "impact.status" should be "published"
+        And the field "impact.objects" should exist
 
     Scenario: Add two impacts via URL in a disruption
         Given I have the following disruptions in my database:
@@ -32,8 +32,6 @@ Feature: Manipulate impacts in a Disruption
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
         And the field "impacts" should have a size of 2
-        And the field "impacts.0.status" should be "published"
-
 
     Scenario: Get impacts in a disruption
         Given I have the following disruptions in my database:
@@ -51,7 +49,6 @@ Feature: Manipulate impacts in a Disruption
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
         And the field "impacts" should have a size of 2
-        And the field "impacts.0.status" should be "published"
 
     Scenario: Get an impact in a disruption
         Given I have the following disruptions in my database:

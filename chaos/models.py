@@ -87,6 +87,7 @@ class Disruption(TimestampMixin, db.Model):
     status = db.Column(DisruptionStatus, nullable=False, default='published', index=True)
     start_publication_date = db.Column(db.DateTime(), nullable=True)
     end_publication_date = db.Column(db.DateTime(), nullable=True)
+    impacts = db.relationship('Impact', backref='Disruption', lazy='select')
 
     def __repr__(self):
         return '<Disruption %r>' % self.id
@@ -161,7 +162,7 @@ class Impact(TimestampMixin, db.Model):
     id = db.Column(UUID, primary_key=True)
     status = db.Column(ImpactStatus, nullable=False, default='published', index=True)
     disruption_id = db.Column(UUID, db.ForeignKey(Disruption.id))
-    objects = db.relationship('PTobject', backref='Impact')
+    objects = db.relationship('PTobject', backref='Impact', lazy='select')
     application_periods = db.relationship('ApplicationPeriods', backref='Impact', lazy='select')
 
     def __repr__(self):

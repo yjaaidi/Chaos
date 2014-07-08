@@ -12,7 +12,7 @@ Feature: Manipulate impacts in a Disruption
         """
         Then the status code should be "201"
         And the header "Content-Type" should be "application/json"
-        And the field "impact.status" should be "published"
+        And the field "impact.application_periods" should exist
 
     Scenario: Add an impact in a disruption with two PTobjects and two application_periods
         Given I have the following disruptions in my database:
@@ -26,7 +26,7 @@ Feature: Manipulate impacts in a Disruption
         """
         Then the status code should be "201"
         And the header "Content-Type" should be "application/json"
-        And the field "impact.status" should be "published"
+        And the field "impact.objects" should exist
 
 
 
