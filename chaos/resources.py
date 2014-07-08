@@ -35,7 +35,7 @@ from jsonschema import validate, ValidationError
 from flask.ext.restful import abort
 from fields import *
 from formats import *
-from formats import impact_input_format
+from formats import impact_input_format, channel_input_format
 from chaos import mapper
 from chaos import utils
 
@@ -421,6 +421,15 @@ class Channel(flask_restful.Resource):
         mapper.fill_from_json(channel, json, channel_mapping)
         db.session.commit()
         return marshal({'channel': channel}, one_channel_fields), 200
+
+    def delete(self, id):
+        if not id_format.match(id):
+            return marshal({'error': {'message': "id invalid"}},
+                           error_fields), 400
+        channel = models.Channel.get(id)
+        channel.is_visible = False
+        db.session.commit()
+        return None, 204
 
 
 

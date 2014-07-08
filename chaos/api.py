@@ -49,7 +49,7 @@ api.add_resource(resources.Cause, '/causes',
 api.add_resource(resources.Impacts, '/disruptions/<string:disruption_id>/impacts',
                  '/disruptions/<string:disruption_id>/impacts/<string:id>', endpoint='impact')
 
-api.add_resource(resources.Channel, '/chennels',
+api.add_resource(resources.Channel, '/channels',
                  '/channels/<string:id>', endpoint='channel')
 
 @app.errorhandler(Exception)

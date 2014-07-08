@@ -78,8 +78,6 @@ class Severity(TimestampMixin, db.Model):
     def get(cls, id):
         return cls.query.filter_by(id=id, is_visible=True).first_or_404()
 
-
-
 class Disruption(TimestampMixin, db.Model):
     id = db.Column(UUID, primary_key=True)
     reference = db.Column(db.Text, unique=False, nullable=True)
@@ -248,6 +246,7 @@ class Channel(TimestampMixin, db.Model):
     name = db.Column(db.Text, unique=False, nullable=False)
     max_size = db.Column(db.Integer, unique=False, nullable=True)
     content_type = db.Column(db.Text, unique=False, nullable=True)
+    is_visible = db.Column(db.Boolean, unique=False, nullable=False, default=True)
 
     def __init__(self):
         self.id = str(uuid.uuid1())
@@ -257,9 +256,9 @@ class Channel(TimestampMixin, db.Model):
 
     @classmethod
     def all(cls):
-        return cls.query.all()
+        return cls.query.filter_by(is_visible=True).all()
 
     @classmethod
     def get(cls, id):
-        return cls.query.filter_by(id=id).first_or_404()
+        return cls.query.filter_by(id=id, is_visible=True).first_or_404()
 
