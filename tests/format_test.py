@@ -82,3 +82,24 @@ def test_causes_validation_wording_is_required():
 def test_causes_validation_wording_has_max_length():
     json = {'wording': 'a'*251}
     validate(json, formats.cause_input_format)
+
+def test_validate_channel_format():
+    Draft4Validator.check_schema(formats.channel_input_format)
+
+def test_channels_validation():
+    json = {'name': 'short', 'max_size': 200, 'content_type': 'text/plain'}
+    validate(json, formats.channel_input_format)
+
+    json = {'name': 'short', 'max_size': 200, 'content_type': ''}
+    validate(json, formats.channel_input_format)
+
+@raises(ValidationError)
+def test_channel_validation_attributs_mandatory():
+    json = {'name': 'short', 'max_size': 200}
+    validate(json, formats.channel_input_format)
+
+
+@raises(ValidationError)
+def test_channel_validation_name_has_max_length():
+    json = {'name': 's'*251, 'max_size': 200, 'content_type': 'text/plain'}
+    validate(json, formats.channel_input_format)
