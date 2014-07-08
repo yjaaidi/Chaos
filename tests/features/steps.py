@@ -2,7 +2,7 @@ from lettuce import *
 from nose.tools import *
 import json
 from chaos import db
-from chaos.models import Disruption, Severity, Cause
+from chaos.models import Disruption, Severity, Cause, Impact, PTobject
 import chaos
 
 model_classes = {'disruption': Disruption,
@@ -11,6 +11,9 @@ model_classes = {'disruption': Disruption,
                'disruptions': Disruption,
                'severities': Severity,
                'causes': Cause,
+               'impact': Impact,
+               'impacts': Impact,
+               'ptobject': PTobject,
 }
 
 def pythonify(value):
@@ -88,3 +91,4 @@ def given_i_have_the_following_causes_in_my_database(step, cls):
             setattr(row, key, value)
         db.session.add(row)
     db.session.commit()
+

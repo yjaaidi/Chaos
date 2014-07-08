@@ -69,3 +69,22 @@ cause_input_format = {'type': 'object',
         },
         'required': ['wording']
 }
+
+object_input_format = {'type': 'object',
+        'properties': {'id': {'type': 'string', 'maxLength': 250},
+                       'type': {'type': 'string', 'maxLength': 20}
+                       },
+        'required': ['id', 'type']
+}
+
+impact_input_format = {'type': 'object',
+        'properties': {
+            'applications_periods': {'type' : 'array',
+                        'items':[date_period_format]
+            },
+            'objects': {'type' : 'array',
+                        'items':[object_input_format]
+            }
+        }
+
+}

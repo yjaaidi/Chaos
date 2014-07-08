@@ -51,6 +51,7 @@ class TimestampMixin(object):
 
 DisruptionStatus = db.Enum('published', 'archived', name='disruption_status')
 SeverityEffect = db.Enum('blocking', name='severity_effect')
+ImpactStatus = db.Enum('published', 'archived', name='impact_status')
 
 class Severity(TimestampMixin, db.Model):
     """
@@ -86,6 +87,7 @@ class Disruption(TimestampMixin, db.Model):
     status = db.Column(DisruptionStatus, nullable=False, default='published', index=True)
     start_publication_date = db.Column(db.DateTime(), nullable=True)
     end_publication_date = db.Column(db.DateTime(), nullable=True)
+    impacts = db.relationship('Impact', backref='disruption', lazy='select')
 
     def __repr__(self):
         return '<Disruption %r>' % self.id
@@ -155,3 +157,85 @@ class Cause(TimestampMixin, db.Model):
     @classmethod
     def get(cls, id):
         return cls.query.filter_by(id=id, is_visible=True).first_or_404()
+
+class Impact(TimestampMixin, db.Model):
+    id = db.Column(UUID, primary_key=True)
+    status = db.Column(ImpactStatus, nullable=False, default='published', index=True)
+    disruption_id = db.Column(UUID, db.ForeignKey(Disruption.id))
+    objects = db.relationship('PTobject', backref='impact', lazy='select')
+    application_periods = db.relationship('ApplicationPeriods', backref='impact', lazy='select')
+
+    def __repr__(self):
+        return '<Impact %r>' % self.id
+
+    def __init__(self, objects=None):
+        self.id = str(uuid.uuid1())
+        if objects:
+            self.objects = objects
+
+    def archive(self):
+        """
+        archive the impact, it will not be visible on any media
+        """
+        self.status = 'archived'
+
+    def insert_object(self, object):
+        """
+        Adds an objectTC in a imapct.
+        """
+        self.objects.append(object)
+        db.session.add(object)
+
+    def insert_app_period(self, application_period):
+        """
+        Adds an objectTC in a imapct.
+        """
+        self.application_periods.append(application_period)
+        db.session.add(application_period)
+
+    @classmethod
+    def get(cls, id):
+        return cls.query.filter_by(id=id, status='published').first_or_404()
+
+    @classmethod
+    def all(cls, disruption_id):
+        query = cls.query.filter_by(status='published')
+        query = query.filter(and_(cls.disruption_id == disruption_id))
+        result = query.all()
+        return result
+
+class PTobject(TimestampMixin, db.Model):
+    __tablename__ = 'pt_object'
+    id = db.Column(UUID, primary_key=True)
+    type = db.Column(db.Text, unique=False, nullable=True)
+    uri =  db.Column(db.Text, primary_key=True)
+    impact_id = db.Column(UUID, db.ForeignKey(Impact.id))
+
+    def __repr__(self):
+        return '<PTobject %r>' % self.id
+
+    def __init__(self, impact_id=None, type=None, code=None):
+        self.id = str(uuid.uuid1())
+        self.impact_id = impact_id
+        self.type = type
+        self.uri = code
+
+    @classmethod
+    def get(cls, id):
+        return cls.query.filter_by(id=id).first_or_404()
+
+class ApplicationPeriods(TimestampMixin, db.Model):
+    """
+    represents the application periods of an impact
+    """
+    id = db.Column(UUID, primary_key=True)
+    start_date = db.Column(db.DateTime(), nullable=True)
+    end_date = db.Column(db.DateTime(), nullable=True)
+    impact_id = db.Column(UUID, db.ForeignKey(Impact.id))
+
+    def __init__(self, impact_id = None):
+        self.id = str(uuid.uuid1())
+        self.impact_id = impact_id
+
+    def __repr__(self):
+        return '<ApplicationPeriods %r>' % self.id
