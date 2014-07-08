@@ -35,6 +35,7 @@ from jsonschema import validate, ValidationError
 from flask.ext.restful import abort
 from fields import *
 from formats import *
+from formats import impact_input_format
 from chaos import mapper
 from chaos import utils
 
@@ -285,10 +286,7 @@ class Cause(flask_restful.Resource):
         return None, 204
 
 class Impacts(flask_restful.Resource):
-    def __init__(self):
-        self.parsers = {}
-
-    def get(self, disruption_id=None, id=None):
+    def get(self, disruption_id, id=None):
         if id:
             if not id_format.match(id):
                 return marshal({'error': {'message': "id invalid"}},
@@ -297,6 +295,9 @@ class Impacts(flask_restful.Resource):
             return marshal({'impact': response},
                            one_impact_fields)
         else:
+            if not id_format.match(disruption_id):
+                return marshal({'error': {'message': "disruption_id invalid"}},
+                           error_fields), 400
             response = {'impacts' : models.Impact.all(disruption_id), 'meta': {}}
             return marshal(response, impacts_fields)
 
@@ -304,8 +305,17 @@ class Impacts(flask_restful.Resource):
         if not id_format.match(disruption_id):
             return marshal({'error': {'message': "id invalid"}},
                            error_fields), 400
+
         json = request.get_json()
         logging.getLogger(__name__).debug(json)
+
+        try:
+            validate(json, impact_input_format)
+        except ValidationError, e:
+            logging.debug(str(e))
+            #TODO: generate good error messages
+            return marshal({'error': {'message': str(e).replace("\n", " ")}},
+                           error_fields), 400
 
         impact = models.Impact()
         impact.disruption_id = disruption_id
@@ -321,7 +331,7 @@ class Impacts(flask_restful.Resource):
                     impact.insert_object(object)
             if 'application_periods' in json:
                 for app_period in json["application_periods"]:
-                    application_period = models.ApplicationDate(impact.id)
+                    application_period = models.ApplicationPeriods(impact.id)
                     mapper.fill_from_json(application_period, app_period, application_period_mapping)
                     impact.insert_app_period(application_period)
 

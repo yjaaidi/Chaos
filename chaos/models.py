@@ -162,7 +162,7 @@ class Impact(TimestampMixin, db.Model):
     status = db.Column(ImpactStatus, nullable=False, default='published', index=True)
     disruption_id = db.Column(UUID, db.ForeignKey(Disruption.id))
     objects = db.relationship('PTobject', backref='Impact')
-    application_periods = db.relationship('ApplicationDate', backref='Impact')
+    application_periods = db.relationship('ApplicationPeriods', backref='Impact', lazy='select')
 
     def __repr__(self):
         return '<Impact %r>' % self.id
@@ -204,13 +204,12 @@ class Impact(TimestampMixin, db.Model):
         return result
 
 class PTobject(TimestampMixin, db.Model):
-    __tablename__ = 'ptobject'
+    __tablename__ = 'pt_object'
     object_id = db.Column(UUID, primary_key=True)
     type = db.Column(db.Text, unique=False, nullable=True)
+    #Represents code (uri) of PTobject
     id =  db.Column(db.Text, unique=False, nullable=True)
     impact_id = db.Column(UUID, db.ForeignKey(Impact.id))
-
-
 
     def __repr__(self):
         return '<PTobject %r>' % self.id
@@ -225,11 +224,10 @@ class PTobject(TimestampMixin, db.Model):
     def get(cls, id):
         return cls.query.filter_by(id=id).first_or_404()
 
-class ApplicationDate(TimestampMixin, db.Model):
+class ApplicationPeriods(TimestampMixin, db.Model):
     """
-    represent all the application dates of an impact
+    represents the application periods of an impact
     """
-    __tablename__ = 'applicationdate'
     id = db.Column(UUID, primary_key=True)
     start_application_date = db.Column(db.DateTime(), nullable=True)
     end_application_date = db.Column(db.DateTime(), nullable=True)
@@ -240,10 +238,4 @@ class ApplicationDate(TimestampMixin, db.Model):
         self.impact_id = impact_id
 
     def __repr__(self):
-        return '<ApplicationDate %r>' % self.id
-
-    @classmethod
-    def get(cls, id):
-        return cls.query.filter_by(id=id).first_or_404()
-
-
+        return '<ApplicationPeriods %r>' % self.id
