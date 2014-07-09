@@ -77,15 +77,12 @@ object_input_format = {'type': 'object',
         'required': ['id', 'type']
 }
 
-severity_id_input_format = {'type': 'object',
-                            'properties': {'id': {'type': 'string', 'maxLength': 250}},
-                            'required': ['id']
-}
-
-
 impact_input_format = {'type': 'object',
         'properties': {
-            'severity': severity_id_input_format,
+            'severity': {'type': 'object',
+                         'properties': {'id': {'type': 'string', 'maxLength': 250}},
+                         'required': ['id']
+            },
             'applications_periods': {'type' : 'array',
                         'items':[date_period_format]
             },

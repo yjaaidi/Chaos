@@ -164,8 +164,8 @@ class Impact(TimestampMixin, db.Model):
     severity_id = db.Column(UUID, db.ForeignKey(Severity.id))
     objects = db.relationship('PTobject', backref='impact', lazy='select')
     application_periods = db.relationship('ApplicationPeriods', backref='impact', lazy='select')
-    severity = db.relationship('Severity', backref = backref('impact', order_by=id))
-
+    severity = db.relationship('Severity', backref='impacts', lazy='select')
+    #severity = db.relationship('Severity', backref = backref('impact', order_by=id))
     def __repr__(self):
         return '<Impact %r>' % self.id
 
