@@ -32,31 +32,35 @@ from functools import wraps
 from datetime import datetime
 from aniso8601 import parse_datetime
 
-
-def make_pager(resultset, endpoint):
+#disruption_id=None
+def make_pager(resultset, endpoint, **kwargs):
     prev_link = None
     next_link = None
+    last_link = None
+    first_link = None
+
     if resultset.has_prev:
         prev_link = url_for(endpoint,
                             start_page=resultset.prev_num,
                             items_per_page=resultset.per_page,
-                            _external=True)
+                            _external=True, **kwargs)
 
     if resultset.has_next:
         next_link= url_for(endpoint,
                            start_page=resultset.next_num,
                            items_per_page=resultset.per_page,
-                           _external=True)
+                           _external=True, **kwargs)
 
-    last_link= url_for(endpoint,
+    if resultset.total > 0:
+        last_link= url_for(endpoint,
                        start_page=resultset.pages,
                        items_per_page=resultset.per_page,
-                       _external=True)
-
-    first_link = url_for(endpoint,
+                       _external=True, **kwargs)
+        first_link = url_for(endpoint,
                          start_page=1,
                          items_per_page=resultset.per_page,
-                         _external=True)
+                         _external=True, **kwargs)
+
     result = {}
     result["pagination"] = {
                 "start_page": resultset.page,
