@@ -77,6 +77,10 @@ channel_mapping = {'name': None,
                     'content_type': None
 }
 
+impact_severity_mapping = {
+    'id' : fields.String(attribute='id')
+}
+
 
 class Index(flask_restful.Resource):
 
@@ -326,6 +330,7 @@ class Impacts(flask_restful.Resource):
                            error_fields), 400
 
         impact = models.Impact()
+        impact.severity_id = json['severity']['id']
         impact.disruption_id = disruption_id
         db.session.add(impact)
 
@@ -356,11 +361,17 @@ class Impacts(flask_restful.Resource):
 
         #Add all objects present in Json
         if json:
-            for obj in  json['objects']:
-                object = models.PTobject()
-                object.impact_id = impact.id
-                mapper.fill_from_json(object, obj, object_mapping)
-                impact.insert_object(object)
+            if 'objects' in json:
+                for obj in  json['objects']:
+                    object = models.PTobject()
+                    object.impact_id = impact.id
+                    mapper.fill_from_json(object, obj, object_mapping)
+                    impact.insert_object(object)
+            if 'application_periods' in json:
+                for app_period in json["application_periods"]:
+                    application_period = models.ApplicationPeriods(impact.id)
+                    mapper.fill_from_json(application_period, app_period, application_period_mapping)
+                    impact.insert_app_period(application_period)
 
         db.session.commit()
         return marshal({'impact': impact}, one_impact_fields), 200

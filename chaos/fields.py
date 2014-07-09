@@ -124,7 +124,8 @@ impact_fields = {'id': fields.Raw,
                  'created_at': FieldDateTime,
                  'updated_at': FieldDateTime,
                  'objects': fields.List(fields.Nested(objectTC_fields)),
-                 'application_periods': fields.List(fields.Nested(application_period_fields))
+                 'application_periods': fields.List(fields.Nested(application_period_fields)),
+                 'severity': fields.Nested(severity_fields)
 }
 
 one_impact_fields = {'impact': fields.Nested(impact_fields)
