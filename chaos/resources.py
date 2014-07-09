@@ -38,6 +38,7 @@ from formats import *
 from formats import impact_input_format, channel_input_format
 from chaos import mapper
 from chaos import utils
+import chaos
 
 import logging
 from utils import make_pager, option_value
@@ -431,5 +432,9 @@ class Channel(flask_restful.Resource):
         db.session.commit()
         return None, 204
 
-
+class Status(flask_restful.Resource):
+    def get(self):
+        return {'version': chaos.VERSION,
+                'db_pool_status': db.engine.pool.status(),
+                'db_version': db.engine.scalar('select version_num from alembic_version;')}
 

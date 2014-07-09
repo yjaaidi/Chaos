@@ -27,6 +27,8 @@
 # https://groups.google.com/d/forum/navitia
 # www.navitia.io
 
+VERSION = '0.1.0-dev'
+
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 import logging.config
