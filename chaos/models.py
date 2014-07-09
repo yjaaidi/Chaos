@@ -36,6 +36,7 @@ from sqlalchemy.dialects.postgresql import UUID
 from datetime import datetime
 from formats import publication_status_values
 from sqlalchemy import or_, and_
+from sqlalchemy.orm import backref
 
 #force the server to use UTC time for each connection
 import sqlalchemy
@@ -160,8 +161,10 @@ class Impact(TimestampMixin, db.Model):
     id = db.Column(UUID, primary_key=True)
     status = db.Column(ImpactStatus, nullable=False, default='published', index=True)
     disruption_id = db.Column(UUID, db.ForeignKey(Disruption.id))
+    severity_id = db.Column(UUID, db.ForeignKey(Severity.id))
     objects = db.relationship('PTobject', backref='impact', lazy='select')
     application_periods = db.relationship('ApplicationPeriods', backref='impact', lazy='select')
+    severity = db.relationship('Severity', backref='impacts', lazy='select')
 
     def __repr__(self):
         return '<Impact %r>' % self.id
