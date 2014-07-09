@@ -1,4 +1,4 @@
-"""empty message
+"""Add a column severity_id in the table impact
 
 Revision ID: 52beb403b32d
 Revises: 3cd91baeb131
