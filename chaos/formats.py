@@ -92,7 +92,8 @@ impact_input_format = {'type': 'object',
             'objects': {'type' : 'array',
                         'items':[object_input_format]
             }
-        }
+        },
+        'required': ['severity']
 
 }
 

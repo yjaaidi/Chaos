@@ -125,14 +125,24 @@ def test_validate_impact_format():
     Draft4Validator.check_schema(formats.impact_input_format)
 
 def test_impact_without_application_period_validation():
-    json = {"objects": [{"id": "stop_area:RTP:SA:3786125","type": "stop_area"},{"id": "line:RTP:LI:378","type": "line"}]}
+    json = {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},
+            "objects": [{"id": "stop_area:RTP:SA:3786125","type": "stop_area"},{"id": "line:RTP:LI:378","type": "line"}]}
     validate(json, formats.impact_input_format)
 
 def test_impact_without_object_validation():
-    json = {"application_periods": [{"begin": "2014-06-20T17:00:00Z","end":"2014-07-28T17:00:00Z"}]}
+    json = {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},
+            "application_periods": [{"begin": "2014-06-20T17:00:00Z","end":"2014-07-28T17:00:00Z"}]}
     validate(json, formats.impact_input_format)
 
 def test_impact_with_object_and_application_period_validation():
+    json = {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},
+            "application_periods": [{"begin": "2014-06-20T17:00:00Z","end":"2014-07-28T17:00:00Z"}],
+            "objects": [{"id": "stop_area:RTP:SA:3786125","type": "stop_area"},{"id": "line:RTP:LI:378","type": "line"}]
+            }
+    validate(json, formats.impact_input_format)
+
+@raises(ValidationError)
+def test_impact_without_severity_validation():
     json = {"application_periods": [{"begin": "2014-06-20T17:00:00Z","end":"2014-07-28T17:00:00Z"}],
             "objects": [{"id": "stop_area:RTP:SA:3786125","type": "stop_area"},{"id": "line:RTP:LI:378","type": "line"}]
             }

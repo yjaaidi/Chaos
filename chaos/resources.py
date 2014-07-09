@@ -77,11 +77,6 @@ channel_mapping = {'name': None,
                     'content_type': None
 }
 
-impact_severity_mapping = {
-    'id' : fields.String(attribute='id')
-}
-
-
 class Index(flask_restful.Resource):
 
     def get(self):
