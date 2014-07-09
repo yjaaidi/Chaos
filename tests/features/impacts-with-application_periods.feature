@@ -18,6 +18,8 @@ Feature: Manipulate impacts in a Disruption
         And the header "Content-Type" should be "application/json"
         And the field "impact.application_periods" should exist
         And the field "impact.severity.wording" should be "good news"
+        And the field "impact.application_periods.0.begin" should be "2014-04-29T16:52:00Z"
+        And the field "impact.application_periods.0.end" should be "2014-05-22T02:15:00Z"
 
     Scenario: Add an impact in a disruption with two PTobjects and two application_periods
         Given I have the following disruptions in my database:
@@ -36,6 +38,10 @@ Feature: Manipulate impacts in a Disruption
         Then the status code should be "201"
         And the header "Content-Type" should be "application/json"
         And the field "impact.objects" should exist
+        And the field "impact.objects.0.id" should be "stop_area:RTP:SA:3786125"
+        And the field "impact.objects.0.type" should be "stop_area"
+        And the field "impact.objects.1.id" should be "line:RTP:LI:378"
+        And the field "impact.objects.1.type" should be "line"
 
     Scenario: Add an impact in a disruption with two application_periods without PTobject
         Given I have the following disruptions in my database:
