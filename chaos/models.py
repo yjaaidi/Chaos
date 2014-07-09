@@ -76,7 +76,7 @@ class Severity(TimestampMixin, db.Model):
         return cls.query.filter_by(is_visible=True).order_by(cls.priority).all()
 
     @classmethod
-    def get(cls, id):
+    def get(cls, id,):
         return cls.query.filter_by(id=id, is_visible=True).first_or_404()
 
 class Disruption(TimestampMixin, db.Model):

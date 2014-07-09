@@ -325,7 +325,8 @@ class Impacts(flask_restful.Resource):
                            error_fields), 400
 
         impact = models.Impact()
-        impact.severity_id = json['severity']['id']
+        impact.severity = models.Severity.get(json['severity']['id'])
+
         impact.disruption_id = disruption_id
         db.session.add(impact)
 
