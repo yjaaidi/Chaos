@@ -103,3 +103,37 @@ def test_channel_validation_attributs_mandatory():
 def test_channel_validation_name_has_max_length():
     json = {'name': 's'*251, 'max_size': 200, 'content_type': 'text/plain'}
     validate(json, formats.channel_input_format)
+
+def test_validate_object_format():
+    Draft4Validator.check_schema(formats.object_input_format)
+
+def test_object_validation():
+    json = {'id': 'stop_area:...:200', 'type': 'stop_area'}
+    validate(json, formats.object_input_format)
+
+@raises(ValidationError)
+def test_object_validation_without_type():
+    json = {'id': 'stop_area:...:200'}
+    validate(json, formats.object_input_format)
+
+@raises(ValidationError)
+def test_object_validation_id_has_max_length():
+    json = {'id': 's'*251, 'type': 'stop_area'}
+    validate(json, formats.object_input_format)
+
+def test_validate_impact_format():
+    Draft4Validator.check_schema(formats.impact_input_format)
+
+def test_impact_without_application_period_validation():
+    json = {"objects": [{"id": "stop_area:RTP:SA:3786125","type": "stop_area"},{"id": "line:RTP:LI:378","type": "line"}]}
+    validate(json, formats.impact_input_format)
+
+def test_impact_without_object_validation():
+    json = {"application_periods": [{"begin": "2014-06-20T17:00:00Z","end":"2014-07-28T17:00:00Z"}]}
+    validate(json, formats.impact_input_format)
+
+def test_impact_with_object_and_application_period_validation():
+    json = {"application_periods": [{"begin": "2014-06-20T17:00:00Z","end":"2014-07-28T17:00:00Z"}],
+            "objects": [{"id": "stop_area:RTP:SA:3786125","type": "stop_area"},{"id": "line:RTP:LI:378","type": "line"}]
+            }
+    validate(json, formats.impact_input_format)
