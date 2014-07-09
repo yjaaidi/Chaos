@@ -135,7 +135,8 @@ impact_fields = {'id': fields.Raw,
                  'updated_at': FieldDateTime,
                  'objects': fields.List(fields.Nested(objectTC_fields)),
                  'application_periods': fields.List(fields.Nested(application_period_fields)),
-                 'severity': fields.Nested(severity_fields)
+                 'severity': fields.Nested(severity_fields),
+				 'self': {'href': fields.Url('impact', absolute=True)
 }
 
 one_impact_fields = {'impact': fields.Nested(impact_fields)
@@ -143,7 +144,8 @@ one_impact_fields = {'impact': fields.Nested(impact_fields)
 }
 
 impacts_fields = {'meta': fields.Nested(meta_fields),
-                  'impacts': fields.List(fields.Nested(impact_fields))
+                  'impacts': fields.List(fields.Nested(impact_fields)),
+                  'disruption' : fields.Raw
 }
 
 channel_fields = {'id': fields.Raw,
