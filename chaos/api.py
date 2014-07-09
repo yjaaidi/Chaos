@@ -52,6 +52,8 @@ api.add_resource(resources.Impacts, '/disruptions/<string:disruption_id>/impacts
 api.add_resource(resources.Channel, '/channels',
                  '/channels/<string:id>', endpoint='channel')
 
+api.add_resource(resources.Status, '/status')
+
 @app.errorhandler(Exception)
 def error_handler(exception):
     """
