@@ -17,6 +17,8 @@ Feature: Manipulate impacts in a Disruption
         Then the status code should be "201"
         And the header "Content-Type" should be "application/json"
         And the field "impact.objects" should exist
+        And the field "impact.objects.0.id" should be "stop_area:RTP:SA:3786125"
+        And the field "impact.objects.0.type" should be "stop_area"
         And the field "impact.severity.id" should exist
         And the field "impact.severity.wording" should be "good news"
 

@@ -63,7 +63,7 @@ severity_mapping = {'wording': None,
 cause_mapping = {'wording': None,}
 
 object_mapping = {
-    "uri": fields.String(attribute='id'),
+    "id": mapper.AliasText(attribute='uri'),
     "type": None
 }
 
