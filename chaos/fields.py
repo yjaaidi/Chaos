@@ -52,13 +52,11 @@ class FieldUrlDisruption(fields.Raw):
         return {'href': url_for('disruption', id=obj.disruption_id, _external=True)}
 
 class FieldObjectName(fields.Raw):
-    def __init__(self):
-        self.navitia = Navitia(current_app.config['NAVITIA_URL'],
+    def output(self, key, obj):
+        navitia = Navitia(current_app.config['NAVITIA_URL'],
                                current_app.config['NAVITIA_COVERAGE'],
                                current_app.config['NAVITIA_TOKEN'])
-        
-    def output(self, key, obj):
-        response = self.navitia.get_network(obj.uri)
+        response = navitia.get_network(obj.uri)
         if response and 'name' in response:
             return response['name']
         return 'Unable to find object'
