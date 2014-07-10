@@ -171,6 +171,22 @@ class Impact(TimestampMixin, db.Model):
     def __repr__(self):
         return '<Impact %r>' % self.id
 
+    def __marshallable__(self):
+        '''
+        This method is added to solve the problem of impact without instance during creation of response json for Post..
+        API post cannot fill url for impact and disruption in impact_fields
+        When we have either one of them present in impact_fields, it works.
+        '''
+        d = {}
+        d['id'] = self.id
+        d['status'] = self.status
+        d['disruption_id'] = self.disruption_id
+        d['severity_id'] = self.severity_id
+        d['objects'] = self.objects
+        d['application_periods'] = self.application_periods
+        d['severity'] = self.severity
+        return d
+
     def __init__(self, objects=None):
         self.id = str(uuid.uuid1())
         if objects:

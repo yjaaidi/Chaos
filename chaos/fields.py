@@ -45,6 +45,10 @@ class FieldPaginateImpacts(fields.Raw):
     def output(self, key, disruption):
         return make_pager(disruption.impacts.paginate(1, 20), 'impact', disruption_id=disruption.id)
 
+class FieldUrlDisruption(fields.Raw):
+    def output(self, key, obj):
+        return {'href': url_for('disruption', id=obj.disruption_id, _external=True)}
+
 
 href_field = {
     "href": fields.String

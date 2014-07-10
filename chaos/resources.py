@@ -305,8 +305,7 @@ class Impacts(flask_restful.Resource):
             if not id_format.match(disruption_id):
                 return marshal({'error': {'message': "disruption_id invalid"}},
                            error_fields), 400
-            response = {'impacts' : models.Impact.all(disruption_id), 'meta': {},
-                        'disruption': {'href': url_for('disruption', id=disruption_id, _external=True)}}
+            response = {'impacts' : models.Impact.all(disruption_id), 'meta': {}}
             return marshal(response, impacts_fields)
 
     def post(self, disruption_id):
