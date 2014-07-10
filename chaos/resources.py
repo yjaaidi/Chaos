@@ -298,6 +298,12 @@ class Impacts(flask_restful.Resource):
         self.navitia = Navitia(current_app.config['NAVITIA_URL'],
                                current_app.config['NAVITIA_COVERAGE'],
                                current_app.config['NAVITIA_TOKEN'])
+        self.parsers = {}
+        self.parsers["get"] = reqparse.RequestParser()
+        parser_get = self.parsers["get"]
+
+        parser_get.add_argument("start_page", type=int, default=1)
+        parser_get.add_argument("items_per_page", type=int, default=20)
 
     def get(self, disruption_id, id=None):
         if id:
@@ -311,7 +317,16 @@ class Impacts(flask_restful.Resource):
             if not id_format.match(disruption_id):
                 return marshal({'error': {'message': "disruption_id invalid"}},
                            error_fields), 400
-            response = {'impacts' : models.Impact.all(disruption_id), 'meta': {}}
+            args = self.parsers['get'].parse_args()
+            page_index = args['start_page']
+            if page_index == 0:
+                abort(400, message="page_index argument value is not valid")
+            items_per_page = args['items_per_page']
+            if items_per_page == 0:
+                abort(400, message="items_per_page argument value is not valid")
+
+            result = models.Impact.all(page_index=page_index, items_per_page=items_per_page, disruption_id=disruption_id)
+            response = {'impacts' : result.items, 'meta': make_pager(result, 'impact', disruption_id=disruption_id)}
             return marshal(response, impacts_fields)
 
     def post(self, disruption_id):
