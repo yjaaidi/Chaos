@@ -61,7 +61,9 @@ Feature: Manipulate impacts in a Disruption
         And the header "Content-Type" should be "application/json"
         And the field "impact.application_periods" should exist
         And the field "impact.severity.wording" should be "good news"
-
+        And the field "impact.severity.self.href" should exist
+        And the field "impact.self.href" should exist
+        And the field "impact.disruption.href" should exist
 
 
 

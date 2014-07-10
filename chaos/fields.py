@@ -45,6 +45,10 @@ class FieldPaginateImpacts(fields.Raw):
     def output(self, key, disruption):
         return make_pager(disruption.impacts.paginate(1, 20), 'impact', disruption_id=disruption.id)
 
+class FieldUrlDisruption(fields.Raw):
+    def output(self, key, obj):
+        return {'href': url_for('disruption', id=obj.disruption_id, _external=True)}
+
 
 href_field = {
     "href": fields.String
@@ -135,7 +139,9 @@ impact_fields = {'id': fields.Raw,
                  'updated_at': FieldDateTime,
                  'objects': fields.List(fields.Nested(objectTC_fields)),
                  'application_periods': fields.List(fields.Nested(application_period_fields)),
-                 'severity': fields.Nested(severity_fields)
+                 'severity': fields.Nested(severity_fields),
+				 'self': {'href': fields.Url('impact', absolute=True)},
+                 'disruption': FieldUrlDisruption()
 }
 
 one_impact_fields = {'impact': fields.Nested(impact_fields)
