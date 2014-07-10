@@ -40,7 +40,7 @@ class FieldDateTime(fields.Raw):
 
 class FieldPaginateImpacts(fields.Raw):
     '''
-    dd
+    Pagination of impacts list for one disruption
     '''
     def output(self, key, disruption):
         return make_pager(disruption.impacts.paginate(1, 20), 'impact', disruption_id=disruption.id)
