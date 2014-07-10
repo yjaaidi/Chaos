@@ -72,7 +72,7 @@ cause_input_format = {'type': 'object',
 
 object_input_format = {'type': 'object',
         'properties': {'id': {'type': 'string', 'maxLength': 250},
-                       'type': {'type': 'string', 'maxLength': 20}
+                       'type': {'enum': ['network']}
                        },
         'required': ['id', 'type']
 }

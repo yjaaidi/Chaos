@@ -27,7 +27,7 @@
 # https://groups.google.com/d/forum/navitia
 # www.navitia.io
 
-from flask import request, url_for, g
+from flask import request, url_for, g, current_app
 import flask_restful
 from flask_restful import marshal, reqparse
 from chaos import models, db
@@ -39,6 +39,7 @@ from formats import impact_input_format, channel_input_format
 from chaos import mapper
 from chaos import utils
 import chaos
+from chaos.navitia import Navitia
 
 import logging
 from utils import make_pager, option_value
@@ -293,6 +294,11 @@ class Cause(flask_restful.Resource):
         return None, 204
 
 class Impacts(flask_restful.Resource):
+    def __init__(self):
+        self.navitia = Navitia(current_app.config['NAVITIA_URL'],
+                               current_app.config['NAVITIA_COVERAGE'],
+                               current_app.config['NAVITIA_TOKEN'])
+
     def get(self, disruption_id, id=None):
         if id:
             if not id_format.match(id):
@@ -337,6 +343,9 @@ class Impacts(flask_restful.Resource):
                     object = models.PTobject()
                     object.impact_id = impact.id
                     mapper.fill_from_json(object, obj, object_mapping)
+                    if not self.navitia.get_network(obj['id']):
+                        return marshal({'error': {'message': 'network {} doesn\'t exist'.format(obj['id'])}},
+                                error_fields), 404
                     impact.insert_object(object)
             if 'application_periods' in json:
                 for app_period in json["application_periods"]:
@@ -362,6 +371,9 @@ class Impacts(flask_restful.Resource):
                     object = models.PTobject()
                     object.impact_id = impact.id
                     mapper.fill_from_json(object, obj, object_mapping)
+                    if not self.navitia.get_network(obj['id']):
+                        return marshal({'error': {'message': 'network {} doesn\'t exist'.format(obj['id'])}},
+                                error_fields), 404
                     impact.insert_object(object)
             if 'application_periods' in json:
                 for app_period in json["application_periods"]:

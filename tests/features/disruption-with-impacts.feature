@@ -12,13 +12,13 @@ Feature: Manipulate impacts in a Disruption
 
         When I post to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/impacts" with:
         """
-        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "stop_area:RTP:SA:3786125","type": "stop_area"},{"id": "line:RTP:LI:378","type": "line"}]}
+        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "network:JDR:2","type": "network"},{"id": "network:JDR:1","type": "network"}]}
         """
         Then the status code should be "201"
         And the header "Content-Type" should be "application/json"
         And the field "impact.objects" should exist
-        And the field "impact.objects.0.id" should be "stop_area:RTP:SA:3786125"
-        And the field "impact.objects.0.type" should be "stop_area"
+        And the field "impact.objects.0.id" should be "network:JDR:2"
+        And the field "impact.objects.0.type" should be "network"
         And the field "impact.severity.id" should exist
         And the field "impact.severity.wording" should be "good news"
         And the field "impact.disruption.href" should exist
@@ -36,11 +36,11 @@ Feature: Manipulate impacts in a Disruption
 
         Given I post to "/disruptions/7ffab232-3d48-4eea-aa2c-22f8680230b6/impacts" with:
         """
-        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "stop_area:RTP:SA:3786125","type": "stop_area"},{"id": "line:RTP:LI:378","type": "line"}]}
+        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "network:JDR:2","type": "network"},{"id": "network:JDR:1","type": "network"}]}
         """
         Given I post to "/disruptions/7ffab232-3d48-4eea-aa2c-22f8680230b6/impacts" with:
         """
-        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "stop_area:RTP:SA:3786125","type": "stop_area"},{"id": "line:RTP:LI:378","type": "line"}]}
+        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "network:JDR:2","type": "network"},{"id": "network:JDR:1","type": "network"}]}
         """
         When I get "/disruptions/7ffab232-3d48-4eea-aa2c-22f8680230b6/impacts"
         Then the status code should be "200"
