@@ -220,8 +220,7 @@ class Impact(TimestampMixin, db.Model):
     def all(cls, disruption_id):
         query = cls.query.filter_by(status='published')
         query = query.filter(and_(cls.disruption_id == disruption_id))
-        result = query.all()
-        return result
+        return query.join('severity').order_by('severity.priority asc').all()
 
 class PTobject(TimestampMixin, db.Model):
     __tablename__ = 'pt_object'
