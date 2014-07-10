@@ -108,7 +108,7 @@ def test_validate_object_format():
     Draft4Validator.check_schema(formats.object_input_format)
 
 def test_object_validation():
-    json = {'id': 'stop_area:...:200', 'type': 'stop_area'}
+    json = {'id': 'stop_area:...:200', 'type': 'network'}
     validate(json, formats.object_input_format)
 
 @raises(ValidationError)
@@ -118,7 +118,7 @@ def test_object_validation_without_type():
 
 @raises(ValidationError)
 def test_object_validation_id_has_max_length():
-    json = {'id': 's'*251, 'type': 'stop_area'}
+    json = {'id': 's'*251, 'type': 'network'}
     validate(json, formats.object_input_format)
 
 def test_validate_impact_format():
@@ -126,7 +126,7 @@ def test_validate_impact_format():
 
 def test_impact_without_application_period_validation():
     json = {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},
-            "objects": [{"id": "stop_area:RTP:SA:3786125","type": "stop_area"},{"id": "line:RTP:LI:378","type": "line"}]}
+            "objects": [{"id": "stop_area:RTP:SA:3786125","type": "network"},{"id": "line:RTP:LI:378","type": "network"}]}
     validate(json, formats.impact_input_format)
 
 def test_impact_without_object_validation():
@@ -137,13 +137,13 @@ def test_impact_without_object_validation():
 def test_impact_with_object_and_application_period_validation():
     json = {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},
             "application_periods": [{"begin": "2014-06-20T17:00:00Z","end":"2014-07-28T17:00:00Z"}],
-            "objects": [{"id": "stop_area:RTP:SA:3786125","type": "stop_area"},{"id": "line:RTP:LI:378","type": "line"}]
+            "objects": [{"id": "stop_area:RTP:SA:3786125","type": "network"},{"id": "line:RTP:LI:378","type": "network"}]
             }
     validate(json, formats.impact_input_format)
 
 @raises(ValidationError)
 def test_impact_without_severity_validation():
     json = {"application_periods": [{"begin": "2014-06-20T17:00:00Z","end":"2014-07-28T17:00:00Z"}],
-            "objects": [{"id": "stop_area:RTP:SA:3786125","type": "stop_area"},{"id": "line:RTP:LI:378","type": "line"}]
+            "objects": [{"id": "stop_area:RTP:SA:3786125","type": "network"},{"id": "line:RTP:LI:378","type": "network"}]
             }
     validate(json, formats.impact_input_format)
