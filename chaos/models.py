@@ -38,6 +38,7 @@ from formats import publication_status_values
 from sqlalchemy import or_, and_
 from sqlalchemy.orm import backref
 
+
 #force the server to use UTC time for each connection
 import sqlalchemy
 def set_utc_on_connect(dbapi_con, con_record):
@@ -86,7 +87,7 @@ class Disruption(TimestampMixin, db.Model):
     status = db.Column(DisruptionStatus, nullable=False, default='published', index=True)
     start_publication_date = db.Column(db.DateTime(), nullable=True)
     end_publication_date = db.Column(db.DateTime(), nullable=True)
-    impacts = db.relationship('Impact', backref='disruption', lazy='select')
+    impacts = db.relationship('Impact', backref='disruption', lazy='dynamic')
 
     def __repr__(self):
         return '<Disruption %r>' % self.id
@@ -123,6 +124,7 @@ class Disruption(TimestampMixin, db.Model):
 
     @property
     def publication_status(self):
+
         current_time = utils.get_current_time()
         # Past
         if self.end_publication_date < current_time:

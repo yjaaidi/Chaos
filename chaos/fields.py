@@ -27,7 +27,8 @@
 # https://groups.google.com/d/forum/navitia
 # www.navitia.io
 
-from flask_restful import fields
+from flask_restful import fields, url_for
+from  utils import make_pager
 
 class FieldDateTime(fields.Raw):
     def format(self, value):
@@ -35,6 +36,15 @@ class FieldDateTime(fields.Raw):
             return value.strftime('%Y-%m-%dT%H:%M:%SZ')
         else:
             return 'null'
+
+
+class FieldPaginateImpacts(fields.Raw):
+    '''
+    Pagination of impacts list for one disruption
+    '''
+    def output(self, key, disruption):
+        return make_pager(disruption.impacts.paginate(1, 20), 'impact', disruption_id=disruption.id)
+
 
 href_field = {
     "href": fields.String
@@ -52,7 +62,7 @@ disruption_fields = {'id': fields.Raw,
                             'end': FieldDateTime(attribute='end_publication_date'),
                          },
                      'publication_status': fields.Raw,
-                     'impacts': {'href': fields.String('https://chaos.apiary-mock.com/disruptions/3d1f32b2-e8df-11e3-8c3e-0008ca8657ea/impacts/3d1f42b2-e8df-11e3-8c3e-0008ca8657ea')}
+                     'impacts': FieldPaginateImpacts(attribute='impacts')
 }
 
 paginate_fields = {
