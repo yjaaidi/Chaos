@@ -28,7 +28,9 @@
 # www.navitia.io
 
 from flask_restful import fields, url_for
+from flask import current_app
 from  utils import make_pager
+from chaos.navitia import Navitia
 
 class FieldDateTime(fields.Raw):
     def format(self, value):
@@ -48,6 +50,16 @@ class FieldPaginateImpacts(fields.Raw):
 class FieldUrlDisruption(fields.Raw):
     def output(self, key, obj):
         return {'href': url_for('disruption', id=obj.disruption_id, _external=True)}
+
+class FieldObjectName(fields.Raw):
+    def output(self, key, obj):
+        navitia = Navitia(current_app.config['NAVITIA_URL'],
+                               current_app.config['NAVITIA_COVERAGE'],
+                               current_app.config['NAVITIA_TOKEN'])
+        response = navitia.get_network(obj.uri)
+        if response and 'name' in response:
+            return response['name']
+        return 'Unable to find object'
 
 
 href_field = {
@@ -125,8 +137,9 @@ causes_fields = {'causes': fields.List(fields.Nested(cause_fields)),
 one_cause_fields = {'cause': fields.Nested(cause_fields)
                         }
 
-objectTC_fields = {'id' : fields.Raw(attribute='uri'),
-                   'type' : fields.Raw
+objectTC_fields = {'id': fields.Raw(attribute='uri'),
+                   'type': fields.Raw,
+                   'name': FieldObjectName()
 }
 
 application_period_fields = {
