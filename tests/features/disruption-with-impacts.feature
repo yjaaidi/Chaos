@@ -21,6 +21,8 @@ Feature: Manipulate impacts in a Disruption
         And the field "impact.objects.0.type" should be "stop_area"
         And the field "impact.severity.id" should exist
         And the field "impact.severity.wording" should be "good news"
+        And the field "impact.disruption.href" should exist
+        And the field "impact.self.href" should exist
 
     Scenario: Add two impacts via URL in a disruption
         Given I have the following disruptions in my database:
@@ -88,3 +90,5 @@ Feature: Manipulate impacts in a Disruption
         And the header "Content-Type" should be "application/json"
         And the field "impacts" should have a size of 2
         And the field "impacts.0.severity.wording" should be "good news"
+        And the field "impacts.0.disruption.href" should exist
+        And the field "impacts.0.self.href" should exist

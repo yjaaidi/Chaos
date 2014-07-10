@@ -149,8 +149,7 @@ one_impact_fields = {'impact': fields.Nested(impact_fields)
 }
 
 impacts_fields = {'meta': fields.Nested(meta_fields),
-                  'impacts': fields.List(fields.Nested(impact_fields)),
-                  'disruption' : fields.Raw
+                  'impacts': fields.List(fields.Nested(impact_fields))
 }
 
 channel_fields = {'id': fields.Raw,
