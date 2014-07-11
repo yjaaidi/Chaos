@@ -26,3 +26,17 @@ def test_publication_status_coming():
         ob.start_publication_date = datetime.utcnow() + timedelta(days=1)
         ob.end_publication_date = ob.start_publication_date + timedelta(days=3)
         eq_(ob.publication_status,  'coming')
+
+def test_publication_status_coming_not_end_publication_date():
+    with chaos.app.app_context():
+        ob = chaos.models.Disruption()
+        ob.start_publication_date = datetime.utcnow() + timedelta(days=1)
+        ob.end_publication_date = None
+        eq_(ob.publication_status,  'coming')
+
+def test_publication_status_ongoing_not_end_publication_date():
+    with chaos.app.app_context():
+        ob = chaos.models.Disruption()
+        ob.start_publication_date = datetime.utcnow() + timedelta(days=-1)
+        ob.end_publication_date = None
+        eq_(ob.publication_status,  'ongoing')
