@@ -27,7 +27,10 @@
 # https://groups.google.com/d/forum/navitia
 # www.navitia.io
 
-from flask_restful import fields
+from flask_restful import fields, url_for
+from flask import current_app
+from  utils import make_pager
+from chaos.navitia import Navitia
 
 class FieldDateTime(fields.Raw):
     def format(self, value):
@@ -35,6 +38,29 @@ class FieldDateTime(fields.Raw):
             return value.strftime('%Y-%m-%dT%H:%M:%SZ')
         else:
             return 'null'
+
+
+class FieldPaginateImpacts(fields.Raw):
+    '''
+    Pagination of impacts list for one disruption
+    '''
+    def output(self, key, disruption):
+        return make_pager(disruption.impacts.paginate(1, 20), 'impact', disruption_id=disruption.id)
+
+class FieldUrlDisruption(fields.Raw):
+    def output(self, key, obj):
+        return {'href': url_for('disruption', id=obj.disruption_id, _external=True)}
+
+class FieldObjectName(fields.Raw):
+    def output(self, key, obj):
+        navitia = Navitia(current_app.config['NAVITIA_URL'],
+                               current_app.config['NAVITIA_COVERAGE'],
+                               current_app.config['NAVITIA_TOKEN'])
+        response = navitia.get_network(obj.uri)
+        if response and 'name' in response:
+            return response['name']
+        return 'Unable to find object'
+
 
 href_field = {
     "href": fields.String
@@ -52,7 +78,7 @@ disruption_fields = {'id': fields.Raw,
                             'end': FieldDateTime(attribute='end_publication_date'),
                          },
                      'publication_status': fields.Raw,
-                     'impacts': {'href': fields.String('https://chaos.apiary-mock.com/disruptions/3d1f32b2-e8df-11e3-8c3e-0008ca8657ea/impacts/3d1f42b2-e8df-11e3-8c3e-0008ca8657ea')}
+                     'impacts': FieldPaginateImpacts(attribute='impacts')
 }
 
 paginate_fields = {
@@ -111,8 +137,9 @@ causes_fields = {'causes': fields.List(fields.Nested(cause_fields)),
 one_cause_fields = {'cause': fields.Nested(cause_fields)
                         }
 
-objectTC_fields = {'id' : fields.Raw(attribute='uri'),
-                   'type' : fields.Raw
+objectTC_fields = {'id': fields.Raw(attribute='uri'),
+                   'type': fields.Raw,
+                   'name': FieldObjectName()
 }
 
 application_period_fields = {
@@ -124,7 +151,10 @@ impact_fields = {'id': fields.Raw,
                  'created_at': FieldDateTime,
                  'updated_at': FieldDateTime,
                  'objects': fields.List(fields.Nested(objectTC_fields)),
-                 'application_periods': fields.List(fields.Nested(application_period_fields))
+                 'application_periods': fields.List(fields.Nested(application_period_fields)),
+                 'severity': fields.Nested(severity_fields),
+				 'self': {'href': fields.Url('impact', absolute=True)},
+                 'disruption': FieldUrlDisruption()
 }
 
 one_impact_fields = {'impact': fields.Nested(impact_fields)

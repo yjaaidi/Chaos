@@ -36,6 +36,8 @@ from sqlalchemy.dialects.postgresql import UUID
 from datetime import datetime
 from formats import publication_status_values
 from sqlalchemy import or_, and_
+from sqlalchemy.orm import backref
+
 
 #force the server to use UTC time for each connection
 import sqlalchemy
@@ -85,7 +87,7 @@ class Disruption(TimestampMixin, db.Model):
     status = db.Column(DisruptionStatus, nullable=False, default='published', index=True)
     start_publication_date = db.Column(db.DateTime(), nullable=True)
     end_publication_date = db.Column(db.DateTime(), nullable=True)
-    impacts = db.relationship('Impact', backref='disruption', lazy='select')
+    impacts = db.relationship('Impact', backref='disruption', lazy='dynamic')
 
     def __repr__(self):
         return '<Disruption %r>' % self.id
@@ -122,6 +124,7 @@ class Disruption(TimestampMixin, db.Model):
 
     @property
     def publication_status(self):
+
         current_time = utils.get_current_time()
         # Past
         if self.end_publication_date < current_time:
@@ -160,11 +163,29 @@ class Impact(TimestampMixin, db.Model):
     id = db.Column(UUID, primary_key=True)
     status = db.Column(ImpactStatus, nullable=False, default='published', index=True)
     disruption_id = db.Column(UUID, db.ForeignKey(Disruption.id))
+    severity_id = db.Column(UUID, db.ForeignKey(Severity.id))
     objects = db.relationship('PTobject', backref='impact', lazy='select')
     application_periods = db.relationship('ApplicationPeriods', backref='impact', lazy='select')
+    severity = db.relationship('Severity', backref='impacts', lazy='select')
 
     def __repr__(self):
         return '<Impact %r>' % self.id
+
+    def __marshallable__(self):
+        '''
+        This method is added to solve the problem of impact without instance during creation of response json for Post..
+        API post cannot fill url for impact and disruption in impact_fields
+        When we have either one of them present in impact_fields, it works.
+        '''
+        d = {}
+        d['id'] = self.id
+        d['status'] = self.status
+        d['disruption_id'] = self.disruption_id
+        d['severity_id'] = self.severity_id
+        d['objects'] = self.objects
+        d['application_periods'] = self.application_periods
+        d['severity'] = self.severity
+        return d
 
     def __init__(self, objects=None):
         self.id = str(uuid.uuid1())
@@ -199,8 +220,7 @@ class Impact(TimestampMixin, db.Model):
     def all(cls, disruption_id):
         query = cls.query.filter_by(status='published')
         query = query.filter(and_(cls.disruption_id == disruption_id))
-        result = query.all()
-        return result
+        return query.join('severity').order_by('severity.priority asc').all()
 
 class PTobject(TimestampMixin, db.Model):
     __tablename__ = 'pt_object'

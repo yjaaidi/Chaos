@@ -61,8 +61,8 @@ severity_input_format = {'type': 'object',
         },
         'required': ['wording']
 }
-
-id_format = re.compile('[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}')
+id_format_text = '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
+id_format = re.compile(id_format_text)
 
 cause_input_format = {'type': 'object',
         'properties': {'wording': {'type': 'string', 'maxLength': 250},
@@ -72,20 +72,25 @@ cause_input_format = {'type': 'object',
 
 object_input_format = {'type': 'object',
         'properties': {'id': {'type': 'string', 'maxLength': 250},
-                       'type': {'type': 'string', 'maxLength': 20}
+                       'type': {'enum': ['network']}
                        },
         'required': ['id', 'type']
 }
 
 impact_input_format = {'type': 'object',
         'properties': {
+            'severity': {'type': 'object',
+                         'properties': {'id': {'type': 'string', 'pattern': id_format_text}},
+                         'required': ['id']
+            },
             'applications_periods': {'type' : 'array',
                         'items':[date_period_format]
             },
             'objects': {'type' : 'array',
                         'items':[object_input_format]
             }
-        }
+        },
+        'required': ['severity']
 
 }
 

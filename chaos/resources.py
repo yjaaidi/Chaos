@@ -27,7 +27,7 @@
 # https://groups.google.com/d/forum/navitia
 # www.navitia.io
 
-from flask import request, url_for, g
+from flask import request, url_for, g, current_app
 import flask_restful
 from flask_restful import marshal, reqparse
 from chaos import models, db
@@ -38,6 +38,8 @@ from formats import *
 from formats import impact_input_format, channel_input_format
 from chaos import mapper
 from chaos import utils
+import chaos
+from chaos.navitia import Navitia
 
 import logging
 from utils import make_pager, option_value
@@ -62,7 +64,7 @@ severity_mapping = {'wording': None,
 cause_mapping = {'wording': None,}
 
 object_mapping = {
-    "uri": fields.String(attribute='id'),
+    "id": mapper.AliasText(attribute='uri'),
     "type": None
 }
 
@@ -76,7 +78,6 @@ channel_mapping = {'name': None,
                     'content_type': None
 }
 
-
 class Index(flask_restful.Resource):
 
     def get(self):
@@ -86,6 +87,7 @@ class Index(flask_restful.Resource):
             "disruption": {"href": url + '/{id}', "templated": True},
             "severities": {"href": url_for('severity', _external=True)},
             "causes": {"href": url_for('cause', _external=True)},
+            "channels": {"href": url_for('channel', _external=True)},
         }
         return response, 200
 
@@ -292,6 +294,11 @@ class Cause(flask_restful.Resource):
         return None, 204
 
 class Impacts(flask_restful.Resource):
+    def __init__(self):
+        self.navitia = Navitia(current_app.config['NAVITIA_URL'],
+                               current_app.config['NAVITIA_COVERAGE'],
+                               current_app.config['NAVITIA_TOKEN'])
+
     def get(self, disruption_id, id=None):
         if id:
             if not id_format.match(id):
@@ -324,6 +331,8 @@ class Impacts(flask_restful.Resource):
                            error_fields), 400
 
         impact = models.Impact()
+        impact.severity = models.Severity.get(json['severity']['id'])
+
         impact.disruption_id = disruption_id
         db.session.add(impact)
 
@@ -334,6 +343,9 @@ class Impacts(flask_restful.Resource):
                     object = models.PTobject()
                     object.impact_id = impact.id
                     mapper.fill_from_json(object, obj, object_mapping)
+                    if not self.navitia.get_network(obj['id']):
+                        return marshal({'error': {'message': 'network {} doesn\'t exist'.format(obj['id'])}},
+                                error_fields), 404
                     impact.insert_object(object)
             if 'application_periods' in json:
                 for app_period in json["application_periods"]:
@@ -354,11 +366,20 @@ class Impacts(flask_restful.Resource):
 
         #Add all objects present in Json
         if json:
-            for obj in  json['objects']:
-                object = models.PTobject()
-                object.impact_id = impact.id
-                mapper.fill_from_json(object, obj, object_mapping)
-                impact.insert_object(object)
+            if 'objects' in json:
+                for obj in  json['objects']:
+                    object = models.PTobject()
+                    object.impact_id = impact.id
+                    mapper.fill_from_json(object, obj, object_mapping)
+                    if not self.navitia.get_network(obj['id']):
+                        return marshal({'error': {'message': 'network {} doesn\'t exist'.format(obj['id'])}},
+                                error_fields), 404
+                    impact.insert_object(object)
+            if 'application_periods' in json:
+                for app_period in json["application_periods"]:
+                    application_period = models.ApplicationPeriods(impact.id)
+                    mapper.fill_from_json(application_period, app_period, application_period_mapping)
+                    impact.insert_app_period(application_period)
 
         db.session.commit()
         return marshal({'impact': impact}, one_impact_fields), 200
@@ -431,5 +452,9 @@ class Channel(flask_restful.Resource):
         db.session.commit()
         return None, 204
 
-
+class Status(flask_restful.Resource):
+    def get(self):
+        return {'version': chaos.VERSION,
+                'db_pool_status': db.engine.pool.status(),
+                'db_version': db.engine.scalar('select version_num from alembic_version;')}
 

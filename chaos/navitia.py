@@ -27,40 +27,34 @@
 # https://groups.google.com/d/forum/navitia
 # www.navitia.io
 
-from aniso8601 import parse_datetime
-from collections import Mapping
+import requests
+import logging
+
+__all__ = ['Navitia']
+
+class Navitia(object):
+    def __init__(self, url, coverage, token=None, timeout=1):
+        self.url = url
+        self.coverage = coverage
+        self.token = token
+        self.timeout = timeout
+
+    def get_network(self, uri):
+        query = '{url}/v1/coverage/{coverage}/networks/{uri}'.format(
+                url=self.url, coverage=self.coverage, uri=uri)
+        try:
+            response = requests.get(query, auth=(self.token, None), timeout=self.timeout)
+        except (requests.exceptions.RequestException):
+            logging.getLogger(__name__).exception('call to navitia failed')
+            #currently we reraise the previous exceptions
+            raise
+
+        if response:
+            json = response.json()
+            if 'networks' in json and json['networks']:
+                return json['networks'][0]
+
+        return None
 
 
-class Datetime(object):
-    def __init__(self, attribute):
-        self.attribute = attribute
 
-    def __call__(self, item, field, value):
-        if value:
-            setattr(item, self.attribute, parse_datetime(value).replace(tzinfo=None))
-        else:
-            setattr(item, self.attribute, None)
-
-class AliasText(object):
-    def __init__(self, attribute):
-        self.attribute = attribute
-
-    def __call__(self, item, field, value):
-        if value:
-            setattr(item, self.attribute, value)
-        else:
-            setattr(item, self.attribute, None)
-
-
-
-def fill_from_json(item, json, fields):
-    for field, formater in fields.iteritems():
-        if field not in json:
-            setattr(item, field, None)
-            continue
-        if isinstance(formater, Mapping):
-            fill_from_json(item, json[field], fields=formater)
-        elif not formater:
-            setattr(item, field, json[field])
-        elif formater:
-            formater(item, field, json[field])
