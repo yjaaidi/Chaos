@@ -182,3 +182,96 @@ channels_fields = {'channels': fields.List(fields.Nested(channel_fields)),
 one_channel_fields = {'channel': fields.Nested(channel_fields)
 }
 
+#Mock response impacts API
+
+object_fields = {
+    "id": "RER:A",
+    "name": "RER:A",
+    "type": "network",
+    "impacts": [
+        {
+            "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657ea",
+            "self": {"href": "https://chaos.apiary-mock.com/disruptions/3d1f32b2-e8df-11e3-8c3e-0008ca8657ea/impacts/3d1f42b2-e8df-11e3-8c3e-0008ca8657ea"},
+              "created_at": "2014-04-31T16:52:18Z",
+              "updated_at": "2014-04-31T16:55:18Z",
+              "severity": {
+                  "id": "3d1f42b2-e8df-11e3-8c3e-0008ca86c7ea",
+                  "wording": "Bonne nouvelle",
+                  "created_at": "2014-04-31T16:52:18Z",
+                  "updated_at": "2014-04-31T16:55:18Z",
+                  "color": "#123456",
+                  "effect": "none"
+              },
+              "application_periods": [
+                  {
+                      "begin": "2014-03-29T16:52:00Z",
+                      "end": "2014-05-22T02:15:00Z"
+                  }
+              ],
+                            "messages": [
+                  {
+                      "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657ca",
+                      "created_at": "2014-04-31T16:52:18Z",
+                      "updated_at": "2014-04-31T16:55:18Z",
+                      "text": "ptit dej la gare!!",
+                      "publication_date": ["2014-04-31T16:52:18Z"],
+                      "publication_period": None,
+                      "channel": {
+                          "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657da",
+                          "name": "message court",
+                          "content_type": "text/plain",
+                          "created_at": "2014-04-31T16:52:18Z",
+                          "updated_at": "2014-04-31T16:55:18Z",
+                          "max_size": 140
+                      }
+                  },
+                  {
+                      "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8257ea",
+                      "created_at": "2014-04-31T16:52:18Z",
+                      "updated_at": "2014-04-31T16:55:18Z",
+                      "text": "est ptit dej en gare",
+                      "publication_period" : {
+                          "begin":"2014-04-31T17:00:00Z",
+                          "end":"2014-05-01T17:00:00Z"
+                      },
+                      "publication_date" : None,
+                      "channel": {
+                          "id": "3d1f42b2-e8df-11e3-8c3e-0008cb8657ea",
+                          "name": "message long",
+                          "content_type": "text/markdown",
+                          "created_at": "2014-04-31T16:52:18Z",
+                          "updated_at": "2014-04-31T16:55:18Z",
+                          "max_size": None
+                      }
+                  }
+              ],
+              "object": [{
+        "id":"RER:A",
+        "name": "RER:A",
+        "type": "network"
+      }]
+        }
+    ]
+}
+objects_fields = {'meta': {
+                    "pagination":{
+                        "first":{
+                            "href": "http://127.0.0.1:5000/impacts?start_page=1&items_per_page=20"
+                        },
+                        "last":{
+                            "href": "http://127.0.0.1:5000/impacts?start_page=1&items_per_page=20"
+                        },
+                        "next":{
+                            "href": None
+                        },
+                        "prev":{
+                            "href": None
+                        },
+                        "start_page": "1",
+                        "items_on_page": "1",
+                        "items_per_page": "20",
+                        "total_result": "1"
+                    }
+                    },
+                  'objects': [object_fields]
+}

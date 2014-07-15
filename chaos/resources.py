@@ -329,6 +329,9 @@ class Impacts(flask_restful.Resource):
             response = {'impacts' : result.items, 'meta': make_pager(result, 'impact', disruption_id=disruption_id)}
             return marshal(response, impacts_fields)
 
+    def get(self, ptobject_id):
+        return objects_fields
+
     def post(self, disruption_id):
         if not id_format.match(disruption_id):
             return marshal({'error': {'message': "id invalid"}},
