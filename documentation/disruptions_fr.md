@@ -551,6 +551,123 @@ Cette fonction archive une perturbation, elle pourra être restaurée par la sui
             }
 
 
+# List des Impacts par type object [/impacts]
+
+##Retourne les impacts [GET]
+Cette fonction donne la liste des impacts par type d'objet.
+##Parameters
+
+| Name                 | description                                                                               | required | default                 |
+| -------------------- | ----------------------------------------------------------------------------------------- | -------- | ----------------------- |
+| ptobject[]           | Filtre sur ptobject,  les valeurs possibles sont : network, stoparea                      | true     | [network, stoparea]     |
+
+
+
+- response 200 (application/json)
+    * Body
+
+            {
+
+			"meta": {
+				"pagination": {
+						"first": {
+							"href": "http://127.0.0.1:5000/impacts?start_page=1&items_per_page=20"
+						},
+						"items_on_page": "1",
+						"items_per_page": "20",
+						"last": {
+							"href": "http://127.0.0.1:5000/impacts?start_page=1&items_per_page=20"
+						},
+						"next": {
+							"href": null
+						},
+						"prev": {
+							"href": null
+						},
+						"start_page": "1",
+						"total_result": "1"
+				}
+			},
+			"objects": [
+				{
+					"id": "RER:A",
+					"impacts": [
+						{
+							"application_periods": [
+									{
+										"begin": "2014-03-29T16:52:00Z",
+										"end": "2014-05-22T02:15:00Z"
+									}
+							],
+							"created_at": "2014-04-31T16:52:18Z",
+							"id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657ea",
+							"messages": [
+									{
+										"channel": {
+										"content_type": "text/plain",
+										"created_at": "2014-04-31T16:52:18Z",
+										"id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657da",
+										"max_size": 140,
+										"name": "message court",
+										"updated_at": "2014-04-31T16:55:18Z"
+										},
+										"created_at": "2014-04-31T16:52:18Z",
+										"id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657ca",
+										"publication_date": [
+											"2014-04-31T16:52:18Z"
+											],
+										"publication_period": null,
+										"text": "ptit dej la gare!!",
+										"updated_at": "2014-04-31T16:55:18Z"
+									},
+									{
+										"channel": {
+											"content_type": "text/markdown",
+											"created_at": "2014-04-31T16:52:18Z",
+											"id": "3d1f42b2-e8df-11e3-8c3e-0008cb8657ea",
+											"max_size": null,
+											"name": "message long",
+											"updated_at": "2014-04-31T16:55:18Z"
+										},
+										"created_at": "2014-04-31T16:52:18Z",
+										"id": "3d1f42b2-e8df-11e3-8c3e-0008ca8257ea",
+										"publication_date": null,
+										"publication_period": {
+											"begin": "2014-04-31T17:00:00Z",
+											"end": "2014-05-01T17:00:00Z"
+										},
+										"text": "est ptit dej en gare",
+										"updated_at": "2014-04-31T16:55:18Z"
+									}
+							],
+							"object": [
+								{
+									"id": "RER:A",
+									"name": "RER:A",
+									"type": "network"
+								}
+							],
+							"self": {
+								"href": "https://chaos.apiary-mock.com/disruptions/3d1f32b2-e8df-11e3-8c3e-0008ca8657ea/impacts/3d1f42b2-e8df-11e3-8c3e-0008ca8657ea"
+							},
+							"severity": {
+								"color": "#123456",
+								"created_at": "2014-04-31T16:52:18Z",
+								"effect": "none",
+								"id": "3d1f42b2-e8df-11e3-8c3e-0008ca86c7ea",
+								"updated_at": "2014-04-31T16:55:18Z",
+								"wording": "Bonne nouvelle"
+							},
+							"updated_at": "2014-04-31T16:55:18Z"
+							}
+					],
+					"name": "RER:A",
+					"type": "network"
+				}
+			]
+			}
+
+
 # Liste des Impacts [/disruptions/{disruption_id}/impacts]
 
 ##Retourne les impacts [GET]

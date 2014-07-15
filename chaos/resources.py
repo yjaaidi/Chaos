@@ -88,6 +88,7 @@ class Index(flask_restful.Resource):
             "severities": {"href": url_for('severity', _external=True)},
             "causes": {"href": url_for('cause', _external=True)},
             "channels": {"href": url_for('channel', _external=True)},
+            "impactsbyobject": {"href": url_for('impactsbyobject', _external=True)}
         }
         return response, 200
 
@@ -292,6 +293,10 @@ class Cause(flask_restful.Resource):
         cause.is_visible = False
         db.session.commit()
         return None, 204
+
+class ImpactsByObject(flask_restful.Resource):
+    def get(self):
+        return objects_fields
 
 class Impacts(flask_restful.Resource):
     def __init__(self):
