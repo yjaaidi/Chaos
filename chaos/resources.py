@@ -88,6 +88,7 @@ class Index(flask_restful.Resource):
             "severities": {"href": url_for('severity', _external=True)},
             "causes": {"href": url_for('cause', _external=True)},
             "channels": {"href": url_for('channel', _external=True)},
+            "impactsbyobject": {"href": url_for('impactsbyobject', _external=True)}
         }
         return response, 200
 
@@ -293,6 +294,10 @@ class Cause(flask_restful.Resource):
         db.session.commit()
         return None, 204
 
+class ImpactsByObject(flask_restful.Resource):
+    def get(self):
+        return objects_fields
+
 class Impacts(flask_restful.Resource):
     def __init__(self):
         self.navitia = Navitia(current_app.config['NAVITIA_URL'],
@@ -328,9 +333,6 @@ class Impacts(flask_restful.Resource):
             result = models.Impact.all(page_index=page_index, items_per_page=items_per_page, disruption_id=disruption_id)
             response = {'impacts' : result.items, 'meta': make_pager(result, 'impact', disruption_id=disruption_id)}
             return marshal(response, impacts_fields)
-
-    def get(self, ptobject_id):
-        return objects_fields
 
     def post(self, disruption_id):
         if not id_format.match(disruption_id):
