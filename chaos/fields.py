@@ -147,6 +147,14 @@ application_period_fields = {
     'end': FieldDateTime(attribute='end_date')
 }
 
+message_field = {
+    "id": fields.String("3d1f42b2-e8df-11e3-8c3e-0008ca8657ca"),
+    "created_at": fields.String("2014-04-31T16:52:18Z"),
+    "updated_at": fields.String("2014-04-31T16:55:18Z"),
+    "text": fields.String("ptit dej a la gare!!")
+
+}
+
 impact_fields = {'id': fields.Raw,
                  'created_at': FieldDateTime,
                  'updated_at': FieldDateTime,
@@ -154,7 +162,8 @@ impact_fields = {'id': fields.Raw,
                  'application_periods': fields.List(fields.Nested(application_period_fields)),
                  'severity': fields.Nested(severity_fields),
 				 'self': {'href': fields.Url('impact', absolute=True)},
-                 'disruption': FieldUrlDisruption()
+                 'disruption': FieldUrlDisruption(),
+                 'messages':fields.Nested(message_field)
 }
 
 one_impact_fields = {'impact': fields.Nested(impact_fields)
