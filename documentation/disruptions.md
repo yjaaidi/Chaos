@@ -529,7 +529,7 @@ Archive one disruption.
 # List of Impacts by object type [/impactsbyobject]
 
 ##Retrieve disruptions [GET]
-Return all visible disruptions.
+Return all impacts by ptobject.
 ##Parameters
 
 | Name                 | description                                                                    | required | default                     |
@@ -641,7 +641,8 @@ Return all visible disruptions.
 				}
 			]
 		}
-		
+
+
 # List of Impacts [/disruptions/{disruption_id}/impacts]
 
 ##Retrieve impacts [GET]
