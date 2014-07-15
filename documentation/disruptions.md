@@ -640,7 +640,7 @@ Return all impacts by ptobject.
 					"type": "network"
 				}
 			]
-		}
+			}
 
 
 # List of Impacts [/disruptions/{disruption_id}/impacts]
