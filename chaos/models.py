@@ -130,8 +130,8 @@ class Disruption(TimestampMixin, db.Model):
         if (self.end_publication_date != None) and (self.end_publication_date < current_time):
             return "past"
         # ongoing
-        if ((self.start_publication_date <= current_time)
-            and (self.end_publication_date == None or self.end_publication_date >= current_time)):
+        if self.start_publication_date <= current_time\
+            and (self.end_publication_date == None or self.end_publication_date >= current_time):
             return "ongoing"
         # Coming
         if self.start_publication_date > current_time:
