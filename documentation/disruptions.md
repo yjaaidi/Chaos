@@ -526,16 +526,14 @@ Archive one disruption.
                 "meta": {}
             }
 
-# List of Impacts by object type [/impactsbyobject]
+# List of Impacts by object type [/impacts]
 
-##Retrieve disruptions [GET]
+##Retrieve impacts [GET]
 Return all impacts by ptobject.
 ##Parameters
 
 | Name                 | description                                                                    | required | default                     |
 | -------------------- | ------------------------------------------------------------------------------ | -------- | --------------------------- |
-| start_index          | index of the first element returned (start at 1)                               | false    | 1                           |
-| items_per_page       | number of items per page                                                       | false    | 20                          |
 | ptobject[]           | filter by ptobject, possible value are: network, stoparea                      | true     | [network, stoparea]         |
 
 - response 200 (application/json)

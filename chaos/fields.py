@@ -200,7 +200,7 @@ object_fields = {
                   "created_at": "2014-04-31T16:52:18Z",
                   "updated_at": "2014-04-31T16:55:18Z",
                   "color": "#123456",
-                  "effect": "none"
+                  "effect": None
               },
               "application_periods": [
                   {
@@ -253,25 +253,5 @@ object_fields = {
         }
     ]
 }
-objects_fields = {'meta': {
-                    "pagination":{
-                        "first":{
-                            "href": "http://127.0.0.1:5000/impacts?start_page=1&items_per_page=20"
-                        },
-                        "last":{
-                            "href": "http://127.0.0.1:5000/impacts?start_page=1&items_per_page=20"
-                        },
-                        "next":{
-                            "href": None
-                        },
-                        "prev":{
-                            "href": None
-                        },
-                        "start_page": "1",
-                        "items_on_page": "1",
-                        "items_per_page": "20",
-                        "total_result": "1"
-                    }
-                    },
-                  'objects': [object_fields]
-}
+
+objects_fields = { 'objects': [object_fields] }
