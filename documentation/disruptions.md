@@ -645,7 +645,7 @@ Return all visible disruptions.
 # List of Impacts [/disruptions/{disruption_id}/impacts]
 
 ##Retrieve impacts [GET]
-Return all impacts of a disruption.
+Return all impacts of a impact.
 ###Parameters
 
 | Name           | description                                      | required | default |
@@ -660,99 +660,98 @@ Return all impacts of a disruption.
 
     * Body
 
-            {
-                "impacts": [
-                    {
-                        "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657ea",
-                        "self": {"href": "https://chaos.apiary-mock.com/disruptions/3d1f32b2-e8df-11e3-8c3e-0008ca8657ea/impacts/3d1f42b2-e8df-11e3-8c3e-0008ca8657ea"},
-                        "created_at": "2014-04-31T16:52:18Z",
-                        "updated_at": "2014-04-31T16:55:18Z",
-                        "severity": {
-                            "id": "3d1f42b2-e8df-11e3-8c3e-0008ca86c7ea",
-                            "wording": "Bonne nouvelle",
-                            "created_at": "2014-04-31T16:52:18Z",
-                            "updated_at": "2014-04-31T16:55:18Z",
-                            "color": "#123456",
-                            "priority": null,
-                            "effect": null
-                        },
-                        "application_periods": [
-                            {
-                                "begin": "2014-04-31T16:52:00Z",
-                                "end": "2014-05-22T02:15:00Z"
-                            }
-                        ],
-                        "messages": [
-                            {
-                                "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657ca",
-                                "created_at": "2014-04-31T16:52:18Z",
-                                "updated_at": "2014-04-31T16:55:18Z",
-                                "text": "ptit dej à la gare!!",
-                                "publication_date": ["2014-04-31T16:52:18Z"],
-                                "publication_period": null,
-                                "channel": {
-                                    "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657da",
-                                    "name": "message court",
-                                    "content_type": "text/plain",
-                                    "created_at": "2014-04-31T16:52:18Z",
-                                    "updated_at": "2014-04-31T16:55:18Z",
-                                    "max_size": 140
-                                }
-                            },
-                            {
-                                "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8257ea",
-                                "created_at": "2014-04-31T16:52:18Z",
-                                "updated_at": "2014-04-31T16:55:18Z",
-                                "text": "#Youpi\n**aujourd'hui c'est ptit dej en gare",
-                                "publication_period" : {
-                                    "begin":"2014-04-31T17:00:00Z",
-                                    "end":"2014-05-01T17:00:00Z"
-                                },
-                                "publication_date" : null,
-                                "channel": {
-                                    "id": "3d1f42b2-e8df-11e3-8c3e-0008cb8657ea",
-                                    "name": "message long",
-                                    "content_type": "text/markdown",
-                                    "created_at": "2014-04-31T16:52:18Z",
-                                    "updated_at": "2014-04-31T16:55:18Z",
-                                    "max_size": null
-                                }
-                            }
-                        ],
-                        "objects": [
-                            {
-                                "id": "stop_area:RTP:SA:3786125",
-                                "name": "HENRI THIRARD - LEON JOUHAUX",
-                                "type": "stop_area",
-                                "coord": {
-                                    "lat": "48.778867",
-                                    "lon": "2.340927"
-                                }
-                            },
-                            {
-                                "id": "line:RTP:LI:378",
-                                "name": "DE GAULLE - GOUNOD - TABANOU",
-                                "type": "line",
-                                "code": 2,
-                                "color": "FFFFFF"
-                            }
-                        ],
-                        "disruption" : {"href": "https://chaos.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-823e-0008ca8657ea"}
-                    }
-                ],
-                "meta": {
-                    "pagination": {
-                        "start_index": 1,
-                        "items_per_page": 3,
-                        "total_results": 6,
-                        "prev": null,
-                        "next": {"href": "https://chaos.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-823e-0008ca8657ea/impacts?start_index=4&items_per_page=3"},
-                        "first": {"href": "https://chaos.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-823e-0008ca8657ea/impacts?start_index=1&items_per_page=3"},
-                        "last": {"href": "https://chaos.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-823e-0008ca8657ea/impacts?start_index=4&items_per_page=3"}
-                    }
-                }
-            }
-
+		{
+			"impacts": [
+				{
+				"id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657ea",
+				"self": {"href": "https://chaos.apiary-mock.com/disruptions/3d1f32b2-e8df-11e3-8c3e-0008ca8657ea/impacts/3d1f42b2-e8df-11e3-8c3e-0008ca8657ea"},
+				"created_at": "2014-04-31T16:52:18Z",
+				"updated_at": "2014-04-31T16:55:18Z",
+				"severity": {
+					"id": "3d1f42b2-e8df-11e3-8c3e-0008ca86c7ea",
+					"wording": "Bonne nouvelle",
+					"created_at": "2014-04-31T16:52:18Z",
+					"updated_at": "2014-04-31T16:55:18Z",
+					"color": "#123456",
+					"priority": null,
+					"effect": null
+				},
+				"application_periods": [
+					{
+						"begin": "2014-04-31T16:52:00Z",
+						"end": "2014-05-22T02:15:00Z"
+					}
+				],
+				"messages":[
+					{
+						"id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657ca",
+						"created_at": "2014-04-31T16:52:18Z",
+						"updated_at": "2014-04-31T16:55:18Z",
+						"text": "ptit dej à la gare!!",
+						"publication_date": ["2014-04-31T16:52:18Z"],
+						"publication_period": null,
+						"channel": {
+							"id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657da",
+							"name": "message court",
+							"content_type": "text/plain",
+							"created_at": "2014-04-31T16:52:18Z",
+							"updated_at": "2014-04-31T16:55:18Z",
+							"max_size": 140
+						}
+					},
+					{
+						"id": "3d1f42b2-e8df-11e3-8c3e-0008ca8257ea",
+						"created_at": "2014-04-31T16:52:18Z",
+						"updated_at": "2014-04-31T16:55:18Z",
+						"text": "#Youpi\n**aujourd'hui c'est ptit dej en gare",
+						"publication_period" : {
+							"begin":"2014-04-31T17:00:00Z",
+							"end":"2014-05-01T17:00:00Z"
+						},
+						"publication_date" : null,
+						"channel": {
+							"id": "3d1f42b2-e8df-11e3-8c3e-0008cb8657ea",
+							"name": "message long",
+							"content_type": "text/markdown",
+							"created_at": "2014-04-31T16:52:18Z",
+							"updated_at": "2014-04-31T16:55:18Z",
+							"max_size": null
+						}
+					}
+				],
+				"objects": [
+					{
+						"id": "stop_area:RTP:SA:3786125",
+						"name": "HENRI THIRARD - LEON JOUHAUX",
+						"type": "stop_area",
+						"coord": {
+							"lat": "48.778867",
+							"lon": "2.340927"
+						}
+					},
+					{
+						"id": "line:RTP:LI:378",
+						"name": "DE GAULLE - GOUNOD - TABANOU",
+						"type": "line",
+						"code": 2,
+						"color": "FFFFFF"
+					}
+				],
+				"disruption" : {"href": "https://chaos.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-823e-0008ca8657ea"}
+				}
+			],
+			"meta": {
+				"pagination": {
+				"start_index": 1,
+				"items_per_page": 3,
+				"total_results": 6,
+				"prev": null,
+				"next": {"href": "https://chaos.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-823e-0008ca8657ea/impacts?start_index=4&items_per_page=3"},
+				"first": {"href": "https://chaos.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-823e-0008ca8657ea/impacts?start_index=1&items_per_page=3"},
+				"last": {"href": "https://chaos.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-823e-0008ca8657ea/impacts?start_index=4&items_per_page=3"}
+				}
+			}
+		}
 
 
 ##Create a impact [POST]
