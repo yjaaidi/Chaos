@@ -217,10 +217,11 @@ class Impact(TimestampMixin, db.Model):
         return cls.query.filter_by(id=id, status='published').first_or_404()
 
     @classmethod
+    @paginate()
     def all(cls, disruption_id):
         query = cls.query.filter_by(status='published')
         query = query.filter(and_(cls.disruption_id == disruption_id))
-        return query.join('severity').order_by('severity.priority asc').all()
+        return query.join('severity').order_by('severity.priority asc')
 
 class PTobject(TimestampMixin, db.Model):
     __tablename__ = 'pt_object'
