@@ -526,7 +526,7 @@ Archive one disruption.
                 "meta": {}
             }
 
-# List of Impacts by object type [/impacts]
+# List of Impacts by object type [/impactsbyobject]
 
 ##Retrieve disruptions [GET]
 Return all visible disruptions.
