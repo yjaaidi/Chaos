@@ -32,6 +32,9 @@ import flask_restful
 
 from chaos import app
 
+#we always want pretty json
+flask_restful.representations.json.settings = {'indent': 4}
+
 api = flask_restful.Api(app, catch_all_404s=True)
 
 api.add_resource(resources.Index,
