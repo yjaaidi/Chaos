@@ -27,28 +27,15 @@
 # https://groups.google.com/d/forum/navitia
 # www.navitia.io
 
-VERSION = '0.1.0-dev'
+import logging
+from flask import request
 
-from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-import logging.config
-from chaos.utils import Request
+class ChaosFilter(logging.Filter):
 
-app = Flask(__name__)
-app.config.from_object('chaos.default_settings')
-app.config.from_envvar('CHAOS_CONFIG_FILE')
-app.request_class = Request
-
-
-if 'LOGGER' in app.config:
-    logging.config.dictConfig(app.config['LOGGER'])
-else:  # Default is std out
-    handler = logging.StreamHandler(stream=sys.stdout)
-    app.logger.addHandler(handler)
-    app.logger.setLevel('INFO')
-
-
-db = SQLAlchemy(app)
-
-
-import chaos.api
+    def filter(self, record):
+        try:
+            record.request_id = request.id
+        except RuntimeError:
+            #if we are outside of a application context
+            record.request_id = None
+        return True
