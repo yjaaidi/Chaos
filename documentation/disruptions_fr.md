@@ -18,17 +18,20 @@ Dans ce document, toutes les sections décrivent les différents points d'entré
 
 Dans chacune des APIs il est décrit les méthodes http qui sont implémentées
 
-En général les APIs implémentent sur les méthodes GET la pagination. On peut alors préciser l'id du 
-premier item de la page grâce au paramètre start_index, puis préciser le
+En général les APIs implémentent sur les méthodes GET la pagination.
+On peut alors préciser le numéro de la page demandé avec le paramètre start_page, puis préciser le
 nombre d'items que l'on veut par page à l'aide du paramètre items_per_page.
 
-Le nom des paramètres respecte : www.opensearch.org
-
-Certaines des urls contiennent des places holders, ils sont contenus entre { },
-il faudra remplacer, { }, par une valeur.
-Exemple : /disruptions/{disruption_id}/impacts
-Cette url n'est pas valide, il faut remplacer {disruption_id} par un id de
+Certaines des urls contiennent des places holders, ils sont contenus entre ```{ }```,
+il faudra remplacer, ```{}```, par une valeur.
+Exemple : ```/disruptions/{disruption_id}/impacts```
+Cette url n'est pas valide, il faut remplacer ```{disruption_id}``` par un id de
 disruption valide.
+
+
+Les différents concepts manipulés sont présentés dans la diagramme suivant:
+
+![schema conceptuel](https://raw.githubusercontent.com/CanalTP/Chaos/master/documentation/Conceptuel.jpg?token=448185__eyJzY29wZSI6IlJhd0Jsb2I6Q2FuYWxUUC9DaGFvcy9tYXN0ZXIvZG9jdW1lbnRhdGlvbi9Db25jZXB0dWVsLmpwZyIsImV4cGlyZXMiOjE0MDYwNDA1MDN9--b3e9f38f53f9b6a80d21d45ad545144fa69f5521)
 
 # Racine [/]
 ##Récupérer la liste des API [GET]
@@ -53,15 +56,21 @@ Retourne la liste de toutes les perturbations visibles.
 
 | Name                 | description                                                                               | required | default                 |
 | -------------------- | ----------------------------------------------------------------------------------------- | -------- | ----------------------- |
-| start_index          | Index du premier item de la page (commence par 1)                                         | false    | 1                       |
+| start_page           | Numéro de la page (commence par 1)                                                        | false    | 1                       |
 | items_per_page       | Nombre d'items par page                                                                   | false    | 20                      |
 | publication_status[] | Filtre sur publication_status,  les valeurs possibles sont : past, ongoing, coming        | false    | [past, ongoing, coming] |
 | current_time         | Permet de changer l'heure d'appel, sert surtout pour le debug                             | false    | NOW                     |
 
-@TODO: search and sort
 
-Le champs ```publication_status``` permet, par rapport à l'heure de référence passée en paramètre, de retourner les perturbations en cours (c'est à dire ayant des dates/heures de publications encadrant la date/heure de référence), à venir (qui ont des dates/heures de publications postérieures à la date/heure de référence) ou passées (ayant des dates/heures de publications antérieures à la date/heure de référence).
+Le paramétre ```publication_status``` permet, par rapport à l'heure de référence passée en paramètre, de retourner les perturbations en cours (c'est à dire ayant des dates/heures de publications encadrant la date/heure de référence), à venir (qui ont des dates/heures de publications postérieures à la date/heure de référence) ou passées (ayant des dates/heures de publications antérieures à la date/heure de référence).
 
+L'attribut ```status``` des disruptions ne peut actuellement prendre qu'une seule valeurs: ```published```.
+
+L'attribut ```publication_status``` des disruptions correspond à l'énumération ```DisruptionStatus``` du schéma ci dessus.
+
+Le champs ```impacts``` contient un objet de pagination contenant les liens vers la liste des impacts.
+
+##Example
 - response 200 (application/json)
 
     * Body
@@ -77,45 +86,19 @@ Le champs ```publication_status``` permet, par rapport à l'heure de référence
                         "note": "blablbla",
                         "status": "published",
                         "publication_status": "ongoing",
-                        "contributor": "shortterm.tn",
-                        "cause": {
-                            "id": "3d1f34b2-e8df-11e3-8c3e-0008ca8657ea",
-                            "wording": "Condition météo"
-                        },
-                        "tags": ["rer", "meteo", "probleme"],
-                        "localization": [
-                            {
-                                "id": "stop_area:RTP:SA:3786125",
-                                "name": "HENRI THIRARD - LEON JOUHAUX",
-                                "type": "stop_area",
-                                "coord": {
-                                    "lat": "48.778867",
-                                    "lon": "2.340927"
-                                }
-                            },
-                            {
-                                "id": "stop_area:RTP:SA:3786123",
-                                "name": "DE GAULLE - GOUNOD - TABANOU",
-                                "type": "stop_area",
-                                "coord": {
-                                    "lat": "48.780179",
-                                    "lon": "2.340886"
-                                }
-                            }
-                        ],
                         "publication_period" : {
                             "begin":"2014-04-31T17:00:00Z",
                             "end":"2014-05-01T17:00:00Z"
                         },
                         "impacts": {
                             "pagination": {
-                                "start_index": 0,
+                                "start_page": 0,
                                 "items_per_page": 20,
                                 "total_results": 3,
                                 "prev": null,
-                                "next": {"href": "https://ogv2ws.apiary-mock.com/disruptions/d30502d2-e8de-11e3-8c3e-0008ca8657ea/impacts?start_index=1&item_per_page=20"},
-                                "first": {"href": "https://ogv2ws.apiary-mock.com/disruptions/d30502d2-e8de-11e3-8c3e-0008ca8657ea/impacts?start_index=1&item_per_page=20"},
-                                "last": {"href": "https://ogv2ws.apiary-mock.com/disruptions/d30502d2-e8de-11e3-8c3e-0008ca8657ea/impacts?start_index=1&item_per_page=20"}
+                                "next": {"href": "https://ogv2ws.apiary-mock.com/disruptions/d30502d2-e8de-11e3-8c3e-0008ca8657ea/impacts?start_page=1&item_per_page=20"},
+                                "first": {"href": "https://ogv2ws.apiary-mock.com/disruptions/d30502d2-e8de-11e3-8c3e-0008ca8657ea/impacts?start_page=1&item_per_page=20"},
+                                "last": {"href": "https://ogv2ws.apiary-mock.com/disruptions/d30502d2-e8de-11e3-8c3e-0008ca8657ea/impacts?start_page=1&item_per_page=20"}
                             }
                         }
                     },
@@ -128,26 +111,19 @@ Le champs ```publication_status``` permet, par rapport à l'heure de référence
                         "note": null,
                         "status": "published",
                         "publication_status": "coming",
-                        "contributor": "shortterm.tn",
-                        "cause": {
-                            "id": "3d1f34b2-e8ef-11e3-8c3e-0008ca8657ea",
-                            "wording": "train cassé"
-                        },
-                        "tags": ["rer", "probleme"],
-                        "localization": [],
                         "publication_period" : {
                             "begin": "2014-04-31T17:00:00Z",
                             "end": null
                         },
                         "impacts": {
                             "pagination": {
-                                "start_index": 0,
+                                "start_page": 0,
                                 "items_per_page": 20,
                                 "total_results": 5,
                                 "prev": null,
-                                "next": {"href": "https://ogv2ws.apiary-mock.com/disruptions/d30502d2-e8de-11e3-8c3e-0008ca8657eb/impacts?start_index=1&item_per_page=20"},
-                                "first": {"href": "https://ogv2ws.apiary-mock.com/disruptions/d30502d2-e8de-11e3-8c3e-0008ca8657eb/impacts?start_index=1&item_per_page=20"},
-                                "last": {"href": "https://ogv2ws.apiary-mock.com/disruptions/d30502d2-e8de-11e3-8c3e-0008ca8657eb/impacts?start_index=1&item_per_page=20"}
+                                "next": {"href": "https://ogv2ws.apiary-mock.com/disruptions/d30502d2-e8de-11e3-8c3e-0008ca8657eb/impacts?start_page=1&item_per_page=20"},
+                                "first": {"href": "https://ogv2ws.apiary-mock.com/disruptions/d30502d2-e8de-11e3-8c3e-0008ca8657eb/impacts?start_page=1&item_per_page=20"},
+                                "last": {"href": "https://ogv2ws.apiary-mock.com/disruptions/d30502d2-e8de-11e3-8c3e-0008ca8657eb/impacts?start_page=1&item_per_page=20"}
                             }
                         }
                     },
@@ -160,36 +136,19 @@ Le champs ```publication_status``` permet, par rapport à l'heure de référence
                         "note": "retour probable d'ici 5H",
                         "status": "published",
                         "publication_status": "past",
-                        "contributor": "shortterm.tn",
-                        "cause": {
-                            "id": "3d1f34b2-e2df-11e3-8c3e-0008ca8657ea",
-                            "wording": "émeute"
-                        },
-                        "tags": ["rer", "metro", "probleme"],
-                        "localization": [
-                            {
-                                "id": "stop_area:RTP:SA:378125",
-                                "name": "Chatelet",
-                                "type": "stop_area",
-                                "coord": {
-                                    "lat": "48.778867",
-                                    "lon": "2.340927"
-                                }
-                            }
-                        ],
                         "publication_period" : {
                             "begin": "2014-04-31T17:00:00Z",
                             "end": null
                         },
                         "impacts": {
                             "pagination": {
-                                "start_index": 0,
+                                "start_page": 0,
                                 "items_per_page": 20,
                                 "total_results": 25,
                                 "prev": null,
-                                "next": {"href": "https://ogv2ws.apiary-mock.com/disruptions/d30502d2-e8de-11e3-8c3e-0008ca8657ec/impacts?start_index=1&item_per_page=20"},
-                                "first": {"href": "https://ogv2ws.apiary-mock.com/disruptions/d30502d2-e8de-11e3-8c3e-0008ca8657ec/impacts?start_index=1&item_per_page=20"},
-                                "last": {"href": "https://ogv2ws.apiary-mock.com/disruptions/d30502d2-e8de-11e3-8c3e-0008ca8657ec/impacts?start_index=21&item_per_page=20"}
+                                "next": {"href": "https://ogv2ws.apiary-mock.com/disruptions/d30502d2-e8de-11e3-8c3e-0008ca8657ec/impacts?start_page=1&item_per_page=20"},
+                                "first": {"href": "https://ogv2ws.apiary-mock.com/disruptions/d30502d2-e8de-11e3-8c3e-0008ca8657ec/impacts?start_page=1&item_per_page=20"},
+                                "last": {"href": "https://ogv2ws.apiary-mock.com/disruptions/d30502d2-e8de-11e3-8c3e-0008ca8657ec/impacts?start_page=2&item_per_page=20"}
                             }
                         }
                     }
@@ -197,23 +156,30 @@ Le champs ```publication_status``` permet, par rapport à l'heure de référence
                 ],
                 "meta": {
                     "pagination": {
-                        "start_index": 1,
+                        "start_page": 1,
                         "items_per_page": 3,
                         "total_results": 6,
                         "prev": null,
-                        "next": {"href": "https://ogv2ws.apiary-mock.com/disruptions/?start_index=4&item_per_page=3"},
-                        "first": {"href": "https://ogv2ws.apiary-mock.com/disruptions/?start_index=1&item_per_page=3"},
-                        "last": {"href": "https://ogv2ws.apiary-mock.com/disruptions/?start_index=4&item_per_page=3"}
+                        "next": {"href": "https://ogv2ws.apiary-mock.com/disruptions/?start_page=2&item_per_page=3"},
+                        "first": {"href": "https://ogv2ws.apiary-mock.com/disruptions/?start_page=1&item_per_page=3"},
+                        "last": {"href": "https://ogv2ws.apiary-mock.com/disruptions/?start_page=2&item_per_page=3"}
                     }
                 }
-
             }
 
 ##Créer une perturbation [POST]
 
-###Paramètres
-Création d'une perturbation avec des impacts.
+La création d'une perturbation est réalisé via une requéte ```POST``` à sur la resource ```disruptions```.
+Le content-type de la requete doit etre json et le corps de celle ci doit contenir un json correspondant au format d'une perturbation.
 
+Les champs suivant peuvent etre défini:
+  - reference (obligatoire)
+  - note
+  - publication_period
+
+Lors d'un succés une réponse 201 est retourné, celle ci contient la perturbation créée.
+
+###Exemple
 - Request (application/json)
 
     * Body
@@ -221,69 +187,10 @@ Création d'une perturbation avec des impacts.
             {
                 "reference": "foo",
                 "note": null,
-                "contributor": "shortterm.tn",
-                "cause": {
-                       "id": "3d1f34b2-e8df-1ae3-8c3e-0008ca8657ea"
-                }
-                "tags": ["rer", "meteo", "probleme"],
-                "localization": [
-                    {
-                        "id": "stop_area:RTP:SA:3786125",
-                        "type": "stop_area"
-                    },
-                    {
-                        "id": "stop_area:RTP:SA:3786123",
-                        "type": "stop_area"
-                    }
-                ],
                 "publication_period" : {
                     "begin": "2014-04-31T17:00:00Z",
                     "end": null
-                },
-                "impacts": [
-                    {
-                        "severity": {
-                            "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657ea"
-                        },
-                        "application_periods": [
-                            {
-                                "begin": "2014-04-31T16:52:00Z",
-                                "end": "2014-05-22T02:15:00Z"
-                            }
-                        ],
-                        "messages": [
-                            {
-                                "text": "ptit dej à la gare!!",
-                                "publication_date": ["2014-04-31T16:52:18Z"],
-                                "publication_period": null,
-                                "channel": {
-                                    "id": "3d1f42b6-e8df-11e3-8c3e-0008ca8657ea"
-                                }
-                            },
-                            {
-                                "text": "#Youpi\n**aujourd'hui c'est ptit dej en gare",
-                                "publication_period" : {
-                                    "begin":"2014-04-31T17:00:00Z",
-                                    "end":"2014-05-01T17:00:00Z"
-                                },
-                                "publication_date" : null,
-                                "channel": {
-                                    "id": "3d1f42b6-e8df-11e3-8c3e-0008ca8657ea"
-                                }
-                            }
-                        ],
-                        "objects": [
-                            {
-                                "id": "stop_area:RTP:SA:3786125",
-                                "type": "stop_area"
-                            },
-                            {
-                                "id": "line:RTP:LI:378",
-                                "type": "line"
-                            }
-                        ]
-                    }
-                ]
+                }
             }
 
 
@@ -302,44 +209,18 @@ Création d'une perturbation avec des impacts.
                     "note": null,
                     "status": "published",
                     "publication_status": "ongoing",
-                    "contributor": "shortterm.tn",
-                    "cause": {
-                        "id": "3d1f34b2-e8df-1ae3-8c3e-0008ca8657ea",
-                        "wording": "Condition météo"
-                    },
-                    "tags": ["rer", "meteo", "probleme"],
-                    "localization": [
-                        {
-                            "id": "stop_area:RTP:SA:3786125",
-                            "name": "HENRI THIRARD - LEON JOUHAUX",
-                            "type": "stop_area",
-                            "coord": {
-                                "lat": "48.778867",
-                                "lon": "2.340927"
-                            }
-                        },
-                        {
-                            "id": "stop_area:RTP:SA:3786123",
-                            "name": "DE GAULLE - GOUNOD - TABANOU",
-                            "type": "stop_area",
-                            "coord": {
-                                "lat": "48.780179",
-                                "lon": "2.340886"
-                            }
-                        }
-                    ],
                     "publication_period" : {
                         "begin": "2014-04-31T17:00:00Z",
                         "end": null
                     },
                     "impacts": {
                         "pagination": {
-                            "start_index": 0,
+                            "start_page": 0,
                             "items_per_page": 20,
                             "total_results": 1,
                             "prev": null,
                             "next": null,
-                            "first": {"href": "https://ogv2ws.apiary-mock.com/disruptions/1/impacts?start_index=1&item_per_page=20"},
+                            "first": {"href": "https://ogv2ws.apiary-mock.com/disruptions/1/impacts?start_page=1&item_per_page=20"},
                             "last": null
                         }
                     }
@@ -351,10 +232,9 @@ Création d'une perturbation avec des impacts.
 # Disruptions [/disruptions/{id}]
 ##Récupérer une perturbation [GET]
 
-##Paramètres
-
 Retourne une perturbation (si elle existe):
 
+###Exemple
 - response 200 (application/json)
 
     * Body
@@ -369,45 +249,19 @@ Retourne une perturbation (si elle existe):
                     "note": "blablbla",
                     "status": "published",
                     "publication_status": "ongoing",
-                    "contributor": "shortterm.tn",
-                    "cause": {
-                        "id": "3d1e32b2-e8df-11e3-8c3e-0008ca8657ea",
-                        "wording": "Condition météo"
-                    },
-                    "tags": ["rer", "meteo", "probleme"],
-                    "localization": [
-                        {
-                            "id": "stop_area:RTP:SA:3786125",
-                            "name": "HENRI THIRARD - LEON JOUHAUX",
-                            "type": "stop_area",
-                            "coord": {
-                                "lat": "48.778867",
-                                "lon": "2.340927"
-                            }
-                        },
-                        {
-                            "id": "stop_area:RTP:SA:3786123",
-                            "name": "DE GAULLE - GOUNOD - TABANOU",
-                            "type": "stop_area",
-                            "coord": {
-                                "lat": "48.780179",
-                                "lon": "2.340886"
-                            }
-                        }
-                    ],
                     "publication_period" : {
                         "begin": "2014-04-31T17:00:00Z",
                         "end": null
                     },
                     "impacts": {
                         "pagination": {
-                            "start_index": 1,
+                            "start_page": 1,
                             "items_per_page": 20,
                             "total_results": 3,
                             "prev": null,
-                            "next": {"href": "https://ogv2ws.apiary-mock.com/disruptions/3d1f32b2-e8df-11e3-8c3e-0008ca8657ea/impacts?start_index=1&item_per_page=20"},
-                            "first": {"href": "https://ogv2ws.apiary-mock.com/disruptions/3d1f32b2-e8df-11e3-8c3e-0008ca8657ea/impacts?start_index=1&item_per_page=20"},
-                            "last": {"href": "https://ogv2ws.apiary-mock.com/disruptions/3d1f32b2-e8df-11e3-8c3e-0008ca8657ea/impacts?start_index=1&item_per_page=20"}
+                            "next": {"href": "https://ogv2ws.apiary-mock.com/disruptions/3d1f32b2-e8df-11e3-8c3e-0008ca8657ea/impacts?start_page=1&item_per_page=20"},
+                            "first": {"href": "https://ogv2ws.apiary-mock.com/disruptions/3d1f32b2-e8df-11e3-8c3e-0008ca8657ea/impacts?start_page=1&item_per_page=20"},
+                            "last": {"href": "https://ogv2ws.apiary-mock.com/disruptions/3d1f32b2-e8df-11e3-8c3e-0008ca8657ea/impacts?start_page=1&item_per_page=20"}
                         }
                     }
                 },
@@ -428,9 +282,19 @@ Retourne une perturbation (si elle existe):
 
 ##Mise à jour d'une perturbation [PUT]
 
-###Paramètres
+La mise à jour d'une perturbation est réalisé via une requéte ```PUT``` à sur la resource ```disruptions```.
+Le content-type de la requete doit etre json et le corps de celle ci doit contenir un json correspondant au format d'une perturbation.
 
+Les champs suivant peuvent etre mis à jour:
+  - reference
+  - note
+  - publication_period
 
+Si un champs n'est pas présent dans le json la valeur est considéré null.
+
+Lors d'un succés une réponse 200 est retourné, celle ci contient la perturbation modifiée.
+
+###Exemple
 - Request
 
     * Headers
@@ -442,21 +306,6 @@ Retourne une perturbation (si elle existe):
             {
                 "reference": "foo",
                 "note": null,
-                "contributor": "shortterm.tn",
-                "cause": {
-                    "id": "3d1f32b2-e8df-11e3-8c3e-0008ca86c7ea"
-                }
-                "tags": ["rer", "meteo", "probleme"],
-                "localization": [
-                    {
-                        "id": "stop_area:RTP:SA:3786125",
-                        "type": "stop_area"
-                    },
-                    {
-                        "id": "stop_area:RTP:SA:3786123",
-                        "type": "stop_area"
-                    }
-                ],
                 "publication_period" : {
                     "begin": "2014-04-31T17:00:00Z",
                     "end": null
@@ -478,39 +327,13 @@ Retourne une perturbation (si elle existe):
                     "note": null,
                     "status": "published",
                     "publication_status": "ongoing",
-                    "contributor": "shortterm.tn",
-                    "cause": {
-                        "id": "3d1f32b2-e8df-11e3-8c3e-0008ca8657ea",
-                        "wording": "Condition météo"
-                    },
-                    "tags": ["rer", "meteo", "probleme"],
-                    "localization": [
-                        {
-                            "id": "stop_area:RTP:SA:3786125",
-                            "name": "HENRI THIRARD - LEON JOUHAUX",
-                            "type": "stop_area",
-                            "coord": {
-                                "lat": "48.778867",
-                                "lon": "2.340927"
-                            }
-                        },
-                        {
-                            "id": "stop_area:RTP:SA:3786123",
-                            "name": "DE GAULLE - GOUNOD - TABANOU",
-                            "type": "stop_area",
-                            "coord": {
-                                "lat": "48.780179",
-                                "lon": "2.340886"
-                            }
-                        }
-                    ],
                     "publication_period" : {
                         "begin": "2014-04-31T17:00:00Z",
                         "end": null
                     },
                     "impacts": {
                         "pagination": {
-                            "start_index": 0,
+                            "start_page": 0,
                             "items_per_page": 20,
                             "total_results": 0,
                             "prev": null,
@@ -534,9 +357,12 @@ Retourne une perturbation (si elle existe):
             }
 
 ##Effacer une perturbation [DELETE]
-Cette fonction archive une perturbation, elle pourra être restaurée par la suite. 
-###Paramètres
+Cette fonction archive une perturbation, elle pourra eventuellement être restaurée par la suite.
 
+L'archivage est réalisé via un une requete ```DELETE``` sur une pertubation.
+
+Une réponse de type 204 est retournée en cas de succés.
+###Exemple
 
 - Response 204
 
@@ -552,19 +378,22 @@ Cette fonction archive une perturbation, elle pourra être restaurée par la sui
 
 
 # Liste des Impacts [/disruptions/{disruption_id}/impacts]
+Un impact représente une relation entre une liste d'objet TC, une sévérité, des périodes d'application et des messages (pas encore implémenté).
+
+Seul les objet TC de type network et stop area sont actuellement géré.
 
 ##Retourne les impacts [GET]
-Retourne tous les impacts d'une perturbation
+Retourne tous les impacts d'une perturbation. Ils sont triés par la priorité de leurs sévérité.
 ###Paramètres
 
 | Name                 | description                                        | required | default                 |
 | -------------------- | -------------------------------------------------- | -------- | ----------------------- |
-| start_index          | Index du premier item de la page (commence par 1)  | false    | 1                       |
+| start_page           | Numéro de la page (commence par 1)                 | false    | 1                       |
 | items_per_page       | Nombre d'items par page                            | false    | 20                      |
 
-@TODO: recherche et tri.
 Aucun filtre actuellement sur la récupération de liste des impacts: l'interrogation se fait seulement avec un identifiant de perturbation, afin de récupérer l'ensemble des impacts déclarés pour la perturbation demandée.
 
+###Exemple
 - response 200 (application/json)
 
     * Body
@@ -582,7 +411,8 @@ Aucun filtre actuellement sur la récupération de liste des impacts: l'interrog
                             "created_at": "2014-04-31T16:52:18Z",
                             "updated_at": "2014-04-31T16:55:18Z",
                             "color": "#123456",
-                            "effect": "none"
+                            "effect": null,
+                            "priority": 1,
                         },
                         "application_periods": [
                             {
@@ -590,59 +420,11 @@ Aucun filtre actuellement sur la récupération de liste des impacts: l'interrog
                                 "end": "2014-05-22T02:15:00Z"
                             }
                         ],
-                        "messages": [
-                            {
-                                "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657ca",
-                                "created_at": "2014-04-31T16:52:18Z",
-                                "updated_at": "2014-04-31T16:55:18Z",
-                                "text": "ptit dej à la gare!!",
-                                "publication_date": ["2014-04-31T16:52:18Z"],
-                                "publication_period": null,
-                                "channel": {
-                                    "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657da",
-                                    "name": "message court",
-                                    "content_type": "text/plain",
-                                    "created_at": "2014-04-31T16:52:18Z",
-                                    "updated_at": "2014-04-31T16:55:18Z",
-                                    "max_size": 140
-                                }
-                            },
-                            {
-                                "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8257ea",
-                                "created_at": "2014-04-31T16:52:18Z",
-                                "updated_at": "2014-04-31T16:55:18Z",
-                                "text": "#Youpi\n**aujourd'hui c'est ptit dej en gare",
-                                "publication_period" : {
-                                    "begin":"2014-04-31T17:00:00Z",
-                                    "end":"2014-05-01T17:00:00Z"
-                                },
-                                "publication_date" : null,
-                                "channel": {
-                                    "id": "3d1f42b2-e8df-11e3-8c3e-0008cb8657ea",
-                                    "name": "message long",
-                                    "content_type": "text/markdown",
-                                    "created_at": "2014-04-31T16:52:18Z",
-                                    "updated_at": "2014-04-31T16:55:18Z",
-                                    "max_size": null
-                                }
-                            }
-                        ],
                         "objects": [
                             {
-                                "id": "stop_area:RTP:SA:3786125",
-                                "name": "HENRI THIRARD - LEON JOUHAUX",
-                                "type": "stop_area",
-                                "coord": {
-                                    "lat": "48.778867",
-                                    "lon": "2.340927"
-                                }
-                            },
-                            {
-                                "id": "line:RTP:LI:378",
-                                "name": "DE GAULLE - GOUNOD - TABANOU",
-                                "type": "line",
-                                "code": 2,
-                                "color": "FFFFFF"
+                                "id": "network:RTP:3786125",
+                                "name": "RER A",
+                                "type": "network",
                             }
                         ],
                         "disruption" : {"href": "https://ogv2ws.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-823e-0008ca8657ea"}
@@ -650,13 +432,13 @@ Aucun filtre actuellement sur la récupération de liste des impacts: l'interrog
                 ],
                 "meta": {
                     "pagination": {
-                        "start_index": 1,
+                        "start_page": 1,
                         "items_per_page": 3,
                         "total_results": 6,
                         "prev": null,
-                        "next": {"href": "https://ogv2ws.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-823e-0008ca8657ea/impacts?start_index=4&items_per_page=3"},
-                        "first": {"href": "https://ogv2ws.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-823e-0008ca8657ea/impacts?start_index=1&items_per_page=3"},
-                        "last": {"href": "https://ogv2ws.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-823e-0008ca8657ea/impacts?start_index=4&items_per_page=3"}
+                        "next": {"href": "https://ogv2ws.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-823e-0008ca8657ea/impacts?start_page=2&items_per_page=3"},
+                        "first": {"href": "https://ogv2ws.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-823e-0008ca8657ea/impacts?start_page=1&items_per_page=3"},
+                        "last": {"href": "https://ogv2ws.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-823e-0008ca8657ea/impacts?start_page=2&items_per_page=3"}
                     }
                 }
             }
@@ -665,7 +447,13 @@ Aucun filtre actuellement sur la récupération de liste des impacts: l'interrog
 
 ##Créer un impact [POST]
 Création d'un nouvel impact.
-###Paramètres
+
+La création d'un impact est réalisé via une requéte ```POST``` à sur la resource ```impacts```.
+Le content-type de la requete doit etre json et le corps de celle ci doit contenir un json correspondant au format d'un impact.
+
+
+Lors d'un succés une réponse 201 est retourné, celle ci contient l'impact créé.
+###Exemple
 
 - request
     + headers
@@ -684,35 +472,14 @@ Création d'un nouvel impact.
                         "end": "2014-05-22T02:15:00Z"
                     }
                 ],
-                "messages": [
-                    {
-                        "text": "ptit dej à la gare!!",
-                        "publication_date": ["2014-04-31T16:52:18Z"],
-                        "publication_period": null,
-                        "channel": {
-                            "id": "3d1f42b2-e8df-11e3-8c3e-0008ca86c7ea"
-                        }
-                    },
-                    {
-                        "text": "#Youpi\n**aujourd'hui c'est ptit dej en gare",
-                        "publication_period" : {
-                            "begin":"2014-04-31T17:00:00Z",
-                            "end":"2014-05-01T17:00:00Z"
-                        },
-                        "publication_date" : null,
-                        "channel": {
-                            "id": "3d1f42b2-e8df-11e3-8c3e-0002ca8657ea"
-                        }
-                    }
-                ],
                 "objects": [
                     {
-                        "id": "stop_area:RTP:SA:3786125",
-                        "type": "stop_area"
+                        "id": "network:RTP:3786125",
+                        "type": "network"
                     },
                     {
-                        "id": "line:RTP:LI:378",
-                        "type": "line"
+                        "id": "network:RTP:378",
+                        "type": "network"
                     }
                 ]
             }
@@ -733,7 +500,8 @@ Création d'un nouvel impact.
                         "created_at": "2014-04-31T16:52:18Z",
                         "updated_at": "2014-04-31T16:55:18Z",
                         "color": "#123456",
-                        "effect": "none"
+                        "effect": null,
+                        "priority": 0
                     },
                     "application_periods": [
                         {
@@ -741,59 +509,16 @@ Création d'un nouvel impact.
                             "end": "2014-05-22T02:15:00Z"
                         }
                     ],
-                    "messages": [
-                        {
-                            "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8631ea",
-                            "created_at": "2014-04-31T16:52:18Z",
-                            "updated_at": "2014-04-31T16:55:18Z",
-                            "text": "ptit dej à la gare!!",
-                            "publication_date": ["2014-04-31T16:52:18Z"],
-                            "publication_period": null,
-                            "channel": {
-                                "id": "3d1f42b2-e8df-11e3-8c3e-0008ca86a7ea",
-                                "name": "message court",
-                                "content_type": "text/plain",
-                                "created_at": "2014-04-31T16:52:18Z",
-                                "updated_at": "2014-04-31T16:55:18Z",
-                                "max_size": 140
-                            }
-                        },
-                        {
-                            "id": "3d1f42b2-e8df-11a3-8c3e-0008ca8617ea",
-                            "created_at": "2014-04-31T16:52:18Z",
-                            "updated_at": "2014-04-31T16:55:18Z",
-                            "text": "#Youpi\n**aujourd'hui c'est ptit dej en gare",
-                            "publication_period" : {
-                                "begin":"2014-04-31T17:00:00Z",
-                                "end":"2014-05-01T17:00:00Z"
-                            },
-                            "publication_date" : null,
-                            "channel": {
-                                "id": "3d1f42b2-e8af-11e3-8c3e-0008ca8617ea",
-                                "name": "message long",
-                                "content_type": "text/markdown",
-                                "created_at": "2014-04-31T16:52:18Z",
-                                "updated_at": "2014-04-31T16:55:18Z",
-                                "max_size": null
-                            }
-                        }
-                    ],
                     "objects": [
                         {
-                            "id": "stop_area:RTP:SA:3786125",
-                            "name": "HENRI THIRARD - LEON JOUHAUX",
-                            "type": "stop_area",
-                            "coord": {
-                                "lat": "48.778867",
-                                "lon": "2.340927"
-                            }
+                            "id": "network:RTP:3786125",
+                            "name": "RER A",
+                            "type": "network",
                         },
                         {
-                            "id": "line:RTP:LI:378",
-                            "name": "DE GAULLE - GOUNOD - TABANOU",
-                            "type": "line",
-                            "code": 2,
-                            "color": "FFFFFF"
+                            "id": "network:RTP:378",
+                            "name": "RER B",
+                            "type": "network",
                         }
                     ],
                     "disruption" : {"href": "https://ogv2ws.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-1c3e-0008ca8617ea"}
@@ -804,7 +529,7 @@ Création d'un nouvel impact.
 
 #Impact [/disruptions/{disruption_id}/impacts/{id}]
 ##Retourne un impact [GET]
-###Paramètres
+###Exemple
 
 - response 200 (application/json)
 
@@ -822,7 +547,8 @@ Création d'un nouvel impact.
                         "created_at": "2014-04-31T16:52:18Z",
                         "updated_at": "2014-04-31T16:55:18Z",
                         "color": "#123456",
-                        "effect": "none"
+                        "effect": null,
+                        "priority": 1
                     },
                     "application_periods": [
                         {
@@ -830,59 +556,16 @@ Création d'un nouvel impact.
                             "end": "2014-05-22T02:15:00Z"
                         }
                     ],
-                    "messages": [
-                        {
-                            "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8631ea",
-                            "created_at": "2014-04-31T16:52:18Z",
-                            "updated_at": "2014-04-31T16:55:18Z",
-                            "text": "ptit dej à la gare!!",
-                            "publication_date": ["2014-04-31T16:52:18Z"],
-                            "publication_period": null,
-                            "channel": {
-                                "id": "3d1f42b2-e8df-11e3-8c3e-0008ca86a7ea",
-                                "name": "message court",
-                                "content_type": "text/plain",
-                                "created_at": "2014-04-31T16:52:18Z",
-                                "updated_at": "2014-04-31T16:55:18Z",
-                                "max_size": 140
-                            }
-                        },
-                        {
-                            "id": "3d1f42b2-e8df-11a3-8c3e-0008ca8617ea",
-                            "created_at": "2014-04-31T16:52:18Z",
-                            "updated_at": "2014-04-31T16:55:18Z",
-                            "text": "#Youpi\n**aujourd'hui c'est ptit dej en gare",
-                            "publication_period" : {
-                                "begin":"2014-04-31T17:00:00Z",
-                                "end":"2014-05-01T17:00:00Z"
-                            },
-                            "publication_date" : null,
-                            "channel": {
-                                "id": "3d1f42b2-e8af-11e3-8c3e-0008ca8617ea",
-                                "name": "message long",
-                                "content_type": "text/markdown",
-                                "created_at": "2014-04-31T16:52:18Z",
-                                "updated_at": "2014-04-31T16:55:18Z",
-                                "max_size": null
-                            }
-                        }
-                    ],
                     "objects": [
                         {
-                            "id": "stop_area:RTP:SA:3786125",
-                            "name": "HENRI THIRARD - LEON JOUHAUX",
-                            "type": "stop_area",
-                            "coord": {
-                                "lat": "48.778867",
-                                "lon": "2.340927"
-                            }
+                            "id": "network:RTP:3786125",
+                            "name": "RER A",
+                            "type": "network",
                         },
                         {
-                            "id": "line:RTP:LI:378",
-                            "name": "DE GAULLE - GOUNOD - TABANOU",
-                            "type": "line",
-                            "code": 2,
-                            "color": "FFFFFF"
+                            "id": "network:RTP:378",
+                            "name": "RER B",
+                            "type": "network",
                         }
                     ],
                     "disruption" : {"href": "https://ogv2ws.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-1c3e-0008ca8617ea"}
@@ -902,8 +585,14 @@ Création d'un nouvel impact.
 
 #Liste des sévérités [/severities]
 
+Une sévérité est composé des champs suivants:
+  - ```wording``` correspond au libellé qui sera affiché pour cette sévérité.
+  - ```color``` correspond à la couleur, en hexadécimale, associé à cette sévérité.
+  - ```priority``` correspond à l'ordre d'affichage de la sévérité, et donc des impacts qui lui sont rattachés.
+  - ```effect``` correspond à l'énumération ```SeverityEffect``` et détermine l'effet dans le calculateur d'itinéraire.
+
 ##Retourne la liste de toutes les sévérités [GET]
-Permet de récupérer l'ensemble des sévérités (ou conséquences) déclarées. Les propriétés à noter sont: le wording (utilisé dans l'IHM Ogesper v2), l'identifiant unique, l'effet (bloquant ou pas) et le code couleur.
+Permet de récupérer l'ensemble des sévérités (ou conséquences) déclarées.
 
 - response 200 (application/json)
 
@@ -913,24 +602,36 @@ Permet de récupérer l'ensemble des sévérités (ou conséquences) déclarées
                 "severities": [
                     {
                         "id": "3d1f42b3-e8df-11e3-8c3e-0008ca8617ea",
+                        "self": {
+                            "href": "https://ogv2ws.apiary-mock.com/severities/3d1f42b3-e8df-11e3-8c3e-0008ca8617ea"
+                        }
                         "wording": "normal",
-                        "effect": "none",
+                        "effect": null,
+                        "priority": 1,
                         "color": "#123456",
                         "created_at": "2014-04-31T16:52:18Z",
                         "updated_at": "2014-04-31T16:55:18Z"
                     },
                     {
                         "id": "3d1f42b4-e8df-11e3-8c3e-0008ca8617ea",
+                        "self": {
+                            "href": "https://ogv2ws.apiary-mock.com/severities/3d1f42b4-e8df-11e3-8c3e-0008ca8617ea"
+                        }
                         "wording": "majeur",
-                        "effect": "none",
+                        "effect": null,
+                        "priority": 2,
                         "color": "#123456",
                         "created_at": "2014-04-31T16:52:18Z",
                         "updated_at": "2014-04-31T16:55:18Z"
                     },
                     {
                         "id": "3d1f42b5-e8df-11e3-8c3e-0008ca8617ea",
+                        "self": {
+                            "href": "https://ogv2ws.apiary-mock.com/severities/3d1f42b5-e8df-11e3-8c3e-0008ca8617ea"
+                        }
                         "wording": "bloquant",
                         "effect": "blocking",
+                        "priority": 3,
                         "color": "#123456",
                         "created_at": "2014-04-31T16:52:18Z",
                         "updated_at": "2014-04-31T16:55:18Z"
@@ -940,6 +641,20 @@ Permet de récupérer l'ensemble des sévérités (ou conséquences) déclarées
             }
 
 ##Créer une sévérité [POST]
+
+
+La création d'une sévérité est réalisée via une requête ```POST``` sur la resource ```severities```.
+Le content-type de la requete doit etre json et le corps de celle ci doit contenir un json correspondant au format d'une sévéritié.
+
+Les champs suivant peuvent etre défini:
+  - wording (obligatoire)
+  - color
+  - priority
+  - effect
+
+
+Lors d'un succés une réponse 201 est retourné, celle ci contient la sévérité créée.
+
 - request
     + headers
 
@@ -949,7 +664,8 @@ Permet de récupérer l'ensemble des sévérités (ou conséquences) déclarées
                 {
                     "wording": "normal",
                     "color": "#123456",
-                    "effect": "none"
+                    "effect": null,
+                    "priority": 1
                 }
 
 - response 200 (application/json)
@@ -959,11 +675,15 @@ Permet de récupérer l'ensemble des sévérités (ou conséquences) déclarées
             {
                 "severity": {
                     "id": "3d1f42b3-e8df-11e3-8c3e-0008ca8617ea",
+                    "self": {
+                        "href": "https://ogv2ws.apiary-mock.com/severities/3d1f42b3-e8df-11e3-8c3e-0008ca8617ea"
+                    }
                     "wording": "normal",
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": null,
                     "color": "#123456",
-                    "effect": "none"
+                    "priority": 1,
+                    "effect": null
                 },
                 "meta": {}
             }
@@ -972,7 +692,7 @@ Permet de récupérer l'ensemble des sévérités (ou conséquences) déclarées
 # Severities [/severities/{id}]
 ##Retourne une sévérité [GET]
 
-##Paramètres
+##Exemple
 
 Retourne une sévérité existante.
 
@@ -983,11 +703,15 @@ Retourne une sévérité existante.
             {
                 "severity": {
                     "id": "3d1f42b3-e8df-11e3-8c3e-0008ca8617ea",
+                    "self": {
+                        "href": "https://ogv2ws.apiary-mock.com/severities/3d1f42b3-e8df-11e3-8c3e-0008ca8617ea"
+                    }
                     "wording": "normal",
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": null,
                     "color": "#123456",
-                    "effect": "none"
+                    "effect": null,
+                    "priority": 1
                 },
                 "meta": {}
             }
@@ -1004,8 +728,14 @@ Retourne une sévérité existante.
             }
 
 ##Mise à jour d'une sévérité [PUT]
+La mise à jour d'une sévérité est réalisé via une requéte ```PUT``` sur la resource ```severities```.
+Le content-type de la requete doit etre json et le corps de celle ci doit contenir un json correspondant au format d'une sévérité.
 
-###Paramètres
+Les contraintes sont les meme que pour la création.
+
+Lors d'un succés une réponse 200 est retourné, celle ci contient la sévérité modifiée.
+
+###Exemple
 
 - Request
 
@@ -1018,7 +748,8 @@ Retourne une sévérité existante.
             {
                 "wording": "Bonne nouvelle",
                 "color": "#123456",
-                "effect": "none"
+                "effect": null,
+                "priority": 1
             }
 
 
@@ -1029,11 +760,15 @@ Retourne une sévérité existante.
             {
                 "severity": {
                     "id": "3d1f42b3-e8df-11e3-8c3e-0008ca8617ea",
+                    "self": {
+                        "href": "https://ogv2ws.apiary-mock.com/severities/3d1f42b3-e8df-11e3-8c3e-0008ca8617ea"
+                    }
                     "wording": "Bonne nouvelle",
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": "2014-04-31T16:55:18Z",
                     "color": "#123456",
-                    "effect": "none"
+                    "effect": null,
+                    "priority": 1
                 },
                 "meta": {}
             }
@@ -1048,9 +783,9 @@ Retourne une sévérité existante.
                 "meta": {}
             }
 
-##Archive une sévérité [DELETE]
-Archive une sévérité.
-###Paramètres
+##supprimer une sévérité [DELETE]
+supprime une sévérité.
+###Exemple
 
 
 - Response 204
@@ -1077,18 +812,27 @@ Archive une sévérité.
                 "causes": [
                     {
                         "id": "3d1f42b2-e8df-11e4-8c3e-0008ca8617ea",
+                        "self": {
+                            "href": "https://ogv2ws.apiary-mock.com/causes/3d1f42b2-e8df-11e4-8c3e-0008ca8617ea"
+                        }
                         "wording": "météo",
                         "created_at": "2014-04-31T16:52:18Z",
                         "updated_at": "2014-04-31T16:55:18Z"
                     },
                     {
                         "id": "3d1f42b2-e8df-11e5-8c3e-0008ca8617ea",
+                        "self": {
+                            "href": "https://ogv2ws.apiary-mock.com/causes/3d1f42b2-e8df-11e5-8c3e-0008ca8617ea"
+                        }
                         "wording": "gréve",
                         "created_at": "2014-04-31T16:52:18Z",
                         "updated_at": "2014-04-31T16:55:18Z"
                     },
                     {
                         "id": "3d1f42b2-e8df-11e6-8c3e-0008ca8617ea",
+                        "self": {
+                            "href": "https://ogv2ws.apiary-mock.com/causes/3d1f42b2-e8df-11e6-8c3e-0008ca8617ea"
+                        }
                         "wording": "accident voyageur",
                         "created_at": "2014-04-31T16:52:18Z",
                         "updated_at": "2014-04-31T16:55:18Z"
@@ -1098,6 +842,18 @@ Archive une sévérité.
             }
 
 ##Créer une cause [POST]
+
+La création d'une cause est réalisée via une requête ```POST``` sur la resource ```cause```.
+Le content-type de la requete doit etre json et le corps de celle ci doit contenir un json correspondant au format d'une cause.
+
+Les champs suivant peuvent etre défini:
+  - wording (obligatoire)
+
+Le champs ```wording``` correspond au libellé qui sera affiché pour cette cause.
+
+Lors d'un succés une réponse 201 est retourné, celle ci contient la cause créée.
+
+###Exemple
 - request
     + headers
 
@@ -1115,6 +871,9 @@ Archive une sévérité.
             {
                 "cause": {
                     "id": "3d1f42b2-e8df-11e4-8c3e-0008ca8617ea",
+                    "self": {
+                        "href": "https://ogv2ws.apiary-mock.com/causes/3d1f42b2-e8df-11e4-8c3e-0008ca8617ea"
+                    }
                     "wording": "météo",
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": null
@@ -1136,6 +895,9 @@ Retourne une cause existante.
             {
                 "cause": {
                     "id": "3d1f42b2-e8df-11e4-8c3e-0008ca8617ea",
+                    "self": {
+                        "href": "https://ogv2ws.apiary-mock.com/causes/3d1f42b2-e8df-11e4-8c3e-0008ca8617ea"
+                    }
                     "wording": "météo",
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": null
@@ -1155,7 +917,13 @@ Retourne une cause existante.
             }
 
 ##Mise à jour d'une cause [PUT]
-###Paramètres
+La mise à jour d'une cause est réalisé via une requéte ```PUT``` sur la resource ```causes```.
+Le content-type de la requete doit etre json et le corps de celle ci doit contenir un json correspondant au format d'une cause.
+
+Les contraintes sont les meme que pour la création.
+
+Lors d'un succés une réponse 200 est retourné, celle ci contient la cause modifiée.
+###Exemple
 
 
 - Request
@@ -1177,6 +945,9 @@ Retourne une cause existante.
             {
                 "cause": {
                     "id": "3d1f42b3-e8df-11e3-8c3e-0008ca8617ea",
+                    "self": {
+                        "href": "https://ogv2ws.apiary-mock.com/causes/3d1f42b2-e8df-11e4-8c3e-0008ca8617ea"
+                    }
                     "wording": "accident voyageur",
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": "2014-04-31T16:55:18Z"
@@ -1223,6 +994,9 @@ Archive une cause.
                 "channels": [
                     {
                         "id": "3d1f42b2-e8df-11e4-8c3e-0008ca8617ea",
+                        "self": {
+                            "href": "https://ogv2ws.apiary-mock.com/channels/3d1f42b2-e8df-11e4-8c3e-0008ca8617ea"
+                        }
                         "name": "court",
                         "max_size": 140,
                         "content_type": "text/plain",
@@ -1231,6 +1005,9 @@ Archive une cause.
                     },
                     {
                         "id": "3d1a42b7-e8df-11e4-8c3e-0008ca8617ea",
+                        "self": {
+                            "href": "https://ogv2ws.apiary-mock.com/channels/3d1f42b7-e8df-11e4-8c3e-0008ca8617ea"
+                        }
                         "name": "long",
                         "max_size": 512,
                         "content_type": "text/plain",
@@ -1239,6 +1016,9 @@ Archive une cause.
                     },
                     {
                         "id": "3d1f42b2-e8df-11e4-8c3e-0008ca8617ea",
+                        "self": {
+                            "href": "https://ogv2ws.apiary-mock.com/channels/3d1f42b2-e8df-11e4-8c3e-0008ca8617ea"
+                        }
                         "name": "long riche",
                         "max_size": null,
                         "content_type": "text/markdown",
@@ -1250,6 +1030,17 @@ Archive une cause.
             }
 
 ##Créer un canal [POST]
+La création d'un canal est réalisée via une requête ```POST``` sur la resource ```channel```.
+Le content-type de la requete doit etre json et le corps de celle ci doit contenir un json correspondant au format d'un canal.
+
+Les champs suivant peuvent etre défini:
+  - name (obligatoire)
+  - max_size (obligatoire mais peut etre null pour signifier qu'il n'y a pas de taille max)
+  - content_type (obligatoire)
+
+Lors d'un succés une réponse 201 est retourné, celle ci contient la canal créé.
+
+###Exemple
 
 - request
     + headers
@@ -1270,6 +1061,9 @@ Archive une cause.
             {
                 "channel": {
                     "id": "3d1f42b2-e8df-11e4-8c3e-0008ca8617ea",
+                    "self": {
+                        "href": "https://ogv2ws.apiary-mock.com/channels/3d1f42b2-e8df-11e4-8c3e-0008ca8617ea"
+                    }
                     "name": "court",
                     "max_size": 140,
                     "content_type": "text/plain",
