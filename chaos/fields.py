@@ -147,6 +147,25 @@ application_period_fields = {
     'end': FieldDateTime(attribute='end_date')
 }
 
+class FieldMessage(fields.Raw):
+    def output(self, key, obj):
+        result = []
+        result.append( {"id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657ca",
+                        "created_at": "2014-04-31T16:52:18Z",
+                        "updated_at": "2014-04-31T16:55:18Z",
+                        "text": "ptit dej a la gare!!"})
+        result[0]["channel"] = {}
+        result[0]["channel"]["id"] = "3d1f42b2-e8df-11e3-8c3e-0008ca8657da"
+        result[0]["channel"]["name"] = "message court"
+        result[0]["channel"]["content_type"] = "text/plain"
+        result[0]["channel"]["created_at"] = "2014-04-31T16:52:18Z"
+        result[0]["channel"]["updated_at"] = "updated_at"
+        result[0]["channel"]["max_size"] = 150
+
+        return result
+
+
+
 impact_fields = {'id': fields.Raw,
                  'created_at': FieldDateTime,
                  'updated_at': FieldDateTime,
@@ -154,7 +173,8 @@ impact_fields = {'id': fields.Raw,
                  'application_periods': fields.List(fields.Nested(application_period_fields)),
                  'severity': fields.Nested(severity_fields),
 				 'self': {'href': fields.Url('impact', absolute=True)},
-                 'disruption': FieldUrlDisruption()
+                 'disruption': FieldUrlDisruption(),
+                 'messages':FieldMessage
 }
 
 one_impact_fields = {'impact': fields.Nested(impact_fields)
@@ -214,8 +234,6 @@ object_fields = {
                       "created_at": "2014-04-31T16:52:18Z",
                       "updated_at": "2014-04-31T16:55:18Z",
                       "text": "ptit dej la gare!!",
-                      "publication_date": ["2014-04-31T16:52:18Z"],
-                      "publication_period": None,
                       "channel": {
                           "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657da",
                           "name": "message court",
@@ -230,11 +248,6 @@ object_fields = {
                       "created_at": "2014-04-31T16:52:18Z",
                       "updated_at": "2014-04-31T16:55:18Z",
                       "text": "est ptit dej en gare",
-                      "publication_period" : {
-                          "begin":"2014-04-31T17:00:00Z",
-                          "end":"2014-05-01T17:00:00Z"
-                      },
-                      "publication_date" : None,
                       "channel": {
                           "id": "3d1f42b2-e8df-11e3-8c3e-0008cb8657ea",
                           "name": "message long",
