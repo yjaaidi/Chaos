@@ -79,6 +79,20 @@ href_field = {
     "href": fields.String
 }
 
+cause_fields = {'id': fields.Raw,
+                   'wording': fields.Raw,
+                   'created_at': FieldDateTime,
+                   'updated_at': FieldDateTime,
+                   'self': {'href': fields.Url('cause', absolute=True)},
+}
+
+causes_fields = {'causes': fields.List(fields.Nested(cause_fields)),
+                     'meta': {},
+}
+
+one_cause_fields = {'cause': fields.Nested(cause_fields)
+                        }
+
 disruption_fields = {'id': fields.Raw,
                      'self': {'href': fields.Url('disruption', absolute=True)},
                      'reference': fields.Raw,
@@ -93,10 +107,7 @@ disruption_fields = {'id': fields.Raw,
                      'publication_status': fields.Raw,
                      'impacts': FieldPaginateImpacts(attribute='impacts'),
                      'localization':FieldLocalization,
-                     'cause':{
-                        "id": fields.String("3d1e32b2-e8df-11e3-8c3e-0008ca8657ea"),
-                        "wording": fields.String("Condition meteo")
-                     }
+                     'cause':fields.Nested(cause_fields)
 }
 
 paginate_fields = {
@@ -141,19 +152,6 @@ severities_fields = {'severities': fields.List(fields.Nested(severity_fields)),
 one_severity_fields = {'severity': fields.Nested(severity_fields)
                         }
 
-cause_fields = {'id': fields.Raw,
-                   'wording': fields.Raw,
-                   'created_at': FieldDateTime,
-                   'updated_at': FieldDateTime,
-                   'self': {'href': fields.Url('cause', absolute=True)},
-}
-
-causes_fields = {'causes': fields.List(fields.Nested(cause_fields)),
-                     'meta': {},
-}
-
-one_cause_fields = {'cause': fields.Nested(cause_fields)
-                        }
 
 objectTC_fields = {'id': fields.Raw(attribute='uri'),
                    'type': fields.Raw,

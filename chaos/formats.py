@@ -46,7 +46,13 @@ date_period_format = {
 disruptions_input_format = {'type': 'object',
         'properties': {'reference': {'type': 'string', 'maxLength': 250},
             'note': {'type': 'string'},
-            'publication_period': date_period_format
+            'publication_period': date_period_format,
+            'cause':{
+                'type' : 'object',
+                'properties':{
+                    'id':{'type' : 'string'}
+                }
+            }
         },
         'required': ['reference']
 }
