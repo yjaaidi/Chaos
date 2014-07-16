@@ -69,10 +69,6 @@ class FieldLocalization(fields.Raw):
                        "name": "HENRI THIRARD - LEON JOUHAUX",
                        "type": "stop_area"})
         result[0]['coord'] = {"lat": "48.778867", "lon": "2.340927"}
-        result.append({"id": "stop_area:RTP:SA:3786123",
-                       "name": "DE GAULLE - GOUNOD - TABANOU",
-                       "type": "stop_area"})
-        result[1]['coord'] = {"lat": "48.780179", "lon": "2.340886"}
         return result
 
 href_field = {
