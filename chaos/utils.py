@@ -31,6 +31,8 @@ from flask import url_for, g
 from functools import wraps
 from datetime import datetime
 from aniso8601 import parse_datetime
+import uuid
+import flask
 
 #disruption_id=None
 def make_pager(resultset, endpoint, **kwargs):
@@ -125,3 +127,11 @@ def option_value(values):
         return value
     return to_return
 
+
+class Request(flask.Request):
+    """
+    override the request of flask to add an id on all request
+    """
+    def __init__(self, *args, **kwargs):
+        super(Request, self).__init__(*args, **kwargs)
+        self.id = str(uuid.uuid4())
