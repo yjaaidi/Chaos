@@ -33,6 +33,7 @@ import re
 #see http://json-schema.org/
 
 datetime_pattern = '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$'
+uuid_pattern = '^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$'
 
 date_period_format = {
         'type': 'object',
@@ -50,11 +51,12 @@ disruptions_input_format = {'type': 'object',
             'cause':{
                 'type' : 'object',
                 'properties':{
-                    'id':{'type' : 'string'}
-                }
+                    'id':{'type' : 'string', 'pattern': uuid_pattern}
+                },
+                'required': ['id']
             }
         },
-        'required': ['reference']
+        'required': ['reference', 'cause']
 }
 #Here Order of values is strict and is used to create query filters.
 publication_status_values = ["past", "ongoing", "coming"]

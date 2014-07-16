@@ -147,3 +147,18 @@ def test_impact_without_severity_validation():
             "objects": [{"id": "stop_area:RTP:SA:3786125","type": "network"},{"id": "line:RTP:LI:378","type": "network"}]
             }
     validate(json, formats.impact_input_format)
+
+
+def test_disruption_validation():
+    json = {"reference": "foo", "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}}
+    validate(json, formats.disruptions_input_format)
+
+@raises(ValidationError)
+def test_disruption_without_cause_validation():
+    json = {"reference": "foo"}
+    validate(json, formats.disruptions_input_format)
+
+@raises(ValidationError)
+def test_disruption_not_cause_id_validation():
+    json = {"reference": "foo", "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230$6"}}
+    validate(json, formats.disruptions_input_format)
