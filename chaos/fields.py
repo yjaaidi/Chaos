@@ -62,6 +62,19 @@ class FieldObjectName(fields.Raw):
         return 'Unable to find object'
 
 
+class FieldLocalization(fields.Raw):
+    def output(self, key, obj):
+        result = []
+        result.append({"id": "stop_area:RTP:SA:3786125",
+                       "name": "HENRI THIRARD - LEON JOUHAUX",
+                       "type": "stop_area"})
+        result[0]['coord'] = {"lat": "48.778867", "lon": "2.340927"}
+        result.append({"id": "stop_area:RTP:SA:3786123",
+                       "name": "DE GAULLE - GOUNOD - TABANOU",
+                       "type": "stop_area"})
+        result[1]['coord'] = {"lat": "48.780179", "lon": "2.340886"}
+        return result
+
 href_field = {
     "href": fields.String
 }
@@ -78,7 +91,12 @@ disruption_fields = {'id': fields.Raw,
                             'end': FieldDateTime(attribute='end_publication_date'),
                          },
                      'publication_status': fields.Raw,
-                     'impacts': FieldPaginateImpacts(attribute='impacts')
+                     'impacts': FieldPaginateImpacts(attribute='impacts'),
+                     'localization':FieldLocalization,
+                     'cause':{
+                        "id": fields.String("3d1e32b2-e8df-11e3-8c3e-0008ca8657ea"),
+                        "wording": fields.String("Condition meteo")
+                     }
 }
 
 paginate_fields = {
