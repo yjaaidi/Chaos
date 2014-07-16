@@ -35,8 +35,8 @@ Les différents concepts manipulés sont présentés dans la diagramme suivant:
 
 
 La gestion des erreurs est embryonaire, en cas d'erreur technique une réponse de type 500 est retourné sans plus d'information.
-Si il est fait référence à une resources qui n'existe pas (ou plus), que ce soit dans les URL, ou dans le json de création/modfication une réponse de type 404 est retourné.
-Enfin, en cas de paramétre non valide, y compris un json ne respestant pas les contraintes définis, une réponse de type 400 est retourné, celle ci contient un message textuel précisant l'erreur.
+Si il est fait référence à une resources qui n'existe pas (ou plus), que ce soit dans les URL, ou dans le json de création/modfication une réponse de type 404 est retournée.
+Enfin, en cas de paramétre non valide, y compris un json ne respestant pas les contraintes définies, une réponse de type 400 est retourné, celle ci contient un message textuel précisant l'erreur.
 
 # Racine [/]
 ##Récupérer la liste des API [GET]
