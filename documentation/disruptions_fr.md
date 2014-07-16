@@ -33,6 +33,11 @@ Les différents concepts manipulés sont présentés dans la diagramme suivant:
 
 ![schema conceptuel](https://raw.githubusercontent.com/CanalTP/Chaos/master/documentation/Conceptuel.jpg?token=448185__eyJzY29wZSI6IlJhd0Jsb2I6Q2FuYWxUUC9DaGFvcy9tYXN0ZXIvZG9jdW1lbnRhdGlvbi9Db25jZXB0dWVsLmpwZyIsImV4cGlyZXMiOjE0MDYwNDA1MDN9--b3e9f38f53f9b6a80d21d45ad545144fa69f5521)
 
+
+La gestion des erreurs est embryonaire, en cas d'erreur technique une réponse de type 500 est retourné sans plus d'information.
+Si il est fait référence à une resources qui n'existe pas (ou plus), que ce soit dans les URL, ou dans le json de création/modfication une réponse de type 404 est retourné.
+Enfin, en cas de paramétre non valide, y compris un json ne respestant pas les contraintes définis, une réponse de type 400 est retourné, celle ci contient un message textuel précisant l'erreur.
+
 # Racine [/]
 ##Récupérer la liste des API [GET]
 
@@ -173,6 +178,7 @@ La création d'une perturbation est réalisé via une requéte ```POST``` à sur
 Le content-type de la requete doit etre json et le corps de celle ci doit contenir un json correspondant au format d'une perturbation.
 
 Les champs suivant peuvent etre défini:
+
   - reference (obligatoire)
   - note
   - publication_period
@@ -286,6 +292,7 @@ La mise à jour d'une perturbation est réalisé via une requéte ```PUT``` à s
 Le content-type de la requete doit etre json et le corps de celle ci doit contenir un json correspondant au format d'une perturbation.
 
 Les champs suivant peuvent etre mis à jour:
+
   - reference
   - note
   - publication_period
@@ -586,6 +593,7 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient l'impact cr�
 #Liste des sévérités [/severities]
 
 Une sévérité est composé des champs suivants:
+
   - ```wording``` correspond au libellé qui sera affiché pour cette sévérité.
   - ```color``` correspond à la couleur, en hexadécimale, associé à cette sévérité.
   - ```priority``` correspond à l'ordre d'affichage de la sévérité, et donc des impacts qui lui sont rattachés.
@@ -647,6 +655,7 @@ La création d'une sévérité est réalisée via une requête ```POST``` sur la
 Le content-type de la requete doit etre json et le corps de celle ci doit contenir un json correspondant au format d'une sévéritié.
 
 Les champs suivant peuvent etre défini:
+
   - wording (obligatoire)
   - color
   - priority
@@ -847,6 +856,7 @@ La création d'une cause est réalisée via une requête ```POST``` sur la resou
 Le content-type de la requete doit etre json et le corps de celle ci doit contenir un json correspondant au format d'une cause.
 
 Les champs suivant peuvent etre défini:
+
   - wording (obligatoire)
 
 Le champs ```wording``` correspond au libellé qui sera affiché pour cette cause.
@@ -1034,6 +1044,7 @@ La création d'un canal est réalisée via une requête ```POST``` sur la resour
 Le content-type de la requete doit etre json et le corps de celle ci doit contenir un json correspondant au format d'un canal.
 
 Les champs suivant peuvent etre défini:
+
   - name (obligatoire)
   - max_size (obligatoire mais peut etre null pour signifier qu'il n'y a pas de taille max)
   - content_type (obligatoire)
