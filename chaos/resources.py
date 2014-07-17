@@ -52,7 +52,8 @@ disruption_mapping = {'reference': None,
         'publication_period': {
             'begin': mapper.Datetime(attribute='start_publication_date'),
             'end': mapper.Datetime(attribute='end_publication_date')
-            }
+            },
+        'cause': {'id': mapper.AliasText(attribute='cause_id')}
         }
 
 severity_mapping = {'wording': None,

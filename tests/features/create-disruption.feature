@@ -5,9 +5,14 @@ Feature: Create disruption
         Then the status code should be "400"
 
     Scenario: creation of disruption
+
+        Given I have the following causes in my database:
+            | wording   | created_at          | updated_at          | is_visible | id                                   |
+            | weather   | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | True       | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |
+
         When I post to "/disruptions" with:
         """
-        {"reference": "foo"}
+        {"reference": "foo", "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}}
         """
         Then the status code should be "201"
         And the header "Content-Type" should be "application/json"
@@ -15,9 +20,14 @@ Feature: Create disruption
         And the field "disruption.note" should be null
 
     Scenario: Disruption are created
+
+        Given I have the following causes in my database:
+            | wording   | created_at          | updated_at          | is_visible | id                                   |
+            | weather   | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | True       | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |
+
         Given I post to "/disruptions" with:
         """
-        {"reference": "foo", "note": "hello"}
+        {"reference": "foo", "note": "hello", "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}}
         """
         When I get "/disruptions"
         Then the status code should be "200"
@@ -27,9 +37,14 @@ Feature: Create disruption
         And the field "disruptions.0.note" should be "hello"
 
     Scenario: We can create a disruption with a publication_period
+
+        Given I have the following causes in my database:
+            | wording   | created_at          | updated_at          | is_visible | id                                   |
+            | weather   | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | True       | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |
+
         When I post to "/disruptions" with:
         """
-        {"reference": "foo", "publication_period": {"begin": "2014-06-24T10:35:00Z", "end": "2014-06-24T23:59:59Z"}}
+        {"reference": "foo", "publication_period": {"begin": "2014-06-24T10:35:00Z", "end": "2014-06-24T23:59:59Z"}, "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}}
         """
         Then the status code should be "201"
         And the header "Content-Type" should be "application/json"
@@ -39,17 +54,27 @@ Feature: Create disruption
         And the field "disruption.publication_period.end" should be "2014-06-24T23:59:59Z"
 
     Scenario: Publication period must be complete
+
+        Given I have the following causes in my database:
+            | wording   | created_at          | updated_at          | is_visible | id                                   |
+            | weather   | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | True       | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |
+
         When I post to "/disruptions" with:
         """
-        {"reference": "foo", "publication_period": {"begin": "2014-06-24T10:35:00Z"}}
+        {"reference": "foo", "publication_period": {"begin": "2014-06-24T10:35:00Z"}, "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}}
         """
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
 
     Scenario: We can create a disruption with a publication_period
+
+        Given I have the following causes in my database:
+            | wording   | created_at          | updated_at          | is_visible | id                                   |
+            | weather   | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | True       | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |
+
         When I post to "/disruptions" with:
         """
-        {"reference": "foo", "publication_period": {"begin": "2014-06-24T10:35:00Z", "end": "2014-06-24T23:59:59Z"}}
+        {"reference": "foo", "publication_period": {"begin": "2014-06-24T10:35:00Z", "end": "2014-06-24T23:59:59Z"}, "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}}
         """
         Then the status code should be "201"
         And the header "Content-Type" should be "application/json"
@@ -59,9 +84,14 @@ Feature: Create disruption
         And the field "disruption.publication_period.end" should be "2014-06-24T23:59:59Z"
 
     Scenario: Disruption are created with publication_period
+
+        Given I have the following causes in my database:
+            | wording   | created_at          | updated_at          | is_visible | id                                   |
+            | weather   | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | True       | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |
+
         Given I post to "/disruptions" with:
         """
-        {"reference": "foo", "publication_period": {"begin": "2014-06-24T10:35:00Z", "end": "2014-06-24T23:59:59Z"}}
+        {"reference": "foo", "publication_period": {"begin": "2014-06-24T10:35:00Z", "end": "2014-06-24T23:59:59Z"}, "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}}
         """
         When I get "/disruptions"
         Then the status code should be "200"
@@ -71,9 +101,14 @@ Feature: Create disruption
         And the field "disruptions.0.publication_period.end" should be "2014-06-24T23:59:59Z"
 
     Scenario: We can create a disruption with a end_publication_date null
+
+        Given I have the following causes in my database:
+            | wording   | created_at          | updated_at          | is_visible | id                                   |
+            | weather   | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | True       | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |
+
         When I post to "/disruptions" with:
         """
-        {"reference": "foo", "publication_period": {"begin": "2014-06-24T10:35:00Z", "end": null}}
+        {"reference": "foo", "publication_period": {"begin": "2014-06-24T10:35:00Z", "end": null}, "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}}
         """
         Then the status code should be "201"
         And the header "Content-Type" should be "application/json"

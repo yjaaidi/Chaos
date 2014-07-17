@@ -33,6 +33,8 @@ import re
 #see http://json-schema.org/
 
 datetime_pattern = '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$'
+id_format_text = '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
+id_format = re.compile(id_format_text)
 
 date_period_format = {
         'type': 'object',
@@ -46,9 +48,16 @@ date_period_format = {
 disruptions_input_format = {'type': 'object',
         'properties': {'reference': {'type': 'string', 'maxLength': 250},
             'note': {'type': 'string'},
-            'publication_period': date_period_format
+            'publication_period': date_period_format,
+            'cause':{
+                'type' : 'object',
+                'properties':{
+                    'id':{'type' : 'string', 'pattern': id_format_text}
+                },
+                'required': ['id']
+            }
         },
-        'required': ['reference']
+        'required': ['reference', 'cause']
 }
 #Here Order of values is strict and is used to create query filters.
 publication_status_values = ["past", "ongoing", "coming"]
@@ -61,8 +70,7 @@ severity_input_format = {'type': 'object',
         },
         'required': ['wording']
 }
-id_format_text = '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
-id_format = re.compile(id_format_text)
+
 
 cause_input_format = {'type': 'object',
         'properties': {'wording': {'type': 'string', 'maxLength': 250},

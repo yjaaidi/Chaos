@@ -80,6 +80,28 @@ class Severity(TimestampMixin, db.Model):
     def get(cls, id):
         return cls.query.filter_by(id=id, is_visible=True).first_or_404()
 
+class Cause(TimestampMixin, db.Model):
+    """
+    represent the cause of a disruption
+    """
+    id = db.Column(UUID, primary_key=True)
+    wording = db.Column(db.Text, unique=False, nullable=False)
+    is_visible = db.Column(db.Boolean, unique=False, nullable=False, default=True)
+
+    def __init__(self):
+        self.id = str(uuid.uuid1())
+
+    def __repr__(self):
+        return '<Cause %r>' % self.id
+
+    @classmethod
+    def all(cls):
+        return cls.query.filter_by(is_visible=True).all()
+
+    @classmethod
+    def get(cls, id):
+        return cls.query.filter_by(id=id, is_visible=True).first_or_404()
+
 class Disruption(TimestampMixin, db.Model):
     id = db.Column(UUID, primary_key=True)
     reference = db.Column(db.Text, unique=False, nullable=True)
@@ -88,6 +110,8 @@ class Disruption(TimestampMixin, db.Model):
     start_publication_date = db.Column(db.DateTime(), nullable=True)
     end_publication_date = db.Column(db.DateTime(), nullable=True)
     impacts = db.relationship('Impact', backref='disruption', lazy='dynamic')
+    cause_id = db.Column(UUID, db.ForeignKey(Cause.id))
+    cause = db.relationship('Cause', backref='disruption', lazy='joined')
 
     def __repr__(self):
         return '<Disruption %r>' % self.id
@@ -137,28 +161,6 @@ class Disruption(TimestampMixin, db.Model):
         if self.start_publication_date > current_time:
             return "coming"
 
-
-class Cause(TimestampMixin, db.Model):
-    """
-    represent the cause of a disruption
-    """
-    id = db.Column(UUID, primary_key=True)
-    wording = db.Column(db.Text, unique=False, nullable=False)
-    is_visible = db.Column(db.Boolean, unique=False, nullable=False, default=True)
-
-    def __init__(self):
-        self.id = str(uuid.uuid1())
-
-    def __repr__(self):
-        return '<Cause %r>' % self.id
-
-    @classmethod
-    def all(cls):
-        return cls.query.filter_by(is_visible=True).all()
-
-    @classmethod
-    def get(cls, id):
-        return cls.query.filter_by(id=id, is_visible=True).first_or_404()
 
 class Impact(TimestampMixin, db.Model):
     id = db.Column(UUID, primary_key=True)
