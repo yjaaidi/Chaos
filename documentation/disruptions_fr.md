@@ -234,6 +234,17 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient la perturbat
                 "meta": {}
             }
 
+- response 400 (application/json)
+
+    * Body
+
+            {
+                "error": {
+                    "message": "'reference' is a required property"
+                }
+                "meta": {}
+            }
+
 
 # Disruptions [/disruptions/{id}]
 ##Récupérer une perturbation [GET]
@@ -360,6 +371,18 @@ Lors d'un succés une réponse 200 est retourné, celle ci contient la perturbat
                 "error": {
                     "message": "No disruption"
                 },
+                "meta": {}
+            }
+
+
+- response 400 (application/json)
+
+    * Body
+
+            {
+                "error": {
+                    "message": "'reference' is a required property"
+                }
                 "meta": {}
             }
 
@@ -533,6 +556,18 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient l'impact cr�
                 "meta": {}
             }
 
+- response 400 (application/json)
+
+    * Body
+
+            {
+                "error": {
+                    "message": "'severity' is a required property"
+                }
+                "meta": {}
+            }
+
+
 
 #Impact [/disruptions/{disruption_id}/impacts/{id}]
 ##Retourne un impact [GET]
@@ -697,6 +732,17 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient la sévérit
                 "meta": {}
             }
 
+- response 400 (application/json)
+
+    * Body
+
+            {
+                "error": {
+                    "message": "'wording' is a required property"
+                }
+                "meta": {}
+            }
+
 
 # Severities [/severities/{id}]
 ##Retourne une sévérité [GET]
@@ -789,6 +835,18 @@ Lors d'un succés une réponse 200 est retourné, celle ci contient la sévérit
                 "error": {
                     "message": "No severity"
                 },
+                "meta": {}
+            }
+
+
+- response 400 (application/json)
+
+    * Body
+
+            {
+                "error": {
+                    "message": "'wording' is a required property"
+                }
                 "meta": {}
             }
 
@@ -891,6 +949,17 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient la cause cr�
                 "meta": {}
             }
 
+- response 400 (application/json)
+
+    * Body
+
+            {
+                "error": {
+                    "message": "'wording' is a required property"
+                }
+                "meta": {}
+            }
+
 # Causes [/causes/{id}]
 ##Retourne une cause. [GET]
 
@@ -972,6 +1041,16 @@ Lors d'un succés une réponse 200 est retourné, celle ci contient la cause mod
                 "error": {
                     "message": "No cause"
                 },
+                "meta": {}
+            }
+
+- response 400 (application/json)
+    * Body
+
+            {
+                "error": {
+                    "message": "'wording' is a required property"
+                }
                 "meta": {}
             }
 
@@ -1081,5 +1160,15 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient la canal cr�
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": "2014-04-31T16:55:18Z"
                 },
+                "meta": {}
+            }
+
+- response 400 (application/json)
+    * Body
+
+            {
+                "error": {
+                    "message": "'name' is a required property"
+                }
                 "meta": {}
             }
