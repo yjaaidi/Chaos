@@ -75,10 +75,6 @@ href_field = {
     "href": fields.String
 }
 
-disruption_cause_fields = {'id': fields.Raw,
-                   'wording': fields.Raw
-}
-
 cause_fields = {'id': fields.Raw,
                    'wording': fields.Raw,
                    'created_at': FieldDateTime,
@@ -107,7 +103,7 @@ disruption_fields = {'id': fields.Raw,
                      'publication_status': fields.Raw,
                      'impacts': FieldPaginateImpacts(attribute='impacts'),
                      'localization':FieldLocalization,
-                     'cause':fields.Nested(disruption_cause_fields)
+                     'cause':fields.Nested(cause_fields)
 }
 
 paginate_fields = {
