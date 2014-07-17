@@ -53,21 +53,21 @@ object_input_format = {'type': 'object',
 }
 
 disruptions_input_format = {'type': 'object',
-        'properties': {'reference': {'type': 'string', 'maxLength': 250},
-            'note': {'type': 'string'},
-            'publication_period': date_period_format,
-            'cause':{
-                'type' : 'object',
-                'properties':{
-                    'id':{'type' : 'string', 'pattern': id_format_text}
-                },
-                'required': ['id']
-            },
-            'localization': {'type' : 'array',
-                        'items':[object_input_format]
-            }
-        },
-        'required': ['reference', 'cause']
+                            'properties': {'reference': {'type': 'string', 'maxLength': 250},
+                                           'note': {'type': 'string'},
+                                           'publication_period': date_period_format,
+                                           'cause': {
+                                               'type': 'object',
+                                               'properties': {
+                                                   'id': {'type': 'string', 'pattern': id_format_text}
+                                               },
+                                               'required': ['id']
+                                           },
+                                           'localization': {'type': 'array',
+                                                            'items': [object_input_format]
+                                           }
+                            },
+                            'required': ['reference', 'cause']
 }
 #Here Order of values is strict and is used to create query filters.
 publication_status_values = ["past", "ongoing", "coming"]

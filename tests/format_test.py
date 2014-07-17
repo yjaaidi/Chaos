@@ -163,11 +163,11 @@ def test_disruption_not_cause_id_validation():
     validate(json, formats.disruptions_input_format)
 
 def test_disruption_without_localisation_validation():
-    json = {"reference": "foo", "note": "hello"}
+    json = {"reference": "foo", "note": "hello", "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}}
     validate(json, formats.disruptions_input_format)
 
 def test_disruption_with_localisation_validation():
-    json = {"reference": "foo", "note": "hello","localization":[{"id": "aaaa", "type":"stop_area"}]}
+    json = {"reference": "foo", "note": "hello","localization":[{"id": "stop_area:aaaa", "type":"stop_area"}], "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}}
     validate(json, formats.disruptions_input_format)
 
 @raises(ValidationError)
