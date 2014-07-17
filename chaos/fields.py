@@ -269,7 +269,7 @@ object_fields = {
                       }
                   }
               ],
-              "object": [{
+              "objects": [{
         "id":"RER:A",
         "name": "RER:A",
         "type": "network"
