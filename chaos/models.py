@@ -111,7 +111,7 @@ class Disruption(TimestampMixin, db.Model):
     end_publication_date = db.Column(db.DateTime(), nullable=True)
     impacts = db.relationship('Impact', backref='disruption', lazy='dynamic')
     cause_id = db.Column(UUID, db.ForeignKey(Cause.id))
-    cause = db.relationship('Cause', backref='disruption', lazy='select')
+    cause = db.relationship('Cause', backref='disruption', lazy='subquery')
 
     def __repr__(self):
         return '<Disruption %r>' % self.id
