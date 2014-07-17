@@ -45,6 +45,13 @@ date_period_format = {
         'required': ['begin', 'end']
         }
 
+object_input_format = {'type': 'object',
+        'properties': {'id': {'type': 'string', 'maxLength': 250},
+                       'type': {'enum': ['network', "stop_area"]}
+                       },
+        'required': ['id', 'type']
+}
+
 disruptions_input_format = {'type': 'object',
         'properties': {'reference': {'type': 'string', 'maxLength': 250},
             'note': {'type': 'string'},
@@ -55,6 +62,9 @@ disruptions_input_format = {'type': 'object',
                     'id':{'type' : 'string', 'pattern': id_format_text}
                 },
                 'required': ['id']
+            },
+            'localization': {'type' : 'array',
+                        'items':[object_input_format]
             }
         },
         'required': ['reference', 'cause']
@@ -71,18 +81,10 @@ severity_input_format = {'type': 'object',
         'required': ['wording']
 }
 
-
 cause_input_format = {'type': 'object',
         'properties': {'wording': {'type': 'string', 'maxLength': 250},
         },
         'required': ['wording']
-}
-
-object_input_format = {'type': 'object',
-        'properties': {'id': {'type': 'string', 'maxLength': 250},
-                       'type': {'enum': ['network']}
-                       },
-        'required': ['id', 'type']
 }
 
 impact_input_format = {'type': 'object',

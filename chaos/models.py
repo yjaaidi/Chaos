@@ -110,6 +110,7 @@ class Disruption(TimestampMixin, db.Model):
     start_publication_date = db.Column(db.DateTime(), nullable=True)
     end_publication_date = db.Column(db.DateTime(), nullable=True)
     impacts = db.relationship('Impact', backref='disruption', lazy='dynamic')
+    localization_id = db.Column(db.Text, unique=False, nullable=True)
     cause_id = db.Column(UUID, db.ForeignKey(Cause.id))
     cause = db.relationship('Cause', backref='disruption', lazy='joined')
 
@@ -160,7 +161,6 @@ class Disruption(TimestampMixin, db.Model):
         # Coming
         if self.start_publication_date > current_time:
             return "coming"
-
 
 class Impact(TimestampMixin, db.Model):
     id = db.Column(UUID, primary_key=True)

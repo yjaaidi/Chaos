@@ -38,10 +38,22 @@ class Navitia(object):
         self.coverage = coverage
         self.token = token
         self.timeout = timeout
+        self.collections = {
+            "network": "networks",
+            "stop_area": "stop_areas"
+        }
+    def get_pt_object(self, uri):
+        if uri.count(":") == 0:
+            logging.getLogger(__name__).exception('object {uri} not valid'.format(uri=uri))
+            return None
 
-    def get_network(self, uri):
-        query = '{url}/v1/coverage/{coverage}/networks/{uri}'.format(
-                url=self.url, coverage=self.coverage, uri=uri)
+        object_type = uri.split(":")[0]
+        if object_type not in self.collections:
+            logging.getLogger(__name__).exception('object type {object_type} unknown'.format(object_type=object_type))
+            return None
+
+        query = '{url}/v1/coverage/{coverage}/{collection}/{uri}'.format(
+                url=self.url, coverage=self.coverage, collection= self.collections[object_type],uri=uri)
         try:
             response = requests.get(query, auth=(self.token, None), timeout=self.timeout)
         except (requests.exceptions.RequestException):
@@ -51,8 +63,8 @@ class Navitia(object):
 
         if response:
             json = response.json()
-            if 'networks' in json and json['networks']:
-                return json['networks'][0]
+            if self.collections[object_type] in json and json[self.collections[object_type]]:
+                return json[self.collections[object_type]][0]
 
         return None
 

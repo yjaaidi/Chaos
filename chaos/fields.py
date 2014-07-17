@@ -56,7 +56,7 @@ class FieldObjectName(fields.Raw):
         navitia = Navitia(current_app.config['NAVITIA_URL'],
                                current_app.config['NAVITIA_COVERAGE'],
                                current_app.config['NAVITIA_TOKEN'])
-        response = navitia.get_network(obj.uri)
+        response = navitia.get_pt_object(obj.uri)
         if response and 'name' in response:
             return response['name']
         return 'Unable to find object'
@@ -64,11 +64,10 @@ class FieldObjectName(fields.Raw):
 
 class FieldLocalization(fields.Raw):
     def output(self, key, obj):
-        result = []
-        result.append({"id": "stop_area:RTP:SA:3786125",
-                       "name": "HENRI THIRARD - LEON JOUHAUX",
-                       "type": "stop_area"})
-        result[0]['coord'] = {"lat": "48.778867", "lon": "2.340927"}
+        if not obj.localization_id:
+            return None
+        result =[]
+        result.append({"id": obj.localization_id, "type": "stop_area"})
         return result
 
 href_field = {
