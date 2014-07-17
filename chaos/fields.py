@@ -103,7 +103,7 @@ disruption_fields = {'id': fields.Raw,
                      'publication_status': fields.Raw,
                      'impacts': FieldPaginateImpacts(attribute='impacts'),
                      'localization':FieldLocalization,
-                     'cause':fields.Nested(cause_fields)
+                     'cause':fields.Nested(cause_fields, allow_null=True)
 }
 
 paginate_fields = {
