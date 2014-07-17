@@ -28,21 +28,18 @@ def test_get_pt_object():
     mock = NavitiaMock(200, {'networks': [{'id': 'network:foo', 'name': 'reseau foo'}]},
             assert_url='http://api.navitia.io/v1/coverage/jdr/networks/network:foo')
     with HTTMock(mock):
-        eq_(n.get_pt_object('network:foo'), {'id': 'network:foo', 'name': 'reseau foo'})
-
-    with HTTMock(mock):
-        eq_(n.get_pt_object('networkfoo'), None)
+        eq_(n.get_pt_object('network:foo', 'network'), {'id': 'network:foo', 'name': 'reseau foo'})
 
     mock = NavitiaMock(200, {'networks': []})
     with HTTMock(mock):
-        eq_(n.get_pt_object('network:foo'), None)
+        eq_(n.get_pt_object('network:foo', 'network'), None)
 
     mock = NavitiaMock(404, {})
     with HTTMock(mock):
-        eq_(n.get_pt_object('network:foo'), None)
+        eq_(n.get_pt_object('network:foo', 'network'), None)
 
 @raises(requests.exceptions.Timeout)
 def test_navitia_timeout():
     n = Navitia('http://api.navitia.io', 'jdr')
     with HTTMock(navitia_mock_timeout):
-        n.get_pt_object('network:foo')
+        n.get_pt_object('network:foo','network')

@@ -56,7 +56,7 @@ class FieldObjectName(fields.Raw):
         navitia = Navitia(current_app.config['NAVITIA_URL'],
                                current_app.config['NAVITIA_COVERAGE'],
                                current_app.config['NAVITIA_TOKEN'])
-        response = navitia.get_pt_object(obj.uri)
+        response = navitia.get_pt_object(obj.uri, obj.type)
         if response and 'name' in response:
             return response['name']
         return 'Unable to find object'
@@ -66,7 +66,7 @@ class FieldLocalization(fields.Raw):
     def output(self, key, obj):
         if not obj.localization_id:
             return None
-        result =[]
+        result = []
         result.append({"id": obj.localization_id, "type": "stop_area"})
         return result
 

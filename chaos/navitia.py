@@ -42,12 +42,8 @@ class Navitia(object):
             "network": "networks",
             "stop_area": "stop_areas"
         }
-    def get_pt_object(self, uri):
-        if uri.count(":") == 0:
-            logging.getLogger(__name__).exception('object {uri} not valid'.format(uri=uri))
-            return None
+    def get_pt_object(self, uri, object_type):
 
-        object_type = uri.split(":")[0]
         if object_type not in self.collections:
             logging.getLogger(__name__).exception('object type {object_type} unknown'.format(object_type=object_type))
             return None

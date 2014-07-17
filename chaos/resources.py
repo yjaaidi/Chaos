@@ -208,7 +208,7 @@ class Disruptions(flask_restful.Resource):
         #Add localization present in Json
         if 'localization' in json and json['localization']:
             disruption.localization_id = json['localization'][0]["id"]
-            if not self.navitia.get_pt_object(disruption.localization_id):
+            if not self.navitia.get_pt_object(disruption.localization_id, json['localization'][0]["type"]):
                     return marshal({'error': {'message': 'ptobject {} doesn\'t exist'.format(disruption.localization_id)}},
                             error_fields), 404
 
@@ -239,7 +239,7 @@ class Disruptions(flask_restful.Resource):
         #Add localization present in Json
         if 'localization' in json and json['localization']:
             disruption.localization_id = json['localization'][0]["id"]
-            if not self.navitia.get_pt_object(disruption.localization_id):
+            if not self.navitia.get_pt_object(disruption.localization_id, json['localization'][0]["type"]):
                     return marshal({'error': {'message': 'ptobject {} doesn\'t exist'.format(disruption.localization_id)}},
                             error_fields), 404
 
@@ -383,7 +383,7 @@ class Impacts(flask_restful.Resource):
                     object = models.PTobject()
                     object.impact_id = impact.id
                     mapper.fill_from_json(object, obj, object_mapping)
-                    if not self.navitia.get_pt_object(obj['id']):
+                    if not self.navitia.get_pt_object(obj['id'], obj['type']):
                         return marshal({'error': {'message': 'network {} doesn\'t exist'.format(obj['id'])}},
                                 error_fields), 404
                     impact.insert_object(object)
@@ -411,7 +411,7 @@ class Impacts(flask_restful.Resource):
                     object = models.PTobject()
                     object.impact_id = impact.id
                     mapper.fill_from_json(object, obj, object_mapping)
-                    if not self.navitia.get_pt_object(obj['id']):
+                    if not self.navitia.get_pt_object(obj['id'], obj['type']):
                         return marshal({'error': {'message': 'network {} doesn\'t exist'.format(obj['id'])}},
                                 error_fields), 404
                     impact.insert_object(object)

@@ -47,7 +47,14 @@ date_period_format = {
 
 object_input_format = {'type': 'object',
         'properties': {'id': {'type': 'string', 'maxLength': 250},
-                       'type': {'enum': ['network', "stop_area"]}
+                       'type': {'enum': ['network']}
+                       },
+        'required': ['id', 'type']
+}
+
+localization_object_input_format = {'type': 'object',
+        'properties': {'id': {'type': 'string', 'maxLength': 250},
+                       'type': {'enum': ["stop_area"]}
                        },
         'required': ['id', 'type']
 }
@@ -64,7 +71,7 @@ disruptions_input_format = {'type': 'object',
                                                'required': ['id']
                                            },
                                            'localization': {'type': 'array',
-                                                            'items': [object_input_format]
+                                                            'items': [localization_object_input_format]
                                            }
                             },
                             'required': ['reference', 'cause']

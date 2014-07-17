@@ -6,7 +6,7 @@ SQLALCHEMY_DATABASE_URI = 'postgresql://navitia:navitia@localhost/chaos'
 DEBUG = True
 
 NAVITIA_URL = 'http://navitia2-ws.ctp.dev.canaltp.fr'
-NAVITIA_COVERAGE = 'centre'
+NAVITIA_COVERAGE = 'fr-cen'
 NAVITIA_TOKEN = 'f8a9befb-6bd9-4620-b942-b6b69a07487d'
 
 #Log Level available
