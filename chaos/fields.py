@@ -161,6 +161,23 @@ objectTC_fields = {'id': fields.Raw(attribute='uri'),
                    'name': FieldObjectName()
 }
 
+channel_fields = {'id': fields.Raw,
+                   'name': fields.Raw,
+                   'max_size': fields.Integer(default=None),
+                   'content_type': fields.Raw,
+                   'created_at': FieldDateTime,
+                   'updated_at': FieldDateTime,
+                   'self': {'href': fields.Url('channel', absolute=True)}
+}
+
+message_fields = {
+    'id': fields.Raw,
+    'text': fields.Raw,
+    'created_at': FieldDateTime,
+    'updated_at': FieldDateTime,
+    'channel': fields.Nested(channel_fields)
+}
+
 application_period_fields = {
     'begin': FieldDateTime(attribute='start_date'),
     'end': FieldDateTime(attribute='end_date')
@@ -191,9 +208,9 @@ impact_fields = {'id': fields.Raw,
                  'objects': fields.List(fields.Nested(objectTC_fields)),
                  'application_periods': fields.List(fields.Nested(application_period_fields)),
                  'severity': fields.Nested(severity_fields),
-                 'self': {'href': fields.Url('impact', absolute=True)},
+				 'self': {'href': fields.Url('impact', absolute=True)},
                  'disruption': FieldUrlDisruption(),
-                 'messages': FieldMessage
+                 'messages':fields.List(fields.Nested(message_fields))
 }
 
 one_impact_fields = {'impact': fields.Nested(impact_fields)
@@ -277,7 +294,7 @@ object_fields = {
                       }
                   }
               ],
-              "objects": [{
+              "object": [{
         "id":"RER:A",
         "name": "RER:A",
         "type": "network"

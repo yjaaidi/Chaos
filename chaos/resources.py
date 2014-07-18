@@ -72,7 +72,7 @@ object_mapping = {
 
 message_mapping = {
     "text": None,
-    "channel_id": None
+    'channel': {'id': mapper.AliasText(attribute='channel_id')}
 }
 
 application_period_mapping = {
@@ -395,12 +395,12 @@ class Impacts(flask_restful.Resource):
                     application_period = models.ApplicationPeriods(impact.id)
                     mapper.fill_from_json(application_period, app_period, application_period_mapping)
                     impact.insert_app_period(application_period)
-            '''if 'messages' in json:
+            if 'messages' in json:
                 for mes in  json['messages']:
                     message = models.Message()
                     message.impact_id = impact.id
                     mapper.fill_from_json(message, mes, message_mapping)
-                    impact.insert_object(object)'''
+                    impact.insert_message(message)
 
         db.session.commit()
         return marshal({'impact': impact}, one_impact_fields), 201
@@ -429,6 +429,17 @@ class Impacts(flask_restful.Resource):
                     application_period = models.ApplicationPeriods(impact.id)
                     mapper.fill_from_json(application_period, app_period, application_period_mapping)
                     impact.insert_app_period(application_period)
+
+            if 'messages' in json:
+                for mes in json['messages']:
+                    for msg in impact.messages:
+                        if msg.channel_id ==  mes["channel"]["id"]:
+                            mapper.fill_from_json(msg, mes, message_mapping)
+                        else:
+                            message = models.Message()
+                            message.impact_id = impact.id
+                            mapper.fill_from_json(message, mes, message_mapping)
+                            impact.insert_message(message)
 
         db.session.commit()
         return marshal({'impact': impact}, one_impact_fields), 200
