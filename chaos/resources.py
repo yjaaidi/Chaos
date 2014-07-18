@@ -53,7 +53,8 @@ disruption_mapping = {'reference': None,
             'begin': mapper.Datetime(attribute='start_publication_date'),
             'end': mapper.Datetime(attribute='end_publication_date')
             },
-        'cause': {'id': mapper.AliasText(attribute='cause_id')}
+        'cause': {'id': mapper.AliasText(attribute='cause_id')},
+        'localization':[{"id":mapper.Localization(attribute='localization_id')}]
         }
 
 severity_mapping = {'wording': None,
@@ -207,7 +208,6 @@ class Disruptions(flask_restful.Resource):
 
         #Add localization present in Json
         if 'localization' in json and json['localization']:
-            disruption.localization_id = json['localization'][0]["id"]
             if not self.navitia.get_pt_object(disruption.localization_id, json['localization'][0]["type"]):
                         return marshal({'error': {'message': 'ptobject {} doesn\'t exist'.format(disruption.localization_id)}},
                             error_fields), 404
@@ -237,7 +237,6 @@ class Disruptions(flask_restful.Resource):
 
         #Add localization present in Json
         if 'localization' in json and json['localization']:
-            disruption.localization_id = json['localization'][0]["id"]
             if not self.navitia.get_pt_object(disruption.localization_id, json['localization'][0]["type"]):
                     return marshal({'error': {'message': 'ptobject {} doesn\'t exist'.format(disruption.localization_id)}},
                             error_fields), 404
