@@ -54,7 +54,7 @@ disruption_mapping = {'reference': None,
             'end': mapper.Datetime(attribute='end_publication_date')
             },
         'cause': {'id': mapper.AliasText(attribute='cause_id')},
-        'localization':[{"id":mapper.AliasText(attribute='localization_id')}]
+        'localization': [{"id": mapper.AliasText(attribute='localization_id')}]
         }
 
 severity_mapping = {'wording': None,
