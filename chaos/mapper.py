@@ -51,17 +51,6 @@ class AliasText(object):
         else:
             setattr(item, self.attribute, None)
 
-class Localization(object):
-    def __init__(self, attribute):
-        self.attribute = attribute
-
-    def __call__(self, item, field, value):
-        if value:
-            setattr(item, self.attribute, value)
-        else:
-            setattr(item, self.attribute, None)
-
-
 def fill_from_json(item, json, fields):
     for field,formater in fields.iteritems():
         if field not in json:
