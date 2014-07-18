@@ -413,7 +413,7 @@ class Impacts(flask_restful.Resource):
         logging.getLogger(__name__).debug(json)
         impact = models.Impact.get(id)
 
-        #Add all objects present in Json
+        #Add all objects and all messages present in Json
         if json:
             if 'objects' in json:
                 for obj in  json['objects']:
@@ -432,20 +432,17 @@ class Impacts(flask_restful.Resource):
 
             if 'messages' in json:
                 for message_json in json['messages']:
-                    if len(impact.messages) == 0:
+                    found = False
+                    for msg in impact.messages:
+                        if msg.channel_id == message_json["channel"]["id"]:
+                            mapper.fill_from_json(msg, message_json, message_mapping)
+                            found = True
+                            break
+                    if not found:
                         message = models.Message()
                         message.impact_id = impact.id
                         mapper.fill_from_json(message, message_json, message_mapping)
                         impact.insert_message(message)
-                    else:
-                        for msg in impact.messages:
-                            if msg.channel_id == message_json["channel"]["id"]:
-                                mapper.fill_from_json(msg, message_json, message_mapping)
-                            else:
-                                message = models.Message()
-                                message.impact_id = impact.id
-                                mapper.fill_from_json(message, message_json, message_mapping)
-                                impact.insert_message(message)
 
         db.session.commit()
         return marshal({'impact': impact}, one_impact_fields), 200
