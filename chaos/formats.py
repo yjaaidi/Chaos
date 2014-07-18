@@ -45,19 +45,36 @@ date_period_format = {
         'required': ['begin', 'end']
         }
 
+object_input_format = {'type': 'object',
+        'properties': {'id': {'type': 'string', 'maxLength': 250},
+                       'type': {'enum': ['network']}
+                       },
+        'required': ['id', 'type']
+}
+
+localization_object_input_format = {'type': 'object',
+        'properties': {'id': {'type': 'string', 'maxLength': 250},
+                       'type': {'enum': ["stop_area"]}
+                       },
+        'required': ['id', 'type']
+}
+
 disruptions_input_format = {'type': 'object',
-        'properties': {'reference': {'type': 'string', 'maxLength': 250},
-            'note': {'type': 'string'},
-            'publication_period': date_period_format,
-            'cause':{
-                'type' : 'object',
-                'properties':{
-                    'id':{'type' : 'string', 'pattern': id_format_text}
-                },
-                'required': ['id']
-            }
-        },
-        'required': ['reference', 'cause']
+                            'properties': {'reference': {'type': 'string', 'maxLength': 250},
+                                           'note': {'type': 'string'},
+                                           'publication_period': date_period_format,
+                                           'cause': {
+                                               'type': 'object',
+                                               'properties': {
+                                                   'id': {'type': 'string', 'pattern': id_format_text}
+                                               },
+                                               'required': ['id']
+                                           },
+                                           'localization': {'type': 'array',
+                                                            'items': [localization_object_input_format]
+                                           }
+                            },
+                            'required': ['reference', 'cause']
 }
 #Here Order of values is strict and is used to create query filters.
 publication_status_values = ["past", "ongoing", "coming"]
@@ -71,18 +88,10 @@ severity_input_format = {'type': 'object',
         'required': ['wording']
 }
 
-
 cause_input_format = {'type': 'object',
         'properties': {'wording': {'type': 'string', 'maxLength': 250},
         },
         'required': ['wording']
-}
-
-object_input_format = {'type': 'object',
-        'properties': {'id': {'type': 'string', 'maxLength': 250},
-                       'type': {'enum': ['network']}
-                       },
-        'required': ['id', 'type']
 }
 
 impact_input_format = {'type': 'object',

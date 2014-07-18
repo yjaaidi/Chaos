@@ -28,7 +28,7 @@
 # www.navitia.io
 
 from aniso8601 import parse_datetime
-from collections import Mapping
+from collections import Mapping, Sequence
 
 
 class Datetime(object):
@@ -51,15 +51,18 @@ class AliasText(object):
         else:
             setattr(item, self.attribute, None)
 
-
-
 def fill_from_json(item, json, fields):
-    for field, formater in fields.iteritems():
+    for field,formater in fields.iteritems():
         if field not in json:
             setattr(item, field, None)
             continue
         if isinstance(formater, Mapping):
             fill_from_json(item, json[field], fields=formater)
+        elif isinstance(formater, Sequence):
+            for fr in formater:
+                for key in fr.keys():
+                    for one_json in json[field]:
+                        fr[key](item, key, one_json[key])
         elif not formater:
             setattr(item, field, json[field])
         elif formater:

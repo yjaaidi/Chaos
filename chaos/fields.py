@@ -56,7 +56,7 @@ class FieldObjectName(fields.Raw):
         navitia = Navitia(current_app.config['NAVITIA_URL'],
                                current_app.config['NAVITIA_COVERAGE'],
                                current_app.config['NAVITIA_TOKEN'])
-        response = navitia.get_network(obj.uri)
+        response = navitia.get_pt_object(obj.uri, obj.type)
         if response and 'name' in response:
             return response['name']
         return 'Unable to find object'
@@ -64,11 +64,10 @@ class FieldObjectName(fields.Raw):
 
 class FieldLocalization(fields.Raw):
     def output(self, key, obj):
+        if not obj.localization_id:
+            return None
         result = []
-        result.append({"id": "stop_area:RTP:SA:3786125",
-                       "name": "HENRI THIRARD - LEON JOUHAUX",
-                       "type": "stop_area"})
-        result[0]['coord'] = {"lat": "48.778867", "lon": "2.340927"}
+        result.append({"id": obj.localization_id, "type": "stop_area"})
         return result
 
 href_field = {
@@ -184,9 +183,9 @@ impact_fields = {'id': fields.Raw,
                  'objects': fields.List(fields.Nested(objectTC_fields)),
                  'application_periods': fields.List(fields.Nested(application_period_fields)),
                  'severity': fields.Nested(severity_fields),
-				 'self': {'href': fields.Url('impact', absolute=True)},
+                 'self': {'href': fields.Url('impact', absolute=True)},
                  'disruption': FieldUrlDisruption(),
-                 'messages':FieldMessage
+                 'messages': FieldMessage
 }
 
 one_impact_fields = {'impact': fields.Nested(impact_fields)
@@ -270,7 +269,7 @@ object_fields = {
                       }
                   }
               ],
-              "object": [{
+              "objects": [{
         "id":"RER:A",
         "name": "RER:A",
         "type": "network"
