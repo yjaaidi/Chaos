@@ -209,9 +209,8 @@ class Disruptions(flask_restful.Resource):
         if 'localization' in json and json['localization']:
             disruption.localization_id = json['localization'][0]["id"]
             if not self.navitia.get_pt_object(disruption.localization_id, json['localization'][0]["type"]):
-                    return marshal({'error': {'message': 'ptobject {} doesn\'t exist'.format(disruption.localization_id)}},
+                        return marshal({'error': {'message': 'ptobject {} doesn\'t exist'.format(disruption.localization_id)}},
                             error_fields), 404
-
         db.session.add(disruption)
         db.session.commit()
         return marshal({'disruption': disruption}, one_disruption_fields), 201
@@ -385,7 +384,7 @@ class Impacts(flask_restful.Resource):
                     mapper.fill_from_json(object, obj, object_mapping)
                     if not self.navitia.get_pt_object(obj['id'], obj['type']):
                         return marshal({'error': {'message': 'network {} doesn\'t exist'.format(obj['id'])}},
-                                error_fields), 404
+                                       error_fields), 404
                     impact.insert_object(object)
             if 'application_periods' in json:
                 for app_period in json["application_periods"]:

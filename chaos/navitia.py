@@ -29,8 +29,9 @@
 
 import requests
 import logging
-
+from chaos import exceptions
 __all__ = ['Navitia']
+
 
 class Navitia(object):
     def __init__(self, url, coverage, token=None, timeout=1):
@@ -42,11 +43,12 @@ class Navitia(object):
             "network": "networks",
             "stop_area": "stop_areas"
         }
+
     def get_pt_object(self, uri, object_type):
 
         if object_type not in self.collections:
             logging.getLogger(__name__).exception('object type {object_type} unknown'.format(object_type=object_type))
-            return None
+            raise exceptions.ObjectTypeUnknown(object_type)
 
         query = '{url}/v1/coverage/{coverage}/{collection}/{uri}'.format(
                 url=self.url, coverage=self.coverage, collection= self.collections[object_type],uri=uri)

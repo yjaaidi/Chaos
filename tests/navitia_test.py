@@ -1,5 +1,5 @@
 from nose.tools import *
-from chaos.navitia import Navitia
+from chaos.navitia import Navitia, exceptions
 import json
 import requests
 
@@ -23,6 +23,10 @@ class NavitiaMock(object):
 def navitia_mock_timeout(url, request):
     raise requests.exceptions.Timeout()
 
+@all_requests
+def navitia_mock_unknown_object_type(url, request):
+    raise exceptions.ObjectTypeUnknown
+
 def test_get_pt_object():
     n = Navitia('http://api.navitia.io', 'jdr')
     mock = NavitiaMock(200, {'networks': [{'id': 'network:foo', 'name': 'reseau foo'}]},
@@ -43,3 +47,10 @@ def test_navitia_timeout():
     n = Navitia('http://api.navitia.io', 'jdr')
     with HTTMock(navitia_mock_timeout):
         n.get_pt_object('network:foo','network')
+
+
+@raises(exceptions.ObjectTypeUnknown)
+def test_navitia_timeout():
+    n = Navitia('http://api.navitia.io', 'jdr')
+    with HTTMock(navitia_mock_unknown_object_type):
+        n.get_pt_object('network:foo','aaaaaaaa')
