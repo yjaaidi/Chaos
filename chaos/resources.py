@@ -431,15 +431,21 @@ class Impacts(flask_restful.Resource):
                     impact.insert_app_period(application_period)
 
             if 'messages' in json:
-                for mes in json['messages']:
-                    for msg in impact.messages:
-                        if msg.channel_id ==  mes["channel"]["id"]:
-                            mapper.fill_from_json(msg, mes, message_mapping)
-                        else:
-                            message = models.Message()
-                            message.impact_id = impact.id
-                            mapper.fill_from_json(message, mes, message_mapping)
-                            impact.insert_message(message)
+                for message_json in json['messages']:
+                    if len(impact.messages) == 0:
+                        message = models.Message()
+                        message.impact_id = impact.id
+                        mapper.fill_from_json(message, message_json, message_mapping)
+                        impact.insert_message(message)
+                    else:
+                        for msg in impact.messages:
+                            if msg.channel_id == message_json["channel"]["id"]:
+                                mapper.fill_from_json(msg, message_json, message_mapping)
+                            else:
+                                message = models.Message()
+                                message.impact_id = impact.id
+                                mapper.fill_from_json(message, message_json, message_mapping)
+                                impact.insert_message(message)
 
         db.session.commit()
         return marshal({'impact': impact}, one_impact_fields), 200

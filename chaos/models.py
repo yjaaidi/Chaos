@@ -168,10 +168,9 @@ class Impact(TimestampMixin, db.Model):
     disruption_id = db.Column(UUID, db.ForeignKey(Disruption.id))
     severity_id = db.Column(UUID, db.ForeignKey(Severity.id))
     objects = db.relationship('PTobject', backref='impact', lazy='select')
+    messages = db.relationship('Message', backref='impact', lazy='select')
     application_periods = db.relationship('ApplicationPeriods', backref='impact', lazy='select')
     severity = db.relationship('Severity', backref='impacts', lazy='select')
-    messages = db.relationship('Message', backref='impacts', lazy='select')
-
 
     def __repr__(self):
         return '<Impact %r>' % self.id
@@ -302,7 +301,6 @@ class Message(TimestampMixin, db.Model):
     """
     represent the message of an impact
     """
-    __tablename__ = 'message'
     id = db.Column(UUID, primary_key=True)
     text = db.Column(db.Text, unique=False, nullable=False)
     impact_id = db.Column(UUID, db.ForeignKey(Impact.id))
@@ -313,7 +311,7 @@ class Message(TimestampMixin, db.Model):
         self.id = str(uuid.uuid1())
 
     def __repr__(self):
-        return '<Severity %r>' % self.id
+        return '<Message %r>' % self.id
 
     @classmethod
     def all(cls):
