@@ -306,6 +306,7 @@ class Message(TimestampMixin, db.Model):
     impact_id = db.Column(UUID, db.ForeignKey(Impact.id))
     channel_id = db.Column(UUID, db.ForeignKey(Channel.id))
     channel = db.relationship('Channel', backref='message', lazy='select')
+    db.UniqueConstraint(impact_id, channel_id, name='impact_channel_id')
 
     def __init__(self):
         self.id = str(uuid.uuid1())
