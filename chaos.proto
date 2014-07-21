@@ -1,18 +1,17 @@
 package chaos;
-import "gtfs-realtime.proto"
+import "gtfs-realtime.proto";
 
 message Disruption{
+    // must match with the id in the FeedEntity for deletion
     required string id = 1;
-    //indicate if this disruption must be deleted
-    //in this case all others fields will be null
-    optional bool is_deleted = 2 [default = false];
 
+    // it's the title of the disruption as shown is the backoffice
     optional string reference = 3;
 
     // the publication period specify when an information can be displayed to
     // the customer, if a request is made before or after this period the
     // disruption must not be shown
-    optional transit_realtime.TimeRange publication_periods = 4;
+    optional transit_realtime.TimeRange publication_period = 4;
 
     //In POSIX time (i.e., number of seconds since January 1st 1970 00:00:00 UTC).
     optional uint64 created_at = 6;
@@ -23,6 +22,8 @@ message Disruption{
 
     repeated Impact impacts = 9;
 
+    // the place where the disruption happen, the impacts can be in anothers places
+    repeated transit_realtime.EntitySelector localization = 10;
 }
 
 message Cause{
@@ -46,16 +47,12 @@ message Impact{
 
     optional Severity severity = 5;
 
-    repeated PtObject pt_objects = 6;
+    repeated transit_realtime.EntitySelector informed_entities = 6;
 
-    repeated Message messages = 6;
+    repeated Message messages = 7;
 }
 
 message Severity{
-    enum Effect {
-        NONE = 1;
-        BLOCKED = 2;
-    }
     required string id = 1;
     optional string wording = 2;
     //In POSIX time (i.e., number of seconds since January 1st 1970 00:00:00 UTC).
@@ -67,12 +64,13 @@ message Severity{
 
     optional int32 priority = 6;
 
-    optional Effect effect = 7;
+    optional transit_realtime.Alert.Effect effect = 7;
 }
 
 message Message{
     required string text = 1;
-    required channel Channel = 2;
+    // Channel where the message is active, it can be something like twitter, SMS, web, etc...
+    required Channel Channel = 2;
 
     //In POSIX time (i.e., number of seconds since January 1st 1970 00:00:00 UTC).
     optional uint64 created_at = 3;
@@ -80,19 +78,10 @@ message Message{
     optional uint64 updated_at = 4;
 }
 
-// Maybe we can use the EntitySelector of gtfs RT here
-message PtObject{
-    enum Type{
-        NETWORK = 1;
-        STOPAREA = 2;
-    }
-    required string uri = 1;
-    required Type type = 2;
-}
-
+// Represent a channel of diffusion, something like SMS, twitter, etc...
 message Channel{
     required string id = 1;
-    optional string name = 2
+    optional string name = 2;
     optional string content_type = 3;
 
     // maximum number of character for this channel, mostly for information
@@ -104,4 +93,8 @@ message Channel{
     optional uint64 created_at = 5;
     //In POSIX time (i.e., number of seconds since January 1st 1970 00:00:00 UTC).
     optional uint64 updated_at = 6;
+}
+
+extend transit_realtime.FeedEntity{
+  optional Disruption disruption = 1000;
 }
