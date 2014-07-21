@@ -5,7 +5,7 @@ message Disruption{
     // must match with the id in the FeedEntity for deletion
     required string id = 1;
 
-    // it's the title of the disruption as shown is the backoffice
+    // it's the title of the disruption as shown in the backoffice
     optional string reference = 3;
 
     // the publication period specify when an information can be displayed to
@@ -70,7 +70,7 @@ message Severity{
 message Message{
     required string text = 1;
     // Channel where the message is active, it can be something like twitter, SMS, web, etc...
-    required Channel Channel = 2;
+    required Channel channel = 2;
 
     //In POSIX time (i.e., number of seconds since January 1st 1970 00:00:00 UTC).
     optional uint64 created_at = 3;
@@ -81,7 +81,9 @@ message Message{
 // Represent a channel of diffusion, something like SMS, twitter, etc...
 message Channel{
     required string id = 1;
+    //for example: "twitter" or "short text"
     optional string name = 2;
+    //for example: "text/plain" or "text/html"
     optional string content_type = 3;
 
     // maximum number of character for this channel, mostly for information
