@@ -435,7 +435,7 @@ class Impacts(flask_restful.Resource):
             if 'messages' in json:
                 messages_json = dict((msg["channel"]["id"], msg) for msg in json['messages'])
                 for message_json in json['messages']:
-                    if message_json["channel"]["id"] in messages_db.keys():
+                    if message_json["channel"]["id"] in messages_db:
                         msg = messages_db[message_json["channel"]["id"]]
                         mapper.fill_from_json(msg, message_json, message_mapping)
                     else:
@@ -445,7 +445,7 @@ class Impacts(flask_restful.Resource):
                         impact.insert_message(message)
                         messages_db[message.channel_id] = message
 
-            difference = set(messages_db.viewkeys()) - set(messages_json.viewkeys())
+            difference = set(messages_db) - set(messages_json)
             for diff in difference:
                 impact.delete_message(messages_db[diff])
 
