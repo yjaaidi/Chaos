@@ -217,6 +217,12 @@ class Impact(TimestampMixin, db.Model):
         self.messages.append(message)
         db.session.add(message)
 
+    def delete_message(self, message):
+        """
+        delete an message in a imapct.
+        """
+        self.messages.remove(message)
+        db.session.delete(message)
     def insert_app_period(self, application_period):
         """
         Adds an objectTC in a imapct.

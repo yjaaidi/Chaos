@@ -422,7 +422,7 @@ class Impacts(flask_restful.Resource):
                     mapper.fill_from_json(object, obj, object_mapping)
                     if not self.navitia.get_pt_object(obj['id'], obj['type']):
                         return marshal({'error': {'message': 'network {} doesn\'t exist'.format(obj['id'])}},
-                                error_fields), 404
+                                       error_fields), 404
                     impact.insert_object(object)
             if 'application_periods' in json:
                 for app_period in json["application_periods"]:
@@ -430,19 +430,24 @@ class Impacts(flask_restful.Resource):
                     mapper.fill_from_json(application_period, app_period, application_period_mapping)
                     impact.insert_app_period(application_period)
 
+            messages_db = dict((msg.channel_id, msg) for msg in impact.messages)
+            messages_json = dict()
             if 'messages' in json:
+                messages_json = dict((msg["channel"]["id"], msg) for msg in json['messages'])
                 for message_json in json['messages']:
-                    found = False
-                    for msg in impact.messages:
-                        if msg.channel_id == message_json["channel"]["id"]:
-                            mapper.fill_from_json(msg, message_json, message_mapping)
-                            found = True
-                            break
-                    if not found:
+                    if message_json["channel"]["id"] in messages_db.keys():
+                        msg = messages_db[message_json["channel"]["id"]]
+                        mapper.fill_from_json(msg, message_json, message_mapping)
+                    else:
                         message = models.Message()
                         message.impact_id = impact.id
                         mapper.fill_from_json(message, message_json, message_mapping)
                         impact.insert_message(message)
+                        messages_db[message.channel_id] = message
+
+            difference = set(messages_db.viewkeys()) - set(messages_json.viewkeys())
+            for diff in difference:
+                impact.delete_message(messages_db[diff])
 
         db.session.commit()
         return marshal({'impact': impact}, one_impact_fields), 200
