@@ -54,6 +54,7 @@ class TimestampMixin(object):
 DisruptionStatus = db.Enum('published', 'archived', name='disruption_status')
 SeverityEffect = db.Enum('blocking', name='severity_effect')
 ImpactStatus = db.Enum('published', 'archived', name='impact_status')
+PtObjectType = db.Enum('network', 'stop_area', name='pt_object_type')
 
 class Severity(TimestampMixin, db.Model):
     """
@@ -246,7 +247,7 @@ class Impact(TimestampMixin, db.Model):
 class PTobject(TimestampMixin, db.Model):
     __tablename__ = 'pt_object'
     id = db.Column(UUID, primary_key=True)
-    type = db.Column(db.Text, unique=False, nullable=True)
+    type = db.Column(PtObjectType, nullable=False, default='network', index=True)
     uri =  db.Column(db.Text, primary_key=True)
     impact_id = db.Column(UUID, db.ForeignKey(Impact.id))
 
