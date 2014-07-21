@@ -168,6 +168,7 @@ class Impact(TimestampMixin, db.Model):
     disruption_id = db.Column(UUID, db.ForeignKey(Disruption.id))
     severity_id = db.Column(UUID, db.ForeignKey(Severity.id))
     objects = db.relationship('PTobject', backref='impact', lazy='select')
+    messages = db.relationship('Message', backref='impact', lazy='select')
     application_periods = db.relationship('ApplicationPeriods', backref='impact', lazy='select')
     severity = db.relationship('Severity', backref='impacts', lazy='select')
 
@@ -188,6 +189,7 @@ class Impact(TimestampMixin, db.Model):
         d['objects'] = self.objects
         d['application_periods'] = self.application_periods
         d['severity'] = self.severity
+        d['messages'] = self.messages
         return d
 
     def __init__(self, objects=None):
@@ -208,6 +210,20 @@ class Impact(TimestampMixin, db.Model):
         self.objects.append(object)
         db.session.add(object)
 
+    def insert_message(self, message):
+        """
+        Adds an message in a imapct.
+        """
+        self.messages.append(message)
+        db.session.add(message)
+
+    def delete_message(self, message):
+        """
+        delete an message in a imapct.
+        """
+        self.messages.remove(message)
+        db.session.delete(message)
+
     def insert_app_period(self, application_period):
         """
         Adds an objectTC in a imapct.
@@ -225,6 +241,7 @@ class Impact(TimestampMixin, db.Model):
         query = cls.query.filter_by(status='published')
         query = query.filter(and_(cls.disruption_id == disruption_id))
         return query.join('severity').order_by('severity.priority asc')
+
 
 class PTobject(TimestampMixin, db.Model):
     __tablename__ = 'pt_object'
@@ -286,3 +303,27 @@ class Channel(TimestampMixin, db.Model):
     def get(cls, id):
         return cls.query.filter_by(id=id, is_visible=True).first_or_404()
 
+
+class Message(TimestampMixin, db.Model):
+    """
+    represent the message of an impact
+    """
+    id = db.Column(UUID, primary_key=True)
+    text = db.Column(db.Text, unique=False, nullable=False)
+    impact_id = db.Column(UUID, db.ForeignKey(Impact.id))
+    channel_id = db.Column(UUID, db.ForeignKey(Channel.id))
+    channel = db.relationship('Channel', backref='message', lazy='select')
+
+    def __init__(self):
+        self.id = str(uuid.uuid1())
+
+    def __repr__(self):
+        return '<Message %r>' % self.id
+
+    @classmethod
+    def all(cls):
+        return cls.query.all()
+
+    @classmethod
+    def get(cls, id):
+        return cls.query.filter_by(id=id).first_or_404()

@@ -54,7 +54,7 @@ disruption_mapping = {'reference': None,
             'end': mapper.Datetime(attribute='end_publication_date')
             },
         'cause': {'id': mapper.AliasText(attribute='cause_id')},
-        'localization':[{"id":mapper.AliasText(attribute='localization_id')}]
+        'localization': [{"id": mapper.AliasText(attribute='localization_id')}]
         }
 
 severity_mapping = {'wording': None,
@@ -68,6 +68,11 @@ cause_mapping = {'wording': None,}
 object_mapping = {
     "id": mapper.AliasText(attribute='uri'),
     "type": None
+}
+
+message_mapping = {
+    "text": None,
+    'channel': {'id': mapper.AliasText(attribute='channel_id')}
 }
 
 application_period_mapping = {
@@ -390,6 +395,12 @@ class Impacts(flask_restful.Resource):
                     application_period = models.ApplicationPeriods(impact.id)
                     mapper.fill_from_json(application_period, app_period, application_period_mapping)
                     impact.insert_app_period(application_period)
+            if 'messages' in json:
+                for mes in  json['messages']:
+                    message = models.Message()
+                    message.impact_id = impact.id
+                    mapper.fill_from_json(message, mes, message_mapping)
+                    impact.insert_message(message)
 
         db.session.commit()
         return marshal({'impact': impact}, one_impact_fields), 201
@@ -402,7 +413,7 @@ class Impacts(flask_restful.Resource):
         logging.getLogger(__name__).debug(json)
         impact = models.Impact.get(id)
 
-        #Add all objects present in Json
+        #Add all objects and all messages present in Json
         if json:
             if 'objects' in json:
                 for obj in  json['objects']:
@@ -411,13 +422,32 @@ class Impacts(flask_restful.Resource):
                     mapper.fill_from_json(object, obj, object_mapping)
                     if not self.navitia.get_pt_object(obj['id'], obj['type']):
                         return marshal({'error': {'message': 'network {} doesn\'t exist'.format(obj['id'])}},
-                                error_fields), 404
+                                       error_fields), 404
                     impact.insert_object(object)
             if 'application_periods' in json:
                 for app_period in json["application_periods"]:
                     application_period = models.ApplicationPeriods(impact.id)
                     mapper.fill_from_json(application_period, app_period, application_period_mapping)
                     impact.insert_app_period(application_period)
+
+            messages_db = dict((msg.channel_id, msg) for msg in impact.messages)
+            messages_json = dict()
+            if 'messages' in json:
+                messages_json = dict((msg["channel"]["id"], msg) for msg in json['messages'])
+                for message_json in json['messages']:
+                    if message_json["channel"]["id"] in messages_db:
+                        msg = messages_db[message_json["channel"]["id"]]
+                        mapper.fill_from_json(msg, message_json, message_mapping)
+                    else:
+                        message = models.Message()
+                        message.impact_id = impact.id
+                        mapper.fill_from_json(message, message_json, message_mapping)
+                        impact.insert_message(message)
+                        messages_db[message.channel_id] = message
+
+            difference = set(messages_db) - set(messages_json)
+            for diff in difference:
+                impact.delete_message(messages_db[diff])
 
         db.session.commit()
         return marshal({'impact': impact}, one_impact_fields), 200
