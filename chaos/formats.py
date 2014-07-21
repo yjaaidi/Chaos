@@ -47,7 +47,7 @@ date_period_format = {
 
 object_input_format = {'type': 'object',
         'properties': {'id': {'type': 'string', 'maxLength': 250},
-                       'type': {'enum': ['network']}
+                       'type': {'enum': ['network', 'stop_area']}
                        },
         'required': ['id', 'type']
 }
