@@ -33,6 +33,8 @@ from datetime import datetime
 from aniso8601 import parse_datetime
 import uuid
 import flask
+from flask import current_app
+from chaos.navitia import Navitia
 
 #disruption_id=None
 def make_pager(resultset, endpoint, **kwargs):
@@ -135,3 +137,41 @@ class Request(flask.Request):
     def __init__(self, *args, **kwargs):
         super(Request, self).__init__(*args, **kwargs)
         self.id = str(uuid.uuid4())
+
+
+class ImpactsByPtObject:
+    """
+    Journey comparator for sort
+
+    the comparison is different if the query is for clockwise search or not
+
+    NOTE: We ALWAYS want the best journeys to be first on the journey list
+    since end user wanting only 1 journey will take the first one
+    """
+    def __init__(self, impacts, object_type):
+        self.navitia = Navitia(current_app.config['NAVITIA_URL'],
+                               current_app.config['NAVITIA_COVERAGE'],
+                               current_app.config['NAVITIA_TOKEN'])
+        self.object_type = object_type
+        self.impacts = impacts
+
+    def __call__(self):
+        dictionnaire = dict()
+        for impact in self.impacts:
+            for ptobject in impact.objects:
+                if ptobject.type == self.object_type:
+                    if ptobject.uri in dictionnaire:
+                        resp = dictionnaire[ptobject.uri]
+                    else:
+                        nav_pt_object = self.navitia.get_pt_object(ptobject.uri, ptobject.type)
+                        name = None
+                        if nav_pt_object and 'name' in nav_pt_object:
+                            name = nav_pt_object['name']
+                        resp = {'id': ptobject.uri,
+                                'type': ptobject.type,
+                                'name': name,
+                                'impacts': []
+                        }
+                        dictionnaire[ptobject.uri] = resp
+                    resp['impacts'].append(impact)
+        return dictionnaire.values()

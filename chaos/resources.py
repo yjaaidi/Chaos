@@ -323,9 +323,6 @@ class ImpactsByObject(flask_restful.Resource):
         self.parsers["get"] = reqparse.RequestParser()
         parser_get = self.parsers["get"]
         parser_get.add_argument("ptobject[]", type=option_value(ptobject_values), action="append")
-        self.navitia = Navitia(current_app.config['NAVITIA_URL'],
-                               current_app.config['NAVITIA_COVERAGE'],
-                               current_app.config['NAVITIA_TOKEN'])
 
     def get(self):
         args = self.parsers['get'].parse_args()
@@ -336,27 +333,9 @@ class ImpactsByObject(flask_restful.Resource):
                                error_fields), 400
 
         object_tyep = ptobjects[0]
-        response = models.Impact.all_with_filter(object_tyep)
-        dictionnaire = dict()
-        for impact in response:
-            for ptobject in impact.objects:
-                if ptobject.type == object_tyep:
-                    if ptobject.uri in dictionnaire:
-                        resp = dictionnaire[ptobject.uri]
-                    else:
-                        nav_pt_object = self.navitia.get_pt_object(ptobject.uri, ptobject.type)
-                        name = None
-                        if nav_pt_object and 'name' in nav_pt_object:
-                            name = nav_pt_object['name']
-                        resp = {'id': ptobject.uri,
-                                'type': ptobject.type,
-                                'name': name,
-                                'impacts': []
-                        }
-                        dictionnaire[ptobject.uri] = resp
-                    resp['impacts'].append(impact)
-        result = [dictionnaire[key] for key in dictionnaire.keys()]
-        return marshal({'objects': result}, impacts_by_object_fields)
+        impacts = models.Impact.all_with_filter(object_tyep)
+        result = utils.ImpactsByPtObject(impacts, object_tyep)
+        return marshal({'objects': result()}, impacts_by_object_fields)
 
 
 class Impacts(flask_restful.Resource):
