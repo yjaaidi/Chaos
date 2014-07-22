@@ -333,27 +333,27 @@ class ImpactsByObject(flask_restful.Resource):
 
         if len(ptobjects) != 1:
                 return marshal({'error': {'message': "object type invalid"}},
-                           error_fields), 400
+                               error_fields), 400
+
         object_tyep = ptobjects[0]
         response = models.Impact.all_with_filter(object_tyep)
         dictionnaire = dict()
         for impact in response:
-            for objectTc in impact.objects:
-                if objectTc.type == object_tyep:
-                    if objectTc.uri in dictionnaire:
-                        resp = dictionnaire[objectTc.uri]
+            for ptobject in impact.objects:
+                if ptobject.type == object_tyep:
+                    if ptobject.uri in dictionnaire:
+                        resp = dictionnaire[ptobject.uri]
                     else:
-                        nav_pt_object = self.navitia.get_pt_object(objectTc.uri, objectTc.type)
+                        nav_pt_object = self.navitia.get_pt_object(ptobject.uri, ptobject.type)
                         name = None
                         if nav_pt_object and 'name' in nav_pt_object:
                             name = nav_pt_object['name']
-                        resp = {'id': objectTc.uri,
-                                'type': objectTc.type,
+                        resp = {'id': ptobject.uri,
+                                'type': ptobject.type,
                                 'name': name,
                                 'impacts': []
                         }
-
-                        dictionnaire[objectTc.uri] = resp
+                        dictionnaire[ptobject.uri] = resp
                     resp['impacts'].append(impact)
         result = [dictionnaire[key] for key in dictionnaire.keys()]
         return marshal({'objects': result}, impacts_by_object_fields)
