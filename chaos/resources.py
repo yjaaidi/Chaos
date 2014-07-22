@@ -323,6 +323,9 @@ class ImpactsByObject(flask_restful.Resource):
         self.parsers["get"] = reqparse.RequestParser()
         parser_get = self.parsers["get"]
         parser_get.add_argument("pt_object_type", type=option_value(ptobject_values))
+        self.navitia = Navitia(current_app.config['NAVITIA_URL'],
+                           current_app.config['NAVITIA_COVERAGE'],
+                           current_app.config['NAVITIA_TOKEN'])
 
     def get(self):
         args = self.parsers['get'].parse_args()
@@ -333,7 +336,7 @@ class ImpactsByObject(flask_restful.Resource):
                                error_fields), 400
 
         impacts = models.Impact.all_with_filter(pt_object_type)
-        result = utils.group_impacts_by_pt_object(impacts, pt_object_type)
+        result = utils.group_impacts_by_pt_object(impacts, pt_object_type, self.navitia)
         return marshal({'objects': result}, impacts_by_object_fields)
 
 

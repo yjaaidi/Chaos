@@ -139,15 +139,12 @@ class Request(flask.Request):
         self.id = str(uuid.uuid4())
 
 
-def group_impacts_by_pt_object(impacts, object_type):
+def group_impacts_by_pt_object(impacts, object_type, navitia):
     """
     :param impacts: list of impacts
     :param object_type: PTObject type example stop_area
     :return: list of implacts group by PTObject
     """
-    navitia = Navitia(current_app.config['NAVITIA_URL'],
-                           current_app.config['NAVITIA_COVERAGE'],
-                           current_app.config['NAVITIA_TOKEN'])
     dictionnaire = dict()
     for impact in impacts:
         for ptobject in impact.objects:
