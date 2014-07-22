@@ -1,6 +1,9 @@
 FORMAT: 1A
 HOST: https://ogv2ws.apiary-mock.com
 
+Version du document: 2.0
+Date de derniére modification: 22/07/2014
+
 #Web Services Ogesper v2
 Les web Services Ogesper v2 permettent la gestion des perturbations sur un référentiel de transport.
 Les entités manipulées par le web service sont:
