@@ -36,16 +36,19 @@ from sqlalchemy.dialects.postgresql import UUID
 from datetime import datetime
 from formats import publication_status_values
 from sqlalchemy import or_, and_
-from sqlalchemy.orm import backref
+from sqlalchemy.orm import aliased
 
 
 #force the server to use UTC time for each connection
 import sqlalchemy
+
+
 def set_utc_on_connect(dbapi_con, con_record):
     c = dbapi_con.cursor()
     c.execute("SET timezone='utc'")
     c.close()
 sqlalchemy.event.listen(sqlalchemy.pool.Pool, 'connect', set_utc_on_connect)
+
 
 class TimestampMixin(object):
     created_at = db.Column(db.DateTime(), default=datetime.utcnow, nullable=False)
@@ -55,6 +58,7 @@ DisruptionStatus = db.Enum('published', 'archived', name='disruption_status')
 SeverityEffect = db.Enum('blocking', name='severity_effect')
 ImpactStatus = db.Enum('published', 'archived', name='impact_status')
 PtObjectType = db.Enum('network', 'stop_area', name='pt_object_type')
+
 
 class Severity(TimestampMixin, db.Model):
     """
@@ -81,6 +85,7 @@ class Severity(TimestampMixin, db.Model):
     def get(cls, id):
         return cls.query.filter_by(id=id, is_visible=True).first_or_404()
 
+
 class Cause(TimestampMixin, db.Model):
     """
     represent the cause of a disruption
@@ -102,6 +107,7 @@ class Cause(TimestampMixin, db.Model):
     @classmethod
     def get(cls, id):
         return cls.query.filter_by(id=id, is_visible=True).first_or_404()
+
 
 class Disruption(TimestampMixin, db.Model):
     id = db.Column(UUID, primary_key=True)
@@ -163,15 +169,16 @@ class Disruption(TimestampMixin, db.Model):
         if self.start_publication_date > current_time:
             return "coming"
 
+
 class Impact(TimestampMixin, db.Model):
     id = db.Column(UUID, primary_key=True)
     status = db.Column(ImpactStatus, nullable=False, default='published', index=True)
     disruption_id = db.Column(UUID, db.ForeignKey(Disruption.id))
     severity_id = db.Column(UUID, db.ForeignKey(Severity.id))
-    objects = db.relationship('PTobject', backref='impact', lazy='select')
-    messages = db.relationship('Message', backref='impact', lazy='select')
-    application_periods = db.relationship('ApplicationPeriods', backref='impact', lazy='select')
-    severity = db.relationship('Severity', backref='impacts', lazy='select')
+    objects = db.relationship('PTobject', backref='impact', lazy='joined')
+    messages = db.relationship('Message', backref='impact', lazy='joined')
+    application_periods = db.relationship('ApplicationPeriods', backref='impact', lazy='joined')
+    severity = db.relationship('Severity', backref='impacts', lazy='joined')
 
     def __repr__(self):
         return '<Impact %r>' % self.id
@@ -239,9 +246,17 @@ class Impact(TimestampMixin, db.Model):
     @classmethod
     @paginate()
     def all(cls, disruption_id):
+        alias = aliased(Severity)
         query = cls.query.filter_by(status='published')
         query = query.filter(and_(cls.disruption_id == disruption_id))
-        return query.join('severity').order_by('severity.priority asc')
+        return query.join(alias, Impact.severity).order_by(alias.priority)
+
+    @classmethod
+    def all_with_filter(cls, ptobject_type):
+        query = cls.query.filter_by(status='published')
+        query = query.join(PTobject)
+        query = query.filter(and_(PTobject.type == ptobject_type))
+        return query.all()
 
 
 class PTobject(TimestampMixin, db.Model):
@@ -264,6 +279,7 @@ class PTobject(TimestampMixin, db.Model):
     def get(cls, id):
         return cls.query.filter_by(id=id).first_or_404()
 
+
 class ApplicationPeriods(TimestampMixin, db.Model):
     """
     represents the application periods of an impact
@@ -279,6 +295,7 @@ class ApplicationPeriods(TimestampMixin, db.Model):
 
     def __repr__(self):
         return '<ApplicationPeriods %r>' % self.id
+
 
 class Channel(TimestampMixin, db.Model):
     """

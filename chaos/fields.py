@@ -209,69 +209,14 @@ impacts_fields = {'meta': fields.Nested(meta_fields),
                   'impacts': fields.List(fields.Nested(impact_fields))
 }
 
-#Mock response impacts API
-
-object_fields = {
-    "id": "RER:A",
-    "name": "RER:A",
-    "type": "network",
-    "impacts": [
-        {
-            "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657ea",
-            "self": {"href": "https://chaos.apiary-mock.com/disruptions/3d1f32b2-e8df-11e3-8c3e-0008ca8657ea/impacts/3d1f42b2-e8df-11e3-8c3e-0008ca8657ea"},
-              "created_at": "2014-04-31T16:52:18Z",
-              "updated_at": "2014-04-31T16:55:18Z",
-              "severity": {
-                  "id": "3d1f42b2-e8df-11e3-8c3e-0008ca86c7ea",
-                  "wording": "Bonne nouvelle",
-                  "created_at": "2014-04-31T16:52:18Z",
-                  "updated_at": "2014-04-31T16:55:18Z",
-                  "color": "#123456",
-                  "effect": None
-              },
-              "application_periods": [
-                  {
-                      "begin": "2014-03-29T16:52:00Z",
-                      "end": "2014-05-22T02:15:00Z"
-                  }
-              ],
-                            "messages": [
-                  {
-                      "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657ca",
-                      "created_at": "2014-04-31T16:52:18Z",
-                      "updated_at": "2014-04-31T16:55:18Z",
-                      "text": "ptit dej la gare!!",
-                      "channel": {
-                          "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657da",
-                          "name": "message court",
-                          "content_type": "text/plain",
-                          "created_at": "2014-04-31T16:52:18Z",
-                          "updated_at": "2014-04-31T16:55:18Z",
-                          "max_size": 140
-                      }
-                  },
-                  {
-                      "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8257ea",
-                      "created_at": "2014-04-31T16:52:18Z",
-                      "updated_at": "2014-04-31T16:55:18Z",
-                      "text": "est ptit dej en gare",
-                      "channel": {
-                          "id": "3d1f42b2-e8df-11e3-8c3e-0008cb8657ea",
-                          "name": "message long",
-                          "content_type": "text/markdown",
-                          "created_at": "2014-04-31T16:52:18Z",
-                          "updated_at": "2014-04-31T16:55:18Z",
-                          "max_size": None
-                      }
-                  }
-              ],
-              "object": [{
-        "id":"RER:A",
-        "name": "RER:A",
-        "type": "network"
-      }]
-        }
-    ]
+impact_by_object_fields ={
+    'id':fields.Raw,
+    'type':fields.Raw,
+    'name':fields.Raw,
+    'impacts': fields.List(fields.Nested(impact_fields))
 }
 
-objects_fields = { 'objects': [object_fields] }
+impacts_by_object_fields ={
+    'objects': fields.List(fields.Nested(impact_by_object_fields))
+}
+

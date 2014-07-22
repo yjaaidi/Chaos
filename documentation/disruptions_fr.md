@@ -586,7 +586,7 @@ Cette fonction donne la liste des impacts par type d'objet.
 
 | Name                 | description                                                                               | required | default                 |
 | -------------------- | ----------------------------------------------------------------------------------------- | -------- | ----------------------- |
-| ptobject[]           | Filtre sur ptobject,  les valeurs possibles sont : network, stoparea                      | true     | [network, stoparea]     |
+| pt_object_type       | Filtre par type d'objet,  les valeurs possibles sont : network, stoparea                  | true     | network                 |
 
 
 

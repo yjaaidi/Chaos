@@ -33,6 +33,8 @@ from datetime import datetime
 from aniso8601 import parse_datetime
 import uuid
 import flask
+from flask import current_app
+from chaos.navitia import Navitia
 
 #disruption_id=None
 def make_pager(resultset, endpoint, **kwargs):
@@ -135,3 +137,31 @@ class Request(flask.Request):
     def __init__(self, *args, **kwargs):
         super(Request, self).__init__(*args, **kwargs)
         self.id = str(uuid.uuid4())
+
+
+def group_impacts_by_pt_object(impacts, object_type, navitia):
+    """
+    :param impacts: list of impacts
+    :param object_type: PTObject type example stop_area
+    :return: list of implacts group by PTObject
+    """
+    dictionnaire = dict()
+    for impact in impacts:
+        for ptobject in impact.objects:
+            if ptobject.type == object_type:
+                if ptobject.uri in dictionnaire:
+                    resp = dictionnaire[ptobject.uri]
+                else:
+                    nav_pt_object = navitia.get_pt_object(ptobject.uri, ptobject.type)
+                    if nav_pt_object and 'name' in nav_pt_object:
+                        name = nav_pt_object['name']
+                    else:
+                        name = None
+                    resp = {'id': ptobject.uri,
+                            'type': ptobject.type,
+                            'name': name,
+                            'impacts': []
+                    }
+                    dictionnaire[ptobject.uri] = resp
+                resp['impacts'].append(impact)
+    return dictionnaire.values()

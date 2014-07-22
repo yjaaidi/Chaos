@@ -534,7 +534,7 @@ Return all impacts by ptobject.
 
 | Name                 | description                                                                    | required | default                     |
 | -------------------- | ------------------------------------------------------------------------------ | -------- | --------------------------- |
-| ptobject[]           | filter by ptobject, possible value are: network, stoparea                      | true     | [network, stoparea]         |
+| pt_object_type       | filter by ptobject, possible value are: network, stoparea                      | true     | network                     |
 
 - response 200 (application/json)
     * Body
