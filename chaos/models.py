@@ -168,10 +168,10 @@ class Impact(TimestampMixin, db.Model):
     status = db.Column(ImpactStatus, nullable=False, default='published', index=True)
     disruption_id = db.Column(UUID, db.ForeignKey(Disruption.id))
     severity_id = db.Column(UUID, db.ForeignKey(Severity.id))
-    objects = db.relationship('PTobject', backref='impact', lazy='select')
-    messages = db.relationship('Message', backref='impact', lazy='select')
-    application_periods = db.relationship('ApplicationPeriods', backref='impact', lazy='select')
-    severity = db.relationship('Severity', backref='impacts', lazy='select')
+    objects = db.relationship('PTobject', backref='impact', lazy='joined')
+    messages = db.relationship('Message', backref='impact', lazy='joined')
+    application_periods = db.relationship('ApplicationPeriods', backref='impact', lazy='joined')
+    severity = db.relationship('Severity', backref='impacts', lazy='joined')
 
     def __repr__(self):
         return '<Impact %r>' % self.id
