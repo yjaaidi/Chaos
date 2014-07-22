@@ -36,7 +36,7 @@ from sqlalchemy.dialects.postgresql import UUID
 from datetime import datetime
 from formats import publication_status_values
 from sqlalchemy import or_, and_
-from sqlalchemy.orm import backref, query
+from sqlalchemy.orm import backref
 
 
 #force the server to use UTC time for each connection
