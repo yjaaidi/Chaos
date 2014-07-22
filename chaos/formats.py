@@ -35,6 +35,7 @@ import re
 datetime_pattern = '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$'
 id_format_text = '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
 id_format = re.compile(id_format_text)
+ptobject_values = ["network", "stop_area"]
 
 date_period_format = {
         'type': 'object',
@@ -47,7 +48,7 @@ date_period_format = {
 
 object_input_format = {'type': 'object',
         'properties': {'id': {'type': 'string', 'maxLength': 250},
-                       'type': {'enum': ['network', 'stop_area']}
+                       'type': {'enum': ptobject_values}
                        },
         'required': ['id', 'type']
 }
@@ -78,7 +79,7 @@ disruptions_input_format = {'type': 'object',
 }
 #Here Order of values is strict and is used to create query filters.
 publication_status_values = ["past", "ongoing", "coming"]
-ptobject_values = ["network", "stop_area"]
+
 
 severity_input_format = {'type': 'object',
         'properties': {'wording': {'type': 'string', 'maxLength': 250},

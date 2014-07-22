@@ -322,7 +322,7 @@ class ImpactsByObject(flask_restful.Resource):
         self.parsers = {}
         self.parsers["get"] = reqparse.RequestParser()
         parser_get = self.parsers["get"]
-        parser_get.add_argument("pt_object_type", type=option_value(ptobject_values))
+        parser_get.add_argument("pt_object_type", type=option_value(ptobject_values), default='network')
         self.navitia = Navitia(current_app.config['NAVITIA_URL'],
                            current_app.config['NAVITIA_COVERAGE'],
                            current_app.config['NAVITIA_TOKEN'])
