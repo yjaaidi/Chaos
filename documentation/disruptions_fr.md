@@ -120,6 +120,17 @@ Le champs ```impacts``` contient un objet de pagination contenant les liens vers
                             "begin": "2014-04-31T17:00:00Z",
                             "end": null
                         },
+                        "cause": {
+
+                            "created_at": "2014-07-21T14:06:23Z",
+                            "id": "32b07ff8-10e0-11e4-ae39-d4bed99855be",
+                            "self": {
+                                "href": "https://ogv2ws.apiary-mock.com//causes/32b07ff8-10e0-11e4-ae39-d4bed99855be"
+                            },
+                            "updated_at": null,
+                            "wording": "foo1"
+
+                        },
                         "impacts": {
                             "pagination": {
                                 "start_page": 0,
@@ -130,7 +141,33 @@ Le champs ```impacts``` contient un objet de pagination contenant les liens vers
                                 "first": {"href": "https://ogv2ws.apiary-mock.com/disruptions/d30502d2-e8de-11e3-8c3e-0008ca8657eb/impacts?start_page=1&item_per_page=20"},
                                 "last": {"href": "https://ogv2ws.apiary-mock.com/disruptions/d30502d2-e8de-11e3-8c3e-0008ca8657eb/impacts?start_page=1&item_per_page=20"}
                             }
+                        },
+                        "localization":[
+                        {
+                            "administrative_regions": [
+                            {
+                                "coord": {
+                                        "lat": "48.04517157",
+                                        "lon": "2.697975614"
+                                },
+                                "id": "admin:45104",
+                                "level": 8,
+                                "name": "Corquilleroy",
+                                "zip_code": "45120"
+                            }
+                            ],
+                            "comment": "",
+                            "coord": {
+                                "lat": "48.025",
+                                "lon": "2.71639"
+                            },
+                            "id": "stop_area:MTD:SA:154",
+                            "name": "Pichon",
+                            "type": "stop_area"
+
                         }
+                        ]
+                    },
                     },
                     {
                         "id": "d30502d2-e8de-11e3-8c3e-0008ca8657ec",
@@ -144,6 +181,17 @@ Le champs ```impacts``` contient un objet de pagination contenant les liens vers
                         "publication_period" : {
                             "begin": "2014-04-31T17:00:00Z",
                             "end": null
+                        },
+                        "cause": {
+
+                            "created_at": "2014-07-21T14:06:23Z",
+                            "id": "32b07ff8-10e0-11e4-ae39-d4bed99855be",
+                            "self": {
+                                "href": "https://ogv2ws.apiary-mock.com//causes/32b07ff8-10e0-11e4-ae39-d4bed99855be"
+                            },
+                            "updated_at": null,
+                            "wording": "foo1"
+
                         },
                         "impacts": {
                             "pagination": {
@@ -196,7 +244,9 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient la perturbat
                 "publication_period" : {
                     "begin": "2014-04-31T17:00:00Z",
                     "end": null
-                }
+                },
+                "localization":[{"id":"stop_area:JDR:SA:CHVIN", "type": "stop_area"}],
+                "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}
             }
 
 
@@ -229,7 +279,44 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient la perturbat
                             "first": {"href": "https://ogv2ws.apiary-mock.com/disruptions/1/impacts?start_page=1&item_per_page=20"},
                             "last": null
                         }
+                    },
+
+                    "cause": {
+
+                        "created_at": "2014-07-21T14:06:23Z",
+                        "id": "32b07ff8-10e0-11e4-ae39-d4bed99855be",
+                        "self": {
+                            "href": "https://ogv2ws.apiary-mock.com//causes/32b07ff8-10e0-11e4-ae39-d4bed99855be"
+                        },
+                        "updated_at": null,
+                        "wording": "foo1"
+
+                    },
+                    "localization":[
+                    {
+                        "administrative_regions": [
+                        {
+                            "coord": {
+                                    "lat": "48.04517157",
+                                    "lon": "2.697975614"
+                            },
+                            "id": "admin:45104",
+                            "level": 8,
+                            "name": "Corquilleroy",
+                            "zip_code": "45120"
+                        }
+                        ],
+                        "comment": "",
+                        "coord": {
+                            "lat": "48.025",
+                            "lon": "2.71639"
+                        },
+                        "id": "stop_area:MTD:SA:154",
+                        "name": "Pichon",
+                        "type": "stop_area"
+
                     }
+                    ]
                 },
                 "meta": {}
             }
@@ -280,7 +367,43 @@ Retourne une perturbation (si elle existe):
                             "first": {"href": "https://ogv2ws.apiary-mock.com/disruptions/3d1f32b2-e8df-11e3-8c3e-0008ca8657ea/impacts?start_page=1&item_per_page=20"},
                             "last": {"href": "https://ogv2ws.apiary-mock.com/disruptions/3d1f32b2-e8df-11e3-8c3e-0008ca8657ea/impacts?start_page=1&item_per_page=20"}
                         }
+                    },
+                    "cause": {
+
+                        "created_at": "2014-07-21T14:06:23Z",
+                        "id": "32b07ff8-10e0-11e4-ae39-d4bed99855be",
+                        "self": {
+                            "href": "https://ogv2ws.apiary-mock.com//causes/32b07ff8-10e0-11e4-ae39-d4bed99855be"
+                        },
+                        "updated_at": null,
+                        "wording": "foo1"
+
+                    },
+                    "localization":[
+                    {
+                        "administrative_regions": [
+                        {
+                            "coord": {
+                                    "lat": "48.04517157",
+                                    "lon": "2.697975614"
+                            },
+                            "id": "admin:45104",
+                            "level": 8,
+                            "name": "Corquilleroy",
+                            "zip_code": "45120"
+                        }
+                        ],
+                        "comment": "",
+                        "coord": {
+                            "lat": "48.025",
+                            "lon": "2.71639"
+                        },
+                        "id": "stop_area:MTD:SA:154",
+                        "name": "Pichon",
+                        "type": "stop_area"
+
                     }
+                    ]
                 },
                 "meta": {}
             }
@@ -327,7 +450,9 @@ Lors d'un succés une réponse 200 est retourné, celle ci contient la perturbat
                 "publication_period" : {
                     "begin": "2014-04-31T17:00:00Z",
                     "end": null
-                }
+                },
+                "localization":[{"id":"stop_area:AME:SA:104", "type": "stop_area"}],
+                "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}
             }
 
 
@@ -359,7 +484,43 @@ Lors d'un succés une réponse 200 est retourné, celle ci contient la perturbat
                             "first": null,
                             "last": null
                         }
+                    },
+                    "cause": {
+
+                        "created_at": "2014-07-21T14:06:23Z",
+                        "id": "32b07ff8-10e0-11e4-ae39-d4bed99855be",
+                        "self": {
+                            "href": "https://ogv2ws.apiary-mock.com//causes/32b07ff8-10e0-11e4-ae39-d4bed99855be"
+                        },
+                        "updated_at": null,
+                        "wording": "foo1"
+
+                    },
+                    "localization":[
+                    {
+                        "administrative_regions": [
+                        {
+                            "coord": {
+                                "lat": "48.01470003",
+                                "lon": "2.73233169"
+                            },
+                            "id": "admin:45068",
+                            "level": 8,
+                            "name": "Châlette-sur-Loing",
+                            "zip_code": "45120"
+                        }
+                        ],
+                        "comment": "",
+                        "coord": {
+                            "lat": "48.02202",
+                            "lon": "2.715535"
+                        },
+                        "id": "stop_area:AME:SA:104",
+                        "name": "Jaillon",
+                        "type": "stop_area"
+
                     }
+                    ]
                 },
                 "meta": {}
             }
@@ -561,6 +722,45 @@ Aucun filtre actuellement sur la récupération de liste des impacts: l'interrog
                             "effect": null,
                             "priority": 1,
                         },
+                        "messages": [
+                                {
+                                    "channel": {
+                                    "content_type": "text/plain",
+                                    "created_at": "2014-04-31T16:52:18Z",
+                                    "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657da",
+                                    "max_size": 140,
+                                    "name": "message court",
+                                    "updated_at": "2014-04-31T16:55:18Z"
+                                    },
+                                    "created_at": "2014-04-31T16:52:18Z",
+                                    "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657ca",
+                                    "publication_date": [
+                                        "2014-04-31T16:52:18Z"
+                                        ],
+                                    "publication_period": null,
+                                    "text": "ptit dej la gare!!",
+                                    "updated_at": "2014-04-31T16:55:18Z"
+                                },
+                                {
+                                    "channel": {
+                                        "content_type": "text/markdown",
+                                        "created_at": "2014-04-31T16:52:18Z",
+                                        "id": "3d1f42b2-e8df-11e3-8c3e-0008cb8657ea",
+                                        "max_size": null,
+                                        "name": "message long",
+                                        "updated_at": "2014-04-31T16:55:18Z"
+                                    },
+                                    "created_at": "2014-04-31T16:52:18Z",
+                                    "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8257ea",
+                                    "publication_date": null,
+                                    "publication_period": {
+                                        "begin": "2014-04-31T17:00:00Z",
+                                        "end": "2014-05-01T17:00:00Z"
+                                    },
+                                    "text": "est ptit dej en gare",
+                                    "updated_at": "2014-04-31T16:55:18Z"
+                                }
+                        ],
                         "application_periods": [
                             {
                                 "begin": "2014-04-31T16:52:00Z",
@@ -628,6 +828,20 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient l'impact cr�
                         "id": "network:RTP:378",
                         "type": "network"
                     }
+                ],
+                "messages": [
+                    {
+                        "text": "Message2",
+                        "channel": {
+                            "id": "3d1f42b2-e8df-11e3-8c3e-0008ca86c7ea"
+                        }
+                    },
+                    {
+                        "text": "Message 1",
+                        "channel": {
+                            "id": "3d1f42b2-e8df-11e3-8c3e-0002ca8657ea"
+                        }
+                    }
                 ]
             }
 
@@ -650,6 +864,36 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient l'impact cr�
                         "effect": null,
                         "priority": 0
                     },
+                    "messages": [
+                            {
+                                "channel": {
+                                "content_type": "text/plain",
+                                "created_at": "2014-04-31T16:52:18Z",
+                                "id": "3d1f42b2-e8df-11e3-8c3e-0002ca8657ea",
+                                "max_size": 140,
+                                "name": "message court",
+                                "updated_at": "2014-04-31T16:55:18Z"
+                                },
+                                "created_at": "2014-04-31T16:52:18Z",
+                                "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657ca",
+                                "text": "Message 1",
+                                "updated_at": "2014-04-31T16:55:18Z"
+                            },
+                            {
+                                "channel": {
+                                    "content_type": "text/markdown",
+                                    "created_at": "2014-04-31T16:52:18Z",
+                                    "id": "3d1f42b2-e8df-11e3-8c3e-0008ca86c7ea",
+                                    "max_size": null,
+                                    "name": "message long",
+                                    "updated_at": "2014-04-31T16:55:18Z"
+                                },
+                                "created_at": "2014-04-31T16:52:18Z",
+                                "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8257ea",
+                                "text": "Message 2",
+                                "updated_at": "2014-04-31T16:55:18Z"
+                            }
+                    ],
                     "application_periods": [
                         {
                             "begin": "2014-04-31T16:52:00Z",
@@ -709,6 +953,36 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient l'impact cr�
                         "effect": null,
                         "priority": 1
                     },
+                    "messages": [
+                            {
+                                "channel": {
+                                "content_type": "text/plain",
+                                "created_at": "2014-04-31T16:52:18Z",
+                                "id": "3d1f42b2-e8df-11e3-8c3e-0002ca8657ea",
+                                "max_size": 140,
+                                "name": "message court",
+                                "updated_at": "2014-04-31T16:55:18Z"
+                                },
+                                "created_at": "2014-04-31T16:52:18Z",
+                                "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657ca",
+                                "text": "Message 1",
+                                "updated_at": "2014-04-31T16:55:18Z"
+                            },
+                            {
+                                "channel": {
+                                    "content_type": "text/markdown",
+                                    "created_at": "2014-04-31T16:52:18Z",
+                                    "id": "3d1f42b2-e8df-11e3-8c3e-0008ca86c7ea",
+                                    "max_size": null,
+                                    "name": "message long",
+                                    "updated_at": "2014-04-31T16:55:18Z"
+                                },
+                                "created_at": "2014-04-31T16:52:18Z",
+                                "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8257ea",
+                                "text": "Message 2",
+                                "updated_at": "2014-04-31T16:55:18Z"
+                            }
+                    ],
                     "application_periods": [
                         {
                             "begin": "2014-04-31T16:52:00Z",
