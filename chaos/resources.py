@@ -35,7 +35,7 @@ from jsonschema import validate, ValidationError
 from flask.ext.restful import abort
 from fields import *
 from formats import *
-from formats import impact_input_format, channel_input_format
+from formats import impact_input_format, channel_input_format, ptobject_values
 from chaos import mapper
 from chaos import utils
 import chaos
@@ -318,8 +318,46 @@ class Cause(flask_restful.Resource):
         return None, 204
 
 class ImpactsByObject(flask_restful.Resource):
+    def __init__(self):
+        self.parsers = {}
+        self.parsers["get"] = reqparse.RequestParser()
+        parser_get = self.parsers["get"]
+        parser_get.add_argument("ptobject[]", type=option_value(ptobject_values), action="append")
+        self.navitia = Navitia(current_app.config['NAVITIA_URL'],
+                               current_app.config['NAVITIA_COVERAGE'],
+                               current_app.config['NAVITIA_TOKEN'])
+
     def get(self):
-        return objects_fields
+        args = self.parsers['get'].parse_args()
+        ptobjects = args['ptobject[]']
+
+        if len(ptobjects) != 1:
+                return marshal({'error': {'message': "object type invalid"}},
+                           error_fields), 400
+        object_tyep = ptobjects[0]
+        response = models.Impact.all_with_filter(object_tyep)
+        dictionnaire = dict()
+        for impact in response:
+            for objectTc in impact.objects:
+                if objectTc.type == object_tyep:
+                    if objectTc.uri in dictionnaire:
+                        resp = dictionnaire[objectTc.uri]
+                    else:
+                        nav_pt_object = self.navitia.get_pt_object(objectTc.uri, objectTc.type)
+                        name = None
+                        if nav_pt_object and 'name' in nav_pt_object:
+                            name = nav_pt_object['name']
+                        resp = {'id': objectTc.uri,
+                                'type': objectTc.type,
+                                'name': name,
+                                'impacts': []
+                        }
+
+                        dictionnaire[objectTc.uri] = resp
+                    resp['impacts'].append(impact)
+        result = [dictionnaire[key] for key in dictionnaire.keys()]
+        return marshal({'objects': result}, impacts_by_object_fields)
+
 
 class Impacts(flask_restful.Resource):
     def __init__(self):

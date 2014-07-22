@@ -36,7 +36,7 @@ from sqlalchemy.dialects.postgresql import UUID
 from datetime import datetime
 from formats import publication_status_values
 from sqlalchemy import or_, and_
-from sqlalchemy.orm import backref
+from sqlalchemy.orm import backref, query
 
 
 #force the server to use UTC time for each connection
@@ -243,6 +243,12 @@ class Impact(TimestampMixin, db.Model):
         query = query.filter(and_(cls.disruption_id == disruption_id))
         return query.join('severity').order_by('severity.priority asc')
 
+    @classmethod
+    def all_with_filter(cls, ptobject_type):
+        query = cls.query.filter_by(status='published')
+        query = query.join('pt_object')
+        query = query.filter(and_(PTobject.type == ptobject_type))
+        return query.all()
 
 class PTobject(TimestampMixin, db.Model):
     __tablename__ = 'pt_object'
@@ -250,6 +256,7 @@ class PTobject(TimestampMixin, db.Model):
     type = db.Column(PtObjectType, nullable=False, default='network', index=True)
     uri =  db.Column(db.Text, primary_key=True)
     impact_id = db.Column(UUID, db.ForeignKey(Impact.id))
+    impacts = db.relationship('Impact', backref='pt_object', lazy='select')
 
     def __repr__(self):
         return '<PTobject %r>' % self.id

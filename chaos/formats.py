@@ -78,6 +78,7 @@ disruptions_input_format = {'type': 'object',
 }
 #Here Order of values is strict and is used to create query filters.
 publication_status_values = ["past", "ongoing", "coming"]
+ptobject_values = ["network", "stop_area"]
 
 severity_input_format = {'type': 'object',
         'properties': {'wording': {'type': 'string', 'maxLength': 250},
