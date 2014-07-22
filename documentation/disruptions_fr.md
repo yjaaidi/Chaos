@@ -172,7 +172,6 @@ Le champs ```localization``` contient un objet localisation de la perturbation.
                         }
                         ]
                     },
-                    },
                     {
                         "id": "d30502d2-e8de-11e3-8c3e-0008ca8657ec",
                         "self": {"href": "https://ogv2ws.apiary-mock.com/disruptions/d30502d2-e8de-11e3-8c3e-0008ca8657ec"},
