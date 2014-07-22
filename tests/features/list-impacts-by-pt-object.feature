@@ -28,7 +28,7 @@ Feature: list impacts by ptobject
             | network   | network:JDR:2          | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 6ffab232-3d48-4eea-aa2c-22f8680230b6       | 7ffab232-3d47-4eea-aa2c-22f8680230b2 |
             | stop_area | stop_area:JDR:SA:CHVIN | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 7ffab232-3d48-4eea-aa2c-22f8680230b6       | 7ffab232-3d47-4eea-aa2c-22f8680230b2 |
 
-        When I get "/impacts?ptobject[]=network"
+        When I get "/impacts?pt_object_type=network"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
         And the field "objects" should have a size of 2
@@ -63,7 +63,7 @@ Feature: list impacts by ptobject
             | network   | network:JDR:2          | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 6ffab232-3d48-4eea-aa2c-22f8680230b6       | 7ffab232-3d47-4eea-aa2c-22f8680230b2 |
             | stop_area | stop_area:JDR:SA:CHVIN | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 7ffab232-3d48-4eea-aa2c-22f8680230b6       | 7ffab232-3d47-4eea-aa2c-22f8680230b2 |
 
-        When I get "/impacts?ptobject[]=stop_area"
+        When I get "/impacts?pt_object_type=stop_area"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
         And the field "objects" should have a size of 1

@@ -36,16 +36,19 @@ from sqlalchemy.dialects.postgresql import UUID
 from datetime import datetime
 from formats import publication_status_values
 from sqlalchemy import or_, and_
-from sqlalchemy.orm import backref, aliased
+from sqlalchemy.orm import aliased
 
 
 #force the server to use UTC time for each connection
 import sqlalchemy
+
+
 def set_utc_on_connect(dbapi_con, con_record):
     c = dbapi_con.cursor()
     c.execute("SET timezone='utc'")
     c.close()
 sqlalchemy.event.listen(sqlalchemy.pool.Pool, 'connect', set_utc_on_connect)
+
 
 class TimestampMixin(object):
     created_at = db.Column(db.DateTime(), default=datetime.utcnow, nullable=False)
@@ -55,6 +58,7 @@ DisruptionStatus = db.Enum('published', 'archived', name='disruption_status')
 SeverityEffect = db.Enum('blocking', name='severity_effect')
 ImpactStatus = db.Enum('published', 'archived', name='impact_status')
 PtObjectType = db.Enum('network', 'stop_area', name='pt_object_type')
+
 
 class Severity(TimestampMixin, db.Model):
     """
@@ -81,6 +85,7 @@ class Severity(TimestampMixin, db.Model):
     def get(cls, id):
         return cls.query.filter_by(id=id, is_visible=True).first_or_404()
 
+
 class Cause(TimestampMixin, db.Model):
     """
     represent the cause of a disruption
@@ -102,6 +107,7 @@ class Cause(TimestampMixin, db.Model):
     @classmethod
     def get(cls, id):
         return cls.query.filter_by(id=id, is_visible=True).first_or_404()
+
 
 class Disruption(TimestampMixin, db.Model):
     id = db.Column(UUID, primary_key=True)
@@ -162,6 +168,7 @@ class Disruption(TimestampMixin, db.Model):
         # Coming
         if self.start_publication_date > current_time:
             return "coming"
+
 
 class Impact(TimestampMixin, db.Model):
     id = db.Column(UUID, primary_key=True)
@@ -239,18 +246,18 @@ class Impact(TimestampMixin, db.Model):
     @classmethod
     @paginate()
     def all(cls, disruption_id):
-        adalias = aliased(Severity)
+        alias = aliased(Severity)
         query = cls.query.filter_by(status='published')
         query = query.filter(and_(cls.disruption_id == disruption_id))
-        return query.join(adalias, Impact.severity).order_by(adalias.priority)
-
+        return query.join(alias, Impact.severity).order_by(alias.priority)
 
     @classmethod
     def all_with_filter(cls, ptobject_type):
         query = cls.query.filter_by(status='published')
-        query = query.join('pt_object')
+        query = query.join(PTobject)
         query = query.filter(and_(PTobject.type == ptobject_type))
         return query.all()
+
 
 class PTobject(TimestampMixin, db.Model):
     __tablename__ = 'pt_object'
@@ -258,7 +265,6 @@ class PTobject(TimestampMixin, db.Model):
     type = db.Column(PtObjectType, nullable=False, default='network', index=True)
     uri =  db.Column(db.Text, primary_key=True)
     impact_id = db.Column(UUID, db.ForeignKey(Impact.id))
-    impacts = db.relationship('Impact', backref='pt_object', lazy='select')
 
     def __repr__(self):
         return '<PTobject %r>' % self.id
@@ -272,6 +278,7 @@ class PTobject(TimestampMixin, db.Model):
     @classmethod
     def get(cls, id):
         return cls.query.filter_by(id=id).first_or_404()
+
 
 class ApplicationPeriods(TimestampMixin, db.Model):
     """
@@ -288,6 +295,7 @@ class ApplicationPeriods(TimestampMixin, db.Model):
 
     def __repr__(self):
         return '<ApplicationPeriods %r>' % self.id
+
 
 class Channel(TimestampMixin, db.Model):
     """

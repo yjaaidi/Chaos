@@ -139,39 +139,32 @@ class Request(flask.Request):
         self.id = str(uuid.uuid4())
 
 
-class ImpactsByPtObject:
+def group_impacts_by_pt_object(impacts, object_type):
     """
-    Journey comparator for sort
-
-    the comparison is different if the query is for clockwise search or not
-
-    NOTE: We ALWAYS want the best journeys to be first on the journey list
-    since end user wanting only 1 journey will take the first one
+    :param impacts: list of impacts
+    :param object_type: PTObject type example stop_area
+    :return: list of implacts group by PTObject
     """
-    def __init__(self, impacts, object_type):
-        self.navitia = Navitia(current_app.config['NAVITIA_URL'],
-                               current_app.config['NAVITIA_COVERAGE'],
-                               current_app.config['NAVITIA_TOKEN'])
-        self.object_type = object_type
-        self.impacts = impacts
-
-    def __call__(self):
-        dictionnaire = dict()
-        for impact in self.impacts:
-            for ptobject in impact.objects:
-                if ptobject.type == self.object_type:
-                    if ptobject.uri in dictionnaire:
-                        resp = dictionnaire[ptobject.uri]
+    navitia = Navitia(current_app.config['NAVITIA_URL'],
+                           current_app.config['NAVITIA_COVERAGE'],
+                           current_app.config['NAVITIA_TOKEN'])
+    dictionnaire = dict()
+    for impact in impacts:
+        for ptobject in impact.objects:
+            if ptobject.type == object_type:
+                if ptobject.uri in dictionnaire:
+                    resp = dictionnaire[ptobject.uri]
+                else:
+                    nav_pt_object = navitia.get_pt_object(ptobject.uri, ptobject.type)
+                    if nav_pt_object and 'name' in nav_pt_object:
+                        name = nav_pt_object['name']
                     else:
-                        nav_pt_object = self.navitia.get_pt_object(ptobject.uri, ptobject.type)
                         name = None
-                        if nav_pt_object and 'name' in nav_pt_object:
-                            name = nav_pt_object['name']
-                        resp = {'id': ptobject.uri,
-                                'type': ptobject.type,
-                                'name': name,
-                                'impacts': []
-                        }
-                        dictionnaire[ptobject.uri] = resp
-                    resp['impacts'].append(impact)
-        return dictionnaire.values()
+                    resp = {'id': ptobject.uri,
+                            'type': ptobject.type,
+                            'name': name,
+                            'impacts': []
+                    }
+                    dictionnaire[ptobject.uri] = resp
+                resp['impacts'].append(impact)
+    return dictionnaire.values()

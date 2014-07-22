@@ -322,20 +322,19 @@ class ImpactsByObject(flask_restful.Resource):
         self.parsers = {}
         self.parsers["get"] = reqparse.RequestParser()
         parser_get = self.parsers["get"]
-        parser_get.add_argument("ptobject[]", type=option_value(ptobject_values), action="append")
+        parser_get.add_argument("pt_object_type", type=option_value(ptobject_values))
 
     def get(self):
         args = self.parsers['get'].parse_args()
-        ptobjects = args['ptobject[]']
+        pt_object_type = args['pt_object_type']
 
-        if len(ptobjects) != 1:
+        if not pt_object_type:
                 return marshal({'error': {'message': "object type invalid"}},
                                error_fields), 400
 
-        object_tyep = ptobjects[0]
-        impacts = models.Impact.all_with_filter(object_tyep)
-        result = utils.ImpactsByPtObject(impacts, object_tyep)
-        return marshal({'objects': result()}, impacts_by_object_fields)
+        impacts = models.Impact.all_with_filter(pt_object_type)
+        result = utils.group_impacts_by_pt_object(impacts, pt_object_type)
+        return marshal({'objects': result}, impacts_by_object_fields)
 
 
 class Impacts(flask_restful.Resource):
