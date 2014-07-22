@@ -36,7 +36,7 @@ from sqlalchemy.dialects.postgresql import UUID
 from datetime import datetime
 from formats import publication_status_values
 from sqlalchemy import or_, and_
-from sqlalchemy.orm import backref
+from sqlalchemy.orm import backref, aliased
 
 
 #force the server to use UTC time for each connection
@@ -239,9 +239,11 @@ class Impact(TimestampMixin, db.Model):
     @classmethod
     @paginate()
     def all(cls, disruption_id):
+        adalias = aliased(Severity)
         query = cls.query.filter_by(status='published')
         query = query.filter(and_(cls.disruption_id == disruption_id))
-        return query.join('severity').order_by('severity.priority asc')
+        return query.join(adalias, Impact.severity).order_by(adalias.priority)
+
 
     @classmethod
     def all_with_filter(cls, ptobject_type):
