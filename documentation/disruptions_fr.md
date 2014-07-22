@@ -75,6 +75,10 @@ L'attribut ```publication_status``` des disruptions correspond à l'énumératio
 
 Le champs ```impacts``` contient un objet de pagination contenant les liens vers la liste des impacts.
 
+Le champs ```cause``` contient un objet cause de la perturbation.
+
+Le champs ```localization``` contient un objet localisation de la perturbation.
+
 ##Example
 - response 200 (application/json)
 
@@ -230,6 +234,8 @@ Les champs suivant peuvent etre défini:
   - reference (obligatoire)
   - note
   - publication_period
+  - localization
+  - cause (obligatoire)
 
 Lors d'un succés une réponse 201 est retourné, celle ci contient la perturbation créée.
 
@@ -430,6 +436,8 @@ Les champs suivant peuvent etre mis à jour:
   - reference
   - note
   - publication_period
+  - localization
+  - cause
 
 Si un champs n'est pas présent dans le json la valeur est considéré null.
 
@@ -798,6 +806,12 @@ Création d'un nouvel impact.
 La création d'un impact est réalisé via une requéte ```POST``` à sur la resource ```impacts```.
 Le content-type de la requete doit etre json et le corps de celle ci doit contenir un json correspondant au format d'un impact.
 
+Les champs suivant peuvent etre défini:
+
+  - severity (obligatoire)
+  - application_periods
+  - objects
+  - messages
 
 Lors d'un succés une réponse 201 est retourné, celle ci contient l'impact créé.
 ###Exemple
