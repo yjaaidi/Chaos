@@ -535,6 +535,8 @@ Return all impacts by ptobject.
 | Name                 | description                                                                    | required | default                     |
 | -------------------- | ------------------------------------------------------------------------------ | -------- | --------------------------- |
 | pt_object_type       | filter by ptobject, possible value are: network, stoparea                      | true     | network                     |
+| start_date           | filtre by application period :star date                                        | false    | Now():00:00:00Z             |
+| end_date             | filtre by application period :end date                                         | false    | Now():23:59:59Z             |
 
 - response 200 (application/json)
     * Body
