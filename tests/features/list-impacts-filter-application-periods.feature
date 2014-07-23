@@ -374,9 +374,9 @@ Feature: list impacts by application periods
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
         And the field "objects" should have a size of 2
-        And the field "objects.0.id" should be "network:JDR:2"
+        And the field "objects.0.id" should be "network:JDR:1"
         And the field "objects.0.impacts" should have a size of 1
-        And the field "objects.1.id" should be "network:JDR:1"
+        And the field "objects.1.id" should be "network:JDR:2"
         And the field "objects.1.impacts" should have a size of 1
 
 
@@ -431,9 +431,9 @@ Feature: list impacts by application periods
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
         And the field "objects" should have a size of 2
-        And the field "objects.0.id" should be "network:JDR:2"
+        And the field "objects.0.id" should be "network:JDR:1"
         And the field "objects.0.impacts" should have a size of 1
-        And the field "objects.1.id" should be "network:JDR:1"
+        And the field "objects.1.id" should be "network:JDR:2"
         And the field "objects.1.impacts" should have a size of 1
 
 #
