@@ -430,23 +430,19 @@ Feature: list impacts by application periods
 
 
 #
-#  network:JDR:1|         01-01-2014
-#               |             +--------------------------------------------------------------------------------------------------------------..........
+#               |                                                                20-01-2014                  30-01-2014
+#               |                                                                    +---------------------------+
+#  network:JDR:1|         01-01-2014              07-01-2014                                                                                      20-02-2014                  15-03-2014
+#               |             +-----------------------+                                                                                               +----------------------------+
+#               |                   04-01-2014              09-01-2014                                                                                      23-02-2014                  18-03-2014
+#               |                   +-----------------------+                                                                                               +----------------------------+
 #               |
 #
-#
-#               |                                        10-01-2014        19-01-2014                               01-02-2014        18-02-2014
-#               |                                            +-----------------+                                        +-----------------+
-#  network:JDR:2|
-#               |
-#
-#
-#
-#                                   TEST9
-#           +-----------------------------------------------------------+
+#                                                                  TEST10
+#                   +---------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 #
 
-    Scenario: TEST9
+    Scenario: TEST10
         Given I have the following disruptions in my database:
             | reference | note  | created_at          | updated_at          | status    | id                                   |
             | foo       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |
@@ -459,20 +455,29 @@ Feature: list impacts by application periods
             | created_at          | updated_at          | status    | id                                   | disruption_id                        |severity_id                          |
             | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | published | 7ffab232-3d47-4eea-aa2c-22f8680230b6 | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |7ffab232-3d48-4eea-aa2c-22f8680230b6 |
             | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | published | 7ffab232-3d47-4eea-aa2c-22f8680230b2 | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |7ffab232-3d48-4eea-aa2c-22f8680230b6 |
+            | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | published | 7ffab232-3d47-4eea-aa2c-22f8680230b3 | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |7ffab232-3d48-4eea-aa2c-22f8680230b6 |
 
 
         Given I have the following applicationperiods in my database:
             | created_at          | updated_at          |id                                   | impact_id                            |start_date                           |end_date            |
-            | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab232-3d47-4eea-aa2c-22f8680230b1 | 7ffab232-3d47-4eea-aa2c-22f8680230b6 |2014-01-01 16:52:00                  |None                |
-            | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab234-3d49-4eea-aa2c-22f8680230b4 | 7ffab232-3d47-4eea-aa2c-22f8680230b2 |2014-01-10 16:52:00                  |2014-01-19 16:52:00 |
-            | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab234-3d49-4eec-aa2c-22f8680230b5 | 7ffab232-3d47-4eea-aa2c-22f8680230b2 |2014-02-01 16:52:00                  |2014-02-18 16:52:00 |
+            | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab232-3d47-4eea-aa2c-22f8680230b1 | 7ffab232-3d47-4eea-aa2c-22f8680230b6 |2014-01-20 16:52:00                  |2014-01-30 16:52:00 |
+            | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab234-3d49-4eea-aa2c-22f8680230b2 | 7ffab232-3d47-4eea-aa2c-22f8680230b2 |2014-01-01 16:52:00                  |2014-01-07 16:52:00 |
+            | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab234-3d49-4eec-aa2c-22f8680230b3 | 7ffab232-3d47-4eea-aa2c-22f8680230b2 |2014-02-20 16:52:00                  |2014-03-15 16:52:00 |
+            | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab234-3d49-4eea-aa2c-22f8680230b4 | 7ffab232-3d47-4eea-aa2c-22f8680230b3 |2014-01-04 16:52:00                  |2014-01-09 16:52:00 |
+            | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab234-3d49-4eec-aa2c-22f8680230b5 | 7ffab232-3d47-4eea-aa2c-22f8680230b3 |2014-02-23 16:52:00                  |2014-03-18 16:52:00 |
 
         Given I have the following ptobject in my database:
             | type      | uri                    | created_at          | updated_at          | id                                         | impact_id                            |
             | network   | network:JDR:1          | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b6       | 7ffab232-3d47-4eea-aa2c-22f8680230b6 |
-            | network   | network:JDR:2          | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 2ffab232-3d48-4eea-aa2c-22f8680230b6       | 7ffab232-3d47-4eea-aa2c-22f8680230b2 |
+            | network   | network:JDR:1          | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b2       | 7ffab232-3d47-4eea-aa2c-22f8680230b2 |
+            | network   | network:JDR:1          | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b3       | 7ffab232-3d47-4eea-aa2c-22f8680230b3 |
 
-        When I get "/impacts?pt_object_type=network&start_date=2013-12-02T23:52:12Z&end_date=2013-01-12T23:52:12Z"
+        When I get "/impacts?pt_object_type=network&start_date=2013-12-02T23:52:12Z&end_date=2014-05-21T23:52:12Z"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
-        And the field "objects" should have a size of 2
+        And the field "objects" should have a size of 1
+        And the field "objects.0.id" should be "network:JDR:1"
+        And the field "objects.0.impacts" should have a size of 3
+        And the field "objects.0.impacts.0.id" should be "7ffab232-3d47-4eea-aa2c-22f8680230b2"
+        And the field "objects.0.impacts.1.id" should be "7ffab232-3d47-4eea-aa2c-22f8680230b3"
+        And the field "objects.0.impacts.2.id" should be "7ffab232-3d47-4eea-aa2c-22f8680230b6"
