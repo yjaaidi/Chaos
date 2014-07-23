@@ -319,15 +319,19 @@ class Cause(flask_restful.Resource):
 
 class ImpactsByObject(flask_restful.Resource):
     def __init__(self):
+        current = utils.get_current_time()
+        default_start_date= current.replace(hour=0, minute=0, second=0)
+        default_end_date= current.replace(hour=23, minute=59, second=59)
         self.parsers = {}
         self.parsers["get"] = reqparse.RequestParser()
         parser_get = self.parsers["get"]
         parser_get.add_argument("pt_object_type", type=option_value(ptobject_values), default='network')
-        parser_get.add_argument("start_date", type=utils.get_datetime)
-        parser_get.add_argument("end_date", type=utils.get_datetime)
+        parser_get.add_argument("start_date", type=utils.get_datetime, default=default_start_date)
+        parser_get.add_argument("end_date", type=utils.get_datetime, default=default_end_date)
         self.navitia = Navitia(current_app.config['NAVITIA_URL'],
                            current_app.config['NAVITIA_COVERAGE'],
                            current_app.config['NAVITIA_TOKEN'])
+
 
     def get(self):
         args = self.parsers['get'].parse_args()
