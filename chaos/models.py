@@ -253,8 +253,6 @@ class Impact(TimestampMixin, db.Model):
 
     @classmethod
     def all_with_filter(cls, start_date, end_date, ptobject_type):
-        if not ApplicationPeriods.end_date:
-            ApplicationPeriods.end_date = utils.get_current_time() + timedelta(year=10)
         query = cls.query.filter_by(status='published')
         query = query.join(PTobject)
         query = query.filter(and_(PTobject.type == ptobject_type))
