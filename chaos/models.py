@@ -257,8 +257,14 @@ class Impact(TimestampMixin, db.Model):
         query = query.join(PTobject)
         query = query.filter(and_(PTobject.type == ptobject_type))
         query = query.join(ApplicationPeriods)
-        query = query.filter(and_(not_(or_(ApplicationPeriods.start_date > end_date,
-                                      ApplicationPeriods.end_date < start_date))))
+        query = query.filter(and_(
+                                 or_(not_(
+                                            or_(ApplicationPeriods.start_date > end_date,
+                                                ApplicationPeriods.end_date < start_date
+                                            )
+                                    )
+                                 ,and_(ApplicationPeriods.start_date <= end_date,
+                                 ApplicationPeriods.end_date == None))))
         query = query.order_by(ApplicationPeriods.start_date)
         return query.all()
 
