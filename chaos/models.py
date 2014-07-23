@@ -35,7 +35,7 @@ from utils import paginate, get_current_time
 from sqlalchemy.dialects.postgresql import UUID
 from datetime import datetime
 from formats import publication_status_values
-from sqlalchemy import or_, and_
+from sqlalchemy import or_, and_, not_
 from sqlalchemy.orm import aliased
 
 
@@ -252,10 +252,13 @@ class Impact(TimestampMixin, db.Model):
         return query.join(alias, Impact.severity).order_by(alias.priority)
 
     @classmethod
-    def all_with_filter(cls, ptobject_type):
+    def all_with_filter(cls, start_date, end_date, ptobject_type):
         query = cls.query.filter_by(status='published')
         query = query.join(PTobject)
         query = query.filter(and_(PTobject.type == ptobject_type))
+        query = query.join(ApplicationPeriods)
+        query = query.filter(and_(not_(or_(ApplicationPeriods.start_date > end_date,
+                                      ApplicationPeriods.end_date < start_date))))
         return query.all()
 
 
