@@ -143,9 +143,9 @@ def group_impacts_by_pt_object(impacts, object_type, navitia):
     """
     :param impacts: list of impacts
     :param object_type: PTObject type example stop_area
-    :return: list of implacts group by PTObject
+    :return: list of implacts group by PTObject sorted by name
     """
-    dictionnaire = dict()
+    dictionnaire = {}
     for impact in impacts:
         for ptobject in impact.objects:
             if ptobject.type == object_type:
@@ -164,4 +164,7 @@ def group_impacts_by_pt_object(impacts, object_type, navitia):
                     }
                     dictionnaire[ptobject.uri] = resp
                 resp['impacts'].append(impact)
-    return dictionnaire.values()
+    result = dictionnaire.values()
+    result.sort(key=lambda x: x['name'])
+    return result
+
