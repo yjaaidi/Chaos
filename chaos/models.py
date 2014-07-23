@@ -33,7 +33,7 @@ import uuid
 from chaos import db, utils
 from utils import paginate, get_current_time
 from sqlalchemy.dialects.postgresql import UUID
-from datetime import datetime
+from datetime import datetime, timedelta
 from formats import publication_status_values
 from sqlalchemy import or_, and_, not_
 from sqlalchemy.orm import aliased
@@ -253,6 +253,8 @@ class Impact(TimestampMixin, db.Model):
 
     @classmethod
     def all_with_filter(cls, start_date, end_date, ptobject_type):
+        if not ApplicationPeriods.end_date:
+            ApplicationPeriods.end_date = utils.get_current_time() + timedelta(year=10)
         query = cls.query.filter_by(status='published')
         query = query.join(PTobject)
         query = query.filter(and_(PTobject.type == ptobject_type))
