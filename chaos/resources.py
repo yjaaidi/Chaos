@@ -319,9 +319,9 @@ class Cause(flask_restful.Resource):
 
 class ImpactsByObject(flask_restful.Resource):
     def __init__(self):
-        current = utils.get_current_time()
-        default_start_date= current.replace(hour=0, minute=0, second=0)
-        default_end_date= current.replace(hour=23, minute=59, second=59)
+        current_datetime = utils.get_current_time()
+        default_start_date= current_datetime.replace(hour=0, minute=0, second=0)
+        default_end_date= current_datetime.replace(hour=23, minute=59, second=59)
         self.parsers = {}
         self.parsers["get"] = reqparse.RequestParser()
         parser_get = self.parsers["get"]
