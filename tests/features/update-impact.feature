@@ -20,7 +20,7 @@ Feature: Update (put) impacts in a Disruption
             | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | published | 7ffab234-3d49-4eea-aa2c-22f8680230b6 | 6a826e64-028f-11e4-92d0-090027079ff3 |7ffab232-3d48-4eea-aa2c-22f8680230b6 |
 
         Given I have the following ptobject in my database:
-            | created_at          | updated_at          | type    | id                                   | uri  | impact_id                           |
+            | created_at          | updated_at          | type    | id                                   | uri           | impact_id                           |
             | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | network | 7ffab231-3d48-4eea-aa2c-22f8680230b6 | network:JDR:1 |7ffab232-3d47-4eea-aa2c-22f8680230b6 |
             | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | network | 7ffab232-3d48-4eea-aa2c-22f8680230b6 | network:JDR:2 |7ffab232-3d47-4eea-aa2c-22f8680230b6 |
 
@@ -28,9 +28,9 @@ Feature: Update (put) impacts in a Disruption
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
         And the field "impacts" should have a size of 2
-        And the field "impacts.1.objects.1.id" should be "network:JDR:1"
-        And the field "impacts.1.objects.0.id" should be "network:JDR:2"
-        And the field "impacts.0.application_periods" should have a size of 0
+        And the field "impacts.0.objects.0.id" should be "network:JDR:1"
+        And the field "impacts.0.objects.1.id" should be "network:JDR:2"
+        And the field "impacts.1.application_periods" should have a size of 0
 
         When I put to "/disruptions/6a826e64-028f-11e4-92d0-090027079ff3/impacts/7ffab232-3d47-4eea-aa2c-22f8680230b6" with:
         """

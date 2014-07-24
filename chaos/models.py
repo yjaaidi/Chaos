@@ -132,6 +132,8 @@ class Disruption(TimestampMixin, db.Model):
         archive the disruption, it will not be visible on any media
         """
         self.status = 'archived'
+        for impact in self.impacts:
+            impact.archive()
 
     @classmethod
     def get(cls, id):
