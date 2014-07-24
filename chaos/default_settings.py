@@ -6,7 +6,7 @@ SQLALCHEMY_DATABASE_URI = 'postgresql://navitia:navitia@localhost/chaos'
 DEBUG = True
 
 NAVITIA_URL = 'http://navitia2-ws.ctp.dev.canaltp.fr'
-NAVITIA_COVERAGE = 'centre'
+NAVITIA_COVERAGE = 'fr-cen'
 NAVITIA_TOKEN = 'f8a9befb-6bd9-4620-b942-b6b69a07487d'
 
 #Log Level available
@@ -16,19 +16,28 @@ NAVITIA_TOKEN = 'f8a9befb-6bd9-4620-b942-b6b69a07487d'
 # - ERROR
 
 # logger configuration
+
+from chaos.logging_utils import ChaosFilter
+
 LOGGER = {
     'version': 1,
     'disable_existing_loggers': True,
     'formatters':{
         'default': {
-            'format': '[%(asctime)s] [%(levelname)5s] [%(process)5s] [%(name)25s] %(message)s',
+            'format': '[%(asctime)s] [%(request_id)s] [%(levelname)5s] [%(process)5s] [%(name)25s] %(message)s',
         },
+    },
+    'filters': {
+        'ChaosFilter': {
+            '()': ChaosFilter,
+        }
     },
     'handlers': {
         'default': {
             'level': 'DEBUG',
             'class': 'logging.StreamHandler',
             'formatter': 'default',
+            'filters': ['ChaosFilter'],
         },
     },
     'loggers': {

@@ -27,28 +27,9 @@
 # https://groups.google.com/d/forum/navitia
 # www.navitia.io
 
-VERSION = '0.2.0'
 
-from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-import logging.config
-from chaos.utils import Request
+class ObjectTypeUnknown(Exception):
 
-app = Flask(__name__)
-app.config.from_object('chaos.default_settings')
-app.config.from_envvar('CHAOS_CONFIG_FILE')
-app.request_class = Request
-
-
-if 'LOGGER' in app.config:
-    logging.config.dictConfig(app.config['LOGGER'])
-else:  # Default is std out
-    handler = logging.StreamHandler(stream=sys.stdout)
-    app.logger.addHandler(handler)
-    app.logger.setLevel('INFO')
-
-
-db = SQLAlchemy(app)
-
-
-import chaos.api
+    def __init__(self, object_type):
+        self.message = 'object type {object_type} unknown'.\
+            format(object_type=object_type)

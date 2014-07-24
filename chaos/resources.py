@@ -35,7 +35,7 @@ from jsonschema import validate, ValidationError
 from flask.ext.restful import abort
 from fields import *
 from formats import *
-from formats import impact_input_format, channel_input_format
+from formats import impact_input_format, channel_input_format, pt_object_type_values
 from chaos import mapper
 from chaos import utils
 import chaos
@@ -47,25 +47,36 @@ from utils import make_pager, option_value
 __all__ = ['Disruptions', 'Index', 'Severity', 'Cause']
 
 
-disruption_mapping = {'reference': None,
-        'note': None,
-        'publication_period': {
-            'begin': mapper.Datetime(attribute='start_publication_date'),
-            'end': mapper.Datetime(attribute='end_publication_date')
-            }
-        }
-
-severity_mapping = {'wording': None,
-                    'color': None,
-                    'priority': None,
-                    'effect': None,
+disruption_mapping = {
+    'reference': None,
+    'note': None,
+    'publication_period': {
+        'begin': mapper.Datetime(attribute='start_publication_date'),
+        'end': mapper.Datetime(attribute='end_publication_date')
+    },
+    'cause': {'id': mapper.AliasText(attribute='cause_id')},
+    'localization': [{"id": mapper.AliasText(attribute='localization_id')}]
 }
 
-cause_mapping = {'wording': None,}
+severity_mapping = {
+    'wording': None,
+    'color': None,
+    'priority': None,
+    'effect': None,
+}
+
+cause_mapping = {
+    'wording': None
+}
 
 object_mapping = {
     "id": mapper.AliasText(attribute='uri'),
     "type": None
+}
+
+message_mapping = {
+    "text": None,
+    'channel': {'id': mapper.AliasText(attribute='channel_id')}
 }
 
 application_period_mapping = {
@@ -73,10 +84,12 @@ application_period_mapping = {
     'end': mapper.Datetime(attribute='end_date')
 }
 
-channel_mapping = {'name': None,
-                    'max_size': None,
-                    'content_type': None
+channel_mapping = {
+    'name': None,
+    'max_size': None,
+    'content_type': None
 }
+
 
 class Index(flask_restful.Resource):
 
@@ -88,8 +101,10 @@ class Index(flask_restful.Resource):
             "severities": {"href": url_for('severity', _external=True)},
             "causes": {"href": url_for('cause', _external=True)},
             "channels": {"href": url_for('channel', _external=True)},
+            "impactsbyobject": {"href": url_for('impactsbyobject', _external=True)}
         }
         return response, 200
+
 
 class Severity(flask_restful.Resource):
 
@@ -153,16 +168,20 @@ class Severity(flask_restful.Resource):
 
 class Disruptions(flask_restful.Resource):
     def __init__(self):
+        self.navitia = Navitia(current_app.config['NAVITIA_URL'],
+                               current_app.config['NAVITIA_COVERAGE'],
+                               current_app.config['NAVITIA_TOKEN'])
         self.parsers = {}
         self.parsers["get"] = reqparse.RequestParser()
         parser_get = self.parsers["get"]
 
         parser_get.add_argument("start_page", type=int, default=1)
         parser_get.add_argument("items_per_page", type=int, default=20)
-        parser_get.add_argument("publication_status[]", type=option_value(publication_status_values), action="append", default=publication_status_values)
+        parser_get.add_argument("publication_status[]",
+                                type=option_value(publication_status_values),
+                                action="append",
+                                default=publication_status_values)
         parser_get.add_argument("current_time", type=utils.get_datetime)
-
-
 
     def get(self, id=None):
         if id:
@@ -181,7 +200,9 @@ class Disruptions(flask_restful.Resource):
                 abort(400, message="items_per_page argument value is not valid")
             publication_status = args['publication_status[]']
             g.current_time = args['current_time']
-            result = models.Disruption.all_with_filter(page_index=page_index, items_per_page=items_per_page, publication_status=publication_status)
+            result = models.Disruption.all_with_filter(page_index=page_index,
+                                                       items_per_page=items_per_page,
+                                                       publication_status=publication_status)
             response = {'disruptions': result.items, 'meta': make_pager(result, 'disruption')}
             return marshal(response, disruptions_fields)
 
@@ -194,15 +215,19 @@ class Disruptions(flask_restful.Resource):
             logging.debug(str(e))
             #TODO: generate good error messages
             return marshal({'error': {'message': str(e).replace("\n", " ")}},
-                           error_fields), \
-                    400
+                           error_fields), 400
 
         disruption = models.Disruption()
         mapper.fill_from_json(disruption, json, disruption_mapping)
+
+        #Add localization present in Json
+        if 'localization' in json and json['localization']:
+            if not self.navitia.get_pt_object(disruption.localization_id, json['localization'][0]["type"]):
+                        return marshal({'error': {'message': 'ptobject {} doesn\'t exist'.format(disruption.localization_id)}},
+                            error_fields), 404
         db.session.add(disruption)
         db.session.commit()
         return marshal({'disruption': disruption}, one_disruption_fields), 201
-
 
     def put(self, id):
         if not id_format.match(id):
@@ -218,10 +243,16 @@ class Disruptions(flask_restful.Resource):
             logging.getLogger(__name__).debug(str(e))
             #TODO: generate good error messages
             return marshal({'error': {'message': str(e).replace("\n", " ")}},
-                           error_fields), \
-                    400
+                           error_fields), 400
 
         mapper.fill_from_json(disruption, json, disruption_mapping)
+
+        #Add localization present in Json
+        if 'localization' in json and json['localization']:
+            if not self.navitia.get_pt_object(disruption.localization_id, json['localization'][0]["type"]):
+                    return marshal({'error': {'message': 'ptobject {} doesn\'t exist'.format(disruption.localization_id)}},
+                            error_fields), 404
+
         db.session.commit()
         return marshal({'disruption': disruption}, one_disruption_fields), 200
 
@@ -233,6 +264,7 @@ class Disruptions(flask_restful.Resource):
         disruption.archive()
         db.session.commit()
         return None, 204
+
 
 class Cause(flask_restful.Resource):
 
@@ -293,11 +325,48 @@ class Cause(flask_restful.Resource):
         db.session.commit()
         return None, 204
 
+
+class ImpactsByObject(flask_restful.Resource):
+    def __init__(self):
+        current_datetime = utils.get_current_time()
+        default_start_date = current_datetime.replace(hour=0, minute=0, second=0)
+        default_end_date = current_datetime.replace(hour=23, minute=59, second=59)
+        self.parsers = {}
+        self.parsers["get"] = reqparse.RequestParser()
+        parser_get = self.parsers["get"]
+        parser_get.add_argument("pt_object_type", type=option_value(pt_object_type_values), default='network')
+        parser_get.add_argument("start_date", type=utils.get_datetime, default=default_start_date)
+        parser_get.add_argument("end_date", type=utils.get_datetime, default=default_end_date)
+        self.navitia = Navitia(current_app.config['NAVITIA_URL'],
+                               current_app.config['NAVITIA_COVERAGE'],
+                               current_app.config['NAVITIA_TOKEN'])
+
+    def get(self):
+        args = self.parsers['get'].parse_args()
+        pt_object_type = args['pt_object_type']
+        start_date = args['start_date']
+        end_date = args['end_date']
+
+        if not pt_object_type:
+                return marshal({'error': {'message': "object type invalid"}},
+                               error_fields), 400
+
+        impacts = models.Impact.all_with_filter(start_date, end_date, pt_object_type)
+        result = utils.group_impacts_by_pt_object(impacts, pt_object_type, self.navitia.get_pt_object)
+        return marshal({'objects': result}, impacts_by_object_fields)
+
+
 class Impacts(flask_restful.Resource):
     def __init__(self):
         self.navitia = Navitia(current_app.config['NAVITIA_URL'],
                                current_app.config['NAVITIA_COVERAGE'],
                                current_app.config['NAVITIA_TOKEN'])
+        self.parsers = {}
+        self.parsers["get"] = reqparse.RequestParser()
+        parser_get = self.parsers["get"]
+
+        parser_get.add_argument("start_page", type=int, default=1)
+        parser_get.add_argument("items_per_page", type=int, default=20)
 
     def get(self, disruption_id, id=None):
         if id:
@@ -311,7 +380,18 @@ class Impacts(flask_restful.Resource):
             if not id_format.match(disruption_id):
                 return marshal({'error': {'message': "disruption_id invalid"}},
                            error_fields), 400
-            response = {'impacts' : models.Impact.all(disruption_id), 'meta': {}}
+            args = self.parsers['get'].parse_args()
+            page_index = args['start_page']
+            if page_index == 0:
+                abort(400, message="page_index argument value is not valid")
+            items_per_page = args['items_per_page']
+            if items_per_page == 0:
+                abort(400, message="items_per_page argument value is not valid")
+
+            result = models.Impact.all(page_index=page_index,
+                                       items_per_page=items_per_page,
+                                       disruption_id=disruption_id)
+            response = {'impacts': result.items, 'meta': make_pager(result, 'impact', disruption_id=disruption_id)}
             return marshal(response, impacts_fields)
 
     def post(self, disruption_id):
@@ -343,20 +423,26 @@ class Impacts(flask_restful.Resource):
                     object = models.PTobject()
                     object.impact_id = impact.id
                     mapper.fill_from_json(object, obj, object_mapping)
-                    if not self.navitia.get_network(obj['id']):
+                    if not self.navitia.get_pt_object(obj['id'], obj['type']):
                         return marshal({'error': {'message': 'network {} doesn\'t exist'.format(obj['id'])}},
-                                error_fields), 404
+                                       error_fields), 404
                     impact.insert_object(object)
             if 'application_periods' in json:
                 for app_period in json["application_periods"]:
                     application_period = models.ApplicationPeriods(impact.id)
                     mapper.fill_from_json(application_period, app_period, application_period_mapping)
                     impact.insert_app_period(application_period)
+            if 'messages' in json:
+                for mes in  json['messages']:
+                    message = models.Message()
+                    message.impact_id = impact.id
+                    mapper.fill_from_json(message, mes, message_mapping)
+                    impact.insert_message(message)
 
         db.session.commit()
         return marshal({'impact': impact}, one_impact_fields), 201
 
-    def put(self, id):
+    def put(self, disruption_id, id):
         if not id_format.match(id):
             return marshal({'error': {'message': "id invalid"}},
                            error_fields), 400
@@ -364,16 +450,16 @@ class Impacts(flask_restful.Resource):
         logging.getLogger(__name__).debug(json)
         impact = models.Impact.get(id)
 
-        #Add all objects present in Json
+        #Add all objects and all messages present in Json
         if json:
             if 'objects' in json:
                 for obj in  json['objects']:
                     object = models.PTobject()
                     object.impact_id = impact.id
                     mapper.fill_from_json(object, obj, object_mapping)
-                    if not self.navitia.get_network(obj['id']):
+                    if not self.navitia.get_pt_object(obj['id'], obj['type']):
                         return marshal({'error': {'message': 'network {} doesn\'t exist'.format(obj['id'])}},
-                                error_fields), 404
+                                       error_fields), 404
                     impact.insert_object(object)
             if 'application_periods' in json:
                 for app_period in json["application_periods"]:
@@ -381,10 +467,29 @@ class Impacts(flask_restful.Resource):
                     mapper.fill_from_json(application_period, app_period, application_period_mapping)
                     impact.insert_app_period(application_period)
 
+            messages_db = dict((msg.channel_id, msg) for msg in impact.messages)
+            messages_json = dict()
+            if 'messages' in json:
+                messages_json = dict((msg["channel"]["id"], msg) for msg in json['messages'])
+                for message_json in json['messages']:
+                    if message_json["channel"]["id"] in messages_db:
+                        msg = messages_db[message_json["channel"]["id"]]
+                        mapper.fill_from_json(msg, message_json, message_mapping)
+                    else:
+                        message = models.Message()
+                        message.impact_id = impact.id
+                        mapper.fill_from_json(message, message_json, message_mapping)
+                        impact.insert_message(message)
+                        messages_db[message.channel_id] = message
+
+            difference = set(messages_db) - set(messages_json)
+            for diff in difference:
+                impact.delete_message(messages_db[diff])
+
         db.session.commit()
         return marshal({'impact': impact}, one_impact_fields), 200
 
-    def delete(self, id):
+    def delete(self, disruption_id, id):
         if not id_format.match(id):
                 return marshal({'error': {'message': "id invalid"}},
                                error_fields), 400
@@ -392,6 +497,7 @@ class Impacts(flask_restful.Resource):
         impact.archive()
         db.session.commit()
         return None, 204
+
 
 class Channel(flask_restful.Resource):
 
@@ -452,9 +558,9 @@ class Channel(flask_restful.Resource):
         db.session.commit()
         return None, 204
 
+
 class Status(flask_restful.Resource):
     def get(self):
         return {'version': chaos.VERSION,
                 'db_pool_status': db.engine.pool.status(),
                 'db_version': db.engine.scalar('select version_num from alembic_version;')}
-

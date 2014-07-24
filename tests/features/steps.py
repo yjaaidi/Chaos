@@ -2,7 +2,7 @@ from lettuce import *
 from nose.tools import *
 import json
 from chaos import db
-from chaos.models import Disruption, Severity, Cause, Impact, PTobject, Channel
+from chaos.models import Disruption, Severity, Cause, Impact, PTobject, Channel, Message, ApplicationPeriods
 import chaos
 
 model_classes = {'disruption': Disruption,
@@ -15,7 +15,9 @@ model_classes = {'disruption': Disruption,
                'impacts': Impact,
                'ptobject': PTobject,
                'channel': Channel,
-               'channels': Channel
+               'channels': Channel,
+               'messages': Message,
+               'applicationperiods':ApplicationPeriods
 }
 
 def pythonify(value):
@@ -59,6 +61,10 @@ def and_in_the_json_the_field_is_set_to(step, fields, value):
 @step(u'And the field "([^"]*)" should be null')
 def and_in_the_json_the_field_is_set_to(step, fields):
     eq_(find_field(world.response_json, fields), None)
+
+@step(u'And the field "([^"]*)" should be not null')
+def and_in_the_json_the_field_is_set_to(step, fields):
+    not eq_(find_field(world.response_json, fields), None)
 
 @step(u'and "([^"]*)" should be empty')
 def and_field_should_be_empty(step, fields):

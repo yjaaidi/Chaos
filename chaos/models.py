@@ -33,19 +33,22 @@ import uuid
 from chaos import db, utils
 from utils import paginate, get_current_time
 from sqlalchemy.dialects.postgresql import UUID
-from datetime import datetime
+from datetime import datetime, timedelta
 from formats import publication_status_values
-from sqlalchemy import or_, and_
-from sqlalchemy.orm import backref
+from sqlalchemy import or_, and_, not_
+from sqlalchemy.orm import aliased
 
 
 #force the server to use UTC time for each connection
 import sqlalchemy
+
+
 def set_utc_on_connect(dbapi_con, con_record):
     c = dbapi_con.cursor()
     c.execute("SET timezone='utc'")
     c.close()
 sqlalchemy.event.listen(sqlalchemy.pool.Pool, 'connect', set_utc_on_connect)
+
 
 class TimestampMixin(object):
     created_at = db.Column(db.DateTime(), default=datetime.utcnow, nullable=False)
@@ -54,6 +57,8 @@ class TimestampMixin(object):
 DisruptionStatus = db.Enum('published', 'archived', name='disruption_status')
 SeverityEffect = db.Enum('blocking', name='severity_effect')
 ImpactStatus = db.Enum('published', 'archived', name='impact_status')
+PtObjectType = db.Enum('network', 'stop_area', name='pt_object_type')
+
 
 class Severity(TimestampMixin, db.Model):
     """
@@ -80,62 +85,6 @@ class Severity(TimestampMixin, db.Model):
     def get(cls, id):
         return cls.query.filter_by(id=id, is_visible=True).first_or_404()
 
-class Disruption(TimestampMixin, db.Model):
-    id = db.Column(UUID, primary_key=True)
-    reference = db.Column(db.Text, unique=False, nullable=True)
-    note = db.Column(db.Text, unique=False, nullable=True)
-    status = db.Column(DisruptionStatus, nullable=False, default='published', index=True)
-    start_publication_date = db.Column(db.DateTime(), nullable=True)
-    end_publication_date = db.Column(db.DateTime(), nullable=True)
-    impacts = db.relationship('Impact', backref='disruption', lazy='dynamic')
-
-    def __repr__(self):
-        return '<Disruption %r>' % self.id
-
-    def __init__(self):
-        self.id = str(uuid.uuid1())
-
-    def archive(self):
-        """
-        archive the disruption, it will not be visible on any media
-        """
-        self.status = 'archived'
-
-    @classmethod
-    def get(cls, id):
-        return cls.query.filter_by(id=id, status='published').first_or_404()
-
-    @classmethod
-    @paginate()
-    def all_with_filter(cls, publication_status):
-        availlable_filters = {'past': and_(cls.end_publication_date != None, cls.end_publication_date < get_current_time()),
-                      'ongoing': and_(cls.start_publication_date <= get_current_time(),
-                                      or_(cls.end_publication_date == None, cls.end_publication_date >= get_current_time())),
-                      'coming': Disruption.start_publication_date > get_current_time()
-        }
-        query = cls.query.filter_by(status='published')
-        publication_status = set(publication_status)
-        if len(publication_status) == len(publication_status_values):
-            return query
-        else:
-            filters = [availlable_filters[status] for status in publication_status]
-            query = query.filter(or_(*filters))
-            return query
-
-    @property
-    def publication_status(self):
-
-        current_time = utils.get_current_time()
-        # Past
-        if self.end_publication_date < current_time:
-            return "past"
-        # ongoing
-        if self.start_publication_date <= current_time <= self.end_publication_date:
-            return "ongoing"
-        # Coming
-        if self.start_publication_date > current_time:
-            return "coming"
-
 
 class Cause(TimestampMixin, db.Model):
     """
@@ -159,14 +108,80 @@ class Cause(TimestampMixin, db.Model):
     def get(cls, id):
         return cls.query.filter_by(id=id, is_visible=True).first_or_404()
 
+
+class Disruption(TimestampMixin, db.Model):
+    id = db.Column(UUID, primary_key=True)
+    reference = db.Column(db.Text, unique=False, nullable=True)
+    note = db.Column(db.Text, unique=False, nullable=True)
+    status = db.Column(DisruptionStatus, nullable=False, default='published', index=True)
+    start_publication_date = db.Column(db.DateTime(), nullable=True)
+    end_publication_date = db.Column(db.DateTime(), nullable=True)
+    impacts = db.relationship('Impact', backref='disruption', lazy='dynamic')
+    localization_id = db.Column(db.Text, unique=False, nullable=True)
+    cause_id = db.Column(UUID, db.ForeignKey(Cause.id))
+    cause = db.relationship('Cause', backref='disruption', lazy='joined')
+
+    def __repr__(self):
+        return '<Disruption %r>' % self.id
+
+    def __init__(self):
+        self.id = str(uuid.uuid1())
+
+    def archive(self):
+        """
+        archive the disruption, it will not be visible on any media
+        """
+        self.status = 'archived'
+        for impact in self.impacts:
+            impact.archive()
+
+    @classmethod
+    def get(cls, id):
+        return cls.query.filter_by(id=id, status='published').first_or_404()
+
+    @classmethod
+    @paginate()
+    def all_with_filter(cls, publication_status):
+        availlable_filters = {
+            'past': and_(cls.end_publication_date != None, cls.end_publication_date < get_current_time()),
+            'ongoing': and_(cls.start_publication_date <= get_current_time(),
+                            or_(cls.end_publication_date == None, cls.end_publication_date >= get_current_time())),
+            'coming': Disruption.start_publication_date > get_current_time()
+        }
+        query = cls.query.filter_by(status='published')
+        publication_status = set(publication_status)
+        if len(publication_status) == len(publication_status_values):
+            return query
+        else:
+            filters = [availlable_filters[status] for status in publication_status]
+            query = query.filter(or_(*filters))
+            return query
+
+    @property
+    def publication_status(self):
+
+        current_time = utils.get_current_time()
+        # Past
+        if (self.end_publication_date != None) and (self.end_publication_date < current_time):
+            return "past"
+        # ongoing
+        if self.start_publication_date <= current_time\
+            and (self.end_publication_date == None or self.end_publication_date >= current_time):
+            return "ongoing"
+        # Coming
+        if self.start_publication_date > current_time:
+            return "coming"
+
+
 class Impact(TimestampMixin, db.Model):
     id = db.Column(UUID, primary_key=True)
     status = db.Column(ImpactStatus, nullable=False, default='published', index=True)
     disruption_id = db.Column(UUID, db.ForeignKey(Disruption.id))
     severity_id = db.Column(UUID, db.ForeignKey(Severity.id))
-    objects = db.relationship('PTobject', backref='impact', lazy='select')
-    application_periods = db.relationship('ApplicationPeriods', backref='impact', lazy='select')
-    severity = db.relationship('Severity', backref='impacts', lazy='select')
+    objects = db.relationship('PTobject', backref='impact', lazy='joined')
+    messages = db.relationship('Message', backref='impact', lazy='joined')
+    application_periods = db.relationship('ApplicationPeriods', backref='impact', lazy='joined')
+    severity = db.relationship('Severity', backref='impacts', lazy='joined')
 
     def __repr__(self):
         return '<Impact %r>' % self.id
@@ -185,6 +200,7 @@ class Impact(TimestampMixin, db.Model):
         d['objects'] = self.objects
         d['application_periods'] = self.application_periods
         d['severity'] = self.severity
+        d['messages'] = self.messages
         return d
 
     def __init__(self, objects=None):
@@ -205,6 +221,20 @@ class Impact(TimestampMixin, db.Model):
         self.objects.append(object)
         db.session.add(object)
 
+    def insert_message(self, message):
+        """
+        Adds an message in a imapct.
+        """
+        self.messages.append(message)
+        db.session.add(message)
+
+    def delete_message(self, message):
+        """
+        delete an message in a imapct.
+        """
+        self.messages.remove(message)
+        db.session.delete(message)
+
     def insert_app_period(self, application_period):
         """
         Adds an objectTC in a imapct.
@@ -217,17 +247,45 @@ class Impact(TimestampMixin, db.Model):
         return cls.query.filter_by(id=id, status='published').first_or_404()
 
     @classmethod
+    @paginate()
     def all(cls, disruption_id):
+        alias = aliased(Severity)
         query = cls.query.filter_by(status='published')
         query = query.filter(and_(cls.disruption_id == disruption_id))
-        return query.join('severity').order_by('severity.priority asc').all()
+        return query.join(alias, Impact.severity).order_by(alias.priority)
+
+    @classmethod
+    def all_with_filter(cls, start_date, end_date, ptobject_type):
+        query = cls.query.filter_by(status='published')
+        query = query.join(PTobject)
+        query = query.filter(and_(PTobject.type == ptobject_type))
+        query = query.join(ApplicationPeriods)
+        query = query.filter(
+            and_(
+                or_(
+                    not_(
+                        or_(
+                            ApplicationPeriods.start_date > end_date,
+                            ApplicationPeriods.end_date < start_date
+                        )
+                    ),
+                    and_(
+                        ApplicationPeriods.start_date <= end_date,
+                        ApplicationPeriods.end_date == None
+                    )
+                )
+            )
+        )
+        query = query.order_by(ApplicationPeriods.start_date)
+        return query.all()
+
 
 class PTobject(TimestampMixin, db.Model):
     __tablename__ = 'pt_object'
     id = db.Column(UUID, primary_key=True)
-    type = db.Column(db.Text, unique=False, nullable=True)
-    uri =  db.Column(db.Text, primary_key=True)
-    impact_id = db.Column(UUID, db.ForeignKey(Impact.id))
+    type = db.Column(PtObjectType, nullable=False, default='network', index=True)
+    uri = db.Column(db.Text, primary_key=True)
+    impact_id = db.Column(UUID, db.ForeignKey(Impact.id), index=True)
 
     def __repr__(self):
         return '<PTobject %r>' % self.id
@@ -242,6 +300,7 @@ class PTobject(TimestampMixin, db.Model):
     def get(cls, id):
         return cls.query.filter_by(id=id).first_or_404()
 
+
 class ApplicationPeriods(TimestampMixin, db.Model):
     """
     represents the application periods of an impact
@@ -249,14 +308,15 @@ class ApplicationPeriods(TimestampMixin, db.Model):
     id = db.Column(UUID, primary_key=True)
     start_date = db.Column(db.DateTime(), nullable=True)
     end_date = db.Column(db.DateTime(), nullable=True)
-    impact_id = db.Column(UUID, db.ForeignKey(Impact.id))
+    impact_id = db.Column(UUID, db.ForeignKey(Impact.id), index=True)
 
-    def __init__(self, impact_id = None):
+    def __init__(self, impact_id=None):
         self.id = str(uuid.uuid1())
         self.impact_id = impact_id
 
     def __repr__(self):
         return '<ApplicationPeriods %r>' % self.id
+
 
 class Channel(TimestampMixin, db.Model):
     """
@@ -282,3 +342,27 @@ class Channel(TimestampMixin, db.Model):
     def get(cls, id):
         return cls.query.filter_by(id=id, is_visible=True).first_or_404()
 
+
+class Message(TimestampMixin, db.Model):
+    """
+    represent the message of an impact
+    """
+    id = db.Column(UUID, primary_key=True)
+    text = db.Column(db.Text, unique=False, nullable=False)
+    impact_id = db.Column(UUID, db.ForeignKey(Impact.id))
+    channel_id = db.Column(UUID, db.ForeignKey(Channel.id))
+    channel = db.relationship('Channel', backref='message', lazy='select')
+
+    def __init__(self):
+        self.id = str(uuid.uuid1())
+
+    def __repr__(self):
+        return '<Message %r>' % self.id
+
+    @classmethod
+    def all(cls):
+        return cls.query.all()
+
+    @classmethod
+    def get(cls, id):
+        return cls.query.filter_by(id=id).first_or_404()
