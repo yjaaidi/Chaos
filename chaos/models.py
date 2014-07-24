@@ -283,7 +283,7 @@ class PTobject(TimestampMixin, db.Model):
     id = db.Column(UUID, primary_key=True)
     type = db.Column(PtObjectType, nullable=False, default='network', index=True)
     uri = db.Column(db.Text, primary_key=True)
-    impact_id = db.Column(UUID, db.ForeignKey(Impact.id))
+    impact_id = db.Column(UUID, db.ForeignKey(Impact.id), index=True)
 
     def __repr__(self):
         return '<PTobject %r>' % self.id
@@ -306,7 +306,7 @@ class ApplicationPeriods(TimestampMixin, db.Model):
     id = db.Column(UUID, primary_key=True)
     start_date = db.Column(db.DateTime(), nullable=True)
     end_date = db.Column(db.DateTime(), nullable=True)
-    impact_id = db.Column(UUID, db.ForeignKey(Impact.id))
+    impact_id = db.Column(UUID, db.ForeignKey(Impact.id), index=True)
 
     def __init__(self, impact_id=None):
         self.id = str(uuid.uuid1())

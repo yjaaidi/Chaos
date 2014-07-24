@@ -177,7 +177,10 @@ class Disruptions(flask_restful.Resource):
 
         parser_get.add_argument("start_page", type=int, default=1)
         parser_get.add_argument("items_per_page", type=int, default=20)
-        parser_get.add_argument("publication_status[]", type=option_value(publication_status_values), action="append", default=publication_status_values)
+        parser_get.add_argument("publication_status[]",
+                                type=option_value(publication_status_values),
+                                action="append",
+                                default=publication_status_values)
         parser_get.add_argument("current_time", type=utils.get_datetime)
 
     def get(self, id=None):
@@ -197,7 +200,9 @@ class Disruptions(flask_restful.Resource):
                 abort(400, message="items_per_page argument value is not valid")
             publication_status = args['publication_status[]']
             g.current_time = args['current_time']
-            result = models.Disruption.all_with_filter(page_index=page_index, items_per_page=items_per_page, publication_status=publication_status)
+            result = models.Disruption.all_with_filter(page_index=page_index,
+                                                       items_per_page=items_per_page,
+                                                       publication_status=publication_status)
             response = {'disruptions': result.items, 'meta': make_pager(result, 'disruption')}
             return marshal(response, disruptions_fields)
 
@@ -383,7 +388,9 @@ class Impacts(flask_restful.Resource):
             if items_per_page == 0:
                 abort(400, message="items_per_page argument value is not valid")
 
-            result = models.Impact.all(page_index=page_index, items_per_page=items_per_page, disruption_id=disruption_id)
+            result = models.Impact.all(page_index=page_index,
+                                       items_per_page=items_per_page,
+                                       disruption_id=disruption_id)
             response = {'impacts': result.items, 'meta': make_pager(result, 'impact', disruption_id=disruption_id)}
             return marshal(response, impacts_fields)
 
