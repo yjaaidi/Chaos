@@ -9,8 +9,6 @@ def get_pt_object(uri, object_type):
 
 
 def test_impacts_by_pt_object_type():
-    navitia = Obj()
-    navitia.get_pt_object = get_pt_object
     impacts = []
     one_impact = Obj()
     one_impact.id='1'
@@ -37,14 +35,14 @@ def test_impacts_by_pt_object_type():
 
     impacts.append(one_impact)
 
-    result = utils.group_impacts_by_pt_object(impacts, 'stop_area', navitia)
+    result = utils.group_impacts_by_pt_object(impacts, 'stop_area', get_pt_object)
     eq_(len(result), 3)
 
     eq_(result[0]['name'], 'a')
     eq_(result[1]['name'], 'b')
     eq_(result[2]['name'], 'c')
 
-    result = utils.group_impacts_by_pt_object(impacts, 'network', navitia)
+    result = utils.group_impacts_by_pt_object(impacts, 'network', get_pt_object)
     eq_(len(result), 1)
     eq_(result[0]['name'], 'c')
 

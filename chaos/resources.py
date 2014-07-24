@@ -35,7 +35,7 @@ from jsonschema import validate, ValidationError
 from flask.ext.restful import abort
 from fields import *
 from formats import *
-from formats import impact_input_format, channel_input_format, ptobject_values
+from formats import impact_input_format, channel_input_format, pt_object_type_values
 from chaos import mapper
 from chaos import utils
 import chaos
@@ -47,23 +47,27 @@ from utils import make_pager, option_value
 __all__ = ['Disruptions', 'Index', 'Severity', 'Cause']
 
 
-disruption_mapping = {'reference': None,
-        'note': None,
-        'publication_period': {
-            'begin': mapper.Datetime(attribute='start_publication_date'),
-            'end': mapper.Datetime(attribute='end_publication_date')
-            },
-        'cause': {'id': mapper.AliasText(attribute='cause_id')},
-        'localization': [{"id": mapper.AliasText(attribute='localization_id')}]
-        }
-
-severity_mapping = {'wording': None,
-                    'color': None,
-                    'priority': None,
-                    'effect': None,
+disruption_mapping = {
+    'reference': None,
+    'note': None,
+    'publication_period': {
+        'begin': mapper.Datetime(attribute='start_publication_date'),
+        'end': mapper.Datetime(attribute='end_publication_date')
+    },
+    'cause': {'id': mapper.AliasText(attribute='cause_id')},
+    'localization': [{"id": mapper.AliasText(attribute='localization_id')}]
 }
 
-cause_mapping = {'wording': None,}
+severity_mapping = {
+    'wording': None,
+    'color': None,
+    'priority': None,
+    'effect': None,
+}
+
+cause_mapping = {
+    'wording': None
+}
 
 object_mapping = {
     "id": mapper.AliasText(attribute='uri'),
@@ -80,10 +84,12 @@ application_period_mapping = {
     'end': mapper.Datetime(attribute='end_date')
 }
 
-channel_mapping = {'name': None,
-                    'max_size': None,
-                    'content_type': None
+channel_mapping = {
+    'name': None,
+    'max_size': None,
+    'content_type': None
 }
+
 
 class Index(flask_restful.Resource):
 
@@ -98,6 +104,7 @@ class Index(flask_restful.Resource):
             "impactsbyobject": {"href": url_for('impactsbyobject', _external=True)}
         }
         return response, 200
+
 
 class Severity(flask_restful.Resource):
 
@@ -170,10 +177,11 @@ class Disruptions(flask_restful.Resource):
 
         parser_get.add_argument("start_page", type=int, default=1)
         parser_get.add_argument("items_per_page", type=int, default=20)
-        parser_get.add_argument("publication_status[]", type=option_value(publication_status_values), action="append", default=publication_status_values)
+        parser_get.add_argument("publication_status[]",
+                                type=option_value(publication_status_values),
+                                action="append",
+                                default=publication_status_values)
         parser_get.add_argument("current_time", type=utils.get_datetime)
-
-
 
     def get(self, id=None):
         if id:
@@ -192,7 +200,9 @@ class Disruptions(flask_restful.Resource):
                 abort(400, message="items_per_page argument value is not valid")
             publication_status = args['publication_status[]']
             g.current_time = args['current_time']
-            result = models.Disruption.all_with_filter(page_index=page_index, items_per_page=items_per_page, publication_status=publication_status)
+            result = models.Disruption.all_with_filter(page_index=page_index,
+                                                       items_per_page=items_per_page,
+                                                       publication_status=publication_status)
             response = {'disruptions': result.items, 'meta': make_pager(result, 'disruption')}
             return marshal(response, disruptions_fields)
 
@@ -205,8 +215,7 @@ class Disruptions(flask_restful.Resource):
             logging.debug(str(e))
             #TODO: generate good error messages
             return marshal({'error': {'message': str(e).replace("\n", " ")}},
-                           error_fields), \
-                    400
+                           error_fields), 400
 
         disruption = models.Disruption()
         mapper.fill_from_json(disruption, json, disruption_mapping)
@@ -219,7 +228,6 @@ class Disruptions(flask_restful.Resource):
         db.session.add(disruption)
         db.session.commit()
         return marshal({'disruption': disruption}, one_disruption_fields), 201
-
 
     def put(self, id):
         if not id_format.match(id):
@@ -235,8 +243,7 @@ class Disruptions(flask_restful.Resource):
             logging.getLogger(__name__).debug(str(e))
             #TODO: generate good error messages
             return marshal({'error': {'message': str(e).replace("\n", " ")}},
-                           error_fields), \
-                    400
+                           error_fields), 400
 
         mapper.fill_from_json(disruption, json, disruption_mapping)
 
@@ -257,6 +264,7 @@ class Disruptions(flask_restful.Resource):
         disruption.archive()
         db.session.commit()
         return None, 204
+
 
 class Cause(flask_restful.Resource):
 
@@ -317,21 +325,21 @@ class Cause(flask_restful.Resource):
         db.session.commit()
         return None, 204
 
+
 class ImpactsByObject(flask_restful.Resource):
     def __init__(self):
         current_datetime = utils.get_current_time()
-        default_start_date= current_datetime.replace(hour=0, minute=0, second=0)
-        default_end_date= current_datetime.replace(hour=23, minute=59, second=59)
+        default_start_date = current_datetime.replace(hour=0, minute=0, second=0)
+        default_end_date = current_datetime.replace(hour=23, minute=59, second=59)
         self.parsers = {}
         self.parsers["get"] = reqparse.RequestParser()
         parser_get = self.parsers["get"]
-        parser_get.add_argument("pt_object_type", type=option_value(ptobject_values), default='network')
+        parser_get.add_argument("pt_object_type", type=option_value(pt_object_type_values), default='network')
         parser_get.add_argument("start_date", type=utils.get_datetime, default=default_start_date)
         parser_get.add_argument("end_date", type=utils.get_datetime, default=default_end_date)
         self.navitia = Navitia(current_app.config['NAVITIA_URL'],
-                           current_app.config['NAVITIA_COVERAGE'],
-                           current_app.config['NAVITIA_TOKEN'])
-
+                               current_app.config['NAVITIA_COVERAGE'],
+                               current_app.config['NAVITIA_TOKEN'])
 
     def get(self):
         args = self.parsers['get'].parse_args()
@@ -344,7 +352,7 @@ class ImpactsByObject(flask_restful.Resource):
                                error_fields), 400
 
         impacts = models.Impact.all_with_filter(start_date, end_date, pt_object_type)
-        result = utils.group_impacts_by_pt_object(impacts, pt_object_type, self.navitia)
+        result = utils.group_impacts_by_pt_object(impacts, pt_object_type, self.navitia.get_pt_object)
         return marshal({'objects': result}, impacts_by_object_fields)
 
 
@@ -380,8 +388,10 @@ class Impacts(flask_restful.Resource):
             if items_per_page == 0:
                 abort(400, message="items_per_page argument value is not valid")
 
-            result = models.Impact.all(page_index=page_index, items_per_page=items_per_page, disruption_id=disruption_id)
-            response = {'impacts' : result.items, 'meta': make_pager(result, 'impact', disruption_id=disruption_id)}
+            result = models.Impact.all(page_index=page_index,
+                                       items_per_page=items_per_page,
+                                       disruption_id=disruption_id)
+            response = {'impacts': result.items, 'meta': make_pager(result, 'impact', disruption_id=disruption_id)}
             return marshal(response, impacts_fields)
 
     def post(self, disruption_id):
@@ -488,6 +498,7 @@ class Impacts(flask_restful.Resource):
         db.session.commit()
         return None, 204
 
+
 class Channel(flask_restful.Resource):
 
     def get(self, id=None):
@@ -547,9 +558,9 @@ class Channel(flask_restful.Resource):
         db.session.commit()
         return None, 204
 
+
 class Status(flask_restful.Resource):
     def get(self):
         return {'version': chaos.VERSION,
                 'db_pool_status': db.engine.pool.status(),
                 'db_version': db.engine.scalar('select version_num from alembic_version;')}
-

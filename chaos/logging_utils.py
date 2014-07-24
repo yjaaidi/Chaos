@@ -30,6 +30,7 @@
 import logging
 from flask import request
 
+
 class ChaosFilter(logging.Filter):
 
     def filter(self, record):

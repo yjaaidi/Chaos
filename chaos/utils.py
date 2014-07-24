@@ -36,7 +36,7 @@ import flask
 from flask import current_app
 from chaos.navitia import Navitia
 
-#disruption_id=None
+
 def make_pager(resultset, endpoint, **kwargs):
     prev_link = None
     next_link = None
@@ -50,32 +50,31 @@ def make_pager(resultset, endpoint, **kwargs):
                             _external=True, **kwargs)
 
     if resultset.has_next:
-        next_link= url_for(endpoint,
-                           start_page=resultset.next_num,
-                           items_per_page=resultset.per_page,
-                           _external=True, **kwargs)
+        next_link = url_for(endpoint,
+                            start_page=resultset.next_num,
+                            items_per_page=resultset.per_page,
+                            _external=True, **kwargs)
 
     if resultset.total > 0:
-        last_link= url_for(endpoint,
-                       start_page=resultset.pages,
-                       items_per_page=resultset.per_page,
-                       _external=True, **kwargs)
+        last_link = url_for(endpoint,
+                            start_page=resultset.pages,
+                            items_per_page=resultset.per_page,
+                            _external=True, **kwargs)
         first_link = url_for(endpoint,
-                         start_page=1,
-                         items_per_page=resultset.per_page,
-                         _external=True, **kwargs)
+                             start_page=1,
+                             items_per_page=resultset.per_page,
+                             _external=True, **kwargs)
 
     result = {}
     result["pagination"] = {
-                "start_page": resultset.page,
-                "items_on_page": len(resultset.items),
-                "items_per_page": resultset.per_page,
-                "total_result": resultset.total,
-                "prev": {"href": prev_link},
-                "next": {"href": next_link},
-                "first": {"href": first_link},
-                "last": {"href": last_link
-                }
+        "start_page": resultset.page,
+        "items_on_page": len(resultset.items),
+        "items_per_page": resultset.per_page,
+        "total_result": resultset.total,
+        "prev": {"href": prev_link},
+        "next": {"href": next_link},
+        "first": {"href": first_link},
+        "last": {"href": last_link}
     }
     return result
 
@@ -120,6 +119,7 @@ def get_current_time():
     else:
         return datetime.utcnow()
 
+
 def option_value(values):
     def to_return(value, name):
         if not value in values:
@@ -139,32 +139,31 @@ class Request(flask.Request):
         self.id = str(uuid.uuid4())
 
 
-def group_impacts_by_pt_object(impacts, object_type, navitia):
+def group_impacts_by_pt_object(impacts, object_type, get_pt_object):
     """
     :param impacts: list of impacts
     :param object_type: PTObject type example stop_area
     :return: list of implacts group by PTObject sorted by name
     """
-    dictionnaire = {}
+    dictionary = {}
     for impact in impacts:
-        for ptobject in impact.objects:
-            if ptobject.type == object_type:
-                if ptobject.uri in dictionnaire:
-                    resp = dictionnaire[ptobject.uri]
+        for pt_object in impact.objects:
+            if pt_object.type == object_type:
+                if pt_object.uri in dictionary:
+                    resp = dictionary[pt_object.uri]
                 else:
-                    nav_pt_object = navitia.get_pt_object(ptobject.uri, ptobject.type)
+                    nav_pt_object = get_pt_object(pt_object.uri, pt_object.type)
                     if nav_pt_object and 'name' in nav_pt_object:
                         name = nav_pt_object['name']
                     else:
                         name = None
-                    resp = {'id': ptobject.uri,
-                            'type': ptobject.type,
+                    resp = {'id': pt_object.uri,
+                            'type': pt_object.type,
                             'name': name,
                             'impacts': []
                     }
-                    dictionnaire[ptobject.uri] = resp
+                    dictionary[pt_object.uri] = resp
                 resp['impacts'].append(impact)
-    result = dictionnaire.values()
+    result = dictionary.values()
     result.sort(key=lambda x: x['name'])
     return result
-
