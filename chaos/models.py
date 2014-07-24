@@ -140,10 +140,11 @@ class Disruption(TimestampMixin, db.Model):
     @classmethod
     @paginate()
     def all_with_filter(cls, publication_status):
-        availlable_filters = {'past': and_(cls.end_publication_date != None, cls.end_publication_date < get_current_time()),
-                      'ongoing': and_(cls.start_publication_date <= get_current_time(),
-                                      or_(cls.end_publication_date == None, cls.end_publication_date >= get_current_time())),
-                      'coming': Disruption.start_publication_date > get_current_time()
+        availlable_filters = {
+            'past': and_(cls.end_publication_date != None, cls.end_publication_date < get_current_time()),
+            'ongoing': and_(cls.start_publication_date <= get_current_time(),
+                            or_(cls.end_publication_date == None, cls.end_publication_date >= get_current_time())),
+            'coming': Disruption.start_publication_date > get_current_time()
         }
         query = cls.query.filter_by(status='published')
         publication_status = set(publication_status)
@@ -257,14 +258,22 @@ class Impact(TimestampMixin, db.Model):
         query = query.join(PTobject)
         query = query.filter(and_(PTobject.type == ptobject_type))
         query = query.join(ApplicationPeriods)
-        query = query.filter(and_(
-                                 or_(not_(
-                                            or_(ApplicationPeriods.start_date > end_date,
-                                                ApplicationPeriods.end_date < start_date
-                                            )
-                                    )
-                                 ,and_(ApplicationPeriods.start_date <= end_date,
-                                 ApplicationPeriods.end_date == None))))
+        query = query.filter(
+            and_(
+                or_(
+                    not_(
+                        or_(
+                            ApplicationPeriods.start_date > end_date,
+                            ApplicationPeriods.end_date < start_date
+                        )
+                    ),
+                    and_(
+                        ApplicationPeriods.start_date <= end_date,
+                        ApplicationPeriods.end_date == None
+                    )
+                )
+            )
+        )
         query = query.order_by(ApplicationPeriods.start_date)
         return query.all()
 
@@ -273,7 +282,7 @@ class PTobject(TimestampMixin, db.Model):
     __tablename__ = 'pt_object'
     id = db.Column(UUID, primary_key=True)
     type = db.Column(PtObjectType, nullable=False, default='network', index=True)
-    uri =  db.Column(db.Text, primary_key=True)
+    uri = db.Column(db.Text, primary_key=True)
     impact_id = db.Column(UUID, db.ForeignKey(Impact.id))
 
     def __repr__(self):
@@ -299,7 +308,7 @@ class ApplicationPeriods(TimestampMixin, db.Model):
     end_date = db.Column(db.DateTime(), nullable=True)
     impact_id = db.Column(UUID, db.ForeignKey(Impact.id))
 
-    def __init__(self, impact_id = None):
+    def __init__(self, impact_id=None):
         self.id = str(uuid.uuid1())
         self.impact_id = impact_id
 

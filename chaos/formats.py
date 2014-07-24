@@ -35,102 +35,111 @@ import re
 datetime_pattern = '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$'
 id_format_text = '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
 id_format = re.compile(id_format_text)
-ptobject_values = ["network", "stop_area"]
-
-date_period_format = {
-        'type': 'object',
-        'properties': {
-            'begin': {'type': ['string'], 'pattern': datetime_pattern},
-            'end': {'type': ['string', 'null'], 'pattern': datetime_pattern},
-            },
-        'required': ['begin', 'end']
-        }
-
-object_input_format = {'type': 'object',
-        'properties': {'id': {'type': 'string', 'maxLength': 250},
-                       'type': {'enum': ptobject_values}
-                       },
-        'required': ['id', 'type']
-}
-
-localization_object_input_format = {'type': 'object',
-        'properties': {'id': {'type': 'string', 'maxLength': 250},
-                       'type': {'enum': ["stop_area"]}
-                       },
-        'required': ['id', 'type']
-}
-
-disruptions_input_format = {'type': 'object',
-        'properties': {'reference': {'type': 'string', 'maxLength': 250},
-            'note': {'type': 'string'},
-            'publication_period': date_period_format,
-            'cause':{
-                'type' : 'object',
-                'properties':{
-                    'id':{'type' : 'string', 'pattern': id_format_text}
-                },
-                'required': ['id']
-            },
-                                           'localization': {'type': 'array',
-                                                            'items': [localization_object_input_format]
-                                           }
-        },
-        'required': ['reference', 'cause']
-}
+pt_object_type_values = ["network", "stop_area"]
 #Here Order of values is strict and is used to create query filters.
 publication_status_values = ["past", "ongoing", "coming"]
 
-
-severity_input_format = {'type': 'object',
-        'properties': {'wording': {'type': 'string', 'maxLength': 250},
-            'color': {'type': ['string', 'null'], 'maxLength': 20},
-            'priority': {'type': ['integer', 'null']},
-            'effect': {'enum': ['blocking', None]},
+date_period_format = {
+    'type': 'object',
+    'properties': {
+        'begin': {'type': ['string'], 'pattern': datetime_pattern},
+        'end': {'type': ['string', 'null'], 'pattern': datetime_pattern},
         },
-        'required': ['wording']
+    'required': ['begin', 'end']
 }
 
-
-cause_input_format = {'type': 'object',
-        'properties': {'wording': {'type': 'string', 'maxLength': 250},
-        },
-        'required': ['wording']
+object_input_format = {
+    'type': 'object',
+    'properties': {'id': {'type': 'string', 'maxLength': 250},
+                   'type': {'enum': pt_object_type_values}
+    },
+    'required': ['id', 'type']
 }
 
-channel_input_format = {'type': 'object',
-        'properties': {'name': {'type': 'string', 'maxLength': 250},
-            'max_size': {'type': ['integer', 'null']},
-            'content_type': {'type': 'string', 'maxLength': 250}
-        },
-        'required': ['name', 'max_size', 'content_type']
+localization_object_input_format = {
+    'type': 'object',
+    'properties': {'id': {'type': 'string', 'maxLength': 250},
+                   'type': {'enum': ["stop_area"]}
+    },
+    'required': ['id', 'type']
 }
 
-message_input_format = {'type': 'object',
-                        'properties': {'text': {'type': 'string'},
-                                       'channel': {'type': 'object',
-                                                   'properties': {'id': {'type': 'string', 'pattern': id_format_text}},
-                                                   'required': ['id']
-                                       }
-                        },
-                        'required': ['text', 'channel']
+disruptions_input_format = {
+    'type': 'object',
+    'properties': {'reference': {'type': 'string', 'maxLength': 250},
+                   'note': {'type': 'string'},
+                   'publication_period': date_period_format,
+                   'cause': {
+                       'type': 'object',
+                       'properties': {
+                           'id': {'type': 'string', 'pattern': id_format_text}
+                       },
+                       'required': ['id']
+                   },
+                   'localization': {'type': 'array',
+                                    'items': [localization_object_input_format]
+                   }
+    },
+    'required': ['reference', 'cause']
 }
 
-impact_input_format = {'type': 'object',
-        'properties': {
-            'severity': {'type': 'object',
-                         'properties': {'id': {'type': 'string', 'pattern': id_format_text}},
-                         'required': ['id']
-            },
-            'applications_periods': {'type' : 'array',
-                        'items':[date_period_format]
-            },
-            'objects': {'type' : 'array',
-                        'items':[object_input_format]
-            },
-            'messages': {'type': 'array',
-                         'items':[message_input_format]
-            }
-        },
-        'required': ['severity']
+severity_input_format = {
+    'type': 'object',
+    'properties': {'wording': {'type': 'string', 'maxLength': 250},
+                   'color': {'type': ['string', 'null'], 'maxLength': 20},
+                   'priority': {'type': ['integer', 'null']},
+                   'effect': {'enum': ['blocking', None]},
+                   },
+    'required': ['wording']
+}
 
+cause_input_format = {
+    'type': 'object',
+    'properties': {'wording': {'type': 'string', 'maxLength': 250},
+                   },
+    'required': ['wording']
+}
+
+channel_input_format = {
+    'type': 'object',
+    'properties': {'name': {'type': 'string', 'maxLength': 250},
+                   'max_size': {'type': ['integer', 'null']},
+                   'content_type': {'type': 'string', 'maxLength': 250}
+    },
+    'required': ['name', 'max_size', 'content_type']
+}
+
+message_input_format = {
+    'type': 'object',
+    'properties': {'text': {'type': 'string'},
+                   'channel': {'type': 'object',
+                               'properties': {
+                                   'id': {
+                                       'type': 'string', 'pattern': id_format_text
+                                   }
+                               },
+                               'required': ['id']
+                   }
+    },
+    'required': ['text', 'channel']
+}
+
+impact_input_format = {
+    'type': 'object',
+    'properties': {
+        'severity': {'type': 'object',
+                     'properties': {'id': {'type': 'string', 'pattern': id_format_text}},
+                     'required': ['id']
+        },
+        'applications_periods': {'type': 'array',
+                                 'items': [date_period_format]
+        },
+        'objects': {'type': 'array',
+                    'items': [object_input_format]
+        },
+        'messages': {'type': 'array',
+                     'items': [message_input_format]
+        }
+    },
+    'required': ['severity']
 }

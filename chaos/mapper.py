@@ -41,6 +41,7 @@ class Datetime(object):
         else:
             setattr(item, self.attribute, None)
 
+
 class AliasText(object):
     def __init__(self, attribute):
         self.attribute = attribute
@@ -51,8 +52,9 @@ class AliasText(object):
         else:
             setattr(item, self.attribute, None)
 
+
 def fill_from_json(item, json, fields):
-    for field,formater in fields.iteritems():
+    for field, formater in fields.iteritems():
         if field not in json:
             setattr(item, field, None)
             continue

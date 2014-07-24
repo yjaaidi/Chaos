@@ -51,7 +51,7 @@ class Navitia(object):
             raise exceptions.ObjectTypeUnknown(object_type)
 
         query = '{url}/v1/coverage/{coverage}/{collection}/{uri}'.format(
-                url=self.url, coverage=self.coverage, collection= self.collections[object_type],uri=uri)
+                url=self.url, coverage=self.coverage, collection=self.collections[object_type], uri=uri)
         try:
             response = requests.get(query, auth=(self.token, None), timeout=self.timeout)
         except (requests.exceptions.RequestException):
@@ -65,6 +65,3 @@ class Navitia(object):
                 return json[self.collections[object_type]][0]
 
         return None
-
-
-

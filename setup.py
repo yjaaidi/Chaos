@@ -6,6 +6,7 @@ import os
 
 protoc = find_executable("protoc")
 
+
 class BuildPbfCommand(Command):
     description = "build protocol buffer files"
     user_options = []
