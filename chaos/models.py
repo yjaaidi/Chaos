@@ -33,7 +33,7 @@ import uuid
 from chaos import db, utils
 from utils import paginate, get_current_time
 from sqlalchemy.dialects.postgresql import UUID
-from datetime import datetime, timedelta
+from datetime import datetime
 from formats import publication_status_values
 from sqlalchemy import or_, and_, not_
 from sqlalchemy.orm import aliased

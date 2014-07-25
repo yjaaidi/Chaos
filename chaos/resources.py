@@ -127,7 +127,7 @@ class Severity(flask_restful.Resource):
         except ValidationError, e:
             logging.debug(str(e))
             #TODO: generate good error messages
-            return marshal({'error': {'message': str(e).replace("\n", " ")}},
+            return marshal({'error': {'message': utils.ParseError(e)}},
                            error_fields), 400
 
         severity = models.Severity()
@@ -149,7 +149,7 @@ class Severity(flask_restful.Resource):
         except ValidationError, e:
             logging.debug(str(e))
             #TODO: generate good error messages
-            return marshal({'error': {'message': str(e).replace("\n", " ")}},
+            return marshal({'error': {'message': utils.ParseError(e)}},
                            error_fields), 400
 
         mapper.fill_from_json(severity, json, severity_mapping)
@@ -208,13 +208,13 @@ class Disruptions(flask_restful.Resource):
 
     def post(self):
         json = request.get_json()
-        logging.getLogger(__name__).debug(json)
+        logging.getLogger(__name__).debug('POST disruption: %s', json)
         try:
             validate(json, disruptions_input_format)
         except ValidationError, e:
             logging.debug(str(e))
             #TODO: generate good error messages
-            return marshal({'error': {'message': str(e).replace("\n", " ")}},
+            return marshal({'error': {'message': utils.ParseError(e)}},
                            error_fields), 400
 
         disruption = models.Disruption()
@@ -235,14 +235,14 @@ class Disruptions(flask_restful.Resource):
                            error_fields), 400
         disruption = models.Disruption.get(id)
         json = request.get_json()
-        logging.getLogger(__name__).debug(json)
+        logging.getLogger(__name__).debug('PUT disruption: %s', json)
 
         try:
             validate(json, disruptions_input_format)
         except ValidationError, e:
             logging.getLogger(__name__).debug(str(e))
             #TODO: generate good error messages
-            return marshal({'error': {'message': str(e).replace("\n", " ")}},
+            return marshal({'error': {'message': utils.ParseError(e)}},
                            error_fields), 400
 
         mapper.fill_from_json(disruption, json, disruption_mapping)
@@ -287,7 +287,7 @@ class Cause(flask_restful.Resource):
         except ValidationError, e:
             logging.debug(str(e))
             #TODO: generate good error messages
-            return marshal({'error': {'message': str(e).replace("\n", " ")}},
+            return marshal({'error': {'message': utils.ParseError(e)}},
                            error_fields), 400
 
         cause = models.Cause()
@@ -396,19 +396,15 @@ class Impacts(flask_restful.Resource):
             return marshal(response, impacts_fields)
 
     def post(self, disruption_id):
-        if not id_format.match(disruption_id):
-            return marshal({'error': {'message': "id invalid"}},
-                           error_fields), 400
-
         json = request.get_json()
-        logging.getLogger(__name__).debug(json)
+        logging.getLogger(__name__).debug('POST impcat: %s', json)
 
         try:
             validate(json, impact_input_format)
         except ValidationError, e:
             logging.debug(str(e))
             #TODO: generate good error messages
-            return marshal({'error': {'message': str(e).replace("\n", " ")}},
+            return marshal({'error': {'message': utils.ParseError(e)}},
                            error_fields), 400
 
         impact = models.Impact()
@@ -448,7 +444,8 @@ class Impacts(flask_restful.Resource):
             return marshal({'error': {'message': "id invalid"}},
                            error_fields), 400
         json = request.get_json()
-        logging.getLogger(__name__).debug(json)
+        logging.getLogger(__name__).debug('PUT disruption: %s', json)
+
         impact = models.Impact.get(id)
 
         #Add all objects and all messages present in Json
@@ -521,7 +518,7 @@ class Channel(flask_restful.Resource):
         except ValidationError, e:
             logging.debug(str(e))
             #TODO: generate good error messages
-            return marshal({'error': {'message': str(e).replace("\n", " ")}},
+            return marshal({'error': {'message': utils.ParseError(e)}},
                            error_fields), 400
 
         channel = models.Channel()
@@ -543,7 +540,7 @@ class Channel(flask_restful.Resource):
         except ValidationError, e:
             logging.debug(str(e))
             #TODO: generate good error messages
-            return marshal({'error': {'message': str(e).replace("\n", " ")}},
+            return marshal({'error': {'message': utils.ParseError(e)}},
                            error_fields), 400
 
         mapper.fill_from_json(channel, json, channel_mapping)
