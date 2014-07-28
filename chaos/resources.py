@@ -396,6 +396,11 @@ class Impacts(flask_restful.Resource):
             return marshal(response, impacts_fields)
 
     def post(self, disruption_id):
+
+        if not id_format.match(disruption_id):
+            return marshal({'error': {'message': "id invalid"}},
+                           error_fields), 400
+
         json = request.get_json()
         logging.getLogger(__name__).debug('POST impcat: %s', json)
 

@@ -188,7 +188,6 @@ def group_impacts_by_pt_object(impacts, object_type, uris, get_pt_object):
 
 
 def ParseError(error):
-    result = (str(error).replace("\n", " ")).split(":")
-    if len(result) > 0:
-        return result[0]
+    if error.message:
+        return error.message
     return str(error).replace("\n", " ")

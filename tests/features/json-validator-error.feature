@@ -8,7 +8,7 @@ Feature: Json validator
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
         And the field "error" should exist
-        And the field "error.message" should be "'wording' is a required property  Failed validating 'required' in schema"
+        And the field "error.message" should be "'wording' is a required property"
 
         When I post to "/severities" with:
         """
@@ -17,7 +17,7 @@ Feature: Json validator
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
         And the field "error" should exist
-        And the field "error.message" should be "u'2' is not of type 'integer', 'null'  Failed validating 'type' in schema['properties']['priority']"
+        And the field "error.message" should be "u'2' is not of type 'integer', 'null'"
 
     Scenario: wording is required in cause
         When I post to "/causes" with:
@@ -27,7 +27,7 @@ Feature: Json validator
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
         And the field "error" should exist
-        And the field "error.message" should be "'wording' is a required property  Failed validating 'required' in schema"
+        And the field "error.message" should be "'wording' is a required property"
 
     Scenario: name  is required in channel
         When I post to "/channels" with:
@@ -37,7 +37,7 @@ Feature: Json validator
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
         And the field "error" should exist
-        And the field "error.message" should be "'name' is a required property  Failed validating 'required' in schema"
+        And the field "error.message" should be "'name' is a required property"
 
     Scenario: max_size  is required in channel
         When I post to "/channels" with:
@@ -47,7 +47,7 @@ Feature: Json validator
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
         And the field "error" should exist
-        And the field "error.message" should be "'max_size' is a required property  Failed validating 'required' in schema"
+        And the field "error.message" should be "'max_size' is a required property"
 
         When I post to "/channels" with:
         """
@@ -56,7 +56,7 @@ Feature: Json validator
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
         And the field "error" should exist
-        And the field "error.message" should be "u'20' is not of type 'integer', 'null'  Failed validating 'type' in schema['properties']['max_size']"
+        And the field "error.message" should be "u'20' is not of type 'integer', 'null'"
 
     Scenario: content_type is required in channel
         When I post to "/channels" with:
@@ -66,7 +66,7 @@ Feature: Json validator
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
         And the field "error" should exist
-        And the field "error.message" should be "'content_type' is a required property  Failed validating 'required' in schema"
+        And the field "error.message" should be "'content_type' is a required property"
 
     Scenario: reference is required in disruption
         Given I post to "/disruptions" with:
@@ -76,7 +76,7 @@ Feature: Json validator
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
         And the field "error" should exist
-        And the field "error.message" should be "'reference' is a required property  Failed validating 'required' in schema"
+        And the field "error.message" should be "'reference' is a required property"
 
     Scenario: cause is required in disruption
         Given I post to "/disruptions" with:
@@ -86,7 +86,7 @@ Feature: Json validator
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
         And the field "error" should exist
-        And the field "error.message" should be "'cause' is a required property  Failed validating 'required' in schema"
+        And the field "error.message" should be "'cause' is a required property"
 
     Scenario: severity is required in impcat
 
@@ -110,4 +110,4 @@ Feature: Json validator
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
         And the field "error" should exist
-        And the field "error.message" should be "'severity' is a required property  Failed validating 'required' in schema"
+        And the field "error.message" should be "'severity' is a required property"
