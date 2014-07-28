@@ -281,7 +281,7 @@ class Impact(TimestampMixin, db.Model):
         )
 
         if uris:
-            query = query.filter(and_(or_(*[PTobject.uri == uri for uri in uris])))
+            query = query.filter(PTobject.uri.in_(uris))
 
         query = query.order_by(ApplicationPeriods.start_date)
         return query.all()
