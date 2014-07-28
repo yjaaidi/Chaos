@@ -139,7 +139,27 @@ class Request(flask.Request):
         self.id = str(uuid.uuid4())
 
 
-def group_impacts_by_pt_object(impacts, object_type, get_pt_object):
+def is_pt_object_valid(pt_object, object_type, uris):
+    """
+    verification object by its type and uri
+    :param pt_object: public transport object
+    :param object_type: public transport object type
+    :param uris: public transport object uri
+    :return: bool
+    """
+    if object_type:
+        if uris:
+            return ((pt_object.type == object_type) and
+                    (pt_object.uri in uris))
+        else:
+            return (pt_object.type == object_type)
+    elif uris:
+        return (pt_object.uri in uris)
+    else:
+        return False
+
+
+def group_impacts_by_pt_object(impacts, object_type, uris, get_pt_object):
     """
     :param impacts: list of impacts
     :param object_type: PTObject type example stop_area
@@ -148,7 +168,7 @@ def group_impacts_by_pt_object(impacts, object_type, get_pt_object):
     dictionary = {}
     for impact in impacts:
         for pt_object in impact.objects:
-            if pt_object.type == object_type:
+            if is_pt_object_valid(pt_object, object_type, uris):
                 if pt_object.uri in dictionary:
                     resp = dictionary[pt_object.uri]
                 else:

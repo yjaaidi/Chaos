@@ -255,10 +255,13 @@ class Impact(TimestampMixin, db.Model):
         return query.join(alias, Impact.severity).order_by(alias.priority)
 
     @classmethod
-    def all_with_filter(cls, start_date, end_date, ptobject_type):
+    def all_with_filter(cls, start_date, end_date, pt_object_type, uris):
         query = cls.query.filter_by(status='published')
         query = query.join(PTobject)
-        query = query.filter(and_(PTobject.type == ptobject_type))
+
+        if pt_object_type:
+            query = query.filter(and_(PTobject.type == pt_object_type))
+
         query = query.join(ApplicationPeriods)
         query = query.filter(
             and_(
@@ -276,6 +279,10 @@ class Impact(TimestampMixin, db.Model):
                 )
             )
         )
+
+        if uris:
+            query = query.filter(and_(or_(*[PTobject.uri == uri for uri in uris])))
+
         query = query.order_by(ApplicationPeriods.start_date)
         return query.all()
 

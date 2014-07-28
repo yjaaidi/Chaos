@@ -334,9 +334,10 @@ class ImpactsByObject(flask_restful.Resource):
         self.parsers = {}
         self.parsers["get"] = reqparse.RequestParser()
         parser_get = self.parsers["get"]
-        parser_get.add_argument("pt_object_type", type=option_value(pt_object_type_values), default='network')
+        parser_get.add_argument("pt_object_type", type=option_value(pt_object_type_values))
         parser_get.add_argument("start_date", type=utils.get_datetime, default=default_start_date)
         parser_get.add_argument("end_date", type=utils.get_datetime, default=default_end_date)
+        parser_get.add_argument("uri[]", type=str, action="append")
         self.navitia = Navitia(current_app.config['NAVITIA_URL'],
                                current_app.config['NAVITIA_COVERAGE'],
                                current_app.config['NAVITIA_TOKEN'])
@@ -346,13 +347,13 @@ class ImpactsByObject(flask_restful.Resource):
         pt_object_type = args['pt_object_type']
         start_date = args['start_date']
         end_date = args['end_date']
+        uris = args['uri[]']
 
-        if not pt_object_type:
-                return marshal({'error': {'message': "object type invalid"}},
+        if not pt_object_type and not uris:
+                return marshal({'error': {'message': "object type or uri object invalid"}},
                                error_fields), 400
-
-        impacts = models.Impact.all_with_filter(start_date, end_date, pt_object_type)
-        result = utils.group_impacts_by_pt_object(impacts, pt_object_type, self.navitia.get_pt_object)
+        impacts = models.Impact.all_with_filter(start_date, end_date, pt_object_type, uris)
+        result = utils.group_impacts_by_pt_object(impacts, pt_object_type, uris, self.navitia.get_pt_object)
         return marshal({'objects': result}, impacts_by_object_fields)
 
 
