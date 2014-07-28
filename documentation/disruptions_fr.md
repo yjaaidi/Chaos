@@ -586,7 +586,7 @@ Cette fonction donne la liste des impacts par type d'objet.
 
 | Name                 | description                                                                               | required | default                 |
 | -------------------- | ----------------------------------------------------------------------------------------- | -------- | ----------------------- |
-| pt_object_type       | Filtre par type d'objet,  les valeurs possibles sont : network, stoparea                  | false    |                         |
+| pt_object_type       | Filtre par type d'objet,  les valeurs possibles sont : network, stoparea, line            | false    |                         |
 | uri[]                | filtre par uri de l'objet TC                                                              | false    |                         |
 | start_date           | filtre sur la période d'application :date de début                                        | false    | Now():00:00:00Z         |
 | end_date             | filtre sur la période d'application :date de fin                                          | false    | Now():23:59:59Z         |

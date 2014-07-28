@@ -57,7 +57,7 @@ class TimestampMixin(object):
 DisruptionStatus = db.Enum('published', 'archived', name='disruption_status')
 SeverityEffect = db.Enum('blocking', name='severity_effect')
 ImpactStatus = db.Enum('published', 'archived', name='impact_status')
-PtObjectType = db.Enum('network', 'stop_area', name='pt_object_type')
+PtObjectType = db.Enum('network', 'stop_area', 'line', name='pt_object_type')
 
 
 class Severity(TimestampMixin, db.Model):

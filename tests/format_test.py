@@ -137,7 +137,8 @@ def test_impact_without_object_validation():
 def test_impact_with_object_and_application_period_validation():
     json = {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},
             "application_periods": [{"begin": "2014-06-20T17:00:00Z","end":"2014-07-28T17:00:00Z"}],
-            "objects": [{"id": "stop_area:RTP:SA:3786125","type": "network"},{"id": "line:RTP:LI:378","type": "network"}]
+            "objects": [{"id": "stop_area:RTP:SA:3786125","type": "network"},{"id": "network:RTP:LI:378","type": "network"},
+                        {"id": "line:RTP:LI:378","type": "line"}]
             }
     validate(json, formats.impact_input_format)
 
