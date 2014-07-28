@@ -191,6 +191,6 @@ def ParseError(error):
     to_return = None
     try:
         to_return = error.message
-    except:
+    except AttributeError:
         to_return = str(error).replace("\n", " ")
     return to_return
