@@ -426,7 +426,7 @@ class Impacts(flask_restful.Resource):
                     object.impact_id = impact.id
                     mapper.fill_from_json(object, obj, object_mapping)
                     if not self.navitia.get_pt_object(obj['id'], obj['type']):
-                        return marshal({'error': {'message': 'network {} doesn\'t exist'.format(obj['id'])}},
+                        return marshal({'error': {'message': '{} {} doesn\'t exist'.format(obj['type'], obj['id'])}},
                                        error_fields), 404
                     impact.insert_object(object)
             if 'application_periods' in json:
@@ -461,7 +461,7 @@ class Impacts(flask_restful.Resource):
                     object.impact_id = impact.id
                     mapper.fill_from_json(object, obj, object_mapping)
                     if not self.navitia.get_pt_object(obj['id'], obj['type']):
-                        return marshal({'error': {'message': 'network {} doesn\'t exist'.format(obj['id'])}},
+                        return marshal({'error': {'message': '{} {} doesn\'t exist'.format(obj['type'], obj['id'])}},
                                        error_fields), 404
                     impact.insert_object(object)
             if 'application_periods' in json:
