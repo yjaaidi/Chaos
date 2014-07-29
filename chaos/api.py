@@ -36,6 +36,7 @@ from chaos import app
 flask_restful.representations.json.settings = {'indent': 4}
 
 api = flask_restful.Api(app, catch_all_404s=True)
+api.app.url_map.strict_slashes = False
 
 api.add_resource(resources.Index,
                  '/',
