@@ -12,6 +12,7 @@ Les entités manipulées par le web service sont:
    - les impacts (impacts), qui représentent toute application d'une perturbation sur une entité du référentiel de transport (ligne, zone d'arrêt, ...).
    - les sévérités, ou conséquences (severities), qui représentent les conséquences d'un impact sur l'entité du référentiel affectée (bloquant, information, ...)
    - les causes, ou motif (causes), qui représentent les origine de la perturbation (obstacle sur les voies, accident de voyageur, ...)
+   - les tags (tags), qui permettent de tager des perturbations (rer, meteo, probleme, ...)
    - les canaux de diffusion (channels), qui représentent les medias vers lesquels les informations seront transmises.
 
 Pour chacune des entités présentées, les web services proposent les fonctions de création, suppression, édition, liste, et recherche unitaire. Sauf mention contraire, seules les fonctions de liste et de recherche sont proposées à l'implémentation.
@@ -52,7 +53,8 @@ Enfin, en cas de paramétre non valide, y compris un json ne respestant pas les 
                 "disruption": {"href": "https://ogv2ws.apiary-mock.com/disruptions/{id}", "templated": true},
                 "severities": {"href": "https://ogv2ws.apiary-mock.com/severities"},
                 "causes": {"href": "https://ogv2ws.apiary-mock.com/causes"},
-                "channels": {"href": "https://ogv2ws.apiary-mock.com/channels"}
+                "channels": {"href": "https://ogv2ws.apiary-mock.com/channels"},
+                "tags": {"href": "https://ogv2ws.apiary-mock.com/tags"}
             }
 
 
@@ -132,7 +134,7 @@ Le champs ```localization``` contient un objet localisation de la perturbation.
                             "created_at": "2014-07-21T14:06:23Z",
                             "id": "32b07ff8-10e0-11e4-ae39-d4bed99855be",
                             "self": {
-                                "href": "https://ogv2ws.apiary-mock.com//causes/32b07ff8-10e0-11e4-ae39-d4bed99855be"
+                                "href": "https://ogv2ws.apiary-mock.com/causes/32b07ff8-10e0-11e4-ae39-d4bed99855be"
                             },
                             "updated_at": null,
                             "wording": "foo1"
@@ -1480,6 +1482,211 @@ Archive une cause.
                 },
                 "meta": {}
             }
+
+#Liste des tags [/tags]
+
+##Retourne la liste de tous les tags [GET]
+
+- response 200 (application/json)
+
+    * Body
+
+            {
+                "tags": [
+                    {
+                        "id": "3d1f42b2-e8df-11e4-8c3e-0008ca8617ea",
+                        "self": {
+                            "href": "https://ogv2ws.apiary-mock.com/tags/3d1f42b2-e8df-11e4-8c3e-0008ca8617ea"
+                        }
+                        "wording": "probleme",
+                        "created_at": "2014-04-31T16:52:18Z",
+                        "updated_at": "2014-04-31T16:55:18Z"
+                    },
+                    {
+                        "id": "3d1f42b2-e8df-11e5-8c3e-0008ca8617ea",
+                        "self": {
+                            "href": "https://ogv2ws.apiary-mock.com/tags/3d1f42b2-e8df-11e5-8c3e-0008ca8617ea"
+                        }
+                        "wording": "meteo",
+                        "created_at": "2014-04-31T16:52:18Z",
+                        "updated_at": "2014-04-31T16:55:18Z"
+                    },
+                    {
+                        "id": "3d1f42b2-e8df-11e6-8c3e-0008ca8617ea",
+                        "self": {
+                            "href": "https://ogv2ws.apiary-mock.com/tags/3d1f42b2-e8df-11e6-8c3e-0008ca8617ea"
+                        }
+                        "wording": "rer",
+                        "created_at": "2014-04-31T16:52:18Z",
+                        "updated_at": "2014-04-31T16:55:18Z"
+                    }
+                ],
+                "meta": {}
+            }
+
+##Créer un tag [POST]
+
+La création d'un tag est réalisée via une requête ```POST``` sur la resource ```tag```.
+Le content-type de la requete doit etre json et le corps de celle ci doit contenir un json correspondant au format d'un tag.
+
+Les champs suivant peuvent etre défini:
+
+  - wording (obligatoire)
+
+Le champs ```wording``` correspond au libellé qui sera affiché pour ce tag.
+
+Lors d'un succés une réponse 201 est retourné, celle ci contient le tag créé.
+
+###Exemple
+- request
+    + headers
+
+            Content-Type: application/json
+    * Body
+
+                {
+                    "wording": "rer"
+                }
+
+- response 200 (application/json)
+
+    * Body
+
+            {
+                "tag": {
+                    "id": "3d1f42b2-e8df-11e4-8c3e-0008ca8617ea",
+                    "self": {
+                        "href": "https://ogv2ws.apiary-mock.com/tags/3d1f42b2-e8df-11e4-8c3e-0008ca8617ea"
+                    }
+                    "wording": "rer",
+                    "created_at": "2014-04-31T16:52:18Z",
+                    "updated_at": null
+                },
+                "meta": {}
+            }
+
+- response 400 (application/json)
+
+    * Body
+
+            {
+                "error": {
+                    "message": "'wording' is a required property"
+                }
+                "meta": {}
+            }
+
+# tags [/tags/{id}]
+##Retourne une cause. [GET]
+
+##Paramètres
+
+Retourne un tag existant.
+
+- response 200 (application/json)
+
+    * Body
+
+            {
+                "tag": {
+                    "id": "3d1f42b2-e8df-11e4-8c3e-0008ca8617ea",
+                    "self": {
+                        "href": "https://ogv2ws.apiary-mock.com/tags/3d1f42b2-e8df-11e4-8c3e-0008ca8617ea"
+                    }
+                    "wording": "rer",
+                    "created_at": "2014-04-31T16:52:18Z",
+                    "updated_at": null
+                },
+                "meta": {}
+            }
+
+
+- response 404 (application/json)
+    * Body
+
+            {
+                "error": {
+                    "message": "No tag"
+                },
+                "meta": {}
+            }
+
+##Mise à jour d'un tag [PUT]
+La mise à jour d'un tag est réalisé via une requête ```PUT``` sur la resource ```tags```.
+Le content-type de la requete doit etre json et le corps de celle ci doit contenir un json correspondant au format d'un tag.
+
+Les contraintes sont les meme que pour la création.
+
+Lors d'un succés une réponse 200 est retourné, celle ci contient le tag modifié.
+###Exemple
+
+
+- Request
+
+    * Headers
+
+            Content-Type: application/json
+
+    * Body
+
+            {
+                "wording": "rer"
+            }
+
+- Response 200 (application/json)
+
+    * Body
+
+            {
+                "tag": {
+                    "id": "3d1f42b3-e8df-11e3-8c3e-0008ca8617ea",
+                    "self": {
+                        "href": "https://ogv2ws.apiary-mock.com/tags/3d1f42b2-e8df-11e4-8c3e-0008ca8617ea"
+                    }
+                    "wording": "rer",
+                    "created_at": "2014-04-31T16:52:18Z",
+                    "updated_at": "2014-04-31T16:55:18Z"
+                },
+                "meta": {}
+            }
+
+- response 404 (application/json)
+    * Body
+
+            {
+                "error": {
+                    "message": "No tag"
+                },
+                "meta": {}
+            }
+
+- response 400 (application/json)
+    * Body
+
+            {
+                "error": {
+                    "message": "'wording' is a required property"
+                }
+                "meta": {}
+            }
+
+##Archive un tag [DELETE]
+Archive un tag.
+###Paramètres
+
+
+- Response 204
+
+- response 404 (application/json)
+    * Body
+
+            {
+                "error": {
+                    "message": "No tag"
+                },
+                "meta": {}
+            }
+
 
 #Liste des canaux de diffusions [/channels]
 

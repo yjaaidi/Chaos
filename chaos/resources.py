@@ -106,7 +106,8 @@ class Index(flask_restful.Resource):
             "severities": {"href": url_for('severity', _external=True)},
             "causes": {"href": url_for('cause', _external=True)},
             "channels": {"href": url_for('channel', _external=True)},
-            "impactsbyobject": {"href": url_for('impactsbyobject', _external=True)}
+            "impactsbyobject": {"href": url_for('impactsbyobject', _external=True)},
+            "tags": {"href": url_for('tag', _external=True)}
         }
         return response, 200
 

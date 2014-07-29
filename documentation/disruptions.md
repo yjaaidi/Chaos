@@ -17,7 +17,8 @@ It's an api for blabla
                 "severities": {"href": "https://chaos.apiary-mock.com/severities"},
                 "causes": {"href": "https://chaos.apiary-mock.com/causes"},
                 "channels": {"href": "https://chaos.apiary-mock.com/channels"},
-                "impactsbyobject": {"href": "https://chaos.apiary-mock.com/impactsbyobject"}
+                "impactsbyobject": {"href": "https://chaos.apiary-mock.com/impactsbyobject"},
+                "tags": {"href": "https://ogv2ws.apiary-mock.com/tags"}
             }
 
 
@@ -1124,6 +1125,169 @@ Return all the severities ordered by priority.
                 },
                 "meta": {}
             }
+
+#List of tags [/tags]
+
+##Retrieve the list of all tags [GET]
+
+- response 200 (application/json)
+
+    * Body
+
+            {
+                "tags": [
+                    {
+                        "id": "3d1f42b2-e8df-11e4-8c3e-0008ca8617ea",
+                        "wording": "meteo",
+                        "created_at": "2014-04-31T16:52:18Z",
+                        "updated_at": "2014-04-31T16:55:18Z"
+                    },
+                    {
+                        "id": "3d1f42b2-e8df-11e5-8c3e-0008ca8617ea",
+                        "wording": "probleme",
+                        "created_at": "2014-04-31T16:52:18Z",
+                        "updated_at": "2014-04-31T16:55:18Z"
+                    },
+                    {
+                        "id": "3d1f42b2-e8df-11e6-8c3e-0008ca8617ea",
+                        "wording": "rer",
+                        "created_at": "2014-04-31T16:52:18Z",
+                        "updated_at": "2014-04-31T16:55:18Z"
+                    }
+                ],
+                "meta": {}
+            }
+
+##Create a tag [POST]
+- request
+    + headers
+
+            Content-Type: application/json
+    * Body
+
+                {
+                    "wording": "meteo"
+                }
+
+- response 200 (application/json)
+
+    * Body
+
+            {
+                "tag": {
+                    "id": "3d1f42b2-e8df-11e4-8c3e-0008ca8617ea",
+                    "wording": "meteo",
+                    "created_at": "2014-04-31T16:52:18Z",
+                    "updated_at": null
+                },
+                "meta": {}
+            }
+
+# tags [/tags/{id}]
+##Retrieve one tag [GET]
+
+##Parameters
+
+Retrieve one existing tag:
+
+- response 200 (application/json)
+
+    * Body
+
+            {
+                "tag": {
+                    "id": "3d1f42b2-e8df-11e4-8c3e-0008ca8617ea",
+                    "self": {
+                        "href": "https://ogv2ws.apiary-mock.com/tags/3d1f42b2-e8df-11e4-8c3e-0008ca8617ea"
+                    }
+                    "wording": "rer",
+                    "created_at": "2014-04-31T16:52:18Z",
+                    "updated_at": null
+                },
+                "meta": {}
+            }
+
+
+- response 404 (application/json)
+    * Body
+
+            {
+                "error": {
+                    "message": "No tag"
+                },
+                "meta": {}
+            }
+
+##Update a tag [PUT]
+
+###Parameters
+
+- Request
+
+    * Headers
+
+            Content-Type: application/json
+
+    * Body
+
+            {
+                "wording": "rer"
+            }
+
+- Response 200 (application/json)
+
+    * Body
+
+            {
+                "tag": {
+                    "id": "3d1f42b3-e8df-11e3-8c3e-0008ca8617ea",
+                    "self": {
+                        "href": "https://ogv2ws.apiary-mock.com/tags/3d1f42b2-e8df-11e4-8c3e-0008ca8617ea"
+                    }
+                    "wording": "rer",
+                    "created_at": "2014-04-31T16:52:18Z",
+                    "updated_at": "2014-04-31T16:55:18Z"
+                },
+                "meta": {}
+            }
+
+- response 404 (application/json)
+    * Body
+
+            {
+                "error": {
+                    "message": "No tag"
+                },
+                "meta": {}
+            }
+
+- response 400 (application/json)
+    * Body
+
+            {
+                "error": {
+                    "message": "'wording' is a required property"
+                }
+                "meta": {}
+            }
+
+##Delete a tag [DELETE]
+Archive a tag.
+###Parameters
+
+
+- Response 204
+
+- response 404 (application/json)
+    * Body
+
+            {
+                "error": {
+                    "message": "No tag"
+                },
+                "meta": {}
+            }
+
 
 #List of channels [/channels]
 
