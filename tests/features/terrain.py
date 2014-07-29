@@ -10,8 +10,8 @@ migrate = Migrate(chaos.app, chaos.db)
 
 migration_dir = 'migrations' if os.path.isdir('migrations') else '../migrations'
 
-@before.each_scenario
-def setup_db(scenario):
+@before.each_feature
+def setup_db(feature):
     logging.getLogger('alembic').setLevel(logging.ERROR)
     with chaos.app.app_context():
         flask_migrate.upgrade(directory=migration_dir)
@@ -21,10 +21,16 @@ def setup_tester(scenario):
     world.client = chaos.app.test_client()
 
 
-@after.each_scenario
-def teardown_db(scenario):
+@after.each_feature
+def teardown_db(feature):
     with chaos.app.app_context():
         flask_migrate.downgrade(revision='base', directory=migration_dir)
+
+@after.each_scenario
+def truncate_db(scenario):
+    with chaos.app.app_context():
+        chaos.db.session.execute('TRUNCATE pt_object, message, application_periods, impact, severity, cause, disruption, channel CASCADE')
+        chaos.db.session.commit()
 
 @before.each_step
 def retrieve_json_response(step):
