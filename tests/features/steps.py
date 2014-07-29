@@ -2,7 +2,7 @@ from lettuce import *
 from nose.tools import *
 import json
 from chaos import db
-from chaos.models import Disruption, Severity, Cause, Impact, PTobject, Channel, Message, ApplicationPeriods
+from chaos.models import Disruption, Severity, Cause, Impact, PTobject, Channel, Message, ApplicationPeriods, Tag
 import chaos
 
 model_classes = {'disruption': Disruption,
@@ -17,7 +17,9 @@ model_classes = {'disruption': Disruption,
                'channel': Channel,
                'channels': Channel,
                'messages': Message,
-               'applicationperiods':ApplicationPeriods
+               'applicationperiods':ApplicationPeriods,
+               'tag': Tag,
+               'tags': Tag,
 }
 
 def pythonify(value):

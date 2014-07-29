@@ -56,6 +56,11 @@ api.add_resource(resources.Cause,
                  '/causes/<string:id>',
                  endpoint='cause')
 
+api.add_resource(resources.Tag,
+                 '/tags',
+                 '/tags/<string:id>',
+                 endpoint='tag')
+
 api.add_resource(resources.Impacts,
                  '/disruptions/<string:disruption_id>/impacts',
                  '/disruptions/<string:disruption_id>/impacts/<string:id>',

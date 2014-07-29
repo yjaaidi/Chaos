@@ -35,7 +35,8 @@ from jsonschema import validate, ValidationError
 from flask.ext.restful import abort
 from fields import *
 from formats import *
-from formats import impact_input_format, channel_input_format, pt_object_type_values
+from formats import impact_input_format, channel_input_format, pt_object_type_values,\
+    tag_input_format
 from chaos import mapper
 from chaos import utils
 import chaos
@@ -66,6 +67,10 @@ severity_mapping = {
 }
 
 cause_mapping = {
+    'wording': None
+}
+
+tag_mapping = {
     'wording': None
 }
 
@@ -309,7 +314,7 @@ class Cause(flask_restful.Resource):
         except ValidationError, e:
             logging.debug(str(e))
             #TODO: generate good error messages
-            return marshal({'error': {'message': str(e).replace("\n", " ")}},
+            return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 400
 
         mapper.fill_from_json(cause, json, cause_mapping)
@@ -322,6 +327,66 @@ class Cause(flask_restful.Resource):
                            error_fields), 400
         cause = models.Cause.get(id)
         cause.is_visible = False
+        db.session.commit()
+        return None, 204
+
+
+class Tag(flask_restful.Resource):
+
+    def get(self, id=None):
+        if id:
+            if not id_format.match(id):
+                return marshal({'error': {'message': "id invalid"}},
+                           error_fields), 400
+            response = {'tag': models.Tag.get(id)}
+            return marshal(response, one_tag_fields)
+        else:
+            response = {'tags': models.Tag.all(), 'meta': {}}
+            return marshal(response, tags_fields)
+
+    def post(self):
+        json = request.get_json()
+        logging.getLogger(__name__).debug('Post tag: %s', json)
+        try:
+            validate(json, tag_input_format)
+        except ValidationError, e:
+            logging.debug(str(e))
+            #TODO: generate good error messages
+            return marshal({'error': {'message': utils.parse_error(e)}},
+                           error_fields), 400
+
+        tag = models.Tag()
+        mapper.fill_from_json(tag, json, tag_mapping)
+        db.session.add(tag)
+        db.session.commit()
+        return marshal({'tag': tag}, one_tag_fields), 201
+
+    def put(self, id):
+        if not id_format.match(id):
+            return marshal({'error': {'message': "id invalid"}},
+                    error_fields), 400
+        tag = models.Tag.get(id)
+        json = request.get_json()
+        logging.getLogger(__name__).debug('PUT tag: %s', json)
+
+        try:
+            validate(json, tag_input_format)
+        except ValidationError, e:
+            logging.debug(str(e))
+            #TODO: generate good error messages
+            return marshal({'error': {'message': utils.parse_error(e)}},
+                           error_fields), 400
+
+        mapper.fill_from_json(tag, json, tag_mapping)
+        db.session.commit()
+        return marshal({'tag': tag}, one_tag_fields), 200
+
+    def delete(self, id):
+        if not id_format.match(id):
+            return marshal({'error': {'message': "id invalid"}},
+                           error_fields), 400
+        tag = models.Tag.get(id)
+        tag.is_visible = False
         db.session.commit()
         return None, 204
 
