@@ -185,6 +185,26 @@ def test_impact_whith_message_validation():
     json = {"severity":{"id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657ea"}, "messages":[{"teaaaaxt":"aaaaaa","channel":{"id": "3d1f42b2-e8df-11e3-8c3e-0008ca86c7ea"}}]}
     validate(json, formats.impact_input_format)
 
-def test_ipact_with_stop_area_validation():
+
+def test_impact_with_stop_area_validation():
     json = {'id': 'stop_area:...:200', 'type': 'stop_area'}
     validate(json, formats.object_input_format)
+
+
+def test_tag_with_wording_validation():
+    json = {'wording': 'aaa'}
+    validate(json, formats.tag_input_format)
+
+def test_tag_with_size_wording_validation():
+    json = {'wording': 'a'*250}
+    validate(json, formats.tag_input_format)
+
+@raises(ValidationError)
+def test_tag_with_invalid_size_wording_validation():
+    json = {'wording': 'a'*251}
+    validate(json, formats.tag_input_format)
+
+@raises(ValidationError)
+def test_tag_without_wording_validation():
+    json = {}
+    validate(json, formats.tag_input_format)
