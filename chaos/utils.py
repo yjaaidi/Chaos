@@ -187,7 +187,7 @@ def group_impacts_by_pt_object(impacts, object_type, uris, get_pt_object):
     return result
 
 
-def ParseError(error):
+def parse_error(error):
     to_return = None
     try:
         to_return = error.message
