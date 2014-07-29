@@ -191,20 +191,20 @@ def test_impact_with_stop_area_validation():
     validate(json, formats.object_input_format)
 
 
-def test_tag_with_wording_validation():
-    json = {'wording': 'aaa'}
+def test_tag_with_name_validation():
+    json = {'name': 'aaa'}
     validate(json, formats.tag_input_format)
 
-def test_tag_with_size_wording_validation():
-    json = {'wording': 'a'*250}
-    validate(json, formats.tag_input_format)
-
-@raises(ValidationError)
-def test_tag_with_invalid_size_wording_validation():
-    json = {'wording': 'a'*251}
+def test_tag_with_size_name_validation():
+    json = {'name': 'a'*250}
     validate(json, formats.tag_input_format)
 
 @raises(ValidationError)
-def test_tag_without_wording_validation():
+def test_tag_with_invalid_size_name_validation():
+    json = {'name': 'a'*251}
+    validate(json, formats.tag_input_format)
+
+@raises(ValidationError)
+def test_tag_without_name_validation():
     json = {}
     validate(json, formats.tag_input_format)
