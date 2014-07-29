@@ -77,7 +77,8 @@ disruptions_input_format = {
                        'required': ['id']
                    },
                    'localization': {'type': 'array',
-                                    'items': [localization_object_input_format]
+                                    'items': localization_object_input_format,
+                                    "uniqueItems": True
                    }
     },
     'required': ['reference', 'cause']
@@ -132,13 +133,16 @@ impact_input_format = {
                      'required': ['id']
         },
         'application_periods': {'type': 'array',
-                                'items': [date_period_format]
+                                'items': date_period_format,
+                                "uniqueItems": True
         },
         'objects': {'type': 'array',
-                    'items': [object_input_format]
+                    'items': object_input_format,
+                    "uniqueItems": True
         },
         'messages': {'type': 'array',
-                     'items': [message_input_format]
+                     'items': message_input_format,
+                     "uniqueItems": True
         }
     },
     'required': ['severity']

@@ -17,14 +17,14 @@ Feature: Manipulate impacts in a Disruption
 
         When I post to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/impacts" with:
         """
-        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-05-22T02:15:00Z"},{"begin": "2014-04-29T16:52:00Z","end": "2014-05-22T02:15:00Z"}]}
+        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"},{"begin": "2014-04-29T16:52:00Z","end": "2014-05-22T02:15:00Z"}]}
         """
         Then the status code should be "201"
         And the header "Content-Type" should be "application/json"
         And the field "impact.application_periods" should exist
         And the field "impact.severity.wording" should be "good news"
         And the field "impact.application_periods.0.begin" should be "2014-04-29T16:52:00Z"
-        And the field "impact.application_periods.0.end" should be "2014-05-22T02:15:00Z"
+        And the field "impact.application_periods.0.end" should be "2014-06-22T02:15:00Z"
 
     Scenario: Add an impact in a disruption with two PTobjects and two application_periods
 
@@ -43,7 +43,7 @@ Feature: Manipulate impacts in a Disruption
 
         When I post to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/impacts" with:
         """
-        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "network:JDR:2","type": "network"}, {"id": "network:JDR:1","type": "network"}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-05-22T02:15:00Z"},{"begin": "2014-04-29T16:52:00Z","end": "2014-05-22T02:15:00Z"}]}
+        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "network:JDR:2","type": "network"}, {"id": "network:JDR:1","type": "network"}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"},{"begin": "2014-04-29T16:52:00Z","end": "2014-05-22T02:15:00Z"}]}
         """
         Then the status code should be "201"
         And the header "Content-Type" should be "application/json"
@@ -70,7 +70,7 @@ Feature: Manipulate impacts in a Disruption
 
         When I post to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/impacts" with:
         """
-        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-05-22T02:15:00Z"},{"begin": "2014-04-29T16:52:00Z","end": "2014-05-22T02:15:00Z"}]}
+        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"},{"begin": "2014-04-29T16:52:00Z","end": "2014-05-22T02:15:00Z"}]}
         """
         Then the status code should be "201"
         And the header "Content-Type" should be "application/json"
