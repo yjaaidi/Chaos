@@ -33,8 +33,6 @@ from datetime import datetime
 from aniso8601 import parse_datetime
 import uuid
 import flask
-from flask import current_app
-from chaos.navitia import Navitia
 
 
 def make_pager(resultset, endpoint, **kwargs):
@@ -187,3 +185,12 @@ def group_impacts_by_pt_object(impacts, object_type, uris, get_pt_object):
     result = dictionary.values()
     result.sort(key=lambda x: x['name'])
     return result
+
+
+def parse_error(error):
+    to_return = None
+    try:
+        to_return = error.message
+    except AttributeError:
+        to_return = str(error).replace("\n", " ")
+    return to_return
