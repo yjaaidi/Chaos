@@ -134,7 +134,7 @@ impact_input_format = {
         },
         'application_periods': {'type': 'array',
                                 'items': date_period_format,
-                                    "uniqueItems": True
+                                "uniqueItems": True
         },
         'objects': {'type': 'array',
                     'items': object_input_format,
