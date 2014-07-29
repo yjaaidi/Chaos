@@ -67,3 +67,4 @@ def test_severity_is_required_in_impcat():
         assert False
     except ValidationError, e:
         eq_(ParseError(e), "'severity' is a required property", True)
+

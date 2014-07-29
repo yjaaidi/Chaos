@@ -131,8 +131,8 @@ impact_input_format = {
                      'properties': {'id': {'type': 'string', 'pattern': id_format_text}},
                      'required': ['id']
         },
-        'applications_periods': {'type': 'array',
-                                 'items': [date_period_format]
+        'application_periods': {'type': 'array',
+                                'items': [date_period_format]
         },
         'objects': {'type': 'array',
                     'items': [object_input_format]
