@@ -71,7 +71,7 @@ cause_mapping = {
 }
 
 tag_mapping = {
-    'wording': None
+    'name': None
 }
 
 object_mapping = {

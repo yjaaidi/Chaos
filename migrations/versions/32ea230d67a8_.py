@@ -20,9 +20,10 @@ def upgrade():
     sa.Column('created_at', sa.DateTime(), nullable=False),
     sa.Column('updated_at', sa.DateTime(), nullable=True),
     sa.Column('id', postgresql.UUID(), nullable=False),
-    sa.Column('wording', sa.Text(), nullable=False),
+    sa.Column('name', sa.Text(), nullable=False),
     sa.Column('is_visible', sa.Boolean(), nullable=False),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('name')
     )
     ### end Alembic commands ###
 

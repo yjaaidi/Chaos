@@ -7,19 +7,19 @@ Feature: Create tag
     Scenario: creation of tag
         When I post to "/tags" with:
         """
-        {"wording": "foo"}
+        {"name": "foo"}
         """
         Then the status code should be "201"
         And the header "Content-Type" should be "application/json"
-        And the field "tag.wording" should be "foo"
+        And the field "tag.name" should be "foo"
 
     Scenario: Tag are created
         Given I post to "/tags" with:
         """
-        {"wording": "foo"}
+        {"name": "foo"}
         """
         When I get "/tags"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
         And the field "tags" should have a size of 1
-        And the field "tags.0.wording" should be "foo"
+        And the field "tags.0.name" should be "foo"

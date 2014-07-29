@@ -18,7 +18,7 @@ It's an api for blabla
                 "causes": {"href": "https://chaos.apiary-mock.com/causes"},
                 "channels": {"href": "https://chaos.apiary-mock.com/channels"},
                 "impactsbyobject": {"href": "https://chaos.apiary-mock.com/impactsbyobject"},
-                "tags": {"href": "https://ogv2ws.apiary-mock.com/tags"}
+                "tags": {"href": "https://chaos.apiary-mock.com/tags"}
             }
 
 

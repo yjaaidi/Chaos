@@ -114,7 +114,7 @@ class Tag(TimestampMixin, db.Model):
     represent the tag of a disruption
     """
     id = db.Column(UUID, primary_key=True)
-    wording = db.Column(db.Text, unique=False, nullable=False)
+    name = db.Column(db.Text, unique=True, nullable=False)
     is_visible = db.Column(db.Boolean, unique=False, nullable=False, default=True)
 
     def __init__(self):

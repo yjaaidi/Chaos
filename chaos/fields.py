@@ -114,7 +114,7 @@ one_cause_fields = {
 
 tag_fields = {
     'id': fields.Raw,
-    'wording': fields.Raw,
+    'name': fields.Raw,
     'created_at': FieldDateTime,
     'updated_at': FieldDateTime,
     'self': {'href': fields.Url('cause', absolute=True)},
