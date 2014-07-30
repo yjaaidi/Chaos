@@ -643,4 +643,5 @@ class Status(flask_restful.Resource):
     def get(self):
         return {'version': chaos.VERSION,
                 'db_pool_status': db.engine.pool.status(),
-                'db_version': db.engine.scalar('select version_num from alembic_version;')}
+                'db_version': db.engine.scalar('select version_num from alembic_version;'),
+                'navitia_url': current_app.config['NAVITIA_URL']}
