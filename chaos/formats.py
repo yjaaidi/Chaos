@@ -101,6 +101,13 @@ cause_input_format = {
     'required': ['wording']
 }
 
+tag_input_format = {
+    'type': 'object',
+    'properties': {'name': {'type': 'string', 'maxLength': 250},
+                   },
+    'required': ['name']
+}
+
 channel_input_format = {
     'type': 'object',
     'properties': {'name': {'type': 'string', 'maxLength': 250},

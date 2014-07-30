@@ -35,11 +35,13 @@ from jsonschema import validate, ValidationError
 from flask.ext.restful import abort
 from fields import *
 from formats import *
-from formats import impact_input_format, channel_input_format, pt_object_type_values
+from formats import impact_input_format, channel_input_format, pt_object_type_values,\
+    tag_input_format
 from chaos import mapper
 from chaos import utils
 import chaos
 from chaos.navitia import Navitia
+from sqlalchemy.exc import IntegrityError
 
 import logging
 from utils import make_pager, option_value
@@ -67,6 +69,10 @@ severity_mapping = {
 
 cause_mapping = {
     'wording': None
+}
+
+tag_mapping = {
+    'name': None
 }
 
 object_mapping = {
@@ -101,7 +107,8 @@ class Index(flask_restful.Resource):
             "severities": {"href": url_for('severity', _external=True)},
             "causes": {"href": url_for('cause', _external=True)},
             "channels": {"href": url_for('channel', _external=True)},
-            "impactsbyobject": {"href": url_for('impactsbyobject', _external=True)}
+            "impactsbyobject": {"href": url_for('impactsbyobject', _external=True)},
+            "tags": {"href": url_for('tag', _external=True)}
         }
         return response, 200
 
@@ -309,7 +316,7 @@ class Cause(flask_restful.Resource):
         except ValidationError, e:
             logging.debug(str(e))
             #TODO: generate good error messages
-            return marshal({'error': {'message': str(e).replace("\n", " ")}},
+            return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 400
 
         mapper.fill_from_json(cause, json, cause_mapping)
@@ -322,6 +329,76 @@ class Cause(flask_restful.Resource):
                            error_fields), 400
         cause = models.Cause.get(id)
         cause.is_visible = False
+        db.session.commit()
+        return None, 204
+
+
+class Tag(flask_restful.Resource):
+
+    def get(self, id=None):
+        if id:
+            if not id_format.match(id):
+                return marshal({'error': {'message': "id invalid"}},
+                           error_fields), 400
+            response = {'tag': models.Tag.get(id)}
+            return marshal(response, one_tag_fields)
+        else:
+            response = {'tags': models.Tag.all(), 'meta': {}}
+            return marshal(response, tags_fields)
+
+    def post(self):
+        json = request.get_json()
+        logging.getLogger(__name__).debug('Post tag: %s', json)
+        try:
+            validate(json, tag_input_format)
+        except ValidationError, e:
+            logging.debug(str(e))
+            #TODO: generate good error messages
+            return marshal({'error': {'message': utils.parse_error(e)}},
+                           error_fields), 400
+
+        tag = models.Tag()
+        mapper.fill_from_json(tag, json, tag_mapping)
+        db.session.add(tag)
+        try:
+            db.session.commit()
+        except IntegrityError, e:
+            logging.debug(str(e))
+            return marshal({'error': {'message': utils.parse_error(e)}},
+                           error_fields), 400
+        return marshal({'tag': tag}, one_tag_fields), 201
+
+    def put(self, id):
+        if not id_format.match(id):
+            return marshal({'error': {'message': "id invalid"}},
+                    error_fields), 400
+        tag = models.Tag.get(id)
+        json = request.get_json()
+        logging.getLogger(__name__).debug('PUT tag: %s', json)
+
+        try:
+            validate(json, tag_input_format)
+        except ValidationError, e:
+            logging.debug(str(e))
+            #TODO: generate good error messages
+            return marshal({'error': {'message': utils.parse_error(e)}},
+                           error_fields), 400
+
+        mapper.fill_from_json(tag, json, tag_mapping)
+        try:
+            db.session.commit()
+        except IntegrityError, e:
+            logging.debug(str(e))
+            return marshal({'error': {'message': utils.parse_error(e)}},
+                           error_fields), 400
+        return marshal({'tag': tag}, one_tag_fields), 200
+
+    def delete(self, id):
+        if not id_format.match(id):
+            return marshal({'error': {'message': "id invalid"}},
+                           error_fields), 400
+        tag = models.Tag.get(id)
+        tag.is_visible = False
         db.session.commit()
         return None, 204
 
@@ -566,4 +643,5 @@ class Status(flask_restful.Resource):
     def get(self):
         return {'version': chaos.VERSION,
                 'db_pool_status': db.engine.pool.status(),
-                'db_version': db.engine.scalar('select version_num from alembic_version;')}
+                'db_version': db.engine.scalar('select version_num from alembic_version;'),
+                'navitia_url': current_app.config['NAVITIA_URL']}

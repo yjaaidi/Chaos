@@ -29,7 +29,7 @@ def teardown_db(feature):
 @after.each_scenario
 def truncate_db(scenario):
     with chaos.app.app_context():
-        chaos.db.session.execute('TRUNCATE pt_object, message, application_periods, impact, severity, cause, disruption, channel CASCADE')
+        chaos.db.session.execute('TRUNCATE pt_object, message, application_periods, impact, severity, cause, disruption, channel , tag CASCADE')
         chaos.db.session.commit()
 
 @before.each_step

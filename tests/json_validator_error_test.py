@@ -2,7 +2,7 @@ from nose.tools import *
 from chaos.utils import parse_error
 from jsonschema import validate, ValidationError
 from chaos.formats import impact_input_format, channel_input_format, severity_input_format,\
-    cause_input_format, disruptions_input_format, pt_object_type_values
+    cause_input_format, disruptions_input_format, tag_input_format, pt_object_type_values
 
 
 def test_wording_is_required_in_severity():
@@ -189,3 +189,10 @@ def test_unique_message_in_impact():
         assert False
     except ValidationError, e:
         eq_(parse_error(e), "[{'text': 'message 1', 'channel': {'id': '4ffab230-3d48-4eea-aa2c-22f8680230b6'}}, {'text': 'message 1', 'channel': {'id': '4ffab230-3d48-4eea-aa2c-22f8680230b6'}}] has non-unique elements", True)
+
+def test_name_is_required_in_tag():
+    try:
+        validate({}, tag_input_format)
+        assert False
+    except ValidationError, e:
+        eq_(parse_error(e), "'name' is a required property", True)
