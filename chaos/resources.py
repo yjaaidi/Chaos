@@ -4,6 +4,7 @@
 #     the software to build cool stuff with public transport.
 #
 # Hope you'll enjoy and contribute to this project,
+# Hope you'll enjoy and contribute to this project,
 #     powered by Canal TP (www.canaltp.fr).
 # Help us simplify mobility and open public transport:
 #     a non ending quest to the responsive locomotion way of traveling!
@@ -233,6 +234,14 @@ class Disruptions(flask_restful.Resource):
                         return marshal({'error': {'message': 'ptobject {} doesn\'t exist'.format(disruption.localization_id)}},
                             error_fields), 404
         db.session.add(disruption)
+
+        #Add all tags present in Json
+        if json:
+            if 'tags' in json:
+                for json_tag in json['tags']:
+                    tag = models.Tag.get(json_tag['id'])
+                    disrupt_tag = models.AssociateDisruptionTag(disruption.id, tag.id)
+                    db.session.add(disrupt_tag)
         db.session.commit()
         return marshal({'disruption': disruption}, one_disruption_fields), 201
 
