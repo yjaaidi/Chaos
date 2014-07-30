@@ -1138,19 +1138,19 @@ Return all the severities ordered by priority.
                 "tags": [
                     {
                         "id": "3d1f42b2-e8df-11e4-8c3e-0008ca8617ea",
-                        "wording": "meteo",
+                        "name": "meteo",
                         "created_at": "2014-04-31T16:52:18Z",
                         "updated_at": "2014-04-31T16:55:18Z"
                     },
                     {
                         "id": "3d1f42b2-e8df-11e5-8c3e-0008ca8617ea",
-                        "wording": "probleme",
+                        "name": "probleme",
                         "created_at": "2014-04-31T16:52:18Z",
                         "updated_at": "2014-04-31T16:55:18Z"
                     },
                     {
                         "id": "3d1f42b2-e8df-11e6-8c3e-0008ca8617ea",
-                        "wording": "rer",
+                        "name": "rer",
                         "created_at": "2014-04-31T16:52:18Z",
                         "updated_at": "2014-04-31T16:55:18Z"
                     }
@@ -1166,7 +1166,7 @@ Return all the severities ordered by priority.
     * Body
 
                 {
-                    "wording": "meteo"
+                    "name": "meteo"
                 }
 
 - response 200 (application/json)
@@ -1176,7 +1176,7 @@ Return all the severities ordered by priority.
             {
                 "tag": {
                     "id": "3d1f42b2-e8df-11e4-8c3e-0008ca8617ea",
-                    "wording": "meteo",
+                    "name": "meteo",
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": null
                 },
@@ -1200,7 +1200,7 @@ Retrieve one existing tag:
                     "self": {
                         "href": "https://ogv2ws.apiary-mock.com/tags/3d1f42b2-e8df-11e4-8c3e-0008ca8617ea"
                     }
-                    "wording": "rer",
+                    "name": "rer",
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": null
                 },
@@ -1231,7 +1231,7 @@ Retrieve one existing tag:
     * Body
 
             {
-                "wording": "rer"
+                "name": "rer"
             }
 
 - Response 200 (application/json)
@@ -1244,7 +1244,7 @@ Retrieve one existing tag:
                     "self": {
                         "href": "https://ogv2ws.apiary-mock.com/tags/3d1f42b2-e8df-11e4-8c3e-0008ca8617ea"
                     }
-                    "wording": "rer",
+                    "name": "rer",
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": "2014-04-31T16:55:18Z"
                 },
@@ -1266,7 +1266,7 @@ Retrieve one existing tag:
 
             {
                 "error": {
-                    "message": "'wording' is a required property"
+                    "message": "'name' is a required property"
                 }
                 "meta": {}
             }

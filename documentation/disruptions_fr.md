@@ -1498,7 +1498,7 @@ Archive une cause.
                         "self": {
                             "href": "https://ogv2ws.apiary-mock.com/tags/3d1f42b2-e8df-11e4-8c3e-0008ca8617ea"
                         }
-                        "wording": "probleme",
+                        "name": "probleme",
                         "created_at": "2014-04-31T16:52:18Z",
                         "updated_at": "2014-04-31T16:55:18Z"
                     },
@@ -1507,7 +1507,7 @@ Archive une cause.
                         "self": {
                             "href": "https://ogv2ws.apiary-mock.com/tags/3d1f42b2-e8df-11e5-8c3e-0008ca8617ea"
                         }
-                        "wording": "meteo",
+                        "name": "meteo",
                         "created_at": "2014-04-31T16:52:18Z",
                         "updated_at": "2014-04-31T16:55:18Z"
                     },
@@ -1516,7 +1516,7 @@ Archive une cause.
                         "self": {
                             "href": "https://ogv2ws.apiary-mock.com/tags/3d1f42b2-e8df-11e6-8c3e-0008ca8617ea"
                         }
-                        "wording": "rer",
+                        "name": "rer",
                         "created_at": "2014-04-31T16:52:18Z",
                         "updated_at": "2014-04-31T16:55:18Z"
                     }
@@ -1545,7 +1545,7 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient le tag cré�
     * Body
 
                 {
-                    "wording": "rer"
+                    "name": "rer"
                 }
 
 - response 200 (application/json)
@@ -1558,7 +1558,7 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient le tag cré�
                     "self": {
                         "href": "https://ogv2ws.apiary-mock.com/tags/3d1f42b2-e8df-11e4-8c3e-0008ca8617ea"
                     }
-                    "wording": "rer",
+                    "name": "rer",
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": null
                 },
@@ -1571,7 +1571,7 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient le tag cré�
 
             {
                 "error": {
-                    "message": "'wording' is a required property"
+                    "message": "'name' is a required property"
                 }
                 "meta": {}
             }
@@ -1593,7 +1593,7 @@ Retourne un tag existant.
                     "self": {
                         "href": "https://ogv2ws.apiary-mock.com/tags/3d1f42b2-e8df-11e4-8c3e-0008ca8617ea"
                     }
-                    "wording": "rer",
+                    "name": "rer",
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": null
                 },
@@ -1630,7 +1630,7 @@ Lors d'un succés une réponse 200 est retourné, celle ci contient le tag modif
     * Body
 
             {
-                "wording": "rer"
+                "name": "rer"
             }
 
 - Response 200 (application/json)
@@ -1643,7 +1643,7 @@ Lors d'un succés une réponse 200 est retourné, celle ci contient le tag modif
                     "self": {
                         "href": "https://ogv2ws.apiary-mock.com/tags/3d1f42b2-e8df-11e4-8c3e-0008ca8617ea"
                     }
-                    "wording": "rer",
+                    "name": "rer",
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": "2014-04-31T16:55:18Z"
                 },
@@ -1665,7 +1665,7 @@ Lors d'un succés une réponse 200 est retourné, celle ci contient le tag modif
 
             {
                 "error": {
-                    "message": "'wording' is a required property"
+                    "message": "'name' is a required property"
                 }
                 "meta": {}
             }

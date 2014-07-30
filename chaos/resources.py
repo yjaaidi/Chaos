@@ -41,6 +41,7 @@ from chaos import mapper
 from chaos import utils
 import chaos
 from chaos.navitia import Navitia
+from sqlalchemy.exc import IntegrityError
 
 import logging
 from utils import make_pager, option_value
@@ -359,7 +360,12 @@ class Tag(flask_restful.Resource):
         tag = models.Tag()
         mapper.fill_from_json(tag, json, tag_mapping)
         db.session.add(tag)
-        db.session.commit()
+        try:
+            db.session.commit()
+        except IntegrityError, e:
+            logging.debug(str(e))
+            return marshal({'error': {'message': utils.parse_error(e)}},
+                           error_fields), 400
         return marshal({'tag': tag}, one_tag_fields), 201
 
     def put(self, id):
