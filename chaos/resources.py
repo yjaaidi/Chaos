@@ -385,7 +385,12 @@ class Tag(flask_restful.Resource):
                            error_fields), 400
 
         mapper.fill_from_json(tag, json, tag_mapping)
-        db.session.commit()
+        try:
+            db.session.commit()
+        except IntegrityError, e:
+            logging.debug(str(e))
+            return marshal({'error': {'message': utils.parse_error(e)}},
+                           error_fields), 400
         return marshal({'tag': tag}, one_tag_fields), 200
 
     def delete(self, id):
