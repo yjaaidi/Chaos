@@ -239,8 +239,10 @@ class Disruptions(flask_restful.Resource):
         if json:
             if 'tags' in json:
                 for json_tag in json['tags']:
-                    tag = models.Tag.get(json_tag['id'])
-                    disrupt_tag = models.AssociateDisruptionTag(disruption.id, tag.id)
+                    if not id_format.match(json_tag['id']):
+                        return marshal({'error': {'message': "id invalid"}},
+                                       error_fields), 400
+                    disrupt_tag = models.AssociateDisruptionTag(disruption.id, json_tag['id'])
                     db.session.add(disrupt_tag)
         db.session.commit()
         return marshal({'disruption': disruption}, one_disruption_fields), 201

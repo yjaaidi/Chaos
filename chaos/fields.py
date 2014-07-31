@@ -117,7 +117,7 @@ tag_fields = {
     'name': fields.Raw,
     'created_at': FieldDateTime,
     'updated_at': FieldDateTime,
-    'self': {'href': fields.Url('cause', absolute=True)},
+    'self': {'href': fields.Url('tag', absolute=True)},
 }
 
 tags_fields = {
