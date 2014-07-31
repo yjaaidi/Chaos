@@ -210,9 +210,6 @@ class AssociateDisruptionTag(TimestampMixin, db.Model):
     disruption_id = db.Column(UUID, db.ForeignKey('disruption.id'), index=True)
     tag_id = db.Column(UUID, db.ForeignKey('tag.id'), index=True)
 
-    tag = db.relationship(Tag, backref="tag_assoc")
-    disruption = db.relationship(Disruption, backref="disruption_assoc")
-
     def __init__(self, disruption_id=None, tag_id=None):
         self.id = str(uuid.uuid1())
         self.disruption_id = disruption_id
@@ -220,6 +217,10 @@ class AssociateDisruptionTag(TimestampMixin, db.Model):
 
     def __repr__(self):
         return '<AsociateDisruptionTag %r>' % self.id
+
+    @classmethod
+    def get(cls, disruption_id, tag_id):
+        return cls.query.filter_by(disruption_id=disruption_id, tag_id=tag_id).first_or_404()
 
 class Impact(TimestampMixin, db.Model):
     id = db.Column(UUID, primary_key=True)

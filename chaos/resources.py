@@ -224,7 +224,6 @@ class Disruptions(flask_restful.Resource):
             #TODO: generate good error messages
             return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 400
-
         disruption = models.Disruption()
         mapper.fill_from_json(disruption, json, disruption_mapping)
 
@@ -234,7 +233,6 @@ class Disruptions(flask_restful.Resource):
                         return marshal({'error': {'message': 'ptobject {} doesn\'t exist'.format(disruption.localization_id)}},
                             error_fields), 404
         db.session.add(disruption)
-
         #Add all tags present in Json
         if json:
             if 'tags' in json:
@@ -270,6 +268,24 @@ class Disruptions(flask_restful.Resource):
             if not self.navitia.get_pt_object(disruption.localization_id, json['localization'][0]["type"]):
                     return marshal({'error': {'message': 'ptobject {} doesn\'t exist'.format(disruption.localization_id)}},
                             error_fields), 404
+
+        #Add/delete tags present/ not present in Json
+        tags_db = dict((tag.id, tag) for tag in disruption.tags)
+        tags_json = {}
+        if 'tags' in json:
+            tags_json = dict((tag["id"], tag) for tag in json['tags'])
+            for tag_json in json['tags']:
+                if tag_json["id"] not in tags_db:
+                    disrupt_tag = models.AssociateDisruptionTag(disruption.id, tag_json['id'])
+                    db.session.add(disrupt_tag)
+                    tags_db[tag_json['id']] = models.Tag.get(tag_json['id'])
+
+        difference = set(tags_db) - set(tags_json)
+        for diff in difference:
+            tag = tags_db[diff]
+            disrupt_tag = models.AssociateDisruptionTag.get(disruption.id, tag.id)
+            disruption.tags.remove(tag)
+            db.session.delete(disrupt_tag)
 
         db.session.commit()
         return marshal({'disruption': disruption}, one_disruption_fields), 200

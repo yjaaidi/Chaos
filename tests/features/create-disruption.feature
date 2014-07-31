@@ -145,7 +145,7 @@ Feature: Create disruption
 
         When I post to "/disruptions" with:
         """
-        {"reference": "foo", "publication_period": {"begin": "2014-06-24T10:35:00Z", "end": "2014-06-24T23:35:00Z"}, "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}, "tags" [{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}]}
+        {"reference": "foo", "publication_period": {"begin": "2014-06-24T10:35:00Z", "end": "2014-06-24T23:35:00Z"}, "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}, "tags": [{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}]}
         """
         Then the status code should be "201"
         And the header "Content-Type" should be "application/json"
