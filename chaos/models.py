@@ -206,29 +206,6 @@ class Disruption(TimestampMixin, db.Model):
         if self.start_publication_date > current_time:
             return "coming"
 
-'''
-class AssociateDisruptionTag(TimestampMixin, db.Model):
-    """
-    represents the associate disruption and tag
-    """
-    __tablename__ = 'associate_disruption_tag'
-    disruption_id = db.Column(UUID, db.ForeignKey('disruption.id'), index=True)
-    tag_id = db.Column(UUID, db.ForeignKey('tag.id'), index=True)
-    db.PrimaryKeyConstraint('disruption.id', 'tag.id', name='pk_disruption_tag_id')
-
-    def __init__(self, disruption_id=None, tag_id=None):
-        self.disruption_id = disruption_id
-        self.tag_id = tag_id
-
-    def __repr__(self):
-        return "<AssociateDisruptionTag('%s','%s')>" % (self.disruption_id, self.tag_id)
-
-    @classmethod
-    def get(cls, disruption_id, tag_id):
-        return cls.query.filter_by(disruption_id=disruption_id, tag_id=tag_id).first_or_404()
-'''
-
-
 class Impact(TimestampMixin, db.Model):
     id = db.Column(UUID, primary_key=True)
     status = db.Column(ImpactStatus, nullable=False, default='published', index=True)
