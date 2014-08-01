@@ -103,12 +103,14 @@ class Index(flask_restful.Resource):
         url = url_for('disruption', _external=True)
         response = {
             "disruptions": {"href": url},
-            "disruption": {"href": url + '/{id}', "templated": True},
             "severities": {"href": url_for('severity', _external=True)},
             "causes": {"href": url_for('cause', _external=True)},
             "channels": {"href": url_for('channel', _external=True)},
             "impactsbyobject": {"href": url_for('impactsbyobject', _external=True)},
-            "tags": {"href": url_for('tag', _external=True)}
+            "tags": {"href": url_for('tag', _external=True)},
+            "status": {"href": url_for('status', _external=True)}
+
+
         }
         return response, 200
 
@@ -188,7 +190,7 @@ class Disruptions(flask_restful.Resource):
                                 action="append",
                                 default=publication_status_values)
         parser_get.add_argument("tag[]",
-                                type=utils.get_uuid(self),
+                                type=utils.get_uuid,
                                 action="append")
         parser_get.add_argument("current_time", type=utils.get_datetime)
 
