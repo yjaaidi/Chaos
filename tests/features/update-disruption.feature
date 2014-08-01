@@ -19,7 +19,7 @@ Feature: update disruption
         And the field "disruption.publication_period.begin" should be "2014-06-24T13:35:00Z"
         And the field "disruption.publication_period.end" should be "2014-07-08T18:00:00Z"
 
-   Scenario: I can update with tag and AssociateDisruptionTag is empty
+   Scenario: I can update with tag and associate_disruption_tag is empty
 
         Given I have the following causes in my database:
             | wording   | created_at          | updated_at          | is_visible | id                                   |
@@ -44,7 +44,7 @@ Feature: update disruption
         And the field "disruption.tags.0.id" should be "7ffab230-3d48-4eea-aa2c-22f8680230b6"
         And the field "disruption.tags.0.name" should be "weather"
 
-   Scenario: I can update with add tag and AssociateDisruptionTag is not empty (1 associatedisruptiontag)
+   Scenario: I can update with add tag and associate_disruption_tag is not empty (1 associate_disruption_tag)
 
         Given I have the following causes in my database:
             | wording   | created_at          | updated_at          | is_visible | id                                   |
@@ -59,9 +59,13 @@ Feature: update disruption
             | weather   |  2014-04-02T23:52:12 | 2014-04-02T23:55:12 | True       | 5ffab230-3d48-4eea-aa2c-22f8680230b6 |
             | strike    |  2014-04-04T23:52:12 | 2014-04-06T22:52:12 | True       | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |
 
-        Given I have the following associatedisruptiontag in my database:
-            | disruption_id                                   | tag_id                               | created_at          | updated_at          |id                                   |
-            | a750994c-01fe-11e4-b4fb-080027079ff3            | 5ffab230-3d48-4eea-aa2c-22f8680230b6 | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 |3ffab230-3d48-4eea-aa2c-22f8680230b6 |
+        When I put to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3" with:
+        """
+        {"reference":"foobarz", "cause":{"id":"7ffab230-3d48-4eea-aa2c-22f8680230b6"}, "tags":[{"id": "5ffab230-3d48-4eea-aa2c-22f8680230b6"}]}
+        """
+        Then the status code should be "200"
+        And the header "Content-Type" should be "application/json"
+        And the field "disruption.tags" should have a size of 1
 
         When I put to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3" with:
         """
@@ -71,7 +75,8 @@ Feature: update disruption
         And the header "Content-Type" should be "application/json"
         And the field "disruption.tags" should have a size of 2
 
-   Scenario: I can update with delete tag and AssociateDisruptionTag is not empty (2 associatedisruptiontag)
+
+   Scenario: I can update with delete tag and associate_disruption_tag is not empty (2 associate_disruption_tag)
 
         Given I have the following causes in my database:
             | wording   | created_at          | updated_at          | is_visible | id                                   |
@@ -86,10 +91,13 @@ Feature: update disruption
             | weather   |  2014-04-02T23:52:12 | 2014-04-02T23:55:12 | True       | 5ffab230-3d48-4eea-aa2c-22f8680230b6 |
             | strike    |  2014-04-04T23:52:12 | 2014-04-06T22:52:12 | True       | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |
 
-        Given I have the following associatedisruptiontag in my database:
-            | disruption_id                                   | tag_id                               | created_at          | updated_at          |id                                   |
-            | a750994c-01fe-11e4-b4fb-080027079ff3            | 5ffab230-3d48-4eea-aa2c-22f8680230b6 | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 |3ffab230-3d48-4eea-aa2c-22f8680230b6 |
-            | a750994c-01fe-11e4-b4fb-080027079ff3            | 7ffab232-3d48-4eea-aa2c-22f8680230b6 | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 |2ffab230-3d48-4eea-aa2c-22f8680230b6 |
+        When I put to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3" with:
+        """
+        {"reference":"foobarz", "cause":{"id":"7ffab230-3d48-4eea-aa2c-22f8680230b6"}, "tags":[{"id": "5ffab230-3d48-4eea-aa2c-22f8680230b6"}, {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}]}
+        """
+        Then the status code should be "200"
+        And the header "Content-Type" should be "application/json"
+        And the field "disruption.tags" should have a size of 2
 
         When I put to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3" with:
         """
@@ -101,7 +109,7 @@ Feature: update disruption
         And the field "disruption.tags.0.id" should be "5ffab230-3d48-4eea-aa2c-22f8680230b6"
         And the field "disruption.tags.0.name" should be "weather"
 
-   Scenario: I can update with delete 2 tags and AssociateDisruptionTag is not empty (2 associatedisruptiontag)
+   Scenario: I can update with delete 2 tags and associate_disruption_tag is not empty (2 associate_disruption_tag)
 
         Given I have the following causes in my database:
             | wording   | created_at          | updated_at          | is_visible | id                                   |
@@ -116,10 +124,13 @@ Feature: update disruption
             | weather   |  2014-04-02T23:52:12 | 2014-04-02T23:55:12 | True       | 5ffab230-3d48-4eea-aa2c-22f8680230b6 |
             | strike    |  2014-04-04T23:52:12 | 2014-04-06T22:52:12 | True       | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |
 
-        Given I have the following associatedisruptiontag in my database:
-            | disruption_id                                   | tag_id                               | created_at          | updated_at          |id                                   |
-            | a750994c-01fe-11e4-b4fb-080027079ff3            | 5ffab230-3d48-4eea-aa2c-22f8680230b6 | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 |3ffab230-3d48-4eea-aa2c-22f8680230b6 |
-            | a750994c-01fe-11e4-b4fb-080027079ff3            | 7ffab232-3d48-4eea-aa2c-22f8680230b6 | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 |2ffab230-3d48-4eea-aa2c-22f8680230b6 |
+        When I put to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3" with:
+        """
+        {"reference":"foobarz", "cause":{"id":"7ffab230-3d48-4eea-aa2c-22f8680230b6"}, "tags":[{"id": "5ffab230-3d48-4eea-aa2c-22f8680230b6"}, {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}]}
+        """
+        Then the status code should be "200"
+        And the header "Content-Type" should be "application/json"
+        And the field "disruption.tags" should have a size of 2
 
         When I put to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3" with:
         """
@@ -128,3 +139,8 @@ Feature: update disruption
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
         And the field "disruption.tags" should have a size of 0
+
+        When I get "/tags"
+        Then the status code should be "200"
+        And the header "Content-Type" should be "application/json"
+        And the field "tags" should have a size of 2

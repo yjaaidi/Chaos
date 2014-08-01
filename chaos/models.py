@@ -109,6 +109,13 @@ class Cause(TimestampMixin, db.Model):
         return cls.query.filter_by(id=id, is_visible=True).first_or_404()
 
 
+associate_disruption_tag = db.Table('associate_disruption_tag',
+                                    db.metadata,
+                                    db.Column('tag_id', UUID, db.ForeignKey('tag.id')),
+                                    db.Column('disruption_id', UUID, db.ForeignKey('disruption.id')),
+                                    db.PrimaryKeyConstraint('tag_id', 'disruption_id', name='tag_disruption_pk')
+)
+
 class Tag(TimestampMixin, db.Model):
     """
     represent the tag of a disruption
@@ -117,8 +124,6 @@ class Tag(TimestampMixin, db.Model):
     id = db.Column(UUID, primary_key=True)
     name = db.Column(db.Text, unique=True, nullable=False)
     is_visible = db.Column(db.Boolean, unique=False, nullable=False, default=True)
-
-    disruptions = db.relationship("Disruption", secondary='associate_disruption_tag')
 
     def __init__(self):
         self.id = str(uuid.uuid1())
@@ -147,7 +152,7 @@ class Disruption(TimestampMixin, db.Model):
     localization_id = db.Column(db.Text, unique=False, nullable=True)
     cause_id = db.Column(UUID, db.ForeignKey(Cause.id))
     cause = db.relationship('Cause', backref='disruption', lazy='joined')
-    tags = db.relationship("Tag", secondary='associate_disruption_tag', lazy='joined')
+    tags = db.relationship("Tag", secondary=associate_disruption_tag, backref="disruptions")
 
     def __repr__(self):
         return '<Disruption %r>' % self.id
@@ -201,26 +206,28 @@ class Disruption(TimestampMixin, db.Model):
         if self.start_publication_date > current_time:
             return "coming"
 
+'''
 class AssociateDisruptionTag(TimestampMixin, db.Model):
     """
     represents the associate disruption and tag
     """
     __tablename__ = 'associate_disruption_tag'
-    id = db.Column(UUID, primary_key=True)
     disruption_id = db.Column(UUID, db.ForeignKey('disruption.id'), index=True)
     tag_id = db.Column(UUID, db.ForeignKey('tag.id'), index=True)
+    db.PrimaryKeyConstraint('disruption.id', 'tag.id', name='pk_disruption_tag_id')
 
     def __init__(self, disruption_id=None, tag_id=None):
-        self.id = str(uuid.uuid1())
         self.disruption_id = disruption_id
         self.tag_id = tag_id
 
     def __repr__(self):
-        return '<AsociateDisruptionTag %r>' % self.id
+        return "<AssociateDisruptionTag('%s','%s')>" % (self.disruption_id, self.tag_id)
 
     @classmethod
     def get(cls, disruption_id, tag_id):
         return cls.query.filter_by(disruption_id=disruption_id, tag_id=tag_id).first_or_404()
+'''
+
 
 class Impact(TimestampMixin, db.Model):
     id = db.Column(UUID, primary_key=True)

@@ -3,8 +3,6 @@
 # This file is part of Navitia,
 #     the software to build cool stuff with public transport.
 #
-# Hope you'll enjoy and contribute to this project,
-# Hope you'll enjoy and contribute to this project,
 #     powered by Canal TP (www.canaltp.fr).
 # Help us simplify mobility and open public transport:
 #     a non ending quest to the responsive locomotion way of traveling!
@@ -233,15 +231,13 @@ class Disruptions(flask_restful.Resource):
                         return marshal({'error': {'message': 'ptobject {} doesn\'t exist'.format(disruption.localization_id)}},
                             error_fields), 404
         db.session.add(disruption)
+
         #Add all tags present in Json
-        if json:
-            if 'tags' in json:
-                for json_tag in json['tags']:
-                    if not id_format.match(json_tag['id']):
-                        return marshal({'error': {'message': "id invalid"}},
-                                       error_fields), 400
-                    disrupt_tag = models.AssociateDisruptionTag(disruption.id, json_tag['id'])
-                    db.session.add(disrupt_tag)
+        if 'tags' in json:
+            for json_tag in json['tags']:
+                    tag = models.Tag.get(json_tag['id'])
+                    disruption.tags.append(tag)
+
         db.session.commit()
         return marshal({'disruption': disruption}, one_disruption_fields), 201
 
@@ -276,16 +272,14 @@ class Disruptions(flask_restful.Resource):
             tags_json = dict((tag["id"], tag) for tag in json['tags'])
             for tag_json in json['tags']:
                 if tag_json["id"] not in tags_db:
-                    disrupt_tag = models.AssociateDisruptionTag(disruption.id, tag_json['id'])
-                    db.session.add(disrupt_tag)
-                    tags_db[tag_json['id']] = models.Tag.get(tag_json['id'])
+                    tag = models.Tag.get(tag_json['id'])
+                    disruption.tags.append(tag)
+                    tags_db[tag_json['id']] = tag
 
         difference = set(tags_db) - set(tags_json)
         for diff in difference:
             tag = tags_db[diff]
-            disrupt_tag = models.AssociateDisruptionTag.get(disruption.id, tag.id)
             disruption.tags.remove(tag)
-            db.session.delete(disrupt_tag)
 
         db.session.commit()
         return marshal({'disruption': disruption}, one_disruption_fields), 200
