@@ -70,6 +70,7 @@ Retourne la liste de toutes les perturbations visibles.
 | items_per_page       | Nombre d'items par page                                                                   | false    | 20                      |
 | publication_status[] | Filtre sur publication_status,  les valeurs possibles sont : past, ongoing, coming        | false    | [past, ongoing, coming] |
 | current_time         | Permet de changer l'heure d'appel, sert surtout pour le debug                             | false    | NOW                     |
+| tag[]                | filtre sur tag (identifiant du tag)                                                       | false    |                         |
 
 
 Le paramétre ```publication_status``` permet, par rapport à l'heure de référence passée en paramètre, de retourner les perturbations en cours (c'est à dire ayant des dates/heures de publications encadrant la date/heure de référence), à venir (qui ont des dates/heures de publications postérieures à la date/heure de référence) ou passées (ayant des dates/heures de publications antérieures à la date/heure de référence).

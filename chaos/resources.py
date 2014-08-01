@@ -209,6 +209,19 @@ class Disruptions(flask_restful.Resource):
                 abort(400, message="items_per_page argument value is not valid")
             publication_status = args['publication_status[]']
             tags = args['tag[]']
+
+            if tags:
+                try:
+                    utils.is_valid_ids(tags)
+                except utils.InvalidId, e:
+                    logging.debug(str(e))
+                    return marshal({'error': {'message': utils.parse_error(e)}},
+                                   error_fields), 400
+                for tag in tags:
+                    if not id_format.match(tag):
+                        return marshal({'error': {'message': "tag id invalid"}},
+                                error_fields), 400
+
             g.current_time = args['current_time']
             result = models.Disruption.all_with_filter(page_index=page_index,
                                                        items_per_page=items_per_page,

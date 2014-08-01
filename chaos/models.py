@@ -184,7 +184,7 @@ class Disruption(TimestampMixin, db.Model):
         query = cls.query.filter_by(status='published')
 
         if tags:
-            query = query.filter(cls.tags.any(Tag.name.in_(tags)))
+            query = query.filter(cls.tags.any(Tag.id.in_(tags)))
 
         publication_status = set(publication_status)
         if len(publication_status) == len(publication_status_values):

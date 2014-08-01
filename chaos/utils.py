@@ -33,6 +33,8 @@ from datetime import datetime
 from aniso8601 import parse_datetime
 import uuid
 import flask
+from chaos.exceptions import InvalidId
+from chaos.formats import id_format
 
 
 def make_pager(resultset, endpoint, **kwargs):
@@ -194,3 +196,15 @@ def parse_error(error):
     except AttributeError:
         to_return = str(error).replace("\n", " ")
     return to_return
+
+
+
+def is_valid_ids(id_list):
+    """
+    :param id_list: list of id whith UUID format
+    :return: true if all id is valid
+    """
+    for id in id_list:
+        if not id_format.match(id):
+            raise InvalidId(id)
+    return True

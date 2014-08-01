@@ -34,6 +34,7 @@ Return all visible disruptions.
 | items_per_page       | number of items per page                                                       | false    | 20                      |
 | publication_status[] | filter by publication_status, possible value are: past, ongoing, coming        | false    | [past, ongoing, coming] |
 | current_time         | parameter for settings the use by this request, mostly for debugging purpose   | false    | NOW                     |
+| tag[]                | filter by tag (id of tag)                                                      | false    |                         |
 
 @TODO: search and sort
 
