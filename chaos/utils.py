@@ -200,7 +200,6 @@ def parse_error(error):
 
 def get_uuid(value, name):
     if not id_format.match(value):
-            error = ("The {} argument value is not valid, you gave: {}"
-                         .format(name, value))
-            raise ValidationError(error)
+        raise ValidationError(("The {} argument value is not valid, you gave: {}"
+                               .format(name, value)))
     return value
