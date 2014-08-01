@@ -42,6 +42,7 @@ import chaos
 from chaos.navitia import Navitia
 from sqlalchemy.exc import IntegrityError
 
+
 import logging
 from utils import make_pager, option_value
 
@@ -107,7 +108,10 @@ class Index(flask_restful.Resource):
             "causes": {"href": url_for('cause', _external=True)},
             "channels": {"href": url_for('channel', _external=True)},
             "impactsbyobject": {"href": url_for('impactsbyobject', _external=True)},
-            "tags": {"href": url_for('tag', _external=True)}
+            "tags": {"href": url_for('tag', _external=True)},
+            "status": {"href": url_for('status', _external=True)}
+
+
         }
         return response, 200
 
@@ -171,7 +175,6 @@ class Severity(flask_restful.Resource):
         db.session.commit()
         return None, 204
 
-
 class Disruptions(flask_restful.Resource):
     def __init__(self):
         self.navitia = Navitia(current_app.config['NAVITIA_URL'],
@@ -187,6 +190,9 @@ class Disruptions(flask_restful.Resource):
                                 type=option_value(publication_status_values),
                                 action="append",
                                 default=publication_status_values)
+        parser_get.add_argument("tag[]",
+                                type=utils.get_uuid,
+                                action="append")
         parser_get.add_argument("current_time", type=utils.get_datetime)
 
     def get(self, id=None):
@@ -205,10 +211,13 @@ class Disruptions(flask_restful.Resource):
             if items_per_page == 0:
                 abort(400, message="items_per_page argument value is not valid")
             publication_status = args['publication_status[]']
+            tags = args['tag[]']
+
             g.current_time = args['current_time']
             result = models.Disruption.all_with_filter(page_index=page_index,
                                                        items_per_page=items_per_page,
-                                                       publication_status=publication_status)
+                                                       publication_status=publication_status,
+                                                       tags=tags)
             response = {'disruptions': result.items, 'meta': make_pager(result, 'disruption')}
             return marshal(response, disruptions_fields)
 

@@ -33,6 +33,8 @@ from datetime import datetime
 from aniso8601 import parse_datetime
 import uuid
 import flask
+from chaos.formats import id_format
+from jsonschema import ValidationError
 
 
 def make_pager(resultset, endpoint, **kwargs):
@@ -194,3 +196,10 @@ def parse_error(error):
     except AttributeError:
         to_return = str(error).replace("\n", " ")
     return to_return
+
+
+def get_uuid(value, name):
+    if not id_format.match(value):
+        raise ValidationError(("The {} argument value is not valid, you gave: {}"
+                               .format(name, value)))
+    return value
