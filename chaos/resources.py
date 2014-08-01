@@ -103,6 +103,7 @@ class Index(flask_restful.Resource):
         url = url_for('disruption', _external=True)
         response = {
             "disruptions": {"href": url},
+            "disruption": {"href": url + '/{id}', "templated": True},
             "severities": {"href": url_for('severity', _external=True)},
             "causes": {"href": url_for('cause', _external=True)},
             "channels": {"href": url_for('channel', _external=True)},
