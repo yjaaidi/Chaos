@@ -338,5 +338,5 @@ Feature: Manipulate tags in a Disruption
             When I get "/disruptions?tag[]=aa"
             Then the status code should be "400"
             And the header "Content-Type" should be "application/json"
-            And the field "error" should exist
-            And the field "error.message" should be "Id [aa] is not valid"
+            And the field "message" should exist
+            And the field "message" should be "The tag[] argument value is not valid, you gave: aa"

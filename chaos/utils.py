@@ -33,7 +33,6 @@ from datetime import datetime
 from aniso8601 import parse_datetime
 import uuid
 import flask
-from chaos.exceptions import InvalidId
 from chaos.formats import id_format
 
 
@@ -198,13 +197,10 @@ def parse_error(error):
     return to_return
 
 
-
-def is_valid_ids(id_list):
-    """
-    :param id_list: list of id whith UUID format
-    :return: true if all id is valid
-    """
-    for id in id_list:
-        if not id_format.match(id):
-            raise InvalidId(id)
-    return True
+def get_uuid(object):
+    def to_return(value, name):
+        if not id_format.match(value):
+            raise ValueError("The {} argument value is not valid, you gave: {}"
+                         .format(name, value))
+        return value
+    return to_return

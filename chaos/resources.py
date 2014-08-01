@@ -42,6 +42,7 @@ import chaos
 from chaos.navitia import Navitia
 from sqlalchemy.exc import IntegrityError
 
+
 import logging
 from utils import make_pager, option_value
 
@@ -171,7 +172,6 @@ class Severity(flask_restful.Resource):
         db.session.commit()
         return None, 204
 
-
 class Disruptions(flask_restful.Resource):
     def __init__(self):
         self.navitia = Navitia(current_app.config['NAVITIA_URL'],
@@ -188,7 +188,7 @@ class Disruptions(flask_restful.Resource):
                                 action="append",
                                 default=publication_status_values)
         parser_get.add_argument("tag[]",
-                                type=str,
+                                type=utils.get_uuid(self),
                                 action="append")
         parser_get.add_argument("current_time", type=utils.get_datetime)
 
@@ -209,18 +209,6 @@ class Disruptions(flask_restful.Resource):
                 abort(400, message="items_per_page argument value is not valid")
             publication_status = args['publication_status[]']
             tags = args['tag[]']
-
-            if tags:
-                try:
-                    utils.is_valid_ids(tags)
-                except utils.InvalidId, e:
-                    logging.debug(str(e))
-                    return marshal({'error': {'message': utils.parse_error(e)}},
-                                   error_fields), 400
-                for tag in tags:
-                    if not id_format.match(tag):
-                        return marshal({'error': {'message': "tag id invalid"}},
-                                error_fields), 400
 
             g.current_time = args['current_time']
             result = models.Disruption.all_with_filter(page_index=page_index,
