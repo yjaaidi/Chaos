@@ -84,6 +84,8 @@ Le champs ```cause``` contient un objet cause de la perturbation.
 
 Le champs ```localization``` contient un objet localisation de la perturbation.
 
+Le champs ```tags``` contient une liste de tag de la perturbation.
+
 ##Example
 - response 200 (application/json)
 
@@ -104,6 +106,17 @@ Le champs ```localization``` contient un objet localisation de la perturbation.
                             "begin":"2014-04-31T17:00:00Z",
                             "end":"2014-05-01T17:00:00Z"
                         },
+                        tags": [
+                            {
+                                "created_at": "2014-07-30T07:11:08Z",
+                                "id": "ad9d80ce-17b8-11e4-a553-d4bed99855be",
+                                "name": "rer",
+                                "self": {
+                                    "href": "http://127.0.0.1:5000/tags/ad9d80ce-17b8-11e4-a553-d4bed99855be"
+                                },
+                                "updated_at": null
+                            }
+                        ],
                         "impacts": {
                             "pagination": {
                                 "start_page": 0,
@@ -129,6 +142,17 @@ Le champs ```localization``` contient un objet localisation de la perturbation.
                             "begin": "2014-04-31T17:00:00Z",
                             "end": null
                         },
+                        tags": [
+                            {
+                                "created_at": "2014-07-30T07:11:08Z",
+                                "id": "ad9d80ce-17b8-11e4-a553-d4bed99855be",
+                                "name": "rer",
+                                "self": {
+                                    "href": "http://127.0.0.1:5000/tags/ad9d80ce-17b8-11e4-a553-d4bed99855be"
+                                },
+                                "updated_at": null
+                            }
+                        ],
                         "cause": {
 
                             "created_at": "2014-07-21T14:06:23Z",
@@ -201,6 +225,17 @@ Le champs ```localization``` contient un objet localisation de la perturbation.
                             "wording": "foo1"
 
                         },
+                        tags": [
+                            {
+                                "created_at": "2014-07-30T07:11:08Z",
+                                "id": "ad9d80ce-17b8-11e4-a553-d4bed99855be",
+                                "name": "rer",
+                                "self": {
+                                    "href": "http://127.0.0.1:5000/tags/ad9d80ce-17b8-11e4-a553-d4bed99855be"
+                                },
+                                "updated_at": null
+                            }
+                        ],
                         "impacts": {
                             "pagination": {
                                 "start_page": 0,
@@ -240,6 +275,7 @@ Les champs suivant peuvent etre défini:
   - publication_period
   - localization
   - cause (obligatoire)
+  - tags
 
 Lors d'un succés une réponse 201 est retourné, celle ci contient la perturbation créée.
 
@@ -256,7 +292,8 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient la perturbat
                     "end": null
                 },
                 "localization":[{"id":"stop_area:JDR:SA:CHVIN", "type": "stop_area"}],
-                "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}
+                "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"},
+                "tags":[{"id": "ad9d80ce-17b8-11e4-a553-d4bed99855be"}]
             }
 
 
@@ -326,6 +363,17 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient la perturbat
                         "type": "stop_area"
 
                     }
+                    ],
+                    tags": [
+                        {
+                            "created_at": "2014-07-30T07:11:08Z",
+                            "id": "ad9d80ce-17b8-11e4-a553-d4bed99855be",
+                            "name": "rer",
+                            "self": {
+                                "href": "http://127.0.0.1:5000/tags/ad9d80ce-17b8-11e4-a553-d4bed99855be"
+                            },
+                            "updated_at": null
+                        }
                     ]
                 },
                 "meta": {}
@@ -413,6 +461,17 @@ Retourne une perturbation (si elle existe):
                         "type": "stop_area"
 
                     }
+                    ],
+                    tags": [
+                        {
+                            "created_at": "2014-07-30T07:11:08Z",
+                            "id": "ad9d80ce-17b8-11e4-a553-d4bed99855be",
+                            "name": "rer",
+                            "self": {
+                                "href": "http://127.0.0.1:5000/tags/ad9d80ce-17b8-11e4-a553-d4bed99855be"
+                            },
+                            "updated_at": null
+                        }
                     ]
                 },
                 "meta": {}
@@ -442,6 +501,7 @@ Les champs suivant peuvent etre mis à jour:
   - publication_period
   - localization
   - cause
+  - tags
 
 Si un champs n'est pas présent dans le json la valeur est considéré null.
 
@@ -464,7 +524,8 @@ Lors d'un succés une réponse 200 est retourné, celle ci contient la perturbat
                     "end": null
                 },
                 "localization":[{"id":"stop_area:AME:SA:104", "type": "stop_area"}],
-                "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}
+                "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"},
+                "tags":[{"id": "ad9d80ce-17b8-11e4-a553-d4bed99855be"}]
             }
 
 
@@ -532,6 +593,17 @@ Lors d'un succés une réponse 200 est retourné, celle ci contient la perturbat
                         "type": "stop_area"
 
                     }
+                    ],
+                    tags": [
+                        {
+                            "created_at": "2014-07-30T07:11:08Z",
+                            "id": "ad9d80ce-17b8-11e4-a553-d4bed99855be",
+                            "name": "rer",
+                            "self": {
+                                "href": "http://127.0.0.1:5000/tags/ad9d80ce-17b8-11e4-a553-d4bed99855be"
+                            },
+                            "updated_at": null
+                        }
                     ]
                 },
                 "meta": {}

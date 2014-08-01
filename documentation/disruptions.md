@@ -58,7 +58,17 @@ Return all visible disruptions.
                             "id": "3d1f34b2-e8df-11e3-8c3e-0008ca8657ea",
                             "wording": "Condition météo"
                         },
-                        "tags": ["rer", "meteo", "probleme"],
+                        tags": [
+                            {
+                                "created_at": "2014-07-30T07:11:08Z",
+                                "id": "ad9d80ce-17b8-11e4-a553-d4bed99855be",
+                                "name": "rer",
+                                "self": {
+                                    "href": "http://127.0.0.1:5000/tags/ad9d80ce-17b8-11e4-a553-d4bed99855be"
+                                },
+                                "updated_at": null
+                            }
+                        ]
                         "localization": [
                             {
                                 "id": "stop_area:RTP:SA:3786125",
@@ -109,7 +119,17 @@ Return all visible disruptions.
                             "id": "3d1f34b2-e8ef-11e3-8c3e-0008ca8657ea",
                             "wording": "train cassé"
                         },
-                        "tags": ["rer", "probleme"],
+                        tags": [
+                            {
+                                "created_at": "2014-07-30T07:11:08Z",
+                                "id": "ad9d80ce-17b8-11e4-a553-d4bed99855be",
+                                "name": "rer",
+                                "self": {
+                                    "href": "http://127.0.0.1:5000/tags/ad9d80ce-17b8-11e4-a553-d4bed99855be"
+                                },
+                                "updated_at": null
+                            }
+                        ],
                         "localization": [],
                         "publication_period" : {
                             "begin": "2014-04-31T17:00:00Z",
@@ -141,7 +161,17 @@ Return all visible disruptions.
                             "id": "3d1f34b2-e2df-11e3-8c3e-0008ca8657ea",
                             "wording": "émeute"
                         },
-                        "tags": ["rer", "metro", "probleme"],
+                        tags": [
+                            {
+                                "created_at": "2014-07-30T07:11:08Z",
+                                "id": "ad9d80ce-17b8-11e4-a553-d4bed99855be",
+                                "name": "rer",
+                                "self": {
+                                    "href": "http://127.0.0.1:5000/tags/ad9d80ce-17b8-11e4-a553-d4bed99855be"
+                                },
+                                "updated_at": null
+                            }
+                        ],
                         "localization": [
                             {
                                 "id": "stop_area:RTP:SA:378125",
@@ -201,8 +231,8 @@ Create one valid disruption with impacts
                 "contributor": "shortterm.tn",
                 "cause": {
                        "id": "3d1f34b2-e8df-1ae3-8c3e-0008ca8657ea"
-                }
-                "tags": ["rer", "meteo", "probleme"],
+                },
+                "tags":[{"id": "ad9d80ce-17b8-11e4-a553-d4bed99855be"}],
                 "localization": [
                     {
                         "id": "stop_area:RTP:SA:3786125",
@@ -284,7 +314,17 @@ Create one valid disruption with impacts
                         "id": "3d1f34b2-e8df-1ae3-8c3e-0008ca8657ea",
                         "wording": "Condition météo"
                     },
-                    "tags": ["rer", "meteo", "probleme"],
+                    tags": [
+                        {
+                            "created_at": "2014-07-30T07:11:08Z",
+                            "id": "ad9d80ce-17b8-11e4-a553-d4bed99855be",
+                            "name": "rer",
+                            "self": {
+                                "href": "http://127.0.0.1:5000/tags/ad9d80ce-17b8-11e4-a553-d4bed99855be"
+                            },
+                            "updated_at": null
+                        }
+                    ]
                     "localization": [
                         {
                             "id": "stop_area:RTP:SA:3786125",
@@ -351,7 +391,17 @@ Retrieve one existing disruption:
                         "id": "3d1e32b2-e8df-11e3-8c3e-0008ca8657ea",
                         "wording": "Condition météo"
                     },
-                    "tags": ["rer", "meteo", "probleme"],
+                    tags": [
+                        {
+                            "created_at": "2014-07-30T07:11:08Z",
+                            "id": "ad9d80ce-17b8-11e4-a553-d4bed99855be",
+                            "name": "rer",
+                            "self": {
+                                "href": "http://127.0.0.1:5000/tags/ad9d80ce-17b8-11e4-a553-d4bed99855be"
+                            },
+                            "updated_at": null
+                        }
+                    ],
                     "localization": [
                         {
                             "id": "stop_area:RTP:SA:3786125",
@@ -422,8 +472,8 @@ Retrieve one existing disruption:
                 "contributor": "shortterm.tn",
                 "cause": {
                     "id": "3d1f32b2-e8df-11e3-8c3e-0008ca86c7ea"
-                }
-                "tags": ["rer", "meteo", "probleme"],
+                },
+                "tags":[{"id": "ad9d80ce-17b8-11e4-a553-d4bed99855be"}],
                 "localization": [
                     {
                         "id": "stop_area:RTP:SA:3786125",
@@ -460,7 +510,17 @@ Retrieve one existing disruption:
                         "id": "3d1f32b2-e8df-11e3-8c3e-0008ca8657ea",
                         "wording": "Condition météo"
                     },
-                    "tags": ["rer", "meteo", "probleme"],
+                    tags": [
+                        {
+                            "created_at": "2014-07-30T07:11:08Z",
+                            "id": "ad9d80ce-17b8-11e4-a553-d4bed99855be",
+                            "name": "rer",
+                            "self": {
+                                "href": "http://127.0.0.1:5000/tags/ad9d80ce-17b8-11e4-a553-d4bed99855be"
+                            },
+                            "updated_at": null
+                        }
+                    ],
                     "localization": [
                         {
                             "id": "stop_area:RTP:SA:3786125",

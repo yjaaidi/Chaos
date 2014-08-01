@@ -19,7 +19,7 @@ model_classes = {'disruption': Disruption,
                'messages': Message,
                'applicationperiods':ApplicationPeriods,
                'tag': Tag,
-               'tags': Tag,
+               'tags': Tag
 }
 
 def pythonify(value):

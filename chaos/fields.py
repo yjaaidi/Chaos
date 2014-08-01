@@ -117,7 +117,7 @@ tag_fields = {
     'name': fields.Raw,
     'created_at': FieldDateTime,
     'updated_at': FieldDateTime,
-    'self': {'href': fields.Url('cause', absolute=True)},
+    'self': {'href': fields.Url('tag', absolute=True)},
 }
 
 tags_fields = {
@@ -144,7 +144,8 @@ disruption_fields = {
     'publication_status': fields.Raw,
     'impacts': FieldPaginateImpacts(attribute='impacts'),
     'localization': FieldLocalization,
-    'cause': fields.Nested(cause_fields, allow_null=True)
+    'cause': fields.Nested(cause_fields, allow_null=True),
+    'tags': fields.List(fields.Nested(tag_fields)),
 }
 
 paginate_fields = {

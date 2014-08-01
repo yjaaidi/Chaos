@@ -21,7 +21,6 @@ Feature: channel can be deleted
         When I delete "/disruptions/7ffab230-3d48-4eea-aa2c-22f8680230b6"
         Then the status code should be "204"
 
-
         When I get "/disruptions"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"

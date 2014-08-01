@@ -64,6 +64,13 @@ localization_object_input_format = {
     'required': ['id', 'type']
 }
 
+tag_input_format = {
+    'type': 'object',
+    'properties': {'name': {'type': 'string', 'maxLength': 250},
+                   },
+    'required': ['name']
+}
+
 disruptions_input_format = {
     'type': 'object',
     'properties': {'reference': {'type': 'string', 'maxLength': 250},
@@ -79,6 +86,17 @@ disruptions_input_format = {
                    'localization': {'type': 'array',
                                     'items': localization_object_input_format,
                                     "uniqueItems": True
+                   },
+                   'tags': {
+                       'type': 'array',
+                       'items': {
+                           'type': 'object',
+                           'properties': {
+                               'id': {'type': 'string', 'pattern': id_format_text}
+                           },
+                           'required': ['id']
+                       },
+                       "uniqueItems": True
                    }
     },
     'required': ['reference', 'cause']
@@ -101,12 +119,6 @@ cause_input_format = {
     'required': ['wording']
 }
 
-tag_input_format = {
-    'type': 'object',
-    'properties': {'name': {'type': 'string', 'maxLength': 250},
-                   },
-    'required': ['name']
-}
 
 channel_input_format = {
     'type': 'object',

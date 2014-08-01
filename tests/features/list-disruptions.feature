@@ -58,4 +58,3 @@ Feature: list disruptions
         And the field "disruptions.0.publication_period.end" should be null
         And the field "disruptions.1.publication_period.begin" should be "2014-04-02T14:00:00Z"
         And the field "disruptions.1.publication_period.end" should be "2014-04-02T19:00:00Z"
-

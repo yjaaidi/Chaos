@@ -1,4 +1,4 @@
-"""Add table Severity
+"""Assocation disruptions-tags
 
 Revision ID: 1894217a6b3f
 Revises: 51c1d76c3cc5
