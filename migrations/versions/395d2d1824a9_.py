@@ -1,4 +1,4 @@
-"""empty message
+"""associate_disruption_tag table added
 
 Revision ID: 395d2d1824a9
 Revises: 32ea230d67a8
