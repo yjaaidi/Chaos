@@ -174,7 +174,7 @@ class Disruption(TimestampMixin, db.Model):
 
     @classmethod
     @paginate()
-    def all_with_filter(cls, publication_status):
+    def all_with_filter(cls, publication_status, tags):
         availlable_filters = {
             'past': and_(cls.end_publication_date != None, cls.end_publication_date < get_current_time()),
             'ongoing': and_(cls.start_publication_date <= get_current_time(),
@@ -182,6 +182,10 @@ class Disruption(TimestampMixin, db.Model):
             'coming': Disruption.start_publication_date > get_current_time()
         }
         query = cls.query.filter_by(status='published')
+
+        if tags:
+            query = query.filter(cls.tags.any(Tag.name.in_(tags)))
+
         publication_status = set(publication_status)
         if len(publication_status) == len(publication_status_values):
             return query
