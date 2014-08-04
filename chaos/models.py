@@ -353,6 +353,10 @@ class PTobject(TimestampMixin, db.Model):
     def get(cls, id):
         return cls.query.filter_by(id=id).first_or_404()
 
+    @classmethod
+    def get_by_uri(cls, uri):
+        return cls.query.filter_by(uri=uri)
+
 
 class ApplicationPeriods(TimestampMixin, db.Model):
     """

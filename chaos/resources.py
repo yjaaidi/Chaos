@@ -527,15 +527,28 @@ class Impacts(flask_restful.Resource):
 
         #Add all objects present in Json
         if json:
+            pt_object_db = dict((ptobject.uri, ptobject) for ptobject in impact.objects)
+            pt_objects_json = {}
             if 'objects' in json:
-                for obj in  json['objects']:
-                    object = models.PTobject()
-                    object.impact_id = impact.id
-                    mapper.fill_from_json(object, obj, object_mapping)
-                    if not self.navitia.get_pt_object(obj['id'], obj['type']):
-                        return marshal({'error': {'message': '{} {} doesn\'t exist'.format(obj['type'], obj['id'])}},
-                                       error_fields), 404
-                    impact.insert_object(object)
+                pt_objects_json = dict((ptobject["id"], ptobject) for ptobject in json['objects'])
+                for pt_object_json in json['objects']:
+                    if not self.navitia.get_pt_object(pt_object_json['id'], pt_object_json['type']):
+                        return marshal({'error': {'message': '{} {} doesn\'t exist'.format(pt_object_json['type'], pt_object_json['id'])}},
+                                   error_fields), 404
+                    if pt_object_json["id"] not in pt_object_db:
+                        ptobject = models.PTobject.get_by_uri(pt_object_json["id"])
+                        if not ptobject:
+                            ptobject = models.PTobject()
+                            mapper.fill_from_json(ptobject, pt_object_json, object_mapping)
+                        impact.objects.appned(ptobject)
+
+                        pt_object_db[pt_object_json['id']] = ptobject
+
+            difference = set(pt_object_db) - set(pt_objects_json)
+            for diff in difference:
+                ptobject = pt_object_db[diff]
+                impact.objects.remove(ptobject)
+
             if 'application_periods' in json:
                 for app_period in json["application_periods"]:
                     application_period = models.ApplicationPeriods(impact.id)
