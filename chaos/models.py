@@ -210,15 +210,24 @@ class Disruption(TimestampMixin, db.Model):
         if self.start_publication_date > current_time:
             return "coming"
 
+associate_impact_pt_object = db.Table('associate_impact_pt_object',
+                                      db.metadata,
+                                      db.Column('impact_id', UUID, db.ForeignKey('impact.id')),
+                                      db.Column('pt_object_id', UUID, db.ForeignKey('pt_object.id')),
+                                      db.PrimaryKeyConstraint('impact_id', 'pt_object_id', name='impact_pt_object_pk')
+)
+
+
 class Impact(TimestampMixin, db.Model):
     id = db.Column(UUID, primary_key=True)
     status = db.Column(ImpactStatus, nullable=False, default='published', index=True)
     disruption_id = db.Column(UUID, db.ForeignKey(Disruption.id))
     severity_id = db.Column(UUID, db.ForeignKey(Severity.id))
-    objects = db.relationship('PTobject', backref='impact', lazy='joined')
+    #objects = db.relationship('PTobject', backref='impact', lazy='joined')
     messages = db.relationship('Message', backref='impact', lazy='joined')
     application_periods = db.relationship('ApplicationPeriods', backref='impact', lazy='joined')
     severity = db.relationship('Severity', backref='impacts', lazy='joined')
+    objects = db.relationship("PTobject", secondary=associate_impact_pt_object, backref="impacts")
 
     def __repr__(self):
         return '<Impact %r>' % self.id
@@ -329,14 +338,14 @@ class PTobject(TimestampMixin, db.Model):
     id = db.Column(UUID, primary_key=True)
     type = db.Column(PtObjectType, nullable=False, default='network', index=True)
     uri = db.Column(db.Text, primary_key=True)
-    impact_id = db.Column(UUID, db.ForeignKey(Impact.id), index=True)
+    #impact_id = db.Column(UUID, db.ForeignKey(Impact.id), index=True)
 
     def __repr__(self):
         return '<PTobject %r>' % self.id
 
-    def __init__(self, impact_id=None, type=None, code=None):
+    def __init__(self, type=None, code=None):
         self.id = str(uuid.uuid1())
-        self.impact_id = impact_id
+        #self.impact_id = impact_id
         self.type = type
         self.uri = code
 
