@@ -559,7 +559,7 @@ class Impacts(flask_restful.Resource):
             return marshal({'error': {'message': "id invalid"}},
                            error_fields), 400
         json = request.get_json()
-        logging.getLogger(__name__).debug('PUT disruption: %s', json)
+        logging.getLogger(__name__).debug('PUT impact: %s', json)
 
         impact = models.Impact.get(id)
 
@@ -586,7 +586,7 @@ class Impacts(flask_restful.Resource):
             for diff in difference:
                 ptobject = pt_object_db[diff]
                 impact.delete(ptobject)
-                
+
             impact.delete_app_periods()
             if 'application_periods' in json:
                 for app_period in json["application_periods"]:
