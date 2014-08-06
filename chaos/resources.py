@@ -527,29 +527,28 @@ class Impacts(flask_restful.Resource):
         db.session.add(impact)
 
         #Add all objects present in Json
-        if json:
-            if 'objects' in json:
-                for pt_object_json in json['objects']:
-                    if not self.navitia.get_pt_object(pt_object_json['id'], pt_object_json['type']):
-                        return marshal({'error': {'message': '{} {} doesn\'t exist'.format(pt_object_json['type'], pt_object_json['id'])}},
-                                   error_fields), 404
-                    ptobject = models.PTobject.get_pt_object_by_uri(pt_object_json["id"])
-                    if not ptobject:
-                        ptobject = models.PTobject()
-                        mapper.fill_from_json(ptobject, pt_object_json, object_mapping)
-                    impact.objects.append(ptobject)
+        if 'objects' in json:
+            for pt_object_json in json['objects']:
+                if not self.navitia.get_pt_object(pt_object_json['id'], pt_object_json['type']):
+                    return marshal({'error': {'message': '{} {} doesn\'t exist'.format(pt_object_json['type'], pt_object_json['id'])}},
+                               error_fields), 404
+                ptobject = models.PTobject.get_pt_object_by_uri(pt_object_json["id"])
+                if not ptobject:
+                    ptobject = models.PTobject()
+                    mapper.fill_from_json(ptobject, pt_object_json, object_mapping)
+                impact.objects.append(ptobject)
 
-            if 'application_periods' in json:
-                for app_period in json["application_periods"]:
-                    application_period = models.ApplicationPeriods(impact.id)
-                    mapper.fill_from_json(application_period, app_period, application_period_mapping)
-                    impact.insert_app_period(application_period)
-            if 'messages' in json:
-                for mes in  json['messages']:
-                    message = models.Message()
-                    message.impact_id = impact.id
-                    mapper.fill_from_json(message, mes, message_mapping)
-                    impact.insert_message(message)
+        if 'application_periods' in json:
+            for app_period in json["application_periods"]:
+                application_period = models.ApplicationPeriods(impact.id)
+                mapper.fill_from_json(application_period, app_period, application_period_mapping)
+                impact.insert_app_period(application_period)
+        if 'messages' in json:
+            for mes in  json['messages']:
+                message = models.Message()
+                message.impact_id = impact.id
+                mapper.fill_from_json(message, mes, message_mapping)
+                impact.insert_message(message)
 
         db.session.commit()
         return marshal({'impact': impact}, one_impact_fields), 201
@@ -561,53 +560,57 @@ class Impacts(flask_restful.Resource):
         json = request.get_json()
         logging.getLogger(__name__).debug('PUT impact: %s', json)
 
+        try:
+            validate(json, impact_input_format)
+        except ValidationError, e:
+            logging.debug(str(e))
+            #TODO: generate good error messages
+            return marshal({'error': {'message': utils.parse_error(e)}},
+                           error_fields), 400
+
         impact = models.Impact.get(id)
 
         #Add all objects and all messages present in Json
-        if json:
-            pt_object_db = dict((ptobject.uri, ptobject) for ptobject in impact.objects)
-            pt_objects_json = {}
-            if 'objects' in json:
-                pt_objects_json = dict((ptobject["id"], ptobject) for ptobject in json['objects'])
-                for pt_object_json in json['objects']:
-                    if not self.navitia.get_pt_object(pt_object_json['id'], pt_object_json['type']):
-                        return marshal({'error': {'message': '{} {} doesn\'t exist'.format(pt_object_json['type'], pt_object_json['id'])}},
-                                   error_fields), 404
-                    if pt_object_json["id"] not in pt_object_db:
-                        ptobject = models.PTobject.get_pt_object_by_uri(pt_object_json["id"])
-                        if not ptobject:
-                            ptobject = models.PTobject()
-                            mapper.fill_from_json(ptobject, pt_object_json, object_mapping)
-                        impact.objects.append(ptobject)
+        pt_object_db = set(ptobject.uri for ptobject in impact.objects)
+        pt_objects_json = set()
+        if 'objects' in json:
+            for pt_object_json in json['objects']:
+                if not self.navitia.get_pt_object(pt_object_json['id'], pt_object_json['type']):
+                    return marshal({'error': {'message': '{} {} doesn\'t exist'.format(pt_object_json['type'], pt_object_json['id'])}},
+                               error_fields), 404
+                pt_objects_json.add(pt_object_json["id"])
+                if pt_object_json["id"] not in pt_object_db:
+                    ptobject = models.PTobject.get_pt_object_by_uri(pt_object_json["id"])
+                    if not ptobject:
+                        ptobject = models.PTobject()
+                        mapper.fill_from_json(ptobject, pt_object_json, object_mapping)
+                    impact.objects.append(ptobject)
 
-                        pt_object_db[pt_object_json['id']] = ptobject
-
-            difference = set(pt_object_db) - set(pt_objects_json)
-            for diff in difference:
-                ptobject = pt_object_db[diff]
+        for ptobject in impact.objects:
+            if ptobject.uri not in pt_objects_json:
                 impact.delete(ptobject)
 
-            impact.delete_app_periods()
-            if 'application_periods' in json:
-                for app_period in json["application_periods"]:
-                    application_period = models.ApplicationPeriods(impact.id)
-                    mapper.fill_from_json(application_period, app_period, application_period_mapping)
-                    impact.insert_app_period(application_period)
+        impact.delete_app_periods()
+        if 'application_periods' in json:
+            for app_period in json["application_periods"]:
+                application_period = models.ApplicationPeriods(impact.id)
+                mapper.fill_from_json(application_period, app_period, application_period_mapping)
+                impact.insert_app_period(application_period)
 
-            messages_db = dict((msg.channel_id, msg) for msg in impact.messages)
-            messages_json = dict()
-            if 'messages' in json:
-                messages_json = dict((msg["channel"]["id"], msg) for msg in json['messages'])
-                for message_json in json['messages']:
-                    if message_json["channel"]["id"] in messages_db:
-                        msg = messages_db[message_json["channel"]["id"]]
-                        mapper.fill_from_json(msg, message_json, message_mapping)
-                    else:
-                        message = models.Message()
-                        message.impact_id = impact.id
-                        mapper.fill_from_json(message, message_json, message_mapping)
-                        impact.insert_message(message)
-                        messages_db[message.channel_id] = message
+        messages_db = dict((msg.channel_id, msg) for msg in impact.messages)
+        messages_json = dict()
+        if 'messages' in json:
+            messages_json = dict((msg["channel"]["id"], msg) for msg in json['messages'])
+            for message_json in json['messages']:
+                if message_json["channel"]["id"] in messages_db:
+                    msg = messages_db[message_json["channel"]["id"]]
+                    mapper.fill_from_json(msg, message_json, message_mapping)
+                else:
+                    message = models.Message()
+                    message.impact_id = impact.id
+                    mapper.fill_from_json(message, message_json, message_mapping)
+                    impact.insert_message(message)
+                    messages_db[message.channel_id] = message
 
             difference = set(messages_db) - set(messages_json)
             for diff in difference:

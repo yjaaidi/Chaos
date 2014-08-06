@@ -309,9 +309,9 @@ class Impact(TimestampMixin, db.Model):
 
     @classmethod
     def all_with_filter(cls, start_date, end_date, pt_object_type, uris):
-        alias = aliased(Impact)
+        impact_alias = aliased(Impact)
         pt_object_alias = aliased(PTobject)
-        query = cls.query.filter(alias.status=='published')
+        query = cls.query.filter(impact_alias.status == 'published')
         if pt_object_type:
             query = query.filter(pt_object_alias.type == pt_object_type)
 

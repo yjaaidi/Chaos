@@ -91,14 +91,9 @@ Feature: Update (put) impacts in a Disruption
         """
         {"objects": [{"id": "network:TAD:CanalTP","type": "network"}, {"id": "network:default_network","type": "network"}], "application_periods": [{"begin": "2014-07-01T16:52:00Z","end": "2014-08-30T02:15:00Z"}]}
         """
-        Then the status code should be "200"
+        Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
-        And the field "impact.objects.0.id" should be "network:TAD:CanalTP"
-        And the field "impact.objects.1.id" should be "network:default_network"
-        And the field "impact.application_periods" should have a size of 1
-        And the field "impact.application_periods.0.begin" should be "2014-07-01T16:52:00Z"
-        And the field "impact.application_periods.0.end" should be "2014-08-30T02:15:00Z"
-
+        And the field "error.message" should be "'severity' is a required property"
 
     Scenario: Update an impact in a disruption with post 3 application_period and 2 application_periods in database
 
