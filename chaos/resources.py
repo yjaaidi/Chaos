@@ -586,7 +586,7 @@ class Impacts(flask_restful.Resource):
             for diff in difference:
                 ptobject = pt_object_db[diff]
                 impact.delete(ptobject)
-
+                
             impact.delete_app_periods()
             if 'application_periods' in json:
                 for app_period in json["application_periods"]:

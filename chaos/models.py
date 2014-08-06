@@ -283,7 +283,6 @@ class Impact(TimestampMixin, db.Model):
     def delete_app_periods(self):
         for app_per in self.application_periods:
             db.session.delete(app_per)
-            self.application_periods.remove(app_per)
 
     def insert_app_period(self, application_period):
         """
