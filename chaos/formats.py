@@ -35,7 +35,7 @@ import re
 datetime_pattern = '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$'
 id_format_text = '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
 id_format = re.compile(id_format_text)
-pt_object_type_values = ["network", "stop_area"]
+pt_object_type_values = ["network", "stop_area", "line"]
 #Here Order of values is strict and is used to create query filters.
 publication_status_values = ["past", "ongoing", "coming"]
 
@@ -64,6 +64,13 @@ localization_object_input_format = {
     'required': ['id', 'type']
 }
 
+tag_input_format = {
+    'type': 'object',
+    'properties': {'name': {'type': 'string', 'maxLength': 250},
+                   },
+    'required': ['name']
+}
+
 disruptions_input_format = {
     'type': 'object',
     'properties': {'reference': {'type': 'string', 'maxLength': 250},
@@ -77,7 +84,19 @@ disruptions_input_format = {
                        'required': ['id']
                    },
                    'localization': {'type': 'array',
-                                    'items': [localization_object_input_format]
+                                    'items': localization_object_input_format,
+                                    "uniqueItems": True
+                   },
+                   'tags': {
+                       'type': 'array',
+                       'items': {
+                           'type': 'object',
+                           'properties': {
+                               'id': {'type': 'string', 'pattern': id_format_text}
+                           },
+                           'required': ['id']
+                       },
+                       "uniqueItems": True
                    }
     },
     'required': ['reference', 'cause']
@@ -99,6 +118,7 @@ cause_input_format = {
                    },
     'required': ['wording']
 }
+
 
 channel_input_format = {
     'type': 'object',
@@ -131,14 +151,17 @@ impact_input_format = {
                      'properties': {'id': {'type': 'string', 'pattern': id_format_text}},
                      'required': ['id']
         },
-        'applications_periods': {'type': 'array',
-                                 'items': [date_period_format]
+        'application_periods': {'type': 'array',
+                                'items': date_period_format,
+                                "uniqueItems": True
         },
         'objects': {'type': 'array',
-                    'items': [object_input_format]
+                    'items': object_input_format,
+                    "uniqueItems": True
         },
         'messages': {'type': 'array',
-                     'items': [message_input_format]
+                     'items': message_input_format,
+                     "uniqueItems": True
         }
     },
     'required': ['severity']

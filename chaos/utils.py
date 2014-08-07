@@ -33,8 +33,8 @@ from datetime import datetime
 from aniso8601 import parse_datetime
 import uuid
 import flask
-from flask import current_app
-from chaos.navitia import Navitia
+from chaos.formats import id_format
+from jsonschema import ValidationError
 
 
 def make_pager(resultset, endpoint, **kwargs):
@@ -139,7 +139,27 @@ class Request(flask.Request):
         self.id = str(uuid.uuid4())
 
 
-def group_impacts_by_pt_object(impacts, object_type, get_pt_object):
+def is_pt_object_valid(pt_object, object_type, uris):
+    """
+    verification object by its type and uri
+    :param pt_object: public transport object
+    :param object_type: public transport object type
+    :param uris: public transport object uri
+    :return: bool
+    """
+    if object_type:
+        if uris:
+            return ((pt_object.type == object_type) and
+                    (pt_object.uri in uris))
+        else:
+            return (pt_object.type == object_type)
+    elif uris:
+        return (pt_object.uri in uris)
+    else:
+        return False
+
+
+def group_impacts_by_pt_object(impacts, object_type, uris, get_pt_object):
     """
     :param impacts: list of impacts
     :param object_type: PTObject type example stop_area
@@ -148,7 +168,7 @@ def group_impacts_by_pt_object(impacts, object_type, get_pt_object):
     dictionary = {}
     for impact in impacts:
         for pt_object in impact.objects:
-            if pt_object.type == object_type:
+            if is_pt_object_valid(pt_object, object_type, uris):
                 if pt_object.uri in dictionary:
                     resp = dictionary[pt_object.uri]
                 else:
@@ -167,3 +187,19 @@ def group_impacts_by_pt_object(impacts, object_type, get_pt_object):
     result = dictionary.values()
     result.sort(key=lambda x: x['name'])
     return result
+
+
+def parse_error(error):
+    to_return = None
+    try:
+        to_return = error.message
+    except AttributeError:
+        to_return = str(error).replace("\n", " ")
+    return to_return
+
+
+def get_uuid(value, name):
+    if not id_format.match(value):
+        raise ValidationError(("The {} argument value is not valid, you gave: {}"
+                               .format(name, value)))
+    return value

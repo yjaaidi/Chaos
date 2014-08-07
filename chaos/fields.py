@@ -112,6 +112,23 @@ one_cause_fields = {
     'cause': fields.Nested(cause_fields)
 }
 
+tag_fields = {
+    'id': fields.Raw,
+    'name': fields.Raw,
+    'created_at': FieldDateTime,
+    'updated_at': FieldDateTime,
+    'self': {'href': fields.Url('tag', absolute=True)},
+}
+
+tags_fields = {
+    'tags': fields.List(fields.Nested(tag_fields)),
+    'meta': {}
+}
+
+one_tag_fields = {
+    'tag': fields.Nested(tag_fields)
+}
+
 disruption_fields = {
     'id': fields.Raw,
     'self': {'href': fields.Url('disruption', absolute=True)},
@@ -127,7 +144,8 @@ disruption_fields = {
     'publication_status': fields.Raw,
     'impacts': FieldPaginateImpacts(attribute='impacts'),
     'localization': FieldLocalization,
-    'cause': fields.Nested(cause_fields, allow_null=True)
+    'cause': fields.Nested(cause_fields, allow_null=True),
+    'tags': fields.List(fields.Nested(tag_fields)),
 }
 
 paginate_fields = {

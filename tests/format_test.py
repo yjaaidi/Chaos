@@ -137,7 +137,8 @@ def test_impact_without_object_validation():
 def test_impact_with_object_and_application_period_validation():
     json = {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},
             "application_periods": [{"begin": "2014-06-20T17:00:00Z","end":"2014-07-28T17:00:00Z"}],
-            "objects": [{"id": "stop_area:RTP:SA:3786125","type": "network"},{"id": "line:RTP:LI:378","type": "network"}]
+            "objects": [{"id": "stop_area:RTP:SA:3786125","type": "network"},{"id": "network:RTP:LI:378","type": "network"},
+                        {"id": "line:RTP:LI:378","type": "line"}]
             }
     validate(json, formats.impact_input_format)
 
@@ -184,6 +185,26 @@ def test_impact_whith_message_validation():
     json = {"severity":{"id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657ea"}, "messages":[{"teaaaaxt":"aaaaaa","channel":{"id": "3d1f42b2-e8df-11e3-8c3e-0008ca86c7ea"}}]}
     validate(json, formats.impact_input_format)
 
-def test_ipact_with_stop_area_validation():
+
+def test_impact_with_stop_area_validation():
     json = {'id': 'stop_area:...:200', 'type': 'stop_area'}
     validate(json, formats.object_input_format)
+
+
+def test_tag_with_name_validation():
+    json = {'name': 'aaa'}
+    validate(json, formats.tag_input_format)
+
+def test_tag_with_size_name_validation():
+    json = {'name': 'a'*250}
+    validate(json, formats.tag_input_format)
+
+@raises(ValidationError)
+def test_tag_with_invalid_size_name_validation():
+    json = {'name': 'a'*251}
+    validate(json, formats.tag_input_format)
+
+@raises(ValidationError)
+def test_tag_without_name_validation():
+    json = {}
+    validate(json, formats.tag_input_format)

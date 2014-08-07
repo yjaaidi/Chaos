@@ -17,7 +17,8 @@ It's an api for blabla
                 "severities": {"href": "https://chaos.apiary-mock.com/severities"},
                 "causes": {"href": "https://chaos.apiary-mock.com/causes"},
                 "channels": {"href": "https://chaos.apiary-mock.com/channels"},
-                "impactsbyobject": {"href": "https://chaos.apiary-mock.com/impactsbyobject"}
+                "impactsbyobject": {"href": "https://chaos.apiary-mock.com/impactsbyobject"},
+                "tags": {"href": "https://chaos.apiary-mock.com/tags"}
             }
 
 
@@ -33,6 +34,7 @@ Return all visible disruptions.
 | items_per_page       | number of items per page                                                       | false    | 20                      |
 | publication_status[] | filter by publication_status, possible value are: past, ongoing, coming        | false    | [past, ongoing, coming] |
 | current_time         | parameter for settings the use by this request, mostly for debugging purpose   | false    | NOW                     |
+| tag[]                | filter by tag (id of tag)                                                      | false    |                         |
 
 @TODO: search and sort
 
@@ -57,7 +59,17 @@ Return all visible disruptions.
                             "id": "3d1f34b2-e8df-11e3-8c3e-0008ca8657ea",
                             "wording": "Condition météo"
                         },
-                        "tags": ["rer", "meteo", "probleme"],
+                        tags": [
+                            {
+                                "created_at": "2014-07-30T07:11:08Z",
+                                "id": "ad9d80ce-17b8-11e4-a553-d4bed99855be",
+                                "name": "rer",
+                                "self": {
+                                    "href": "http://127.0.0.1:5000/tags/ad9d80ce-17b8-11e4-a553-d4bed99855be"
+                                },
+                                "updated_at": null
+                            }
+                        ]
                         "localization": [
                             {
                                 "id": "stop_area:RTP:SA:3786125",
@@ -108,7 +120,17 @@ Return all visible disruptions.
                             "id": "3d1f34b2-e8ef-11e3-8c3e-0008ca8657ea",
                             "wording": "train cassé"
                         },
-                        "tags": ["rer", "probleme"],
+                        tags": [
+                            {
+                                "created_at": "2014-07-30T07:11:08Z",
+                                "id": "ad9d80ce-17b8-11e4-a553-d4bed99855be",
+                                "name": "rer",
+                                "self": {
+                                    "href": "http://127.0.0.1:5000/tags/ad9d80ce-17b8-11e4-a553-d4bed99855be"
+                                },
+                                "updated_at": null
+                            }
+                        ],
                         "localization": [],
                         "publication_period" : {
                             "begin": "2014-04-31T17:00:00Z",
@@ -140,7 +162,17 @@ Return all visible disruptions.
                             "id": "3d1f34b2-e2df-11e3-8c3e-0008ca8657ea",
                             "wording": "émeute"
                         },
-                        "tags": ["rer", "metro", "probleme"],
+                        tags": [
+                            {
+                                "created_at": "2014-07-30T07:11:08Z",
+                                "id": "ad9d80ce-17b8-11e4-a553-d4bed99855be",
+                                "name": "rer",
+                                "self": {
+                                    "href": "http://127.0.0.1:5000/tags/ad9d80ce-17b8-11e4-a553-d4bed99855be"
+                                },
+                                "updated_at": null
+                            }
+                        ],
                         "localization": [
                             {
                                 "id": "stop_area:RTP:SA:378125",
@@ -200,8 +232,8 @@ Create one valid disruption with impacts
                 "contributor": "shortterm.tn",
                 "cause": {
                        "id": "3d1f34b2-e8df-1ae3-8c3e-0008ca8657ea"
-                }
-                "tags": ["rer", "meteo", "probleme"],
+                },
+                "tags":[{"id": "ad9d80ce-17b8-11e4-a553-d4bed99855be"}],
                 "localization": [
                     {
                         "id": "stop_area:RTP:SA:3786125",
@@ -283,7 +315,17 @@ Create one valid disruption with impacts
                         "id": "3d1f34b2-e8df-1ae3-8c3e-0008ca8657ea",
                         "wording": "Condition météo"
                     },
-                    "tags": ["rer", "meteo", "probleme"],
+                    tags": [
+                        {
+                            "created_at": "2014-07-30T07:11:08Z",
+                            "id": "ad9d80ce-17b8-11e4-a553-d4bed99855be",
+                            "name": "rer",
+                            "self": {
+                                "href": "http://127.0.0.1:5000/tags/ad9d80ce-17b8-11e4-a553-d4bed99855be"
+                            },
+                            "updated_at": null
+                        }
+                    ]
                     "localization": [
                         {
                             "id": "stop_area:RTP:SA:3786125",
@@ -350,7 +392,17 @@ Retrieve one existing disruption:
                         "id": "3d1e32b2-e8df-11e3-8c3e-0008ca8657ea",
                         "wording": "Condition météo"
                     },
-                    "tags": ["rer", "meteo", "probleme"],
+                    tags": [
+                        {
+                            "created_at": "2014-07-30T07:11:08Z",
+                            "id": "ad9d80ce-17b8-11e4-a553-d4bed99855be",
+                            "name": "rer",
+                            "self": {
+                                "href": "http://127.0.0.1:5000/tags/ad9d80ce-17b8-11e4-a553-d4bed99855be"
+                            },
+                            "updated_at": null
+                        }
+                    ],
                     "localization": [
                         {
                             "id": "stop_area:RTP:SA:3786125",
@@ -421,8 +473,8 @@ Retrieve one existing disruption:
                 "contributor": "shortterm.tn",
                 "cause": {
                     "id": "3d1f32b2-e8df-11e3-8c3e-0008ca86c7ea"
-                }
-                "tags": ["rer", "meteo", "probleme"],
+                },
+                "tags":[{"id": "ad9d80ce-17b8-11e4-a553-d4bed99855be"}],
                 "localization": [
                     {
                         "id": "stop_area:RTP:SA:3786125",
@@ -459,7 +511,17 @@ Retrieve one existing disruption:
                         "id": "3d1f32b2-e8df-11e3-8c3e-0008ca8657ea",
                         "wording": "Condition météo"
                     },
-                    "tags": ["rer", "meteo", "probleme"],
+                    tags": [
+                        {
+                            "created_at": "2014-07-30T07:11:08Z",
+                            "id": "ad9d80ce-17b8-11e4-a553-d4bed99855be",
+                            "name": "rer",
+                            "self": {
+                                "href": "http://127.0.0.1:5000/tags/ad9d80ce-17b8-11e4-a553-d4bed99855be"
+                            },
+                            "updated_at": null
+                        }
+                    ],
                     "localization": [
                         {
                             "id": "stop_area:RTP:SA:3786125",
@@ -534,7 +596,8 @@ Return all impacts by ptobject.
 
 | Name                 | description                                                                    | required | default                     |
 | -------------------- | ------------------------------------------------------------------------------ | -------- | --------------------------- |
-| pt_object_type       | filter by ptobject, possible value are: network, stoparea                      | true     | network                     |
+| pt_object_type       | filter by ptobject, possible value are: network, stoparea, line                | false    |                             |
+| uri[]                | filtre by ptobject.uri                                                         | false    |                             |
 | start_date           | filtre by application period :star date                                        | false    | Now():00:00:00Z             |
 | end_date             | filtre by application period :end date                                         | false    | Now():23:59:59Z             |
 
@@ -894,6 +957,186 @@ Create a new impact.
                 "meta": {}
             }
 
+##Update a impact [PUT]
+
+###Parameters
+
+
+- Request
+
+    * Headers
+
+            Content-Type: application/json
+
+    * Body
+
+            {
+                "impact": {
+                    "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8617ea",
+                    "self": {"href": "https://ogv2ws.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-8c3e-0008ca8647ea/impacts/3d1f42b2-e8df-11e3-8c3e-0008ca8617ea"},
+                    "created_at": "2014-04-31T16:52:18Z",
+                    "updated_at": "2014-04-31T16:55:18Z",
+                    "severity": {
+                        "id": "3d1f42b2-e8df-11e3-8c3e-0008ca861aea",
+                        "wording": "Bonne nouvelle",
+                        "created_at": "2014-04-31T16:52:18Z",
+                        "updated_at": "2014-04-31T16:55:18Z",
+                        "color": "#123456",
+                        "effect": null,
+                        "priority": 1
+                    },
+                    "messages": [
+                            {
+                                "channel": {
+                                "content_type": "text/plain",
+                                "created_at": "2014-04-31T16:52:18Z",
+                                "id": "3d1f42b2-e8df-11e3-8c3e-0002ca8657ea",
+                                "max_size": 140,
+                                "name": "message court",
+                                "updated_at": "2014-04-31T16:55:18Z"
+                                },
+                                "created_at": "2014-04-31T16:52:18Z",
+                                "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657ca",
+                                "text": "Message 1",
+                                "updated_at": "2014-04-31T16:55:18Z"
+                            },
+                            {
+                                "channel": {
+                                    "content_type": "text/markdown",
+                                    "created_at": "2014-04-31T16:52:18Z",
+                                    "id": "3d1f42b2-e8df-11e3-8c3e-0008ca86c7ea",
+                                    "max_size": null,
+                                    "name": "message long",
+                                    "updated_at": "2014-04-31T16:55:18Z"
+                                },
+                                "created_at": "2014-04-31T16:52:18Z",
+                                "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8257ea",
+                                "text": "Message 2",
+                                "updated_at": "2014-04-31T16:55:18Z"
+                            }
+                    ],
+                    "application_periods": [
+                        {
+                            "begin": "2014-04-31T16:52:00Z",
+                            "end": "2014-05-22T02:15:00Z"
+                        }
+                    ],
+                    "objects": [
+                        {
+                            "id": "network:RTP:3786125",
+                            "name": "RER A",
+                            "type": "network",
+                        },
+                        {
+                            "id": "network:RTP:378",
+                            "name": "RER B",
+                            "type": "network",
+                        }
+                    ],
+                    "disruption" : {"href": "https://ogv2ws.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-1c3e-0008ca8617ea"}
+                },
+                "meta": {}
+            }
+
+
+- Response 200 (application/json)
+
+    * Body
+
+            {
+                "impact": {
+                    "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8617ea",
+                    "self": {"href": "https://ogv2ws.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-8c3e-0008ca8647ea/impacts/3d1f42b2-e8df-11e3-8c3e-0008ca8617ea"},
+                    "created_at": "2014-04-31T16:52:18Z",
+                    "updated_at": "2014-04-31T16:55:18Z",
+                    "severity": {
+                        "id": "3d1f42b2-e8df-11e3-8c3e-0008ca861aea",
+                        "wording": "Bonne nouvelle",
+                        "created_at": "2014-04-31T16:52:18Z",
+                        "updated_at": "2014-04-31T16:55:18Z",
+                        "color": "#123456",
+                        "effect": null,
+                        "priority": 1
+                    },
+                    "messages": [
+                            {
+                                "channel": {
+                                "content_type": "text/plain",
+                                "created_at": "2014-04-31T16:52:18Z",
+                                "id": "3d1f42b2-e8df-11e3-8c3e-0002ca8657ea",
+                                "max_size": 140,
+                                "name": "message court",
+                                "updated_at": "2014-04-31T16:55:18Z"
+                                },
+                                "created_at": "2014-04-31T16:52:18Z",
+                                "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657ca",
+                                "text": "Message 1",
+                                "updated_at": "2014-04-31T16:55:18Z"
+                            },
+                            {
+                                "channel": {
+                                    "content_type": "text/markdown",
+                                    "created_at": "2014-04-31T16:52:18Z",
+                                    "id": "3d1f42b2-e8df-11e3-8c3e-0008ca86c7ea",
+                                    "max_size": null,
+                                    "name": "message long",
+                                    "updated_at": "2014-04-31T16:55:18Z"
+                                },
+                                "created_at": "2014-04-31T16:52:18Z",
+                                "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8257ea",
+                                "text": "Message 2",
+                                "updated_at": "2014-04-31T16:55:18Z"
+                            }
+                    ],
+                    "application_periods": [
+                        {
+                            "begin": "2014-04-31T16:52:00Z",
+                            "end": "2014-05-22T02:15:00Z"
+                        }
+                    ],
+                    "objects": [
+                        {
+                            "id": "network:RTP:3786125",
+                            "name": "RER A",
+                            "type": "network",
+                        },
+                        {
+                            "id": "network:RTP:378",
+                            "name": "RER B",
+                            "type": "network",
+                        }
+                    ],
+                    "disruption" : {"href": "https://ogv2ws.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-1c3e-0008ca8617ea"}
+                },
+                "meta": {}
+            }
+
+- response 404 (application/json)
+    * Body
+
+            {
+                "error": {
+                    "message": "No impact"
+                },
+                "meta": {}
+            }
+
+##Delete a impact [DELETE]
+Archive one impact.
+###Parameters
+
+
+- Response 204
+
+- response 404 (application/json)
+    * Body
+
+            {
+                "error": {
+                    "message": "No impact"
+                },
+                "meta": {}
+            }
 
 #Impact [/disruptions/{disruption_id}/impacts/{id}]
 ##Retrieve a impact [GET]
@@ -1123,6 +1366,169 @@ Return all the severities ordered by priority.
                 },
                 "meta": {}
             }
+
+#List of tags [/tags]
+
+##Retrieve the list of all tags [GET]
+
+- response 200 (application/json)
+
+    * Body
+
+            {
+                "tags": [
+                    {
+                        "id": "3d1f42b2-e8df-11e4-8c3e-0008ca8617ea",
+                        "name": "meteo",
+                        "created_at": "2014-04-31T16:52:18Z",
+                        "updated_at": "2014-04-31T16:55:18Z"
+                    },
+                    {
+                        "id": "3d1f42b2-e8df-11e5-8c3e-0008ca8617ea",
+                        "name": "probleme",
+                        "created_at": "2014-04-31T16:52:18Z",
+                        "updated_at": "2014-04-31T16:55:18Z"
+                    },
+                    {
+                        "id": "3d1f42b2-e8df-11e6-8c3e-0008ca8617ea",
+                        "name": "rer",
+                        "created_at": "2014-04-31T16:52:18Z",
+                        "updated_at": "2014-04-31T16:55:18Z"
+                    }
+                ],
+                "meta": {}
+            }
+
+##Create a tag [POST]
+- request
+    + headers
+
+            Content-Type: application/json
+    * Body
+
+                {
+                    "name": "meteo"
+                }
+
+- response 200 (application/json)
+
+    * Body
+
+            {
+                "tag": {
+                    "id": "3d1f42b2-e8df-11e4-8c3e-0008ca8617ea",
+                    "name": "meteo",
+                    "created_at": "2014-04-31T16:52:18Z",
+                    "updated_at": null
+                },
+                "meta": {}
+            }
+
+# tags [/tags/{id}]
+##Retrieve one tag [GET]
+
+##Parameters
+
+Retrieve one existing tag:
+
+- response 200 (application/json)
+
+    * Body
+
+            {
+                "tag": {
+                    "id": "3d1f42b2-e8df-11e4-8c3e-0008ca8617ea",
+                    "self": {
+                        "href": "https://ogv2ws.apiary-mock.com/tags/3d1f42b2-e8df-11e4-8c3e-0008ca8617ea"
+                    }
+                    "name": "rer",
+                    "created_at": "2014-04-31T16:52:18Z",
+                    "updated_at": null
+                },
+                "meta": {}
+            }
+
+
+- response 404 (application/json)
+    * Body
+
+            {
+                "error": {
+                    "message": "No tag"
+                },
+                "meta": {}
+            }
+
+##Update a tag [PUT]
+
+###Parameters
+
+- Request
+
+    * Headers
+
+            Content-Type: application/json
+
+    * Body
+
+            {
+                "name": "rer"
+            }
+
+- Response 200 (application/json)
+
+    * Body
+
+            {
+                "tag": {
+                    "id": "3d1f42b3-e8df-11e3-8c3e-0008ca8617ea",
+                    "self": {
+                        "href": "https://ogv2ws.apiary-mock.com/tags/3d1f42b2-e8df-11e4-8c3e-0008ca8617ea"
+                    }
+                    "name": "rer",
+                    "created_at": "2014-04-31T16:52:18Z",
+                    "updated_at": "2014-04-31T16:55:18Z"
+                },
+                "meta": {}
+            }
+
+- response 404 (application/json)
+    * Body
+
+            {
+                "error": {
+                    "message": "No tag"
+                },
+                "meta": {}
+            }
+
+- response 400 (application/json)
+    * Body
+
+            {
+                "error": {
+                    "message": "'name' is a required property"
+                }
+                "meta": {}
+            }
+
+##Delete a tag [DELETE]
+Archive a tag.
+###Parameters
+
+
+- Response 204
+
+- response 404 (application/json)
+    * Body
+
+            {
+                "error": {
+                    "message": "No tag"
+                },
+                "meta": {}
+            }
+
 
 #List of channels [/channels]
 

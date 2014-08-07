@@ -33,7 +33,9 @@ Feature: list disruptions with filter publication_status
         And the header "Content-Type" should be "application/json"
         And the field "disruptions" should have a size of 3
         And the field "disruptions.0.publication_period.begin" should be "2014-04-02T14:00:00Z"
+        And the field "disruptions.1.publication_period.begin" should be "2014-04-03T15:00:00Z"
         And the field "disruptions.2.publication_period.begin" should be "2014-05-02T14:00:00Z"
+
 
     Scenario: Filter current_time=2014-05-02T14:00:00Z&publication_status[]='past'&publication_status[]='coming'
 

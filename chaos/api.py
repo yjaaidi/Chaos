@@ -36,6 +36,7 @@ from chaos import app
 flask_restful.representations.json.settings = {'indent': 4}
 
 api = flask_restful.Api(app, catch_all_404s=True)
+api.app.url_map.strict_slashes = False
 
 api.add_resource(resources.Index,
                  '/',
@@ -54,6 +55,11 @@ api.add_resource(resources.Cause,
                  '/causes',
                  '/causes/<string:id>',
                  endpoint='cause')
+
+api.add_resource(resources.Tag,
+                 '/tags',
+                 '/tags/<string:id>',
+                 endpoint='tag')
 
 api.add_resource(resources.Impacts,
                  '/disruptions/<string:disruption_id>/impacts',

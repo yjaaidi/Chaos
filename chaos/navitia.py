@@ -41,7 +41,8 @@ class Navitia(object):
         self.timeout = timeout
         self.collections = {
             "network": "networks",
-            "stop_area": "stop_areas"
+            "stop_area": "stop_areas",
+            "line": "lines"
         }
 
     def get_pt_object(self, uri, object_type):

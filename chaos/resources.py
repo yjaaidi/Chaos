@@ -3,7 +3,6 @@
 # This file is part of Navitia,
 #     the software to build cool stuff with public transport.
 #
-# Hope you'll enjoy and contribute to this project,
 #     powered by Canal TP (www.canaltp.fr).
 # Help us simplify mobility and open public transport:
 #     a non ending quest to the responsive locomotion way of traveling!
@@ -35,11 +34,14 @@ from jsonschema import validate, ValidationError
 from flask.ext.restful import abort
 from fields import *
 from formats import *
-from formats import impact_input_format, channel_input_format, pt_object_type_values
+from formats import impact_input_format, channel_input_format, pt_object_type_values,\
+    tag_input_format
 from chaos import mapper
 from chaos import utils
 import chaos
 from chaos.navitia import Navitia
+from sqlalchemy.exc import IntegrityError
+
 
 import logging
 from utils import make_pager, option_value
@@ -67,6 +69,10 @@ severity_mapping = {
 
 cause_mapping = {
     'wording': None
+}
+
+tag_mapping = {
+    'name': None
 }
 
 object_mapping = {
@@ -101,7 +107,11 @@ class Index(flask_restful.Resource):
             "severities": {"href": url_for('severity', _external=True)},
             "causes": {"href": url_for('cause', _external=True)},
             "channels": {"href": url_for('channel', _external=True)},
-            "impactsbyobject": {"href": url_for('impactsbyobject', _external=True)}
+            "impactsbyobject": {"href": url_for('impactsbyobject', _external=True)},
+            "tags": {"href": url_for('tag', _external=True)},
+            "status": {"href": url_for('status', _external=True)}
+
+
         }
         return response, 200
 
@@ -127,7 +137,7 @@ class Severity(flask_restful.Resource):
         except ValidationError, e:
             logging.debug(str(e))
             #TODO: generate good error messages
-            return marshal({'error': {'message': str(e).replace("\n", " ")}},
+            return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 400
 
         severity = models.Severity()
@@ -149,7 +159,7 @@ class Severity(flask_restful.Resource):
         except ValidationError, e:
             logging.debug(str(e))
             #TODO: generate good error messages
-            return marshal({'error': {'message': str(e).replace("\n", " ")}},
+            return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 400
 
         mapper.fill_from_json(severity, json, severity_mapping)
@@ -181,6 +191,9 @@ class Disruptions(flask_restful.Resource):
                                 type=option_value(publication_status_values),
                                 action="append",
                                 default=publication_status_values)
+        parser_get.add_argument("tag[]",
+                                type=utils.get_uuid,
+                                action="append")
         parser_get.add_argument("current_time", type=utils.get_datetime)
 
     def get(self, id=None):
@@ -199,24 +212,26 @@ class Disruptions(flask_restful.Resource):
             if items_per_page == 0:
                 abort(400, message="items_per_page argument value is not valid")
             publication_status = args['publication_status[]']
+            tags = args['tag[]']
+
             g.current_time = args['current_time']
             result = models.Disruption.all_with_filter(page_index=page_index,
                                                        items_per_page=items_per_page,
-                                                       publication_status=publication_status)
+                                                       publication_status=publication_status,
+                                                       tags=tags)
             response = {'disruptions': result.items, 'meta': make_pager(result, 'disruption')}
             return marshal(response, disruptions_fields)
 
     def post(self):
         json = request.get_json()
-        logging.getLogger(__name__).debug(json)
+        logging.getLogger(__name__).debug('POST disruption: %s', json)
         try:
             validate(json, disruptions_input_format)
         except ValidationError, e:
             logging.debug(str(e))
             #TODO: generate good error messages
-            return marshal({'error': {'message': str(e).replace("\n", " ")}},
+            return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 400
-
         disruption = models.Disruption()
         mapper.fill_from_json(disruption, json, disruption_mapping)
 
@@ -226,6 +241,13 @@ class Disruptions(flask_restful.Resource):
                         return marshal({'error': {'message': 'ptobject {} doesn\'t exist'.format(disruption.localization_id)}},
                             error_fields), 404
         db.session.add(disruption)
+
+        #Add all tags present in Json
+        if 'tags' in json:
+            for json_tag in json['tags']:
+                    tag = models.Tag.get(json_tag['id'])
+                    disruption.tags.append(tag)
+
         db.session.commit()
         return marshal({'disruption': disruption}, one_disruption_fields), 201
 
@@ -235,14 +257,14 @@ class Disruptions(flask_restful.Resource):
                            error_fields), 400
         disruption = models.Disruption.get(id)
         json = request.get_json()
-        logging.getLogger(__name__).debug(json)
+        logging.getLogger(__name__).debug('PUT disruption: %s', json)
 
         try:
             validate(json, disruptions_input_format)
         except ValidationError, e:
             logging.getLogger(__name__).debug(str(e))
             #TODO: generate good error messages
-            return marshal({'error': {'message': str(e).replace("\n", " ")}},
+            return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 400
 
         mapper.fill_from_json(disruption, json, disruption_mapping)
@@ -252,6 +274,22 @@ class Disruptions(flask_restful.Resource):
             if not self.navitia.get_pt_object(disruption.localization_id, json['localization'][0]["type"]):
                     return marshal({'error': {'message': 'ptobject {} doesn\'t exist'.format(disruption.localization_id)}},
                             error_fields), 404
+
+        #Add/delete tags present/ not present in Json
+        tags_db = dict((tag.id, tag) for tag in disruption.tags)
+        tags_json = {}
+        if 'tags' in json:
+            tags_json = dict((tag["id"], tag) for tag in json['tags'])
+            for tag_json in json['tags']:
+                if tag_json["id"] not in tags_db:
+                    tag = models.Tag.get(tag_json['id'])
+                    disruption.tags.append(tag)
+                    tags_db[tag_json['id']] = tag
+
+        difference = set(tags_db) - set(tags_json)
+        for diff in difference:
+            tag = tags_db[diff]
+            disruption.tags.remove(tag)
 
         db.session.commit()
         return marshal({'disruption': disruption}, one_disruption_fields), 200
@@ -287,7 +325,7 @@ class Cause(flask_restful.Resource):
         except ValidationError, e:
             logging.debug(str(e))
             #TODO: generate good error messages
-            return marshal({'error': {'message': str(e).replace("\n", " ")}},
+            return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 400
 
         cause = models.Cause()
@@ -309,7 +347,7 @@ class Cause(flask_restful.Resource):
         except ValidationError, e:
             logging.debug(str(e))
             #TODO: generate good error messages
-            return marshal({'error': {'message': str(e).replace("\n", " ")}},
+            return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 400
 
         mapper.fill_from_json(cause, json, cause_mapping)
@@ -326,6 +364,76 @@ class Cause(flask_restful.Resource):
         return None, 204
 
 
+class Tag(flask_restful.Resource):
+
+    def get(self, id=None):
+        if id:
+            if not id_format.match(id):
+                return marshal({'error': {'message': "id invalid"}},
+                           error_fields), 400
+            response = {'tag': models.Tag.get(id)}
+            return marshal(response, one_tag_fields)
+        else:
+            response = {'tags': models.Tag.all(), 'meta': {}}
+            return marshal(response, tags_fields)
+
+    def post(self):
+        json = request.get_json()
+        logging.getLogger(__name__).debug('Post tag: %s', json)
+        try:
+            validate(json, tag_input_format)
+        except ValidationError, e:
+            logging.debug(str(e))
+            #TODO: generate good error messages
+            return marshal({'error': {'message': utils.parse_error(e)}},
+                           error_fields), 400
+
+        tag = models.Tag()
+        mapper.fill_from_json(tag, json, tag_mapping)
+        db.session.add(tag)
+        try:
+            db.session.commit()
+        except IntegrityError, e:
+            logging.debug(str(e))
+            return marshal({'error': {'message': utils.parse_error(e)}},
+                           error_fields), 400
+        return marshal({'tag': tag}, one_tag_fields), 201
+
+    def put(self, id):
+        if not id_format.match(id):
+            return marshal({'error': {'message': "id invalid"}},
+                    error_fields), 400
+        tag = models.Tag.get(id)
+        json = request.get_json()
+        logging.getLogger(__name__).debug('PUT tag: %s', json)
+
+        try:
+            validate(json, tag_input_format)
+        except ValidationError, e:
+            logging.debug(str(e))
+            #TODO: generate good error messages
+            return marshal({'error': {'message': utils.parse_error(e)}},
+                           error_fields), 400
+
+        mapper.fill_from_json(tag, json, tag_mapping)
+        try:
+            db.session.commit()
+        except IntegrityError, e:
+            logging.debug(str(e))
+            return marshal({'error': {'message': utils.parse_error(e)}},
+                           error_fields), 400
+        return marshal({'tag': tag}, one_tag_fields), 200
+
+    def delete(self, id):
+        if not id_format.match(id):
+            return marshal({'error': {'message': "id invalid"}},
+                           error_fields), 400
+        tag = models.Tag.get(id)
+        tag.is_visible = False
+        db.session.commit()
+        return None, 204
+
+
 class ImpactsByObject(flask_restful.Resource):
     def __init__(self):
         current_datetime = utils.get_current_time()
@@ -334,9 +442,10 @@ class ImpactsByObject(flask_restful.Resource):
         self.parsers = {}
         self.parsers["get"] = reqparse.RequestParser()
         parser_get = self.parsers["get"]
-        parser_get.add_argument("pt_object_type", type=option_value(pt_object_type_values), default='network')
+        parser_get.add_argument("pt_object_type", type=option_value(pt_object_type_values))
         parser_get.add_argument("start_date", type=utils.get_datetime, default=default_start_date)
         parser_get.add_argument("end_date", type=utils.get_datetime, default=default_end_date)
+        parser_get.add_argument("uri[]", type=str, action="append")
         self.navitia = Navitia(current_app.config['NAVITIA_URL'],
                                current_app.config['NAVITIA_COVERAGE'],
                                current_app.config['NAVITIA_TOKEN'])
@@ -346,13 +455,13 @@ class ImpactsByObject(flask_restful.Resource):
         pt_object_type = args['pt_object_type']
         start_date = args['start_date']
         end_date = args['end_date']
+        uris = args['uri[]']
 
-        if not pt_object_type:
-                return marshal({'error': {'message': "object type invalid"}},
+        if not pt_object_type and not uris:
+                return marshal({'error': {'message': "object type or uri object invalid"}},
                                error_fields), 400
-
-        impacts = models.Impact.all_with_filter(start_date, end_date, pt_object_type)
-        result = utils.group_impacts_by_pt_object(impacts, pt_object_type, self.navitia.get_pt_object)
+        impacts = models.Impact.all_with_filter(start_date, end_date, pt_object_type, uris)
+        result = utils.group_impacts_by_pt_object(impacts, pt_object_type, uris, self.navitia.get_pt_object)
         return marshal({'objects': result}, impacts_by_object_fields)
 
 
@@ -395,19 +504,20 @@ class Impacts(flask_restful.Resource):
             return marshal(response, impacts_fields)
 
     def post(self, disruption_id):
+
         if not id_format.match(disruption_id):
             return marshal({'error': {'message': "id invalid"}},
                            error_fields), 400
 
         json = request.get_json()
-        logging.getLogger(__name__).debug(json)
+        logging.getLogger(__name__).debug('POST impcat: %s', json)
 
         try:
             validate(json, impact_input_format)
         except ValidationError, e:
             logging.debug(str(e))
             #TODO: generate good error messages
-            return marshal({'error': {'message': str(e).replace("\n", " ")}},
+            return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 400
 
         impact = models.Impact()
@@ -417,27 +527,28 @@ class Impacts(flask_restful.Resource):
         db.session.add(impact)
 
         #Add all objects present in Json
-        if json:
-            if 'objects' in json:
-                for obj in  json['objects']:
-                    object = models.PTobject()
-                    object.impact_id = impact.id
-                    mapper.fill_from_json(object, obj, object_mapping)
-                    if not self.navitia.get_pt_object(obj['id'], obj['type']):
-                        return marshal({'error': {'message': 'network {} doesn\'t exist'.format(obj['id'])}},
-                                       error_fields), 404
-                    impact.insert_object(object)
-            if 'application_periods' in json:
-                for app_period in json["application_periods"]:
-                    application_period = models.ApplicationPeriods(impact.id)
-                    mapper.fill_from_json(application_period, app_period, application_period_mapping)
-                    impact.insert_app_period(application_period)
-            if 'messages' in json:
-                for mes in  json['messages']:
-                    message = models.Message()
-                    message.impact_id = impact.id
-                    mapper.fill_from_json(message, mes, message_mapping)
-                    impact.insert_message(message)
+        if 'objects' in json:
+            for pt_object_json in json['objects']:
+                if not self.navitia.get_pt_object(pt_object_json['id'], pt_object_json['type']):
+                    return marshal({'error': {'message': '{} {} doesn\'t exist'.format(pt_object_json['type'], pt_object_json['id'])}},
+                               error_fields), 404
+                ptobject = models.PTobject.get_pt_object_by_uri(pt_object_json["id"])
+                if not ptobject:
+                    ptobject = models.PTobject()
+                    mapper.fill_from_json(ptobject, pt_object_json, object_mapping)
+                impact.objects.append(ptobject)
+
+        if 'application_periods' in json:
+            for app_period in json["application_periods"]:
+                application_period = models.ApplicationPeriods(impact.id)
+                mapper.fill_from_json(application_period, app_period, application_period_mapping)
+                impact.insert_app_period(application_period)
+        if 'messages' in json:
+            for mes in  json['messages']:
+                message = models.Message()
+                message.impact_id = impact.id
+                mapper.fill_from_json(message, mes, message_mapping)
+                impact.insert_message(message)
 
         db.session.commit()
         return marshal({'impact': impact}, one_impact_fields), 201
@@ -447,40 +558,59 @@ class Impacts(flask_restful.Resource):
             return marshal({'error': {'message': "id invalid"}},
                            error_fields), 400
         json = request.get_json()
-        logging.getLogger(__name__).debug(json)
+        logging.getLogger(__name__).debug('PUT impact: %s', json)
+
+        try:
+            validate(json, impact_input_format)
+        except ValidationError, e:
+            logging.debug(str(e))
+            #TODO: generate good error messages
+            return marshal({'error': {'message': utils.parse_error(e)}},
+                           error_fields), 400
+
         impact = models.Impact.get(id)
 
         #Add all objects and all messages present in Json
-        if json:
-            if 'objects' in json:
-                for obj in  json['objects']:
-                    object = models.PTobject()
-                    object.impact_id = impact.id
-                    mapper.fill_from_json(object, obj, object_mapping)
-                    if not self.navitia.get_pt_object(obj['id'], obj['type']):
-                        return marshal({'error': {'message': 'network {} doesn\'t exist'.format(obj['id'])}},
-                                       error_fields), 404
-                    impact.insert_object(object)
-            if 'application_periods' in json:
-                for app_period in json["application_periods"]:
-                    application_period = models.ApplicationPeriods(impact.id)
-                    mapper.fill_from_json(application_period, app_period, application_period_mapping)
-                    impact.insert_app_period(application_period)
+        pt_object_db = set(ptobject.uri for ptobject in impact.objects)
+        pt_objects_json = set()
+        if 'objects' in json:
+            for pt_object_json in json['objects']:
+                if not self.navitia.get_pt_object(pt_object_json['id'], pt_object_json['type']):
+                    return marshal({'error': {'message': '{} {} doesn\'t exist'.format(pt_object_json['type'], pt_object_json['id'])}},
+                               error_fields), 404
+                pt_objects_json.add(pt_object_json["id"])
+                if pt_object_json["id"] not in pt_object_db:
+                    ptobject = models.PTobject.get_pt_object_by_uri(pt_object_json["id"])
+                    if not ptobject:
+                        ptobject = models.PTobject()
+                        mapper.fill_from_json(ptobject, pt_object_json, object_mapping)
+                    impact.objects.append(ptobject)
 
-            messages_db = dict((msg.channel_id, msg) for msg in impact.messages)
-            messages_json = dict()
-            if 'messages' in json:
-                messages_json = dict((msg["channel"]["id"], msg) for msg in json['messages'])
-                for message_json in json['messages']:
-                    if message_json["channel"]["id"] in messages_db:
-                        msg = messages_db[message_json["channel"]["id"]]
-                        mapper.fill_from_json(msg, message_json, message_mapping)
-                    else:
-                        message = models.Message()
-                        message.impact_id = impact.id
-                        mapper.fill_from_json(message, message_json, message_mapping)
-                        impact.insert_message(message)
-                        messages_db[message.channel_id] = message
+        for ptobject in impact.objects:
+            if ptobject.uri not in pt_objects_json:
+                impact.delete(ptobject)
+
+        impact.delete_app_periods()
+        if 'application_periods' in json:
+            for app_period in json["application_periods"]:
+                application_period = models.ApplicationPeriods(impact.id)
+                mapper.fill_from_json(application_period, app_period, application_period_mapping)
+                impact.insert_app_period(application_period)
+
+        messages_db = dict((msg.channel_id, msg) for msg in impact.messages)
+        messages_json = dict()
+        if 'messages' in json:
+            messages_json = dict((msg["channel"]["id"], msg) for msg in json['messages'])
+            for message_json in json['messages']:
+                if message_json["channel"]["id"] in messages_db:
+                    msg = messages_db[message_json["channel"]["id"]]
+                    mapper.fill_from_json(msg, message_json, message_mapping)
+                else:
+                    message = models.Message()
+                    message.impact_id = impact.id
+                    mapper.fill_from_json(message, message_json, message_mapping)
+                    impact.insert_message(message)
+                    messages_db[message.channel_id] = message
 
             difference = set(messages_db) - set(messages_json)
             for diff in difference:
@@ -520,7 +650,7 @@ class Channel(flask_restful.Resource):
         except ValidationError, e:
             logging.debug(str(e))
             #TODO: generate good error messages
-            return marshal({'error': {'message': str(e).replace("\n", " ")}},
+            return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 400
 
         channel = models.Channel()
@@ -542,7 +672,7 @@ class Channel(flask_restful.Resource):
         except ValidationError, e:
             logging.debug(str(e))
             #TODO: generate good error messages
-            return marshal({'error': {'message': str(e).replace("\n", " ")}},
+            return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 400
 
         mapper.fill_from_json(channel, json, channel_mapping)
@@ -563,4 +693,5 @@ class Status(flask_restful.Resource):
     def get(self):
         return {'version': chaos.VERSION,
                 'db_pool_status': db.engine.pool.status(),
-                'db_version': db.engine.scalar('select version_num from alembic_version;')}
+                'db_version': db.engine.scalar('select version_num from alembic_version;'),
+                'navitia_url': current_app.config['NAVITIA_URL']}

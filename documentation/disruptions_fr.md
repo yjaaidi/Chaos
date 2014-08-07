@@ -12,6 +12,7 @@ Les entités manipulées par le web service sont:
    - les impacts (impacts), qui représentent toute application d'une perturbation sur une entité du référentiel de transport (ligne, zone d'arrêt, ...).
    - les sévérités, ou conséquences (severities), qui représentent les conséquences d'un impact sur l'entité du référentiel affectée (bloquant, information, ...)
    - les causes, ou motif (causes), qui représentent les origine de la perturbation (obstacle sur les voies, accident de voyageur, ...)
+   - les tags (tags), qui permettent de tager des perturbations (rer, meteo, probleme, ...)
    - les canaux de diffusion (channels), qui représentent les medias vers lesquels les informations seront transmises.
 
 Pour chacune des entités présentées, les web services proposent les fonctions de création, suppression, édition, liste, et recherche unitaire. Sauf mention contraire, seules les fonctions de liste et de recherche sont proposées à l'implémentation.
@@ -52,7 +53,8 @@ Enfin, en cas de paramétre non valide, y compris un json ne respestant pas les 
                 "disruption": {"href": "https://ogv2ws.apiary-mock.com/disruptions/{id}", "templated": true},
                 "severities": {"href": "https://ogv2ws.apiary-mock.com/severities"},
                 "causes": {"href": "https://ogv2ws.apiary-mock.com/causes"},
-                "channels": {"href": "https://ogv2ws.apiary-mock.com/channels"}
+                "channels": {"href": "https://ogv2ws.apiary-mock.com/channels"},
+                "tags": {"href": "https://ogv2ws.apiary-mock.com/tags"}
             }
 
 
@@ -68,6 +70,7 @@ Retourne la liste de toutes les perturbations visibles.
 | items_per_page       | Nombre d'items par page                                                                   | false    | 20                      |
 | publication_status[] | Filtre sur publication_status,  les valeurs possibles sont : past, ongoing, coming        | false    | [past, ongoing, coming] |
 | current_time         | Permet de changer l'heure d'appel, sert surtout pour le debug                             | false    | NOW                     |
+| tag[]                | filtre sur tag (identifiant du tag)                                                       | false    |                         |
 
 
 Le paramétre ```publication_status``` permet, par rapport à l'heure de référence passée en paramètre, de retourner les perturbations en cours (c'est à dire ayant des dates/heures de publications encadrant la date/heure de référence), à venir (qui ont des dates/heures de publications postérieures à la date/heure de référence) ou passées (ayant des dates/heures de publications antérieures à la date/heure de référence).
@@ -81,6 +84,8 @@ Le champs ```impacts``` contient un objet de pagination contenant les liens vers
 Le champs ```cause``` contient un objet cause de la perturbation.
 
 Le champs ```localization``` contient un objet localisation de la perturbation.
+
+Le champs ```tags``` contient une liste de tag de la perturbation.
 
 ##Example
 - response 200 (application/json)
@@ -102,6 +107,17 @@ Le champs ```localization``` contient un objet localisation de la perturbation.
                             "begin":"2014-04-31T17:00:00Z",
                             "end":"2014-05-01T17:00:00Z"
                         },
+                        tags": [
+                            {
+                                "created_at": "2014-07-30T07:11:08Z",
+                                "id": "ad9d80ce-17b8-11e4-a553-d4bed99855be",
+                                "name": "rer",
+                                "self": {
+                                    "href": "http://127.0.0.1:5000/tags/ad9d80ce-17b8-11e4-a553-d4bed99855be"
+                                },
+                                "updated_at": null
+                            }
+                        ],
                         "impacts": {
                             "pagination": {
                                 "start_page": 0,
@@ -127,12 +143,23 @@ Le champs ```localization``` contient un objet localisation de la perturbation.
                             "begin": "2014-04-31T17:00:00Z",
                             "end": null
                         },
+                        tags": [
+                            {
+                                "created_at": "2014-07-30T07:11:08Z",
+                                "id": "ad9d80ce-17b8-11e4-a553-d4bed99855be",
+                                "name": "rer",
+                                "self": {
+                                    "href": "http://127.0.0.1:5000/tags/ad9d80ce-17b8-11e4-a553-d4bed99855be"
+                                },
+                                "updated_at": null
+                            }
+                        ],
                         "cause": {
 
                             "created_at": "2014-07-21T14:06:23Z",
                             "id": "32b07ff8-10e0-11e4-ae39-d4bed99855be",
                             "self": {
-                                "href": "https://ogv2ws.apiary-mock.com//causes/32b07ff8-10e0-11e4-ae39-d4bed99855be"
+                                "href": "https://ogv2ws.apiary-mock.com/causes/32b07ff8-10e0-11e4-ae39-d4bed99855be"
                             },
                             "updated_at": null,
                             "wording": "foo1"
@@ -199,6 +226,17 @@ Le champs ```localization``` contient un objet localisation de la perturbation.
                             "wording": "foo1"
 
                         },
+                        tags": [
+                            {
+                                "created_at": "2014-07-30T07:11:08Z",
+                                "id": "ad9d80ce-17b8-11e4-a553-d4bed99855be",
+                                "name": "rer",
+                                "self": {
+                                    "href": "http://127.0.0.1:5000/tags/ad9d80ce-17b8-11e4-a553-d4bed99855be"
+                                },
+                                "updated_at": null
+                            }
+                        ],
                         "impacts": {
                             "pagination": {
                                 "start_page": 0,
@@ -238,6 +276,7 @@ Les champs suivant peuvent etre défini:
   - publication_period
   - localization
   - cause (obligatoire)
+  - tags
 
 Lors d'un succés une réponse 201 est retourné, celle ci contient la perturbation créée.
 
@@ -254,7 +293,8 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient la perturbat
                     "end": null
                 },
                 "localization":[{"id":"stop_area:JDR:SA:CHVIN", "type": "stop_area"}],
-                "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}
+                "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"},
+                "tags":[{"id": "ad9d80ce-17b8-11e4-a553-d4bed99855be"}]
             }
 
 
@@ -324,6 +364,17 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient la perturbat
                         "type": "stop_area"
 
                     }
+                    ],
+                    tags": [
+                        {
+                            "created_at": "2014-07-30T07:11:08Z",
+                            "id": "ad9d80ce-17b8-11e4-a553-d4bed99855be",
+                            "name": "rer",
+                            "self": {
+                                "href": "http://127.0.0.1:5000/tags/ad9d80ce-17b8-11e4-a553-d4bed99855be"
+                            },
+                            "updated_at": null
+                        }
                     ]
                 },
                 "meta": {}
@@ -411,6 +462,17 @@ Retourne une perturbation (si elle existe):
                         "type": "stop_area"
 
                     }
+                    ],
+                    tags": [
+                        {
+                            "created_at": "2014-07-30T07:11:08Z",
+                            "id": "ad9d80ce-17b8-11e4-a553-d4bed99855be",
+                            "name": "rer",
+                            "self": {
+                                "href": "http://127.0.0.1:5000/tags/ad9d80ce-17b8-11e4-a553-d4bed99855be"
+                            },
+                            "updated_at": null
+                        }
                     ]
                 },
                 "meta": {}
@@ -440,6 +502,7 @@ Les champs suivant peuvent etre mis à jour:
   - publication_period
   - localization
   - cause
+  - tags
 
 Si un champs n'est pas présent dans le json la valeur est considéré null.
 
@@ -462,7 +525,8 @@ Lors d'un succés une réponse 200 est retourné, celle ci contient la perturbat
                     "end": null
                 },
                 "localization":[{"id":"stop_area:AME:SA:104", "type": "stop_area"}],
-                "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}
+                "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"},
+                "tags":[{"id": "ad9d80ce-17b8-11e4-a553-d4bed99855be"}]
             }
 
 
@@ -530,6 +594,17 @@ Lors d'un succés une réponse 200 est retourné, celle ci contient la perturbat
                         "type": "stop_area"
 
                     }
+                    ],
+                    tags": [
+                        {
+                            "created_at": "2014-07-30T07:11:08Z",
+                            "id": "ad9d80ce-17b8-11e4-a553-d4bed99855be",
+                            "name": "rer",
+                            "self": {
+                                "href": "http://127.0.0.1:5000/tags/ad9d80ce-17b8-11e4-a553-d4bed99855be"
+                            },
+                            "updated_at": null
+                        }
                     ]
                 },
                 "meta": {}
@@ -586,7 +661,8 @@ Cette fonction donne la liste des impacts par type d'objet.
 
 | Name                 | description                                                                               | required | default                 |
 | -------------------- | ----------------------------------------------------------------------------------------- | -------- | ----------------------- |
-| pt_object_type       | Filtre par type d'objet,  les valeurs possibles sont : network, stoparea                  | true     | network                 |
+| pt_object_type       | Filtre par type d'objet,  les valeurs possibles sont : network, stoparea, line            | false    |                         |
+| uri[]                | filtre par uri de l'objet TC                                                              | false    |                         |
 | start_date           | filtre sur la période d'application :date de début                                        | false    | Now():00:00:00Z         |
 | end_date             | filtre sur la période d'application :date de fin                                          | false    | Now():23:59:59Z         |
 
@@ -1034,6 +1110,216 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient l'impact cr�
                 "meta": {}
             }
 
+
+##Mise à jour d'un impact [PUT]
+
+La mise à jour d'un impact est réalisé via une requéte ```PUT``` à sur la resource ```/disruptions/{disruption_id}/impacts/{id}```.
+Le content-type de la requete doit etre json et le corps de celle ci doit contenir un json correspondant au format d'un impact.
+
+Les champs suivant peuvent etre mis à jour:
+
+  - severity (obligatoire)
+  - application_periods
+  - objects
+  - messages
+
+Si un champs n'est pas présent dans le json la valeur est considéré null.
+
+Lors d'un succés une réponse 200 est retourné, celle ci contient l'impact modifié.
+
+###Exemple
+- Request
+
+    * Headers
+
+            Content-Type: application/json
+
+    * Body
+
+            {
+                "impact": {
+                    "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8617ea",
+                    "self": {"href": "https://ogv2ws.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-8c3e-0008ca8647ea/impacts/3d1f42b2-e8df-11e3-8c3e-0008ca8617ea"},
+                    "created_at": "2014-04-31T16:52:18Z",
+                    "updated_at": "2014-04-31T16:55:18Z",
+                    "severity": {
+                        "id": "3d1f42b2-e8df-11e3-8c3e-0008ca861aea",
+                        "wording": "Bonne nouvelle",
+                        "created_at": "2014-04-31T16:52:18Z",
+                        "updated_at": "2014-04-31T16:55:18Z",
+                        "color": "#123456",
+                        "effect": null,
+                        "priority": 1
+                    },
+                    "messages": [
+                            {
+                                "channel": {
+                                "content_type": "text/plain",
+                                "created_at": "2014-04-31T16:52:18Z",
+                                "id": "3d1f42b2-e8df-11e3-8c3e-0002ca8657ea",
+                                "max_size": 140,
+                                "name": "message court",
+                                "updated_at": "2014-04-31T16:55:18Z"
+                                },
+                                "created_at": "2014-04-31T16:52:18Z",
+                                "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657ca",
+                                "text": "Message 1",
+                                "updated_at": "2014-04-31T16:55:18Z"
+                            },
+                            {
+                                "channel": {
+                                    "content_type": "text/markdown",
+                                    "created_at": "2014-04-31T16:52:18Z",
+                                    "id": "3d1f42b2-e8df-11e3-8c3e-0008ca86c7ea",
+                                    "max_size": null,
+                                    "name": "message long",
+                                    "updated_at": "2014-04-31T16:55:18Z"
+                                },
+                                "created_at": "2014-04-31T16:52:18Z",
+                                "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8257ea",
+                                "text": "Message 2",
+                                "updated_at": "2014-04-31T16:55:18Z"
+                            }
+                    ],
+                    "application_periods": [
+                        {
+                            "begin": "2014-04-31T16:52:00Z",
+                            "end": "2014-05-22T02:15:00Z"
+                        }
+                    ],
+                    "objects": [
+                        {
+                            "id": "network:RTP:3786125",
+                            "name": "RER A",
+                            "type": "network",
+                        },
+                        {
+                            "id": "network:RTP:378",
+                            "name": "RER B",
+                            "type": "network",
+                        }
+                    ],
+                    "disruption" : {"href": "https://ogv2ws.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-1c3e-0008ca8617ea"}
+                },
+                "meta": {}
+            }
+
+
+- Response 200 (application/json)
+
+    * Body
+
+            {
+                "impact": {
+                    "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8617ea",
+                    "self": {"href": "https://ogv2ws.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-8c3e-0008ca8647ea/impacts/3d1f42b2-e8df-11e3-8c3e-0008ca8617ea"},
+                    "created_at": "2014-04-31T16:52:18Z",
+                    "updated_at": "2014-04-31T16:55:18Z",
+                    "severity": {
+                        "id": "3d1f42b2-e8df-11e3-8c3e-0008ca861aea",
+                        "wording": "Bonne nouvelle",
+                        "created_at": "2014-04-31T16:52:18Z",
+                        "updated_at": "2014-04-31T16:55:18Z",
+                        "color": "#123456",
+                        "effect": null,
+                        "priority": 1
+                    },
+                    "messages": [
+                            {
+                                "channel": {
+                                "content_type": "text/plain",
+                                "created_at": "2014-04-31T16:52:18Z",
+                                "id": "3d1f42b2-e8df-11e3-8c3e-0002ca8657ea",
+                                "max_size": 140,
+                                "name": "message court",
+                                "updated_at": "2014-04-31T16:55:18Z"
+                                },
+                                "created_at": "2014-04-31T16:52:18Z",
+                                "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657ca",
+                                "text": "Message 1",
+                                "updated_at": "2014-04-31T16:55:18Z"
+                            },
+                            {
+                                "channel": {
+                                    "content_type": "text/markdown",
+                                    "created_at": "2014-04-31T16:52:18Z",
+                                    "id": "3d1f42b2-e8df-11e3-8c3e-0008ca86c7ea",
+                                    "max_size": null,
+                                    "name": "message long",
+                                    "updated_at": "2014-04-31T16:55:18Z"
+                                },
+                                "created_at": "2014-04-31T16:52:18Z",
+                                "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8257ea",
+                                "text": "Message 2",
+                                "updated_at": "2014-04-31T16:55:18Z"
+                            }
+                    ],
+                    "application_periods": [
+                        {
+                            "begin": "2014-04-31T16:52:00Z",
+                            "end": "2014-05-22T02:15:00Z"
+                        }
+                    ],
+                    "objects": [
+                        {
+                            "id": "network:RTP:3786125",
+                            "name": "RER A",
+                            "type": "network",
+                        },
+                        {
+                            "id": "network:RTP:378",
+                            "name": "RER B",
+                            "type": "network",
+                        }
+                    ],
+                    "disruption" : {"href": "https://ogv2ws.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-1c3e-0008ca8617ea"}
+                },
+                "meta": {}
+            }
+
+- response 404 (application/json)
+    * Body
+
+            {
+                "error": {
+                    "message": "No impact"
+                },
+                "meta": {}
+            }
+
+
+- response 400 (application/json)
+
+    * Body
+
+            {
+                "error": {
+                    "message": "'severity' is a required property"
+                }
+                "meta": {}
+            }
+
+##Effacer un impact [DELETE]
+Cette fonction archive un impact, elle pourra eventuellement être restaurée par la suite.
+
+L'archivage est réalisé via un une requete ```DELETE``` sur un impact.
+
+Une réponse de type 204 est retournée en cas de succés.
+###Exemple
+
+- Response 204
+
+- response 404 (application/json)
+    * Body
+
+            {
+                "error": {
+                    "message": "No impact"
+                },
+                "meta": {}
+            }
+
+
 #Liste des sévérités [/severities]
 
 Une sévérité est composé des champs suivants:
@@ -1479,6 +1765,211 @@ Archive une cause.
                 },
                 "meta": {}
             }
+
+#Liste des tags [/tags]
+
+##Retourne la liste de tous les tags [GET]
+
+- response 200 (application/json)
+
+    * Body
+
+            {
+                "tags": [
+                    {
+                        "id": "3d1f42b2-e8df-11e4-8c3e-0008ca8617ea",
+                        "self": {
+                            "href": "https://ogv2ws.apiary-mock.com/tags/3d1f42b2-e8df-11e4-8c3e-0008ca8617ea"
+                        }
+                        "name": "probleme",
+                        "created_at": "2014-04-31T16:52:18Z",
+                        "updated_at": "2014-04-31T16:55:18Z"
+                    },
+                    {
+                        "id": "3d1f42b2-e8df-11e5-8c3e-0008ca8617ea",
+                        "self": {
+                            "href": "https://ogv2ws.apiary-mock.com/tags/3d1f42b2-e8df-11e5-8c3e-0008ca8617ea"
+                        }
+                        "name": "meteo",
+                        "created_at": "2014-04-31T16:52:18Z",
+                        "updated_at": "2014-04-31T16:55:18Z"
+                    },
+                    {
+                        "id": "3d1f42b2-e8df-11e6-8c3e-0008ca8617ea",
+                        "self": {
+                            "href": "https://ogv2ws.apiary-mock.com/tags/3d1f42b2-e8df-11e6-8c3e-0008ca8617ea"
+                        }
+                        "name": "rer",
+                        "created_at": "2014-04-31T16:52:18Z",
+                        "updated_at": "2014-04-31T16:55:18Z"
+                    }
+                ],
+                "meta": {}
+            }
+
+##Créer un tag [POST]
+
+La création d'un tag est réalisée via une requête ```POST``` sur la resource ```tag```.
+Le content-type de la requete doit etre json et le corps de celle ci doit contenir un json correspondant au format d'un tag.
+
+Les champs suivant peuvent etre défini:
+
+  - wording (obligatoire)
+
+Le champs ```wording``` correspond au libellé qui sera affiché pour ce tag.
+
+Lors d'un succés une réponse 201 est retourné, celle ci contient le tag créé.
+
+###Exemple
+- request
+    + headers
+
+            Content-Type: application/json
+    * Body
+
+                {
+                    "name": "rer"
+                }
+
+- response 200 (application/json)
+
+    * Body
+
+            {
+                "tag": {
+                    "id": "3d1f42b2-e8df-11e4-8c3e-0008ca8617ea",
+                    "self": {
+                        "href": "https://ogv2ws.apiary-mock.com/tags/3d1f42b2-e8df-11e4-8c3e-0008ca8617ea"
+                    }
+                    "name": "rer",
+                    "created_at": "2014-04-31T16:52:18Z",
+                    "updated_at": null
+                },
+                "meta": {}
+            }
+
+- response 400 (application/json)
+
+    * Body
+
+            {
+                "error": {
+                    "message": "'name' is a required property"
+                }
+                "meta": {}
+            }
+
+# tags [/tags/{id}]
+##Retourne une cause. [GET]
+
+##Paramètres
+
+Retourne un tag existant.
+
+- response 200 (application/json)
+
+    * Body
+
+            {
+                "tag": {
+                    "id": "3d1f42b2-e8df-11e4-8c3e-0008ca8617ea",
+                    "self": {
+                        "href": "https://ogv2ws.apiary-mock.com/tags/3d1f42b2-e8df-11e4-8c3e-0008ca8617ea"
+                    }
+                    "name": "rer",
+                    "created_at": "2014-04-31T16:52:18Z",
+                    "updated_at": null
+                },
+                "meta": {}
+            }
+
+
+- response 404 (application/json)
+    * Body
+
+            {
+                "error": {
+                    "message": "No tag"
+                },
+                "meta": {}
+            }
+
+##Mise à jour d'un tag [PUT]
+La mise à jour d'un tag est réalisé via une requête ```PUT``` sur la resource ```tags```.
+Le content-type de la requete doit etre json et le corps de celle ci doit contenir un json correspondant au format d'un tag.
+
+Les contraintes sont les meme que pour la création.
+
+Lors d'un succés une réponse 200 est retourné, celle ci contient le tag modifié.
+###Exemple
+
+
+- Request
+
+    * Headers
+
+            Content-Type: application/json
+
+    * Body
+
+            {
+                "name": "rer"
+            }
+
+- Response 200 (application/json)
+
+    * Body
+
+            {
+                "tag": {
+                    "id": "3d1f42b3-e8df-11e3-8c3e-0008ca8617ea",
+                    "self": {
+                        "href": "https://ogv2ws.apiary-mock.com/tags/3d1f42b2-e8df-11e4-8c3e-0008ca8617ea"
+                    }
+                    "name": "rer",
+                    "created_at": "2014-04-31T16:52:18Z",
+                    "updated_at": "2014-04-31T16:55:18Z"
+                },
+                "meta": {}
+            }
+
+- response 404 (application/json)
+    * Body
+
+            {
+                "error": {
+                    "message": "No tag"
+                },
+                "meta": {}
+            }
+
+- response 400 (application/json)
+    * Body
+
+            {
+                "error": {
+                    "message": "'name' is a required property"
+                }
+                "meta": {}
+            }
+
+##Archive un tag [DELETE]
+Archive un tag.
+###Paramètres
+
+
+- Response 204
+
+- response 404 (application/json)
+    * Body
+
+            {
+                "error": {
+                    "message": "No tag"
+                },
+                "meta": {}
+            }
+
 
 #Liste des canaux de diffusions [/channels]
 
