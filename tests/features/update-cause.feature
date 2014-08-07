@@ -7,6 +7,15 @@ Feature: update cause
         """
         Then the status code should be "404"
 
+    Scenario: the Cause with id not valid
+        When I put to "/causes/AA-BB" with:
+        """
+        {"wording": "foo"}
+        """
+        Then the status code should be "400"
+        And the header "Content-Type" should be "application/json"
+        And the field "error.message" should be "id invalid"
+
     Scenario: a cause must have a wording
         Given I have the following causes in my database:
             | wording   | created_at          | updated_at          | is_visible | id                                   |

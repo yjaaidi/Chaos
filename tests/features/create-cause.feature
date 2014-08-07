@@ -3,6 +3,7 @@ Feature: Create cause
     Scenario: wording is required
         When I post to "/causes"
         Then the status code should be "400"
+        And the header "Content-Type" should be "application/json"
 
     Scenario: creation of cause
         When I post to "/causes" with:

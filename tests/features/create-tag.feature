@@ -23,3 +23,17 @@ Feature: Create tag
         And the header "Content-Type" should be "application/json"
         And the field "tags" should have a size of 1
         And the field "tags.0.name" should be "foo"
+
+    Scenario: Tag doublon
+        Given I post to "/tags" with:
+        """
+        {"name": "foo"}
+        """
+        Given I post to "/tags" with:
+        """
+        {"name": "foo"}
+        """
+        Then the status code should be "400"
+        And the header "Content-Type" should be "application/json"
+        And the field "error.message" should be '(IntegrityError) duplicate key value violates unique constraint "tag_name_key" DETAIL:  Key (name)=(foo) already exists. '
+

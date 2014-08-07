@@ -119,3 +119,9 @@ def given_i_have_the_relation_in_my_database(step, cls):
         db.session.execute("INSERT INTO {} ({}) VALUES ({})".format(associations[cls], ','.join(keys), ','.join(values)))
     db.session.commit()
 
+@step(u'And the field "([^"]*)" should be \'([^\']*)\'')
+def and_the_field_group1_should_be_integrityerror_duplicate(step, fields, value):
+    value = pythonify(value)
+    val =  find_field(world.response_json, fields).replace("\n", " ")
+    eq_(val, value)
+
