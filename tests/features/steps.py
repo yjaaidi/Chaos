@@ -2,7 +2,8 @@ from lettuce import *
 from nose.tools import *
 import json
 from chaos import db
-from chaos.models import Disruption, Severity, Cause, Impact, PTobject, Channel, Message, ApplicationPeriods, Tag
+from chaos.models import Disruption, Severity, Cause, Impact, PTobject, Channel, Message, ApplicationPeriods, Tag,\
+    associate_impact_pt_object, associate_disruption_tag
 import chaos
 
 model_classes = {'disruption': Disruption,
@@ -20,6 +21,10 @@ model_classes = {'disruption': Disruption,
                'applicationperiods':ApplicationPeriods,
                'tag': Tag,
                'tags': Tag
+}
+
+associations = {'associate_impact_pt_object': associate_impact_pt_object,
+                'associate_disruption_tag': associate_disruption_tag
 }
 
 def pythonify(value):
@@ -100,5 +105,16 @@ def given_i_have_the_following_causes_in_my_database(step, cls):
                 value = None
             setattr(row, key, value)
         db.session.add(row)
+    db.session.commit()
+
+@step(u'Given I have the relation (\w+) in my database:')
+def given_i_have_the_relation_in_my_database(step, cls):
+    for values_dict in step.hashes:
+        keys = []
+        values = []
+        for key, value in values_dict.iteritems():
+            keys.append(key)
+            values.append("'{}'".format(value))
+        db.session.execute("INSERT INTO {} ({}) VALUES ({})".format(associations[cls], ','.join(keys), ','.join(values)))
     db.session.commit()
 

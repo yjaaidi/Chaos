@@ -210,15 +210,23 @@ class Disruption(TimestampMixin, db.Model):
         if self.start_publication_date > current_time:
             return "coming"
 
+associate_impact_pt_object = db.Table('associate_impact_pt_object',
+                                      db.metadata,
+                                      db.Column('impact_id', UUID, db.ForeignKey('impact.id')),
+                                      db.Column('pt_object_id', UUID, db.ForeignKey('pt_object.id')),
+                                      db.PrimaryKeyConstraint('impact_id', 'pt_object_id', name='impact_pt_object_pk')
+)
+
+
 class Impact(TimestampMixin, db.Model):
     id = db.Column(UUID, primary_key=True)
     status = db.Column(ImpactStatus, nullable=False, default='published', index=True)
     disruption_id = db.Column(UUID, db.ForeignKey(Disruption.id))
     severity_id = db.Column(UUID, db.ForeignKey(Severity.id))
-    objects = db.relationship('PTobject', backref='impact', lazy='joined')
     messages = db.relationship('Message', backref='impact', lazy='joined')
     application_periods = db.relationship('ApplicationPeriods', backref='impact', lazy='joined')
     severity = db.relationship('Severity', backref='impacts', lazy='joined')
+    objects = db.relationship("PTobject", secondary=associate_impact_pt_object, lazy='joined')
 
     def __repr__(self):
         return '<Impact %r>' % self.id
@@ -272,12 +280,20 @@ class Impact(TimestampMixin, db.Model):
         self.messages.remove(message)
         db.session.delete(message)
 
+    def delete_app_periods(self):
+        for app_per in self.application_periods:
+            db.session.delete(app_per)
+
     def insert_app_period(self, application_period):
         """
         Adds an objectTC in a imapct.
         """
         self.application_periods.append(application_period)
         db.session.add(application_period)
+
+    def delete(self, ptobject):
+        self.objects.remove(ptobject)
+
 
     @classmethod
     def get(cls, id):
@@ -293,11 +309,11 @@ class Impact(TimestampMixin, db.Model):
 
     @classmethod
     def all_with_filter(cls, start_date, end_date, pt_object_type, uris):
-        query = cls.query.filter_by(status='published')
-        query = query.join(PTobject)
-
+        impact_alias = aliased(Impact)
+        pt_object_alias = aliased(PTobject)
+        query = cls.query.filter(impact_alias.status == 'published')
         if pt_object_type:
-            query = query.filter(and_(PTobject.type == pt_object_type))
+            query = query.filter(pt_object_alias.type == pt_object_type)
 
         query = query.join(ApplicationPeriods)
         query = query.filter(
@@ -318,25 +334,22 @@ class Impact(TimestampMixin, db.Model):
         )
 
         if uris:
-            query = query.filter(PTobject.uri.in_(uris))
+            query = query.filter(pt_object_alias.uri.in_(uris))
 
         query = query.order_by(ApplicationPeriods.start_date)
         return query.all()
-
 
 class PTobject(TimestampMixin, db.Model):
     __tablename__ = 'pt_object'
     id = db.Column(UUID, primary_key=True)
     type = db.Column(PtObjectType, nullable=False, default='network', index=True)
     uri = db.Column(db.Text, primary_key=True)
-    impact_id = db.Column(UUID, db.ForeignKey(Impact.id), index=True)
 
     def __repr__(self):
         return '<PTobject %r>' % self.id
 
-    def __init__(self, impact_id=None, type=None, code=None):
+    def __init__(self, type=None, code=None):
         self.id = str(uuid.uuid1())
-        self.impact_id = impact_id
         self.type = type
         self.uri = code
 
@@ -344,6 +357,9 @@ class PTobject(TimestampMixin, db.Model):
     def get(cls, id):
         return cls.query.filter_by(id=id).first_or_404()
 
+    @classmethod
+    def get_pt_object_by_uri(cls, uri):
+        return cls.query.filter_by(uri=uri).first()
 
 class ApplicationPeriods(TimestampMixin, db.Model):
     """

@@ -957,6 +957,186 @@ Create a new impact.
                 "meta": {}
             }
 
+##Update a impact [PUT]
+
+###Parameters
+
+
+- Request
+
+    * Headers
+
+            Content-Type: application/json
+
+    * Body
+
+            {
+                "impact": {
+                    "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8617ea",
+                    "self": {"href": "https://ogv2ws.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-8c3e-0008ca8647ea/impacts/3d1f42b2-e8df-11e3-8c3e-0008ca8617ea"},
+                    "created_at": "2014-04-31T16:52:18Z",
+                    "updated_at": "2014-04-31T16:55:18Z",
+                    "severity": {
+                        "id": "3d1f42b2-e8df-11e3-8c3e-0008ca861aea",
+                        "wording": "Bonne nouvelle",
+                        "created_at": "2014-04-31T16:52:18Z",
+                        "updated_at": "2014-04-31T16:55:18Z",
+                        "color": "#123456",
+                        "effect": null,
+                        "priority": 1
+                    },
+                    "messages": [
+                            {
+                                "channel": {
+                                "content_type": "text/plain",
+                                "created_at": "2014-04-31T16:52:18Z",
+                                "id": "3d1f42b2-e8df-11e3-8c3e-0002ca8657ea",
+                                "max_size": 140,
+                                "name": "message court",
+                                "updated_at": "2014-04-31T16:55:18Z"
+                                },
+                                "created_at": "2014-04-31T16:52:18Z",
+                                "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657ca",
+                                "text": "Message 1",
+                                "updated_at": "2014-04-31T16:55:18Z"
+                            },
+                            {
+                                "channel": {
+                                    "content_type": "text/markdown",
+                                    "created_at": "2014-04-31T16:52:18Z",
+                                    "id": "3d1f42b2-e8df-11e3-8c3e-0008ca86c7ea",
+                                    "max_size": null,
+                                    "name": "message long",
+                                    "updated_at": "2014-04-31T16:55:18Z"
+                                },
+                                "created_at": "2014-04-31T16:52:18Z",
+                                "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8257ea",
+                                "text": "Message 2",
+                                "updated_at": "2014-04-31T16:55:18Z"
+                            }
+                    ],
+                    "application_periods": [
+                        {
+                            "begin": "2014-04-31T16:52:00Z",
+                            "end": "2014-05-22T02:15:00Z"
+                        }
+                    ],
+                    "objects": [
+                        {
+                            "id": "network:RTP:3786125",
+                            "name": "RER A",
+                            "type": "network",
+                        },
+                        {
+                            "id": "network:RTP:378",
+                            "name": "RER B",
+                            "type": "network",
+                        }
+                    ],
+                    "disruption" : {"href": "https://ogv2ws.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-1c3e-0008ca8617ea"}
+                },
+                "meta": {}
+            }
+
+
+- Response 200 (application/json)
+
+    * Body
+
+            {
+                "impact": {
+                    "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8617ea",
+                    "self": {"href": "https://ogv2ws.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-8c3e-0008ca8647ea/impacts/3d1f42b2-e8df-11e3-8c3e-0008ca8617ea"},
+                    "created_at": "2014-04-31T16:52:18Z",
+                    "updated_at": "2014-04-31T16:55:18Z",
+                    "severity": {
+                        "id": "3d1f42b2-e8df-11e3-8c3e-0008ca861aea",
+                        "wording": "Bonne nouvelle",
+                        "created_at": "2014-04-31T16:52:18Z",
+                        "updated_at": "2014-04-31T16:55:18Z",
+                        "color": "#123456",
+                        "effect": null,
+                        "priority": 1
+                    },
+                    "messages": [
+                            {
+                                "channel": {
+                                "content_type": "text/plain",
+                                "created_at": "2014-04-31T16:52:18Z",
+                                "id": "3d1f42b2-e8df-11e3-8c3e-0002ca8657ea",
+                                "max_size": 140,
+                                "name": "message court",
+                                "updated_at": "2014-04-31T16:55:18Z"
+                                },
+                                "created_at": "2014-04-31T16:52:18Z",
+                                "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657ca",
+                                "text": "Message 1",
+                                "updated_at": "2014-04-31T16:55:18Z"
+                            },
+                            {
+                                "channel": {
+                                    "content_type": "text/markdown",
+                                    "created_at": "2014-04-31T16:52:18Z",
+                                    "id": "3d1f42b2-e8df-11e3-8c3e-0008ca86c7ea",
+                                    "max_size": null,
+                                    "name": "message long",
+                                    "updated_at": "2014-04-31T16:55:18Z"
+                                },
+                                "created_at": "2014-04-31T16:52:18Z",
+                                "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8257ea",
+                                "text": "Message 2",
+                                "updated_at": "2014-04-31T16:55:18Z"
+                            }
+                    ],
+                    "application_periods": [
+                        {
+                            "begin": "2014-04-31T16:52:00Z",
+                            "end": "2014-05-22T02:15:00Z"
+                        }
+                    ],
+                    "objects": [
+                        {
+                            "id": "network:RTP:3786125",
+                            "name": "RER A",
+                            "type": "network",
+                        },
+                        {
+                            "id": "network:RTP:378",
+                            "name": "RER B",
+                            "type": "network",
+                        }
+                    ],
+                    "disruption" : {"href": "https://ogv2ws.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-1c3e-0008ca8617ea"}
+                },
+                "meta": {}
+            }
+
+- response 404 (application/json)
+    * Body
+
+            {
+                "error": {
+                    "message": "No impact"
+                },
+                "meta": {}
+            }
+
+##Delete a impact [DELETE]
+Archive one impact.
+###Parameters
+
+
+- Response 204
+
+- response 404 (application/json)
+    * Body
+
+            {
+                "error": {
+                    "message": "No impact"
+                },
+                "meta": {}
+            }
 
 #Impact [/disruptions/{disruption_id}/impacts/{id}]
 ##Retrieve a impact [GET]
