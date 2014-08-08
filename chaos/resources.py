@@ -659,7 +659,7 @@ class Impacts(flask_restful.Resource):
                     if not ptobject:
                         ptobject = models.PTobject()
                         mapper.fill_from_json(ptobject, pt_object_json, object_mapping)
-                    impact.objects.append(ptobject)
+                    impact.insert_object(ptobject)
 
         for ptobject in impact.objects:
             if ptobject.uri not in pt_objects_json:
