@@ -35,5 +35,4 @@ Feature: Create tag
         """
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
-        And the field "error.message" should be '(IntegrityError) duplicate key value violates unique constraint "tag_name_key" DETAIL:  Key (name)=(foo) already exists. '
 

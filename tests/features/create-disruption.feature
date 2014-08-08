@@ -134,7 +134,7 @@ Feature: Create disruption
         And the field "disruption.localization.0.type" should be "stop_area"
 
 
-    Scenario: We can create a disruption with localization not in navitia
+    Scenario: We cannot create a disruption with localization not in navitia
 
         Given I have the following causes in my database:
             | wording   | created_at          | updated_at          | is_visible | id                                   |
