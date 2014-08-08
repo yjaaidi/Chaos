@@ -100,7 +100,7 @@ Feature: list disruptions with pager
         And the field "disruptions.0.impacts.pagination.last.href" should be "http://localhost/disruptions/7ffab230-3d48-4eea-aa2c-22f8680230b6/impacts?start_page=1&items_per_page=20"
 
 
-    Scenario: Use pager to display disruptions with parameters (start_page=0)
+    Scenario: Use pager to display disruptions with parameters (page_index=0)
 
         Given I have the following causes in my database:
             | wording   | created_at          | updated_at          | is_visible | id                                   |
