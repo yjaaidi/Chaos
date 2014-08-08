@@ -252,7 +252,7 @@ class Impact(TimestampMixin, db.Model):
         d['messages'] = self.messages
         return d
 
-    def __init__(self):
+    def __init__(self, objects=None):
         self.id = str(uuid.uuid1())
 
     def archive(self):
