@@ -24,7 +24,7 @@ Feature: Create tag
         And the field "tags" should have a size of 1
         And the field "tags.0.name" should be "foo"
 
-    Scenario: Tag doublon
+    Scenario: We don't accept two tags with the same name
         Given I post to "/tags" with:
         """
         {"name": "foo"}
