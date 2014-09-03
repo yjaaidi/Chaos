@@ -195,6 +195,7 @@ class Disruptions(flask_restful.Resource):
                                 type=utils.get_uuid,
                                 action="append")
         parser_get.add_argument("current_time", type=utils.get_datetime)
+        parser_get.add_argument("uri", type=str)
 
     def get(self, id=None):
         if id:
@@ -213,12 +214,13 @@ class Disruptions(flask_restful.Resource):
                 abort(400, message="items_per_page argument value is not valid")
             publication_status = args['publication_status[]']
             tags = args['tag[]']
+            uri = args['uri']
 
             g.current_time = args['current_time']
             result = models.Disruption.all_with_filter(page_index=page_index,
                                                        items_per_page=items_per_page,
                                                        publication_status=publication_status,
-                                                       tags=tags)
+                                                       tags=tags, uri=uri)
             response = {'disruptions': result.items, 'meta': make_pager(result, 'disruption')}
             return marshal(response, disruptions_fields)
 
