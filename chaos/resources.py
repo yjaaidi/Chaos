@@ -96,6 +96,12 @@ channel_mapping = {
     'content_type': None
 }
 
+line_section_mapping = {
+    'line': None,
+    'start_point': None,
+    'end_point': None,
+    'sens': None
+}
 
 class Index(flask_restful.Resource):
 
@@ -479,6 +485,16 @@ class Impacts(flask_restful.Resource):
         parser_get.add_argument("start_page", type=int, default=1)
         parser_get.add_argument("items_per_page", type=int, default=20)
 
+    def fill_and_get_pt_object(self, json):
+        if not self.navitia.get_pt_object(json['id'], json['type']):
+            return marshal({'error': {'message': '{} {} doesn\'t exist'.format(json['type'], json['id'])}},
+                   error_fields), 404
+        pt_object = models.PTobject.get_pt_object_by_uri(json["id"])
+        if not pt_object:
+            pt_object = models.PTobject()
+            mapper.fill_from_json(pt_object, json, object_mapping)
+        return pt_object
+
     def get(self, disruption_id, id=None):
         if id:
             if not id_format.match(id):
@@ -533,12 +549,36 @@ class Impacts(flask_restful.Resource):
             for pt_object_json in json['objects']:
                 if not self.navitia.get_pt_object(pt_object_json['id'], pt_object_json['type']):
                     return marshal({'error': {'message': '{} {} doesn\'t exist'.format(pt_object_json['type'], pt_object_json['id'])}},
-                               error_fields), 404
-                ptobject = models.PTobject.get_pt_object_by_uri(pt_object_json["id"])
+                            error_fields), 404
+                #For an objetc of the type 'line_section' we add each time without searching in the table
+                ptobject = None
+                if pt_object_json["type"] <> 'line_section':
+                    ptobject = models.PTobject.get_pt_object_by_uri(pt_object_json["id"])
+
                 if not ptobject:
                     ptobject = models.PTobject()
                     mapper.fill_from_json(ptobject, pt_object_json, object_mapping)
+                if pt_object_json["type"] == 'line_section':
+                    ptobject.uri = ":".join((ptobject.uri, impact.id))
                 impact.objects.append(ptobject)
+
+                if pt_object_json['type'] == 'line_section':
+                    line_section_json = pt_object_json['line_section']
+                    line_section = models.LineSection(impact.id, ptobject.id)
+
+                    line_object = self.fill_and_get_pt_object(line_section_json['line'])
+                    db.session.add(line_object)
+                    line_section.line_object_id = line_object.id
+
+                    start_object = self.fill_and_get_pt_object(line_section_json['start_point'])
+                    db.session.add(start_object)
+                    line_section.start_object_id = start_object.id
+
+                    end_object = self.fill_and_get_pt_object(line_section_json['end_point'])
+                    db.session.add(end_object)
+                    line_section.end_object_id = end_object.id
+
+                    ptobject.insert_line_section(line_section)
 
         if 'application_periods' in json:
             for app_period in json["application_periods"]:
@@ -629,7 +669,6 @@ class Impacts(flask_restful.Resource):
         impact.archive()
         db.session.commit()
         return None, 204
-
 
 class Channel(flask_restful.Resource):
 

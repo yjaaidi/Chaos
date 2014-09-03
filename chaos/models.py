@@ -57,8 +57,7 @@ class TimestampMixin(object):
 DisruptionStatus = db.Enum('published', 'archived', name='disruption_status')
 SeverityEffect = db.Enum('blocking', name='severity_effect')
 ImpactStatus = db.Enum('published', 'archived', name='impact_status')
-PtObjectType = db.Enum('network', 'stop_area', 'line', name='pt_object_type')
-
+PtObjectType = db.Enum('network', 'stop_area', 'line', 'line_section', name='pt_object_type')
 
 class Severity(TimestampMixin, db.Model):
     """
@@ -221,7 +220,6 @@ associate_impact_pt_object = db.Table('associate_impact_pt_object',
                                       db.PrimaryKeyConstraint('impact_id', 'pt_object_id', name='impact_pt_object_pk')
 )
 
-
 class Impact(TimestampMixin, db.Model):
     id = db.Column(UUID, primary_key=True)
     status = db.Column(ImpactStatus, nullable=False, default='published', index=True)
@@ -279,7 +277,7 @@ class Impact(TimestampMixin, db.Model):
 
     def delete_message(self, message):
         """
-        delete an message in a imapct.
+        delete a message in an impact.
         """
         self.messages.remove(message)
         db.session.delete(message)
@@ -290,7 +288,7 @@ class Impact(TimestampMixin, db.Model):
 
     def insert_app_period(self, application_period):
         """
-        Adds an objectTC in a imapct.
+        Adds an ApplicationPeriods in a impact.
         """
         self.application_periods.append(application_period)
         db.session.add(application_period)
@@ -355,6 +353,13 @@ class PTobject(TimestampMixin, db.Model):
         self.id = str(uuid.uuid1())
         self.type = type
         self.uri = code
+
+    def insert_line_section(self, line_section):
+        """
+        Adds a line_section in an object.
+        """
+        self.line_section.append(line_section)
+        db.session.add(line_section)
 
     @classmethod
     def get(cls, id):
@@ -429,3 +434,29 @@ class Message(TimestampMixin, db.Model):
     @classmethod
     def get(cls, id):
         return cls.query.filter_by(id=id).first_or_404()
+
+class LineSection(TimestampMixin, db.Model):
+    __tablename__ = 'line_section'
+    id = db.Column(UUID, primary_key=True)
+    line_object_id = db.Column(UUID, db.ForeignKey(PTobject.id))
+    start_object_id = db.Column(UUID, db.ForeignKey(PTobject.id))
+    end_object_id = db.Column(UUID, db.ForeignKey(PTobject.id))
+    sens = db.Column(db.Integer, unique=False, nullable=True)
+    object_id = db.Column(UUID, db.ForeignKey(PTobject.id))
+    line = db.relationship('PTobject', foreign_keys=line_object_id)
+    start_point = db.relationship('PTobject', foreign_keys=start_object_id)
+    end_point = db.relationship('PTobject', foreign_keys=end_object_id)
+    pt_object = db.relationship('PTobject',  foreign_keys=object_id, backref='line_section')
+
+    def __repr__(self):
+        return '<LineSection %r>' % self.id
+
+    def __init__(self, impact_id=None, object_id=None):
+        self.id = str(uuid.uuid1())
+        self.impact_id = impact_id
+        self.object_id = object_id
+
+    @classmethod
+    def get(cls, id):
+        return cls.query.filter_by(id=id).first_or_404()
+
