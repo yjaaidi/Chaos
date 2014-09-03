@@ -577,7 +577,7 @@ class Impacts(flask_restful.Resource):
 
                 if pt_object_json['type'] == 'line_section':
                     line_section_json = pt_object_json['line_section']
-                    line_section = models.LineSection(impact.id, ptobject.id)
+                    line_section = models.LineSection(ptobject.id)
 
                     line_object = self.fill_and_get_pt_object(all_objects, line_section_json['line'])
                     line_section.line_object_id = line_object.id

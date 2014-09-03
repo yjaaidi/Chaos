@@ -451,9 +451,8 @@ class LineSection(TimestampMixin, db.Model):
     def __repr__(self):
         return '<LineSection %r>' % self.id
 
-    def __init__(self, impact_id=None, object_id=None):
+    def __init__(self, object_id=None):
         self.id = str(uuid.uuid1())
-        self.impact_id = impact_id
         self.object_id = object_id
 
     @classmethod
