@@ -563,10 +563,13 @@ class Impacts(flask_restful.Resource):
                     if not ptobject and pt_object_json["id"] in all_objects:
                         ptobject = all_objects[pt_object_json["id"]]
 
+
                 if not ptobject:
                     ptobject = models.PTobject()
                     mapper.fill_from_json(ptobject, pt_object_json, object_mapping)
-                    all_objects[pt_object_json["id"]] = ptobject
+
+                    if pt_object_json["type"] <> 'line_section':
+                        all_objects[pt_object_json["id"]] = ptobject
 
                 if pt_object_json["type"] == 'line_section':
                     ptobject.uri = ":".join((ptobject.uri, impact.id))
