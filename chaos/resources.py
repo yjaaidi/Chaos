@@ -36,7 +36,7 @@ from fields import *
 from formats import *
 from formats import impact_input_format, channel_input_format, pt_object_type_values,\
     tag_input_format
-from chaos import mapper
+from chaos import mapper, exceptions
 from chaos import utils
 import chaos
 from chaos.navitia import Navitia
@@ -96,6 +96,12 @@ channel_mapping = {
     'content_type': None
 }
 
+line_section_mapping = {
+    'line': None,
+    'start_point': None,
+    'end_point': None,
+    'sens': None
+}
 
 class Index(flask_restful.Resource):
 
@@ -195,6 +201,7 @@ class Disruptions(flask_restful.Resource):
                                 type=utils.get_uuid,
                                 action="append")
         parser_get.add_argument("current_time", type=utils.get_datetime)
+        parser_get.add_argument("uri", type=str)
 
     def get(self, id=None):
         if id:
@@ -213,12 +220,13 @@ class Disruptions(flask_restful.Resource):
                 abort(400, message="items_per_page argument value is not valid")
             publication_status = args['publication_status[]']
             tags = args['tag[]']
+            uri = args['uri']
 
             g.current_time = args['current_time']
             result = models.Disruption.all_with_filter(page_index=page_index,
                                                        items_per_page=items_per_page,
                                                        publication_status=publication_status,
-                                                       tags=tags)
+                                                       tags=tags, uri=uri)
             response = {'disruptions': result.items, 'meta': make_pager(result, 'disruption')}
             return marshal(response, disruptions_fields)
 
@@ -477,6 +485,62 @@ class Impacts(flask_restful.Resource):
         parser_get.add_argument("start_page", type=int, default=1)
         parser_get.add_argument("items_per_page", type=int, default=20)
 
+    def fill_and_get_pt_object(self, all_objects, json, add_to_db=True):
+        """
+        :param all_objects: dictionary of objects to be added in this session
+        :param json: Flux which contains json information of pt_object
+        :param add_to_db: ptobject insert into database
+        :return: a pt_object and modify all_objects param
+        """
+        if not self.navitia.get_pt_object(json['id'], json['type']):
+            raise exceptions.ObjectUnknown()
+        pt_object = models.PTobject.get_pt_object_by_uri(json["id"])
+        if not pt_object and json["id"] in all_objects:
+            pt_object = all_objects[json["id"]]
+        if not pt_object:
+            pt_object = models.PTobject()
+            mapper.fill_from_json(pt_object, json, object_mapping)
+            if add_to_db:
+                db.session.add(pt_object)
+            all_objects[json["id"]] = pt_object
+        return pt_object
+
+    def fill_and_add_line_section(self, impact_id, all_objects, pt_object_json):
+        """
+        :param impact_id: impact_id to construct uri of line_section object
+        :param all_objects: dictionary of objects to be added in this session
+        :param pt_object_json: Flux which contains json information of pt_object
+        :return: pt_object and modify all_objects param
+        """
+        ptobject = models.PTobject()
+        mapper.fill_from_json(ptobject, pt_object_json, object_mapping)
+        ptobject.uri = ":".join((ptobject.uri, impact_id))
+
+        #Here we treat all the objects in line_section like line, start_point, end_point
+        line_section_json = pt_object_json['line_section']
+        line_section = models.LineSection(ptobject.id)
+
+        try:
+            line_object = self.fill_and_get_pt_object(all_objects, line_section_json['line'])
+        except exceptions.ObjectUnknown:
+            raise exceptions.ObjectUnknown('{} {} doesn\'t exist'.format(line_section_json['line']['type'], line_section_json['line']['id']))
+        line_section.line = line_object
+
+        try:
+            start_object = self.fill_and_get_pt_object(all_objects, line_section_json['start_point'])
+        except exceptions.ObjectUnknown:
+            raise exceptions.ObjectUnknown('{} {} doesn\'t exist'.format(line_section_json['line']['type'], line_section_json['line']['id']))
+        line_section.start_point = start_object
+
+        try:
+            end_object = self.fill_and_get_pt_object(all_objects, line_section_json['end_point'])
+        except exceptions.ObjectUnknown:
+            raise exceptions.ObjectUnknown('{} {} doesn\'t exist'.format(line_section_json['line']['type'], line_section_json['line']['id']))
+        line_section.end_point = end_object
+        ptobject.insert_line_section(line_section)
+
+        return ptobject
+
     def get(self, disruption_id, id=None):
         if id:
             if not id_format.match(id):
@@ -526,16 +590,27 @@ class Impacts(flask_restful.Resource):
         impact.disruption_id = disruption_id
         db.session.add(impact)
 
-        #Add all objects present in Json
+        #The ptobject is not added in the database before commit. If we have duplicate ptobject
+        #in the json we have to handle it by using a dictionary. Each time we add a ptobject, we also
+        #add it in the dictionary
+        all_objects = dict()
         if 'objects' in json:
             for pt_object_json in json['objects']:
-                if not self.navitia.get_pt_object(pt_object_json['id'], pt_object_json['type']):
-                    return marshal({'error': {'message': '{} {} doesn\'t exist'.format(pt_object_json['type'], pt_object_json['id'])}},
-                               error_fields), 404
-                ptobject = models.PTobject.get_pt_object_by_uri(pt_object_json["id"])
-                if not ptobject:
-                    ptobject = models.PTobject()
-                    mapper.fill_from_json(ptobject, pt_object_json, object_mapping)
+                if pt_object_json["type"] != 'line_section':
+                    try:
+                        ptobject = self.fill_and_get_pt_object(all_objects, pt_object_json, False)
+                    except exceptions.ObjectUnknown:
+                        return marshal({'error': {'message': '{} {} doesn\'t exist'.format(pt_object_json["type"], pt_object_json['id'])}},
+                                error_fields), 404
+
+                #For an pt_objects of the type 'line_section' we format uri : uri:impact_id
+                # we insert this object in the table pt_object
+                if pt_object_json["type"] == 'line_section':
+                    try:
+                        ptobject = self.fill_and_add_line_section(impact.id, all_objects, pt_object_json)
+                    except exceptions.ObjectUnknown, e:
+                        return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 404
+
                 impact.objects.append(ptobject)
 
         if 'application_periods' in json:
@@ -627,7 +702,6 @@ class Impacts(flask_restful.Resource):
         impact.archive()
         db.session.commit()
         return None, 204
-
 
 class Channel(flask_restful.Resource):
 

@@ -47,6 +47,8 @@ class Navitia(object):
 
     def get_pt_object(self, uri, object_type):
 
+        if object_type == 'line_section':
+            return None
         if object_type not in self.collections:
             logging.getLogger(__name__).exception('object type {object_type} unknown'.format(object_type=object_type))
             raise exceptions.ObjectTypeUnknown(object_type)

@@ -35,9 +35,19 @@ import re
 datetime_pattern = '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$'
 id_format_text = '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
 id_format = re.compile(id_format_text)
-pt_object_type_values = ["network", "stop_area", "line"]
+pt_object_type_values = ["network", "stop_area", "line", "line_section"]
 #Here Order of values is strict and is used to create query filters.
 publication_status_values = ["past", "ongoing", "coming"]
+
+
+def get_object_format(object_type):
+    return  {
+        'type': 'object',
+        'properties': {'id': {'type': 'string', 'maxLength': 250},
+                       'type': {'enum': [object_type]}
+        },
+        'required': ['id', 'type']
+    }
 
 date_period_format = {
     'type': 'object',
@@ -48,10 +58,29 @@ date_period_format = {
     'required': ['begin', 'end']
 }
 
-object_input_format = {
+one_object_type_format = {
     'type': 'object',
     'properties': {'id': {'type': 'string', 'maxLength': 250},
                    'type': {'enum': pt_object_type_values}
+    },
+    'required': ['id', 'type']
+}
+
+line_section_format = {
+    'type': 'object',
+    'properties': {'line': get_object_format('line'),
+                   'start_point': get_object_format('stop_area'),
+                   'end_point': get_object_format('stop_area'),
+                   'sens': {'type': ['integer', 'null']}
+    },
+    'required': ['line', 'start_point', 'end_point']
+
+}
+object_input_format = {
+    'type': 'object',
+    'properties': {'id': {'type': 'string', 'maxLength': 250},
+                   'type': {'enum': pt_object_type_values},
+                   'line_section': line_section_format
     },
     'required': ['id', 'type']
 }

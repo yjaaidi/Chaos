@@ -27,7 +27,7 @@
 # https://groups.google.com/d/forum/navitia
 # www.navitia.io
 
-VERSION = '0.3.0'
+VERSION = '0.4.0'
 
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
