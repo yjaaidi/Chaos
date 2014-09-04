@@ -505,6 +505,40 @@ class Impacts(flask_restful.Resource):
             all_objects[json["id"]] = pt_object
         return pt_object
 
+    def fill_and_add_line_section(self, impact_id, all_objects, pt_object_json):
+        """
+        :param impact_id: impact_id to construct uri of line_section object
+        :param all_objects: dictionary of objects to be added in this session
+        :param pt_object_json: Flux which contains json information of pt_object
+        :return: a pt_object, line_section and modify all_objects param
+        """
+        ptobject = models.PTobject()
+        mapper.fill_from_json(ptobject, pt_object_json, object_mapping)
+        ptobject.uri = ":".join((ptobject.uri, impact_id))
+
+        #Here we treat all the objects in line_section like line, start_point, end_point
+        line_section_json = pt_object_json['line_section']
+        line_section = models.LineSection(ptobject.id)
+
+        try:
+            line_object = self.fill_and_get_pt_object(all_objects, line_section_json['line'])
+        except exceptions.ObjectUnknown:
+            raise exceptions.ObjectUnknown('{} {} doesn\'t exist'.format(line_section_json['line']['type'], line_section_json['line']['id']))
+        line_section.line = line_object
+
+        try:
+            start_object = self.fill_and_get_pt_object(all_objects, line_section_json['start_point'])
+        except exceptions.ObjectUnknown:
+            raise exceptions.ObjectUnknown('{} {} doesn\'t exist'.format(line_section_json['line']['type'], line_section_json['line']['id']))
+        line_section.start_point = start_object
+
+        try:
+            end_object = self.fill_and_get_pt_object(all_objects, line_section_json['end_point'])
+        except exceptions.ObjectUnknown:
+            raise exceptions.ObjectUnknown('{} {} doesn\'t exist'.format(line_section_json['line']['type'], line_section_json['line']['id']))
+        line_section.end_point = end_object
+        return line_section, ptobject
+
     def get(self, disruption_id, id=None):
         if id:
             if not id_format.match(id):
@@ -554,8 +588,9 @@ class Impacts(flask_restful.Resource):
         impact.disruption_id = disruption_id
         db.session.add(impact)
 
-        #This dictionary contains pt_objects which are in json but not in database. This is used to remove the duplicates
-        #of pt_objects.
+        #The ptobject is not added in the database before commit. If we have duplicate ptobject
+        #in the json we have to handle it by using a dictionary. Each time we add a ptobject, we also
+        #add it in the dictionary
         all_objects = dict()
         if 'objects' in json:
             for pt_object_json in json['objects']:
@@ -569,35 +604,10 @@ class Impacts(flask_restful.Resource):
                 #For an pt_objects of the type 'line_section' we format uri : uri:impact_id
                 # we insert this object in the table pt_object
                 if pt_object_json["type"] == 'line_section':
-                    ptobject = models.PTobject()
-                    mapper.fill_from_json(ptobject, pt_object_json, object_mapping)
-                    ptobject.uri = ":".join((ptobject.uri, impact.id))
-
-                    #Here we treat all the objects in line_section like line, start_point, end_point
-                    line_section_json = pt_object_json['line_section']
-                    line_section = models.LineSection(ptobject.id)
-
                     try:
-                        line_object = self.fill_and_get_pt_object(all_objects, line_section_json['line'])
-                    except exceptions.ObjectUnknown:
-                        return marshal({'error': {'message': '{} {} doesn\'t exist'.format(line_section_json['line']['type'], line_section_json['line']['id'])}},
-                                error_fields), 404
-                    line_section.line = line_object
-
-                    try:
-                        start_object = self.fill_and_get_pt_object(all_objects, line_section_json['start_point'])
-                    except exceptions.ObjectUnknown:
-                        return marshal({'error': {'message': '{} {} doesn\'t exist'.format(line_section_json['start_point']['type'], line_section_json['start_point']['id'])}},
-                                error_fields), 404
-                    line_section.start_point = start_object
-
-                    try:
-                        end_object = self.fill_and_get_pt_object(all_objects, line_section_json['end_point'])
-                    except exceptions.ObjectUnknown:
-                        return marshal({'error': {'message': '{} {} doesn\'t exist'.format(line_section_json['end_point']['type'], line_section_json['end_point']['id'])}},
-                                error_fields), 404
-                    line_section.end_point = end_object
-
+                        line_section, ptobject = self.fill_and_add_line_section(impact.id, all_objects, pt_object_json)
+                    except exceptions.ObjectUnknown, e:
+                        return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 404
                     ptobject.insert_line_section(line_section)
 
                 impact.objects.append(ptobject)

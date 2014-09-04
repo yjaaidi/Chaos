@@ -37,5 +37,5 @@ class ObjectTypeUnknown(Exception):
 
 class ObjectUnknown(Exception):
 
-    def __init__(self):
-        self.message = 'object unknown'
+    def __init__(self, message=''):
+        self.message = message
