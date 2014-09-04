@@ -32,17 +32,6 @@ from flask import current_app
 from  utils import make_pager
 from chaos.navitia import Navitia
 
-class NonNullNested(fields.Nested):
-
-    def __init__(self, *args, **kwargs):
-        super(NonNullNested, self).__init__(*args, **kwargs)
-        self.display_null = False
-
-class NonNullList(fields.List):
-
-    def __init__(self, *args, **kwargs):
-        super(NonNullList, self).__init__(*args, **kwargs)
-        self.display_empty = False
 
 class FieldDateTime(fields.Raw):
     def format(self, value):
@@ -217,9 +206,9 @@ one_objectTC_fields = {
 }
 
 line_section_fields = {
-    'line' : NonNullNested(one_objectTC_fields),
-    'start_point': NonNullNested(one_objectTC_fields),
-    'end_point': NonNullNested(one_objectTC_fields),
+    'line' : fields.Nested(one_objectTC_fields, display_null=False),
+    'start_point': fields.Nested(one_objectTC_fields, display_null=False),
+    'end_point': fields.Nested(one_objectTC_fields, display_null=False),
     'sens':fields.Integer(default=None)
 }
 
@@ -227,7 +216,7 @@ objectTC_fields = {
     'id': fields.Raw(attribute='uri'),
     'type': fields.Raw,
     'name': FieldObjectName(),
-    'line_section': NonNullList(NonNullNested(line_section_fields))
+    'line_section': fields.List(fields.Nested(line_section_fields, display_null=False), display_empty=False)
 }
 
 channel_fields = {
@@ -266,7 +255,7 @@ impact_fields = {
     'id': fields.Raw,
     'created_at': FieldDateTime,
     'updated_at': FieldDateTime,
-    'objects': fields.List(NonNullNested(objectTC_fields)),
+    'objects': fields.List(fields.Nested(objectTC_fields, display_null=False)),
     'application_periods':
         fields.List(fields.Nested(application_period_fields)),
     'severity': fields.Nested(severity_fields),

@@ -39,6 +39,16 @@ pt_object_type_values = ["network", "stop_area", "line", "line_section"]
 #Here Order of values is strict and is used to create query filters.
 publication_status_values = ["past", "ongoing", "coming"]
 
+
+def get_object_format(object_type):
+    return  {
+        'type': 'object',
+        'properties': {'id': {'type': 'string', 'maxLength': 250},
+                       'type': {'enum': [object_type]}
+        },
+        'required': ['id', 'type']
+    }
+
 date_period_format = {
     'type': 'object',
     'properties': {
@@ -46,22 +56,6 @@ date_period_format = {
         'end': {'type': ['string', 'null'], 'pattern': datetime_pattern},
         },
     'required': ['begin', 'end']
-}
-
-line_object_format = {
-    'type': 'object',
-    'properties': {'id': {'type': 'string', 'maxLength': 250},
-                   'type': {'enum': ['line']}
-    },
-    'required': ['id', 'type']
-}
-
-stop_area_object_format = {
-    'type': 'object',
-    'properties': {'id': {'type': 'string', 'maxLength': 250},
-                   'type': {'enum': ['stop_area']}
-    },
-    'required': ['id', 'type']
 }
 
 one_object_type_format = {
@@ -74,9 +68,9 @@ one_object_type_format = {
 
 line_section_format = {
     'type': 'object',
-    'properties': {'line': line_object_format,
-                   'start_point': stop_area_object_format,
-                   'end_point': stop_area_object_format,
+    'properties': {'line': get_object_format('line'),
+                   'start_point': get_object_format('stop_area'),
+                   'end_point': get_object_format('stop_area'),
                    'sens': {'type': ['integer', 'null']}
     },
     'required': ['line', 'start_point', 'end_point']
