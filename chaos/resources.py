@@ -485,10 +485,11 @@ class Impacts(flask_restful.Resource):
         parser_get.add_argument("start_page", type=int, default=1)
         parser_get.add_argument("items_per_page", type=int, default=20)
 
-    def fill_and_get_pt_object(self, all_objects, json):
+    def fill_and_get_pt_object(self, all_objects, json, add_to_db=True):
         """
         :param all_objects: dictionary of objects to be added in this session
         :param json: Flux which contains json information of pt_object
+        :param add_to_db: ptobject insert into database
         :return: a pt_object and modify all_objects param
         """
         if not self.navitia.get_pt_object(json['id'], json['type']):
@@ -499,7 +500,8 @@ class Impacts(flask_restful.Resource):
         if not pt_object:
             pt_object = models.PTobject()
             mapper.fill_from_json(pt_object, json, object_mapping)
-            db.session.add(pt_object)
+            if add_to_db:
+                db.session.add(pt_object)
             all_objects[json["id"]] = pt_object
         return pt_object
 
@@ -558,33 +560,20 @@ class Impacts(flask_restful.Resource):
         if 'objects' in json:
             for pt_object_json in json['objects']:
                 if pt_object_json["type"] != 'line_section':
-                    if not self.navitia.get_pt_object(pt_object_json['id'], pt_object_json['type']):
-                        return marshal({'error': {'message': '{} {} doesn\'t exist'.format(pt_object_json['type'], pt_object_json['id'])}},
+                    try:
+                        ptobject = self.fill_and_get_pt_object(all_objects, pt_object_json, False)
+                    except exceptions.ObjectUnknown:
+                        return marshal({'error': {'message': '{} {} doesn\'t exist'.format(pt_object_json["type"], pt_object_json['id'])}},
                                 error_fields), 404
-
-                #Here we treat all pt_objects excepts those in line_section
-                ptobject = None
-                if pt_object_json["type"] != 'line_section':
-                    ptobject = models.PTobject.get_pt_object_by_uri(pt_object_json["id"])
-                    if not ptobject and pt_object_json["id"] in all_objects:
-                        ptobject = all_objects[pt_object_json["id"]]
-
-
-                if not ptobject:
-                    ptobject = models.PTobject()
-                    mapper.fill_from_json(ptobject, pt_object_json, object_mapping)
-
-                    if pt_object_json["type"] != 'line_section':
-                        all_objects[pt_object_json["id"]] = ptobject
 
                 #For an pt_objects of the type 'line_section' we format uri : uri:impact_id
                 # we insert this object in the table pt_object
                 if pt_object_json["type"] == 'line_section':
+                    ptobject = models.PTobject()
+                    mapper.fill_from_json(ptobject, pt_object_json, object_mapping)
                     ptobject.uri = ":".join((ptobject.uri, impact.id))
-                impact.objects.append(ptobject)
 
-                #Here we treat all the objects in line_section like line, start_point, end_point
-                if pt_object_json['type'] == 'line_section':
+                    #Here we treat all the objects in line_section like line, start_point, end_point
                     line_section_json = pt_object_json['line_section']
                     line_section = models.LineSection(ptobject.id)
 
@@ -610,6 +599,8 @@ class Impacts(flask_restful.Resource):
                     line_section.end_point = end_object
 
                     ptobject.insert_line_section(line_section)
+
+                impact.objects.append(ptobject)
 
         if 'application_periods' in json:
             for app_period in json["application_periods"]:
