@@ -510,7 +510,7 @@ class Impacts(flask_restful.Resource):
         :param impact_id: impact_id to construct uri of line_section object
         :param all_objects: dictionary of objects to be added in this session
         :param pt_object_json: Flux which contains json information of pt_object
-        :return: a pt_object, line_section and modify all_objects param
+        :return: pt_object and modify all_objects param
         """
         ptobject = models.PTobject()
         mapper.fill_from_json(ptobject, pt_object_json, object_mapping)
@@ -537,7 +537,9 @@ class Impacts(flask_restful.Resource):
         except exceptions.ObjectUnknown:
             raise exceptions.ObjectUnknown('{} {} doesn\'t exist'.format(line_section_json['line']['type'], line_section_json['line']['id']))
         line_section.end_point = end_object
-        return line_section, ptobject
+        ptobject.insert_line_section(line_section)
+
+        return ptobject
 
     def get(self, disruption_id, id=None):
         if id:
@@ -605,10 +607,9 @@ class Impacts(flask_restful.Resource):
                 # we insert this object in the table pt_object
                 if pt_object_json["type"] == 'line_section':
                     try:
-                        line_section, ptobject = self.fill_and_add_line_section(impact.id, all_objects, pt_object_json)
+                        ptobject = self.fill_and_add_line_section(impact.id, all_objects, pt_object_json)
                     except exceptions.ObjectUnknown, e:
                         return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 404
-                    ptobject.insert_line_section(line_section)
 
                 impact.objects.append(ptobject)
 
