@@ -217,3 +217,18 @@ def test_impact_with_line_section_validation():
 def test_impact_with_line_section_without_end_point_validation():
     json = {'id': 'line:AME:3', 'type': 'line_section', "line_section": {"line":{"id":"line:AME:3","type":"line"}, "start_point":{"id":"stop_area:MTD:SA:154", "type":"stop_area"}, "sens":0}}
     validate(json, formats.object_input_format)
+
+@raises(ValidationError)
+def test_impact_with_line_section_and_line_type_invalid():
+    json = {'id': 'line:AME:3', 'type': 'line_section', "line_section": {"line":{"id":"line:AME:3","type":"stop_area"}, "start_point":{"id":"stop_area:MTD:SA:154", "type":"stop_area"},	"end_point":{"id":"stop_area:JDR:SA:CHVIN", "type":"stop_area"}, "sens":0}}
+    validate(json, formats.object_input_format)
+
+@raises(ValidationError)
+def test_impact_with_line_section_and_start_point_type_invalid():
+    json = {'id': 'line:AME:3', 'type': 'line_section', "line_section": {"line":{"id":"line:AME:3","type":"line"}, "start_point":{"id":"stop_area:MTD:SA:154", "type":"line"},	"end_point":{"id":"stop_area:JDR:SA:CHVIN", "type":"stop_area"}, "sens":0}}
+    validate(json, formats.object_input_format)
+
+@raises(ValidationError)
+def test_impact_with_line_section_and_end_point_type_invalid():
+    json = {'id': 'line:AME:3', 'type': 'line_section', "line_section": {"line":{"id":"line:AME:3","type":"line"}, "start_point":{"id":"stop_area:MTD:SA:154", "type":"stop_area"},	"end_point":{"id":"stop_area:JDR:SA:CHVIN", "type":"stop_point"}, "sens":0}}
+    validate(json, formats.object_input_format)

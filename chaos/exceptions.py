@@ -33,3 +33,9 @@ class ObjectTypeUnknown(Exception):
     def __init__(self, object_type):
         self.message = 'object type {object_type} unknown'.\
             format(object_type=object_type)
+
+
+class ObjectUnknown(Exception):
+
+    def __init__(self):
+        self.message = 'object unknown'

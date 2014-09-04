@@ -71,6 +71,8 @@ class FieldUrlDisruption(fields.Raw):
 
 class FieldObjectName(fields.Raw):
     def output(self, key, obj):
+        if obj.type == 'line_section':
+            return None
         navitia = Navitia(current_app.config['NAVITIA_URL'],
                           current_app.config['NAVITIA_COVERAGE'],
                           current_app.config['NAVITIA_TOKEN'])

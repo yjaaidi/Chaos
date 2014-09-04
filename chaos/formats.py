@@ -47,6 +47,23 @@ date_period_format = {
         },
     'required': ['begin', 'end']
 }
+
+line_object_format = {
+    'type': 'object',
+    'properties': {'id': {'type': 'string', 'maxLength': 250},
+                   'type': {'enum': ['line']}
+    },
+    'required': ['id', 'type']
+}
+
+stop_area_object_format = {
+    'type': 'object',
+    'properties': {'id': {'type': 'string', 'maxLength': 250},
+                   'type': {'enum': ['stop_area']}
+    },
+    'required': ['id', 'type']
+}
+
 one_object_type_format = {
     'type': 'object',
     'properties': {'id': {'type': 'string', 'maxLength': 250},
@@ -57,9 +74,9 @@ one_object_type_format = {
 
 line_section_format = {
     'type': 'object',
-    'properties': {'line': one_object_type_format,
-                   'start_point': one_object_type_format,
-                   'end_point': one_object_type_format,
+    'properties': {'line': line_object_format,
+                   'start_point': stop_area_object_format,
+                   'end_point': stop_area_object_format,
                    'sens': {'type': ['integer', 'null']}
     },
     'required': ['line', 'start_point', 'end_point']

@@ -42,8 +42,7 @@ class Navitia(object):
         self.collections = {
             "network": "networks",
             "stop_area": "stop_areas",
-            "line": "lines",
-            "line_section": "lines"
+            "line": "lines"
         }
 
     def get_pt_object(self, uri, object_type):

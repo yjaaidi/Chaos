@@ -438,9 +438,9 @@ class Message(TimestampMixin, db.Model):
 class LineSection(TimestampMixin, db.Model):
     __tablename__ = 'line_section'
     id = db.Column(UUID, primary_key=True)
-    line_object_id = db.Column(UUID, db.ForeignKey(PTobject.id))
-    start_object_id = db.Column(UUID, db.ForeignKey(PTobject.id))
-    end_object_id = db.Column(UUID, db.ForeignKey(PTobject.id))
+    line_object_id = db.Column(UUID, db.ForeignKey(PTobject.id), nullable=False)
+    start_object_id = db.Column(UUID, db.ForeignKey(PTobject.id), nullable=False)
+    end_object_id = db.Column(UUID, db.ForeignKey(PTobject.id), nullable=False)
     sens = db.Column(db.Integer, unique=False, nullable=True)
     object_id = db.Column(UUID, db.ForeignKey(PTobject.id))
     line = db.relationship('PTobject', foreign_keys=line_object_id)

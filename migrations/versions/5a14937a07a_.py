@@ -20,9 +20,9 @@ def upgrade():
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.Column('updated_at', sa.DateTime(), nullable=True),
     sa.Column('id', postgresql.UUID(), nullable=False),
-    sa.Column('line_object_id', postgresql.UUID(), nullable=True),
-    sa.Column('start_object_id', postgresql.UUID(), nullable=True),
-    sa.Column('end_object_id', postgresql.UUID(), nullable=True),
+    sa.Column('line_object_id', postgresql.UUID(), nullable=False),
+    sa.Column('start_object_id', postgresql.UUID(), nullable=False),
+    sa.Column('end_object_id', postgresql.UUID(), nullable=False),
     sa.Column('sens', sa.Integer(), nullable=True),
     sa.Column('object_id', postgresql.UUID(), nullable=True),
     sa.ForeignKeyConstraint(['line_object_id'], [u'pt_object.id'], ),
@@ -44,5 +44,8 @@ def downgrade():
     op.execute("CREATE TYPE pt_object_type AS ENUM ('network', 'stop_area', 'line')")
     op.execute("UPDATE pt_object SET type=NULL where type='line_section'")
     op.execute("ALTER TABLE pt_object ALTER COLUMN type TYPE pt_object_type USING type::pt_object_type")
-    op.drop_table('line_section')
+    op.drop_table("line_section")
+    op.execute("DELETE FROM associate_impact_pt_object WHERE pt_object_id IN (SELECT id FROM pt_object WHERE type IS NULL)")
+    op.execute("DELETE FROM pt_object WHERE type IS NULL")
+
     ### end Alembic commands ###
