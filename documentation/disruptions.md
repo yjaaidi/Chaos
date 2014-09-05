@@ -35,6 +35,7 @@ Return all visible disruptions.
 | publication_status[] | filter by publication_status, possible value are: past, ongoing, coming        | false    | [past, ongoing, coming] |
 | current_time         | parameter for settings the use by this request, mostly for debugging purpose   | false    | NOW                     |
 | tag[]                | filter by tag (id of tag)                                                      | false    |                         |
+| uri                  | filter by uri of ptobject                                                      | false    |                         |
 
 @TODO: search and sort
 
@@ -596,7 +597,7 @@ Return all impacts by ptobject.
 
 | Name                 | description                                                                    | required | default                     |
 | -------------------- | ------------------------------------------------------------------------------ | -------- | --------------------------- |
-| pt_object_type       | filter by ptobject, possible value are: network, stoparea, line                | false    |                             |
+| pt_object_type       | filter by ptobject, possible value are: network, stoparea, line, line_section  | false    |                             |
 | uri[]                | filtre by ptobject.uri                                                         | false    |                             |
 | start_date           | filtre by application period :star date                                        | false    | Now():00:00:00Z             |
 | end_date             | filtre by application period :end date                                         | false    | Now():23:59:59Z             |
@@ -866,8 +867,23 @@ Create a new impact.
                         "type": "stop_area"
                     },
                     {
-                        "id": "line:RTP:LI:378",
-                        "type": "line"
+                        "id": "line:AME:3",
+                        "type": "line_section"
+                        "line_section": {
+                            "line": {
+                                "id":"line:AME:3",
+                                "type":"line"
+                            },
+                            "start_point": {
+                                "id":"stop_area:MTD:SA:154",
+                                "type":"stop_area"
+                            },
+                            "end_point": {
+                                "id":"stop_area:MTD:SA:155",
+                                "type":"stop_area"
+                            },
+                            "sens":0
+                        }
                     }
                 ]
             }
@@ -945,11 +961,23 @@ Create a new impact.
                             }
                         },
                         {
-                            "id": "line:RTP:LI:378",
-                            "name": "DE GAULLE - GOUNOD - TABANOU",
-                            "type": "line",
-                            "code": 2,
-                            "color": "FFFFFF"
+                            "id": "line:AME:3",
+                            "type": "line_section"
+                            "line_section": {
+                                "line": {
+                                    "id":"line:AME:3",
+                                    "type":"line"
+                                },
+                                "start_point": {
+                                    "id":"stop_area:MTD:SA:154",
+                                    "type":"stop_area"
+                                },
+                                "end_point": {
+                                    "id":"stop_area:MTD:SA:155",
+                                    "type":"stop_area"
+                                },
+                                "sens":0
+                            }
                         }
                     ],
                     "disruption" : {"href": "https://chaos.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-1c3e-0008ca8617ea"}
