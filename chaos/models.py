@@ -57,7 +57,7 @@ class TimestampMixin(object):
 DisruptionStatus = db.Enum('published', 'archived', name='disruption_status')
 SeverityEffect = db.Enum('blocking', name='severity_effect')
 ImpactStatus = db.Enum('published', 'archived', name='impact_status')
-PtObjectType = db.Enum('network', 'stop_area', 'line', 'line_section', name='pt_object_type')
+PtObjectType = db.Enum('network', 'stop_area', 'line', 'line_section', 'route', name='pt_object_type')
 
 
 class Severity(TimestampMixin, db.Model):
@@ -340,6 +340,13 @@ class Impact(TimestampMixin, db.Model):
         query = query.order_by(ApplicationPeriods.start_date)
         return query.all()
 
+associate_line_section_route_object = db.Table('associate_line_section_route_object',
+                                      db.metadata,
+                                      db.Column('line_section_id', UUID, db.ForeignKey('line_section.id')),
+                                      db.Column('route_object_id', UUID, db.ForeignKey('pt_object.id')),
+                                      db.PrimaryKeyConstraint('line_section_id', 'route_object_id', name='line_section_route_object_pk')
+)
+
 class PTobject(TimestampMixin, db.Model):
     __tablename__ = 'pt_object'
     id = db.Column(UUID, primary_key=True)
@@ -447,6 +454,7 @@ class LineSection(TimestampMixin, db.Model):
     start_point = db.relationship('PTobject', foreign_keys=start_object_id)
     end_point = db.relationship('PTobject', foreign_keys=end_object_id)
     pt_object = db.relationship('PTobject',  foreign_keys=object_id, backref='line_section')
+    routes = db.relationship("PTobject", secondary=associate_line_section_route_object, lazy='joined')
 
     def __repr__(self):
         return '<LineSection %r>' % self.id
