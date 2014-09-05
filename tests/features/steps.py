@@ -3,7 +3,7 @@ from nose.tools import *
 import json
 from chaos import db
 from chaos.models import Disruption, Severity, Cause, Impact, PTobject, Channel, Message, ApplicationPeriods, Tag,\
-    associate_impact_pt_object, associate_disruption_tag, LineSection
+    associate_impact_pt_object, associate_disruption_tag, LineSection, associate_line_section_route_object
 import chaos
 
 model_classes = {'disruption': Disruption,
@@ -25,7 +25,8 @@ model_classes = {'disruption': Disruption,
 }
 
 associations = {'associate_impact_pt_object': associate_impact_pt_object,
-                'associate_disruption_tag': associate_disruption_tag
+                'associate_disruption_tag': associate_disruption_tag,
+                'associate_line_section_route_object': associate_line_section_route_object
 }
 
 def pythonify(value):
