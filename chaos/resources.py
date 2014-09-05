@@ -492,17 +492,23 @@ class Impacts(flask_restful.Resource):
         :param add_to_db: ptobject insert into database
         :return: a pt_object and modify all_objects param
         """
+
+        if json["id"] in all_objects:
+            return all_objects[json["id"]]
+
+        pt_object = models.PTobject.get_pt_object_by_uri(json["id"])
+
+        if pt_object:
+            return pt_object
+
         if not self.navitia.get_pt_object(json['id'], json['type']):
             raise exceptions.ObjectUnknown()
-        pt_object = models.PTobject.get_pt_object_by_uri(json["id"])
-        if not pt_object and json["id"] in all_objects:
-            pt_object = all_objects[json["id"]]
-        if not pt_object:
-            pt_object = models.PTobject()
-            mapper.fill_from_json(pt_object, json, object_mapping)
-            if add_to_db:
-                db.session.add(pt_object)
-            all_objects[json["id"]] = pt_object
+
+        pt_object = models.PTobject()
+        mapper.fill_from_json(pt_object, json, object_mapping)
+        if add_to_db:
+            db.session.add(pt_object)
+        all_objects[json["id"]] = pt_object
         return pt_object
 
     def fill_and_add_line_section(self, impact_id, all_objects, pt_object_json):
