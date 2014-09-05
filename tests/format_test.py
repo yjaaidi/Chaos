@@ -246,3 +246,17 @@ def test_impact_with_line_section_with_duplicate_route_validation():
 def test_impact_with_line_section_route_type_invalid():
     json = {'id': 'line:AME:3', 'type': 'line_section', "line_section": {"line":{"id":"line:AME:3","type":"line"}, "start_point":{"id":"stop_area:MTD:SA:154", "type":"stop_area"},	"end_point":{"id":"stop_area:JDR:SA:CHVIN", "type":"stop_area"}, "sens":0, "routes":[{"id":"route:MTD:9", "type":"line"}]}}
     validate(json, formats.object_input_format)
+
+def test_impact_with_line_section_with_route_and_via_validation():
+    json = {'id': 'line:AME:3', 'type': 'line_section', "line_section": {"line":{"id":"line:AME:3","type":"line"}, "start_point":{"id":"stop_area:MTD:SA:154", "type":"stop_area"},	"end_point":{"id":"stop_area:JDR:SA:CHVIN", "type":"stop_area"}, "sens":0, "routes":[{"id":"route:MTD:9", "type":"route"}], "via":[{"id":"stop_area:JDR:SA:CHVIN", "type":"stop_area"}]}}
+    validate(json, formats.object_input_format)
+
+@raises(ValidationError)
+def test_impact_with_line_section_with_route_and_duplicate_via_validation():
+    json = {'id': 'line:AME:3', 'type': 'line_section', "line_section": {"line":{"id":"line:AME:3","type":"line"}, "start_point":{"id":"stop_area:MTD:SA:154", "type":"stop_area"},	"end_point":{"id":"stop_area:JDR:SA:CHVIN", "type":"stop_area"}, "sens":0, "routes":[{"id":"route:MTD:9", "type":"route"}], "via":[{"id":"stop_area:JDR:SA:CHVIN", "type":"stop_area"}, {"id":"stop_area:JDR:SA:CHVIN", "type":"stop_area"}]}}
+    validate(json, formats.object_input_format)
+
+@raises(ValidationError)
+def test_impact_with_line_section_with_route_and_via_invalid():
+    json = {'id': 'line:AME:3', 'type': 'line_section', "line_section": {"line":{"id":"line:AME:3","type":"line"}, "start_point":{"id":"stop_area:MTD:SA:154", "type":"stop_area"},	"end_point":{"id":"stop_area:JDR:SA:CHVIN", "type":"stop_area"}, "sens":0, "routes":[{"id":"route:MTD:9", "type":"route"}], "via":[{"id":"stop_area:JDR:SA:CHVIN", "type":"stop_point"}]}}
+    validate(json, formats.object_input_format)
