@@ -934,7 +934,24 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient l'impact cr�
                                 "id":"stop_area:MTD:SA:155",
                                 "type":"stop_area"
                             },
-                            "sens":0
+                            "sens":0,
+                            "routes":[
+                               {
+                                   "id": "route:MTD:9",
+                                   "name": "corquilleroy",
+                                   "type": "route"
+                               },
+                               {
+                                   "id": "route:MTD:10",
+                                   "name": "corquilleroy",
+                                   "type": "route"
+                               },
+                               {
+                                   "id": "route:MTD:Nav24",
+                                   "name": "pannes",
+                                   "type": "route"
+                               }
+                            ]
                         }
                     }
                 ],
@@ -1031,7 +1048,24 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient l'impact cr�
                                     "id":"stop_area:MTD:SA:155",
                                     "type":"stop_area"
                                 },
-                                "sens":0
+                                "sens":0,
+                                "routes":[
+                                   {
+                                       "id": "route:MTD:9",
+                                       "name": "corquilleroy",
+                                       "type": "route"
+                                   },
+                                   {
+                                       "id": "route:MTD:10",
+                                       "name": "corquilleroy",
+                                       "type": "route"
+                                   },
+                                   {
+                                       "id": "route:MTD:Nav24",
+                                       "name": "pannes",
+                                       "type": "route"
+                                   }
+                                ]
                             }
                         }
                     ],
@@ -1133,7 +1167,24 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient l'impact cr�
                                     "id":"stop_area:MTD:SA:155",
                                     "type":"stop_area"
                                 },
-                                "sens":0
+                                "sens":0,
+                                "routes":[
+                                   {
+                                       "id": "route:MTD:9",
+                                       "name": "corquilleroy",
+                                       "type": "route"
+                                   },
+                                   {
+                                       "id": "route:MTD:10",
+                                       "name": "corquilleroy",
+                                       "type": "route"
+                                   },
+                                   {
+                                       "id": "route:MTD:Nav24",
+                                       "name": "pannes",
+                                       "type": "route"
+                                   }
+                                ]
                             }
                         }
                     ],
