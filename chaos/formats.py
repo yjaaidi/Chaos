@@ -76,6 +76,11 @@ line_section_format = {
                        'type': 'array',
                        'items': get_object_format('route'),
                        "uniqueItems": True
+                   },
+                   'via': {
+                       'type': 'array',
+                       'items': get_object_format('stop_area'),
+                       "uniqueItems": True
                    }
     },
     'required': ['line', 'start_point', 'end_point']
