@@ -554,6 +554,16 @@ class Impacts(flask_restful.Resource):
                 except exceptions.ObjectUnknown:
                     raise exceptions.ObjectUnknown('{} {} doesn\'t exist'.format(route['type'], route['id']))
 
+        #Here we manage via in line_section
+        #"via":[{"id":"stop_area:MTD:9", "type": "stop_area"}, {"id":"stop_area:MTD:Nav23", "type": "stop_area"}]
+        if 'via' in line_section_json:
+            for via in line_section_json["via"]:
+                try:
+                    via_object = self.fill_and_get_pt_object(all_objects, via, True)
+                    line_section.via.append(via_object)
+                except exceptions.ObjectUnknown:
+                    raise exceptions.ObjectUnknown('{} {} doesn\'t exist'.format(via['type'], via['id']))
+
         ptobject.insert_line_section(line_section)
 
         return ptobject

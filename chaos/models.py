@@ -462,7 +462,7 @@ class LineSection(TimestampMixin, db.Model):
     end_point = db.relationship('PTobject', foreign_keys=end_object_id)
     pt_object = db.relationship('PTobject',  foreign_keys=object_id, backref='line_section')
     routes = db.relationship("PTobject", secondary=associate_line_section_route_object, lazy='joined')
-    vias = db.relationship("PTobject", secondary=associate_line_section_via_object, lazy='joined')
+    via = db.relationship("PTobject", secondary=associate_line_section_via_object, lazy='joined')
 
     def __repr__(self):
         return '<LineSection %r>' % self.id

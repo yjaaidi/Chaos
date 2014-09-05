@@ -210,7 +210,8 @@ line_section_fields = {
     'start_point': fields.Nested(one_objectTC_fields, display_null=False),
     'end_point': fields.Nested(one_objectTC_fields, display_null=False),
     'sens':fields.Integer(default=None),
-    'routes':fields.List(fields.Nested(one_objectTC_fields, display_null=False), display_empty=False)
+    'routes':fields.List(fields.Nested(one_objectTC_fields, display_null=False), display_empty=False),
+    'via':fields.List(fields.Nested(one_objectTC_fields, display_null=False), display_empty=False)
 }
 
 objectTC_fields = {
