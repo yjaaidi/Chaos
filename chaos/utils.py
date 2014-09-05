@@ -189,13 +189,21 @@ def group_impacts_by_pt_object(impacts, object_type, uris, get_pt_object):
     return result
 
 
+def to_unicode(obj):
+    if isinstance(obj, basestring):
+        if not isinstance(obj, unicode):
+            obj = unicode(obj, 'utf-8')
+    return obj
+
+
 def parse_error(error):
     to_return = None
     try:
+        error = to_unicode(error)
         to_return = error.message
     except AttributeError:
         to_return = str(error).replace("\n", " ")
-    return to_return.decode('utf-8')
+    return to_return
 
 
 def get_uuid(value, name):
