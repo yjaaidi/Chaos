@@ -71,7 +71,12 @@ line_section_format = {
     'properties': {'line': get_object_format('line'),
                    'start_point': get_object_format('stop_area'),
                    'end_point': get_object_format('stop_area'),
-                   'sens': {'type': ['integer', 'null']}
+                   'sens': {'type': ['integer', 'null']},
+                   'routes': {
+                       'type': 'array',
+                       'items': get_object_format('route'),
+                       "uniqueItems": True
+                   }
     },
     'required': ['line', 'start_point', 'end_point']
 
