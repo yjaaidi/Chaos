@@ -202,7 +202,7 @@ def parse_error(error):
         error = to_unicode(error)
         to_return = error.message
     except AttributeError:
-        to_return = str(error).replace("\n", " ")
+        to_return = error.replace("\n", " ")
     return to_return
 
 
