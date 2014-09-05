@@ -1,4 +1,18 @@
 Feature: channel can be deleted
+    Scenario: delete disruption with id not valid
+
+        Given I have the following causes in my database:
+            | wording   | created_at          | updated_at          | is_visible | id                                   |
+            | weather   | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | True       | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |
+
+        Given I have the following disruptions in my database:
+            | reference | note  | created_at          | updated_at          | status    | id                                   |cause_id                             |
+            | foo       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |7ffab230-3d48-4eea-aa2c-22f8680230b6 |
+
+        When I delete "/disruptions/AA-BB"
+        Then the status code should be "400"
+        And the header "Content-Type" should be "application/json"
+        And the field "error.message" should be "id invalid"
 
     Scenario: list of two disruptions
 

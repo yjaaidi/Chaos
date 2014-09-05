@@ -43,3 +43,16 @@ Feature: update tag
         """
         Then the status code should be "404"
         And the header "Content-Type" should be "application/json"
+
+    Scenario: Tag doublon
+        Given I have the following tags in my database:
+            | name   | created_at          | updated_at          | is_visible | id                                   |
+            | foo    | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | True       | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |
+            | weather| 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | True       | 2ffab230-3d48-4eea-aa2c-22f8680230b6 |
+
+        When I put to "/tags/7ffab230-3d48-4eea-aa2c-22f8680230b6" with:
+        """
+        {"name": "weather"}
+        """
+        Then the status code should be "400"
+        And the header "Content-Type" should be "application/json"

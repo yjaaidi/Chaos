@@ -59,6 +59,7 @@ SeverityEffect = db.Enum('blocking', name='severity_effect')
 ImpactStatus = db.Enum('published', 'archived', name='impact_status')
 PtObjectType = db.Enum('network', 'stop_area', 'line', 'line_section', name='pt_object_type')
 
+
 class Severity(TimestampMixin, db.Model):
     """
     represent the severity of an impact
@@ -220,6 +221,7 @@ associate_impact_pt_object = db.Table('associate_impact_pt_object',
                                       db.PrimaryKeyConstraint('impact_id', 'pt_object_id', name='impact_pt_object_pk')
 )
 
+
 class Impact(TimestampMixin, db.Model):
     id = db.Column(UUID, primary_key=True)
     status = db.Column(ImpactStatus, nullable=False, default='published', index=True)
@@ -252,8 +254,6 @@ class Impact(TimestampMixin, db.Model):
 
     def __init__(self, objects=None):
         self.id = str(uuid.uuid1())
-        if objects:
-            self.objects = objects
 
     def archive(self):
         """

@@ -119,3 +119,4 @@ def given_i_have_the_relation_in_my_database(step, cls):
         db.session.execute("INSERT INTO {} ({}) VALUES ({})".format(associations[cls], ','.join(keys), ','.join(values)))
     db.session.commit()
 
+
