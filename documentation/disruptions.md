@@ -899,6 +899,12 @@ Create a new impact.
                                    "name": "pannes",
                                    "type": "route"
                                }
+                            ],
+                            "via":[
+                                {
+                                "id":"stop_area:MTD:SA:154",
+                                "type":"stoparea"
+                                }
                             ]
                         }
                     }
@@ -1010,6 +1016,12 @@ Create a new impact.
                                        "name": "pannes",
                                        "type": "route"
                                    }
+                                ],
+                                "via":[
+                                    {
+                                    "id":"stop_area:MTD:SA:154",
+                                    "type":"stoparea"
+                                    }
                                 ]
                             }
                         }

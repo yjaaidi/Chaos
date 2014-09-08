@@ -951,6 +951,12 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient l'impact cr�
                                    "name": "pannes",
                                    "type": "route"
                                }
+                            ],
+                            "via":[
+                                {
+                                "id":"stop_area:MTD:SA:154",
+                                "type":"stoparea"
+                                }
                             ]
                         }
                     }
@@ -1065,6 +1071,12 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient l'impact cr�
                                        "name": "pannes",
                                        "type": "route"
                                    }
+                                ],
+                                "via":[
+                                    {
+                                    "id":"stop_area:MTD:SA:154",
+                                    "type":"stoparea"
+                                    }
                                 ]
                             }
                         }
@@ -1184,6 +1196,12 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient l'impact cr�
                                        "name": "pannes",
                                        "type": "route"
                                    }
+                                ],
+                                "via":[
+                                    {
+                                    "id":"stop_area:MTD:SA:154",
+                                    "type":"stoparea"
+                                    }
                                 ]
                             }
                         }
