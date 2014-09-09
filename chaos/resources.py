@@ -499,6 +499,7 @@ class Impacts(flask_restful.Resource):
         pt_object = models.PTobject.get_pt_object_by_uri(json["id"])
 
         if pt_object:
+            all_objects[json["id"]] = pt_object
             return pt_object
 
         if not self.navitia.get_pt_object(json['id'], json['type']):
@@ -567,6 +568,34 @@ class Impacts(flask_restful.Resource):
         ptobject.insert_line_section(line_section)
 
         return ptobject
+
+    def manage_message(self, impact, json):
+        messages_db = dict((msg.channel_id, msg) for msg in impact.messages)
+        messages_json = dict()
+        if 'messages' in json:
+            messages_json = dict((msg["channel"]["id"], msg) for msg in json['messages'])
+            for message_json in json['messages']:
+                if message_json["channel"]["id"] in messages_db:
+                    msg = messages_db[message_json["channel"]["id"]]
+                    mapper.fill_from_json(msg, message_json, message_mapping)
+                else:
+                    message = models.Message()
+                    message.impact_id = impact.id
+                    mapper.fill_from_json(message, message_json, message_mapping)
+                    impact.insert_message(message)
+                    messages_db[message.channel_id] = message
+
+        difference = set(messages_db) - set(messages_json)
+        for diff in difference:
+            impact.delete_message(messages_db[diff])
+
+    def manage_application_periods(self, impact, json):
+        impact.delete_app_periods()
+        if 'application_periods' in json:
+            for app_period in json["application_periods"]:
+                application_period = models.ApplicationPeriods(impact.id)
+                mapper.fill_from_json(application_period, app_period, application_period_mapping)
+                impact.insert_app_period(application_period)
 
     def get(self, disruption_id, id=None):
         if id:
@@ -640,19 +669,10 @@ class Impacts(flask_restful.Resource):
 
                 impact.objects.append(ptobject)
 
-        if 'application_periods' in json:
-            for app_period in json["application_periods"]:
-                application_period = models.ApplicationPeriods(impact.id)
-                mapper.fill_from_json(application_period, app_period, application_period_mapping)
-                impact.insert_app_period(application_period)
-        if 'messages' in json:
-            for mes in  json['messages']:
-                message = models.Message()
-                message.impact_id = impact.id
-                mapper.fill_from_json(message, mes, message_mapping)
-                impact.insert_message(message)
-
+        self.manage_application_periods(impact, json)
+        self.manage_message(impact, json)
         db.session.commit()
+
         return marshal({'impact': impact}, one_impact_fields), 201
 
     def put(self, disruption_id, id):
@@ -672,53 +692,47 @@ class Impacts(flask_restful.Resource):
 
         impact = models.Impact.get(id)
 
-        #Add all objects and all messages present in Json
-        pt_object_db = set(ptobject.uri for ptobject in impact.objects)
-        pt_objects_json = set()
+        #Fetch all the objects (except line_section) of impact in the database and insert code(uri) in the dictionary "pt_object_db".
+        #For each object (except line_section) present in json but absent in pt_object_db, we add in database.
+        #For each object (except line_section) present in the database but absent in json we delete in database.
+        pt_object_db = dict()
+        for ptobject in impact.objects:
+            if ptobject.type != 'line_section':
+                pt_object_db[ptobject.uri] = ptobject
+        pt_object_dict = dict()
         if 'objects' in json:
             for pt_object_json in json['objects']:
-                if not self.navitia.get_pt_object(pt_object_json['id'], pt_object_json['type']):
-                    return marshal({'error': {'message': '{} {} doesn\'t exist'.format(pt_object_json['type'], pt_object_json['id'])}},
-                               error_fields), 404
-                pt_objects_json.add(pt_object_json["id"])
-                if pt_object_json["id"] not in pt_object_db:
-                    ptobject = models.PTobject.get_pt_object_by_uri(pt_object_json["id"])
-                    if not ptobject:
-                        ptobject = models.PTobject()
-                        mapper.fill_from_json(ptobject, pt_object_json, object_mapping)
-                    impact.insert_object(ptobject)
+                if pt_object_json["type"] != 'line_section':
+                    try:
+                        ptobject = self.fill_and_get_pt_object(pt_object_dict, pt_object_json, False)
+                    except exceptions.ObjectUnknown:
+                        return marshal({'error': {'message': '{} {} doesn\'t exist'.format(pt_object_json["type"], pt_object_json['id'])}},
+                        error_fields), 404
 
-        for ptobject in impact.objects:
-            if ptobject.uri not in pt_objects_json:
-                impact.delete(ptobject)
+                    if ptobject.uri not in pt_object_db:
+                        impact.objects.append(ptobject)
 
-        impact.delete_app_periods()
-        if 'application_periods' in json:
-            for app_period in json["application_periods"]:
-                application_period = models.ApplicationPeriods(impact.id)
-                mapper.fill_from_json(application_period, app_period, application_period_mapping)
-                impact.insert_app_period(application_period)
+            for ptobject_uri in pt_object_db:
+                if ptobject_uri not in pt_object_dict:
+                    impact.delete(pt_object_db[ptobject_uri])
 
-        messages_db = dict((msg.channel_id, msg) for msg in impact.messages)
-        messages_json = dict()
-        if 'messages' in json:
-            messages_json = dict((msg["channel"]["id"], msg) for msg in json['messages'])
-            for message_json in json['messages']:
-                if message_json["channel"]["id"] in messages_db:
-                    msg = messages_db[message_json["channel"]["id"]]
-                    mapper.fill_from_json(msg, message_json, message_mapping)
-                else:
-                    message = models.Message()
-                    message.impact_id = impact.id
-                    mapper.fill_from_json(message, message_json, message_mapping)
-                    impact.insert_message(message)
-                    messages_db[message.channel_id] = message
+            #For each object of type line_section we delete line_section, routes and via
+            #Create a new line_section add add routes and via
+            impact.delete_line_section()
+            pt_object_dict = dict()
+            for pt_object_json in json['objects']:
+                if pt_object_json["type"] == 'line_section':
+                    try:
+                        ptobject = self.fill_and_add_line_section(impact.id, pt_object_dict, pt_object_json)
+                    except exceptions.ObjectUnknown, e:
+                        return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 404
 
-            difference = set(messages_db) - set(messages_json)
-            for diff in difference:
-                impact.delete_message(messages_db[diff])
+                    impact.objects.append(ptobject)
 
+        self.manage_application_periods(impact, json)
+        self.manage_message(impact, json)
         db.session.commit()
+
         return marshal({'impact': impact}, one_impact_fields), 200
 
     def delete(self, disruption_id, id):

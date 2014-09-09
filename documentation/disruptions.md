@@ -1105,6 +1105,48 @@ Create a new impact.
                             "id": "network:RTP:378",
                             "name": "RER B",
                             "type": "network",
+                        },
+                        {
+                            "id": "line:AME:3",
+                            "type": "line_section"
+                            "line_section": {
+                                "line": {
+                                    "id":"line:AME:3",
+                                    "type":"line"
+                                },
+                                "start_point": {
+                                    "id":"stop_area:MTD:SA:154",
+                                    "type":"stop_area"
+                                },
+                                "end_point": {
+                                    "id":"stop_area:MTD:SA:155",
+                                    "type":"stop_area"
+                                },
+                                "sens":0,
+                                "routes":[
+                                   {
+                                       "id": "route:MTD:9",
+                                       "name": "corquilleroy",
+                                       "type": "route"
+                                   },
+                                   {
+                                       "id": "route:MTD:10",
+                                       "name": "corquilleroy",
+                                       "type": "route"
+                                   },
+                                   {
+                                       "id": "route:MTD:Nav24",
+                                       "name": "pannes",
+                                       "type": "route"
+                                   }
+                                ],
+                                "via":[
+                                    {
+                                    "id":"stop_area:MTD:SA:154",
+                                    "type":"stoparea"
+                                    }
+                                ]
+                            }
                         }
                     ],
                     "disruption" : {"href": "https://ogv2ws.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-1c3e-0008ca8617ea"}
@@ -1178,6 +1220,48 @@ Create a new impact.
                             "id": "network:RTP:378",
                             "name": "RER B",
                             "type": "network",
+                        },
+                        {
+                            "id": "line:AME:3",
+                            "type": "line_section"
+                            "line_section": {
+                                "line": {
+                                    "id":"line:AME:3",
+                                    "type":"line"
+                                },
+                                "start_point": {
+                                    "id":"stop_area:MTD:SA:154",
+                                    "type":"stop_area"
+                                },
+                                "end_point": {
+                                    "id":"stop_area:MTD:SA:155",
+                                    "type":"stop_area"
+                                },
+                                "sens":0,
+                                "routes":[
+                                   {
+                                       "id": "route:MTD:9",
+                                       "name": "corquilleroy",
+                                       "type": "route"
+                                   },
+                                   {
+                                       "id": "route:MTD:10",
+                                       "name": "corquilleroy",
+                                       "type": "route"
+                                   },
+                                   {
+                                       "id": "route:MTD:Nav24",
+                                       "name": "pannes",
+                                       "type": "route"
+                                   }
+                                ],
+                                "via":[
+                                    {
+                                    "id":"stop_area:MTD:SA:154",
+                                    "type":"stoparea"
+                                    }
+                                ]
+                            }
                         }
                     ],
                     "disruption" : {"href": "https://ogv2ws.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-1c3e-0008ca8617ea"}
