@@ -29,7 +29,7 @@
 from flask import request, url_for, g, current_app
 import flask_restful
 from flask_restful import marshal, reqparse
-from chaos import models, db
+from chaos import models, db, publisher
 from jsonschema import validate, ValidationError
 from flask.ext.restful import abort
 from fields import *
@@ -795,4 +795,5 @@ class Status(flask_restful.Resource):
         return {'version': chaos.VERSION,
                 'db_pool_status': db.engine.pool.status(),
                 'db_version': db.engine.scalar('select version_num from alembic_version;'),
-                'navitia_url': current_app.config['NAVITIA_URL']}
+                'navitia_url': current_app.config['NAVITIA_URL'],
+                'rabbitmq_info': publisher.info()}
