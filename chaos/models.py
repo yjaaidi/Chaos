@@ -286,6 +286,16 @@ class Impact(TimestampMixin, db.Model):
         for app_per in self.application_periods:
             db.session.delete(app_per)
 
+    def delete_line_section(self):
+        for pt_object in self.objects:
+            if pt_object.type == 'line_section':
+                line_section = LineSection.get_by_object_id(pt_object.id)
+                if line_section:
+                    db.session.delete(line_section)
+                self.delete(pt_object)
+                db.session.delete(pt_object)
+
+
     def insert_app_period(self, application_period):
         """
         Adds an ApplicationPeriods in a impact.
@@ -475,3 +485,6 @@ class LineSection(TimestampMixin, db.Model):
     def get(cls, id):
         return cls.query.filter_by(id=id).first_or_404()
 
+    @classmethod
+    def get_by_object_id(cls, object_id):
+        return cls.query.filter_by(object_id=object_id).first()

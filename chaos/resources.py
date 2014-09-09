@@ -499,6 +499,7 @@ class Impacts(flask_restful.Resource):
         pt_object = models.PTobject.get_pt_object_by_uri(json["id"])
 
         if pt_object:
+            all_objects[json["id"]] = pt_object
             return pt_object
 
         if not self.navitia.get_pt_object(json['id'], json['type']):
@@ -673,24 +674,38 @@ class Impacts(flask_restful.Resource):
         impact = models.Impact.get(id)
 
         #Add all objects and all messages present in Json
-        pt_object_db = set(ptobject.uri for ptobject in impact.objects)
-        pt_objects_json = set()
+        pt_object_db = dict()
+        for ptobject in impact.objects:
+            if ptobject.type != 'line_section':
+                pt_object_db[ptobject.uri] = ptobject
+        pt_object_dict = dict()
         if 'objects' in json:
             for pt_object_json in json['objects']:
-                if not self.navitia.get_pt_object(pt_object_json['id'], pt_object_json['type']):
-                    return marshal({'error': {'message': '{} {} doesn\'t exist'.format(pt_object_json['type'], pt_object_json['id'])}},
-                               error_fields), 404
-                pt_objects_json.add(pt_object_json["id"])
-                if pt_object_json["id"] not in pt_object_db:
-                    ptobject = models.PTobject.get_pt_object_by_uri(pt_object_json["id"])
-                    if not ptobject:
-                        ptobject = models.PTobject()
-                        mapper.fill_from_json(ptobject, pt_object_json, object_mapping)
-                    impact.insert_object(ptobject)
+                if pt_object_json["type"] != 'line_section':
+                    try:
+                        ptobject = self.fill_and_get_pt_object(pt_object_dict, pt_object_json, False)
+                    except exceptions.ObjectUnknown:
+                        return marshal({'error': {'message': '{} {} doesn\'t exist'.format(pt_object_json["type"], pt_object_json['id'])}},
+                        error_fields), 404
 
-        for ptobject in impact.objects:
-            if ptobject.uri not in pt_objects_json:
-                impact.delete(ptobject)
+                    if ptobject.uri not in pt_object_db.keys():
+                        impact.objects.append(ptobject)
+
+            for ptobject_uri in pt_object_db.keys():
+                if ptobject_uri not in pt_object_dict.keys():
+                    impact.delete(pt_object_db[ptobject_uri])
+
+            #line_section
+            impact.delete_line_section()
+            pt_object_dict = dict()
+            for pt_object_json in json['objects']:
+                if pt_object_json["type"] == 'line_section':
+                    try:
+                        ptobject = self.fill_and_add_line_section(impact.id, pt_object_dict, pt_object_json)
+                    except exceptions.ObjectUnknown, e:
+                        return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 404
+
+                    impact.objects.append(ptobject)
 
         impact.delete_app_periods()
         if 'application_periods' in json:
