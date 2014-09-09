@@ -569,6 +569,34 @@ class Impacts(flask_restful.Resource):
 
         return ptobject
 
+    def manage_message(self, impact, json):
+        messages_db = dict((msg.channel_id, msg) for msg in impact.messages)
+        messages_json = dict()
+        if 'messages' in json:
+            messages_json = dict((msg["channel"]["id"], msg) for msg in json['messages'])
+            for message_json in json['messages']:
+                if message_json["channel"]["id"] in messages_db:
+                    msg = messages_db[message_json["channel"]["id"]]
+                    mapper.fill_from_json(msg, message_json, message_mapping)
+                else:
+                    message = models.Message()
+                    message.impact_id = impact.id
+                    mapper.fill_from_json(message, message_json, message_mapping)
+                    impact.insert_message(message)
+                    messages_db[message.channel_id] = message
+
+        difference = set(messages_db) - set(messages_json)
+        for diff in difference:
+            impact.delete_message(messages_db[diff])
+
+    def manage_application_periods(self, impact, json):
+        impact.delete_app_periods()
+        if 'application_periods' in json:
+            for app_period in json["application_periods"]:
+                application_period = models.ApplicationPeriods(impact.id)
+                mapper.fill_from_json(application_period, app_period, application_period_mapping)
+                impact.insert_app_period(application_period)
+
     def get(self, disruption_id, id=None):
         if id:
             if not id_format.match(id):
@@ -641,19 +669,10 @@ class Impacts(flask_restful.Resource):
 
                 impact.objects.append(ptobject)
 
-        if 'application_periods' in json:
-            for app_period in json["application_periods"]:
-                application_period = models.ApplicationPeriods(impact.id)
-                mapper.fill_from_json(application_period, app_period, application_period_mapping)
-                impact.insert_app_period(application_period)
-        if 'messages' in json:
-            for mes in  json['messages']:
-                message = models.Message()
-                message.impact_id = impact.id
-                mapper.fill_from_json(message, mes, message_mapping)
-                impact.insert_message(message)
-
+        self.manage_application_periods(impact, json)
+        self.manage_message(impact, json)
         db.session.commit()
+
         return marshal({'impact': impact}, one_impact_fields), 201
 
     def put(self, disruption_id, id):
@@ -673,7 +692,9 @@ class Impacts(flask_restful.Resource):
 
         impact = models.Impact.get(id)
 
-        #Add all objects and all messages present in Json
+        #Fetch all the objects (except line_section) of impact in the database and insert code(uri) in the dictionary "pt_object_db".
+        #For each object (except line_section) present in json but absent in pt_object_db, we add in database.
+        #For each object (except line_section) present in the database but absent in json we delete in database.
         pt_object_db = dict()
         for ptobject in impact.objects:
             if ptobject.type != 'line_section':
@@ -695,7 +716,8 @@ class Impacts(flask_restful.Resource):
                 if ptobject_uri not in pt_object_dict.keys():
                     impact.delete(pt_object_db[ptobject_uri])
 
-            #line_section
+            #For each object of type line_section we delete line_section, routes and via
+            #Create a new line_section add add routes and via
             impact.delete_line_section()
             pt_object_dict = dict()
             for pt_object_json in json['objects']:
@@ -707,33 +729,10 @@ class Impacts(flask_restful.Resource):
 
                     impact.objects.append(ptobject)
 
-        impact.delete_app_periods()
-        if 'application_periods' in json:
-            for app_period in json["application_periods"]:
-                application_period = models.ApplicationPeriods(impact.id)
-                mapper.fill_from_json(application_period, app_period, application_period_mapping)
-                impact.insert_app_period(application_period)
-
-        messages_db = dict((msg.channel_id, msg) for msg in impact.messages)
-        messages_json = dict()
-        if 'messages' in json:
-            messages_json = dict((msg["channel"]["id"], msg) for msg in json['messages'])
-            for message_json in json['messages']:
-                if message_json["channel"]["id"] in messages_db:
-                    msg = messages_db[message_json["channel"]["id"]]
-                    mapper.fill_from_json(msg, message_json, message_mapping)
-                else:
-                    message = models.Message()
-                    message.impact_id = impact.id
-                    mapper.fill_from_json(message, message_json, message_mapping)
-                    impact.insert_message(message)
-                    messages_db[message.channel_id] = message
-
-            difference = set(messages_db) - set(messages_json)
-            for diff in difference:
-                impact.delete_message(messages_db[diff])
-
+        self.manage_application_periods(impact, json)
+        self.manage_message(impact, json)
         db.session.commit()
+
         return marshal({'impact': impact}, one_impact_fields), 200
 
     def delete(self, disruption_id, id):
