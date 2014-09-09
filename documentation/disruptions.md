@@ -882,7 +882,30 @@ Create a new impact.
                                 "id":"stop_area:MTD:SA:155",
                                 "type":"stop_area"
                             },
-                            "sens":0
+                            "sens":0,
+                            "routes":[
+                               {
+                                   "id": "route:MTD:9",
+                                   "name": "corquilleroy",
+                                   "type": "route"
+                               },
+                               {
+                                   "id": "route:MTD:10",
+                                   "name": "corquilleroy",
+                                   "type": "route"
+                               },
+                               {
+                                   "id": "route:MTD:Nav24",
+                                   "name": "pannes",
+                                   "type": "route"
+                               }
+                            ],
+                            "via":[
+                                {
+                                "id":"stop_area:MTD:SA:154",
+                                "type":"stoparea"
+                                }
+                            ]
                         }
                     }
                 ]
@@ -976,7 +999,30 @@ Create a new impact.
                                     "id":"stop_area:MTD:SA:155",
                                     "type":"stop_area"
                                 },
-                                "sens":0
+                                "sens":0,
+                                "routes":[
+                                   {
+                                       "id": "route:MTD:9",
+                                       "name": "corquilleroy",
+                                       "type": "route"
+                                   },
+                                   {
+                                       "id": "route:MTD:10",
+                                       "name": "corquilleroy",
+                                       "type": "route"
+                                   },
+                                   {
+                                       "id": "route:MTD:Nav24",
+                                       "name": "pannes",
+                                       "type": "route"
+                                   }
+                                ],
+                                "via":[
+                                    {
+                                    "id":"stop_area:MTD:SA:154",
+                                    "type":"stoparea"
+                                    }
+                                ]
                             }
                         }
                     ],
