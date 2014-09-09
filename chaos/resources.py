@@ -709,11 +709,11 @@ class Impacts(flask_restful.Resource):
                         return marshal({'error': {'message': '{} {} doesn\'t exist'.format(pt_object_json["type"], pt_object_json['id'])}},
                         error_fields), 404
 
-                    if ptobject.uri not in pt_object_db.keys():
+                    if ptobject.uri not in pt_object_db:
                         impact.objects.append(ptobject)
 
-            for ptobject_uri in pt_object_db.keys():
-                if ptobject_uri not in pt_object_dict.keys():
+            for ptobject_uri in pt_object_db:
+                if ptobject_uri not in pt_object_dict:
                     impact.delete(pt_object_db[ptobject_uri])
 
             #For each object of type line_section we delete line_section, routes and via
