@@ -10,7 +10,7 @@ NAVITIA_COVERAGE = 'fr-cen'
 NAVITIA_TOKEN = 'f8a9befb-6bd9-4620-b942-b6b69a07487d'
 
 #rabbitmq connections string: http://kombu.readthedocs.org/en/latest/userguide/connections.html#urls
-RABBITMQ_CONNECTION_STRING='amqp://guest:guest@localhost:5672//'
+RABBITMQ_CONNECTION_STRING='pyamqp://guest:guest@localhost:5672//?heartbeat=60'
 
 #amqp exhange used for sending disruptions
 EXCHANGE='navitia'
