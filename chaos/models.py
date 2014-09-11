@@ -190,14 +190,46 @@ class Disruption(TimestampMixin, db.Model):
             query = query.join(cls.impacts)
             query = query.filter(Impact.status == 'published')
             query = query.join(Impact.objects)
+
+            #Here add a new query to find impacts with line =_section having uri as line, start_point or end_point
+            filters = []
+            alias_line = aliased(PTobject)
+            alias_start_point = aliased(PTobject)
+            alias_end_point = aliased(PTobject)
+            alias_route = aliased(PTobject)
+            alias_via = aliased(PTobject)
+            query_line_section = query
+            query_line_section = query_line_section.join(PTobject.line_section)
+            query_line_section = query_line_section.join(alias_line, LineSection.line_object_id == alias_line.id)
+            filters.append(alias_line.uri == uri)
+            query_line_section = query_line_section.join(PTobject, LineSection.object_id == PTobject.id)
+            query_line_section = query_line_section.join(alias_start_point, LineSection.start_object_id == alias_start_point.id)
+            filters.append(alias_start_point.uri == uri)
+            query_line_section = query_line_section.join(alias_end_point, LineSection.end_object_id == alias_end_point.id)
+            filters.append(alias_end_point.uri == uri)
+            query_line_section = query_line_section.join(alias_route, LineSection.routes)
+            filters.append(alias_route.uri == uri)
+            query_line_section = query_line_section.join(alias_via, LineSection.via)
+            filters.append(alias_via.uri == uri)
+            query_line_section = query_line_section.filter(or_(*filters))
+
             query = query.filter(PTobject.uri == uri)
 
         publication_status = set(publication_status)
         if len(publication_status) == len(publication_status_values):
+            #For a query by uri use union with the query for line_section
+            if uri:
+                query = query.union_all(query_line_section)
             return query
+
         else:
             filters = [availlable_filters[status] for status in publication_status]
             query = query.filter(or_(*filters))
+
+            #For a query by uri use union with the query for line_section
+            if uri:
+                query_line_section = query_line_section.filter(or_(*filters))
+                query = query.union_all(query_line_section)
             return query
 
     @property
