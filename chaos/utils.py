@@ -154,10 +154,45 @@ def is_pt_object_valid(pt_object, object_type, uris):
         else:
             return (pt_object.type == object_type)
     elif uris:
-        return (pt_object.uri in uris)
+        if pt_object.type == 'line_section':
+            return exist_object_in_line_section(pt_object, object_type, uris)
+        else:
+            return (pt_object.uri in uris)
     else:
         return False
 
+def exist_object_in_line_section(pt_object, object_type, uris):
+    """
+    verify if object exists in line_section
+    :param pt_object: public transport object
+    :param uris: public transport object uri
+    :return: bool
+    """
+    if not (object_type or uris):
+        return False
+
+    #Verify object by object type:
+    if object_type:
+        result = (pt_object.type == object_type)
+        if result:
+            return result
+
+    #Verify object by object uri:
+    if uris:
+        result = (pt_object.uri in uris)
+        if result:
+            return result
+
+        for object in pt_object.line_section:
+            #Search object.uri in line_section : line, start_point and end_point
+            result = ((object.line.uri in uris) or \
+                   (object.start_point.uri in uris) or \
+                   (object.end_point.uri in uris))
+            if result:
+                return result
+
+    #Default return value
+    return False
 
 def group_impacts_by_pt_object(impacts, object_type, uris, get_pt_object):
     """

@@ -355,10 +355,9 @@ class Impact(TimestampMixin, db.Model):
     def all_with_filter(cls, start_date, end_date, pt_object_type, uris):
         pt_object_alias = aliased(PTobject)
         query = cls.query.filter(cls.status == 'published')
-        if pt_object_type:
-            query = query.filter(pt_object_alias.type == pt_object_type)
-
         query = query.join(ApplicationPeriods)
+        query = query.join(pt_object_alias, cls.objects)
+
         query = query.filter(
             and_(
                 or_(
@@ -376,10 +375,34 @@ class Impact(TimestampMixin, db.Model):
             )
         )
 
+        if pt_object_type:
+            query = query.filter(pt_object_alias.type == pt_object_type)
+
+        if pt_object_type or uris:
+            alias_line = aliased(PTobject)
+            alias_start_point = aliased(PTobject)
+            alias_end_point = aliased(PTobject)
+
+            query_line_section = query
+            query_line_section = query_line_section.join(pt_object_alias.line_section)
+            query_line_section = query_line_section.join(alias_line, LineSection.line_object_id == alias_line.id)
+            query_line_section = query_line_section.join(alias_start_point, LineSection.start_object_id == alias_start_point.id)
+            query_line_section = query_line_section.join(alias_end_point, LineSection.end_object_id == alias_end_point.id)
+
         if uris:
+            uri_filters = []
+            uri_filters.append(alias_line.uri.in_(uris))
+            uri_filters.append(alias_start_point.uri.in_(uris))
+            uri_filters.append(alias_end_point.uri.in_(uris))
+            query_line_section = query_line_section.filter(or_(*uri_filters))
+
             query = query.filter(pt_object_alias.uri.in_(uris))
 
-        query = query.order_by(ApplicationPeriods.start_date)
+        if uris:
+            query = query.union_all(query_line_section)
+        else:
+            query = query.order_by(ApplicationPeriods.start_date)
+
         return query.all()
 
 associate_line_section_route_object = db.Table('associate_line_section_route_object',
