@@ -375,9 +375,6 @@ class Impact(TimestampMixin, db.Model):
             )
         )
 
-        if pt_object_type:
-            query = query.filter(pt_object_alias.type == pt_object_type)
-
         if pt_object_type or uris:
             alias_line = aliased(PTobject)
             alias_start_point = aliased(PTobject)
@@ -389,6 +386,15 @@ class Impact(TimestampMixin, db.Model):
             query_line_section = query_line_section.join(alias_start_point, LineSection.start_object_id == alias_start_point.id)
             query_line_section = query_line_section.join(alias_end_point, LineSection.end_object_id == alias_end_point.id)
 
+        if pt_object_type:
+            query = query.filter(pt_object_alias.type == pt_object_type)
+
+            type_filters = []
+            type_filters.append(alias_line.type == pt_object_type)
+            type_filters.append(alias_start_point.type == pt_object_type)
+            type_filters.append(alias_end_point.type == pt_object_type)
+            query_line_section = query_line_section.filter(or_(*type_filters))
+
         if uris:
             uri_filters = []
             uri_filters.append(alias_line.uri.in_(uris))
@@ -398,7 +404,7 @@ class Impact(TimestampMixin, db.Model):
 
             query = query.filter(pt_object_alias.uri.in_(uris))
 
-        if uris:
+        if pt_object_type or uris:
             query = query.union_all(query_line_section)
         else:
             query = query.order_by(ApplicationPeriods.start_date)

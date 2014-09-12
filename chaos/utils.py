@@ -152,7 +152,10 @@ def is_pt_object_valid(pt_object, object_type, uris):
             return ((pt_object.type == object_type) and
                     (pt_object.uri in uris))
         else:
-            return (pt_object.type == object_type)
+            if pt_object.type == 'line_section':
+                return exist_object_in_line_section(pt_object, object_type, uris)
+            else:
+                return (pt_object.type == object_type)
     elif uris:
         if pt_object.type == 'line_section':
             return exist_object_in_line_section(pt_object, object_type, uris)
@@ -188,6 +191,19 @@ def exist_object_in_line_section(pt_object, object_type, uris):
             result = ((object.line.uri in uris) or \
                    (object.start_point.uri in uris) or \
                    (object.end_point.uri in uris))
+            if result:
+                return result
+
+    if object_type:
+        result = (pt_object.type == object_type)
+        if result:
+            return result
+
+        for object in pt_object.line_section:
+            #Search object.uri in line_section : line, start_point and end_point
+            result = ((object.line.type == object_type) or \
+                   (object.start_point.type == object_type) or \
+                   (object.end_point.type == object_type))
             if result:
                 return result
 
