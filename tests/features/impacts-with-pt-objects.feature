@@ -368,10 +368,7 @@ Feature: Manipulate impacts in a Disruption
         And the field "impact.objects.1.line_section.0.routes.0.id" should be "route:JDR:M14"
         And the field "impact.objects.1.line_section.0.routes.1.type" should be "route"
         And the field "impact.objects.1.line_section.0.routes.1.id" should be "route:JDR:M1"
-        And the field "impact.objects.1.line_section.0.via.0.type" should be "stop_area"
-        And the field "impact.objects.1.line_section.0.via.0.id" should be "stop_area:JDR:SA:CHVIN"
-        And the field "impact.objects.1.line_section.0.via.1.type" should be "stop_area"
-        And the field "impact.objects.1.line_section.0.via.1.id" should be "stop_area:JDR:SA:BERAU"
+        And the field "impact.objects.1.line_section.0.via" should have a size of 2
 
     Scenario: Put impact with line_section : delete line_section
         Given I have the following disruptions in my database:

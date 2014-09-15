@@ -220,17 +220,16 @@ class Disruption(TimestampMixin, db.Model):
             #For a query by uri use union with the query for line_section
             if uri:
                 query = query.union_all(query_line_section)
-            return query
 
         else:
             filters = [availlable_filters[status] for status in publication_status]
             query = query.filter(or_(*filters))
-
             #For a query by uri use union with the query for line_section
             if uri:
                 query_line_section = query_line_section.filter(or_(*filters))
                 query = query.union_all(query_line_section)
-            return query
+
+        return query.order_by(cls.end_publication_date)
 
     @property
     def publication_status(self):
