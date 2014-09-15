@@ -584,6 +584,6 @@ Feature: list impacts by application periods
         And the field "objects" should have a size of 1
         And the field "objects.0.id" should be "network:JDR:1"
         And the field "objects.0.impacts" should have a size of 3
-        And the field "objects.0.impacts.0.id" should be "7ffab232-3d47-4eea-aa2c-22f8680230b6"
-        And the field "objects.0.impacts.1.id" should be "7ffab232-3d47-4eea-aa2c-22f8680230b2"
-        And the field "objects.0.impacts.2.id" should be "7ffab232-3d47-4eea-aa2c-22f8680230b3"
+        And the field "objects.0.impacts.0.id" should be "7ffab232-3d47-4eea-aa2c-22f8680230b2"
+        And the field "objects.0.impacts.1.id" should be "7ffab232-3d47-4eea-aa2c-22f8680230b3"
+        And the field "objects.0.impacts.2.id" should be "7ffab232-3d47-4eea-aa2c-22f8680230b6"
