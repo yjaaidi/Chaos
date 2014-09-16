@@ -457,3 +457,66 @@ Feature: list impacts by ptobject
         And the field "objects.0.impacts.0.objects.1.line_section.0.routes.0.type" should be "route"
         And the field "objects.0.impacts.0.objects.1.line_section.0.via.0.id" should be "stop_area:JDR:SA:BASTI"
         And the field "objects.0.impacts.0.objects.1.line_section.0.via.0.type" should be "stop_area"
+
+    Scenario: Filter on type (pt_object_type) of an object in line_section to display impacts
+        Given I have the following disruptions in my database:
+            | reference | note  | created_at          | updated_at          | status    | id                                   |
+            | foo       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |
+
+        Given I have the following severities in my database:
+                | wording   | color   | created_at          | updated_at          | is_visible | id                                   |
+                | good news | #654321 | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | True       | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |
+
+        Given I have the following impacts in my database:
+            | created_at          | updated_at          | status    | id                                   | disruption_id                        |severity_id                          |
+            | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | published | 7ffab232-3d47-4eea-aa2c-22f8680230b6 | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |7ffab232-3d48-4eea-aa2c-22f8680230b6 |
+
+        Given I have the following ptobject in my database:
+            | type         | uri                                              | created_at          | id                                         |
+            | stop_area    | stop_area:JDR:SA:BASTI                           | 2014-04-04T23:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b6       |
+            | stop_area    | stop_area:JDR:SA:CHVIN                           | 2014-04-04T23:52:12 | 2ffab232-3d48-4eea-aa2c-22f8680230b6       |
+            | line_section | line:JDR:M1:7ffab234-3d49-4eea-aa2c-22f8680230b6 | 2014-04-04T23:52:12 | 3ffab232-3d48-4eea-aa2c-22f8680230b6       |
+            | line         | line:JDR:M1                                      | 2014-04-06T22:52:12 | 4ffab232-3d48-4eea-aa2c-22f8680230b6       |
+            | route        | route:JDR:M14                                    | 2014-04-06T22:52:12 | 5ffab200-3d48-4eea-aa2c-22f8680230b6       |
+            | route        | route:JDR:M1_R                                   | 2014-04-06T22:52:12 | 6ffab200-3d48-4eea-aa2c-22f8680230b6       |
+            | stop_area    | stop_area:JDR:SA:NATIO                           | 2014-04-04T23:52:12 | 7ffab232-3d48-4eea-aa2c-22f8680230b6       |
+            | stop_area    | stop_area:JDR:SA:REUIL                           | 2014-04-04T23:52:12 | 8ffab232-3d48-4eea-aa2c-22f8680230b6       |
+            | network      | network:TAD:CanalTP                              | 2014-04-04T23:52:12 | 9ffab232-3d48-4eea-aa2c-22f8680230b6       |
+
+        Given I have the following line_section in my database:
+            | id                                    | line_object_id                        | created_at            | updated_at          | start_object_id                      |end_object_id|sens|object_id|
+            | 7ffab234-3d49-4eea-aa2c-22f8680230b6  | 4ffab232-3d48-4eea-aa2c-22f8680230b6  | 2014-04-04T23:52:12   | 2014-04-04T23:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b6 |2ffab232-3d48-4eea-aa2c-22f8680230b6|0|3ffab232-3d48-4eea-aa2c-22f8680230b6|
+
+        Given I have the relation associate_impact_pt_object in my database:
+            | pt_object_id                                  | impact_id                            |
+            | 3ffab232-3d48-4eea-aa2c-22f8680230b6          | 7ffab232-3d47-4eea-aa2c-22f8680230b6 |
+
+        Given I have the relation associate_line_section_route_object in my database:
+            | route_object_id                               | line_section_id                      |
+            | 5ffab200-3d48-4eea-aa2c-22f8680230b6          | 7ffab234-3d49-4eea-aa2c-22f8680230b6 |
+            | 6ffab200-3d48-4eea-aa2c-22f8680230b6          | 7ffab234-3d49-4eea-aa2c-22f8680230b6 |
+
+        Given I have the relation associate_line_section_via_object in my database:
+            | stop_area_object_id                           | line_section_id                      |
+            | 7ffab232-3d48-4eea-aa2c-22f8680230b6          | 7ffab234-3d49-4eea-aa2c-22f8680230b6 |
+            | 8ffab232-3d48-4eea-aa2c-22f8680230b6          | 7ffab234-3d49-4eea-aa2c-22f8680230b6 |
+
+        Given I have the following applicationperiods in my database:
+            | created_at          | updated_at          |id                                   | impact_id                            |start_date                           |end_date            |
+            | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab232-3d47-4eea-aa2c-22f8680230b1 | 7ffab232-3d47-4eea-aa2c-22f8680230b6 |2014-01-20 16:52:00                  |2014-01-30 16:52:00 |
+
+        #Fetch impact by type of object in start_point, end_point and line of line_section
+        When I get "/impacts?pt_object_type=stop_area&start_date=2013-12-02T23:52:12Z&end_date=2014-10-21T23:52:12Z"
+        Then the status code should be "200"
+        And the header "Content-Type" should be "application/json"
+        And the field "objects" should have a size of 1
+        And the field "objects.0.impacts" should have a size of 1
+        And the field "objects.0.impacts.0.objects.0.type" should be "line_section"
+        And the field "objects.0.impacts.0.objects.0.line_section.0.start_point.type" should be "stop_area"
+        And the field "objects.0.impacts.0.objects.0.line_section.0.start_point.id" should be "stop_area:JDR:SA:BASTI"
+
+        #Fetch impact by type of object in start_point, end_point and line of line_section
+        When I get "/impacts?pt_object_type=network&start_date=2013-12-02T23:52:12Z&end_date=2014-10-21T23:52:12Z"
+        Then the status code should be "200"
+        And the header "Content-Type" should be "application/json"
+        And the field "objects" should have a size of 0

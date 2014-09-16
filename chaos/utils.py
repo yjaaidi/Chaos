@@ -158,6 +158,73 @@ def is_pt_object_valid(pt_object, object_type, uris):
     else:
         return False
 
+def get_object_in_line_section_by_uri(pt_object, uris):
+    """
+    verify if object exists in line_section
+    :param pt_object: public transport object
+    :param uris: public transport object uri
+    :return: object found
+    """
+    if pt_object.uri in uris:
+        return pt_object
+
+    for object in pt_object.line_section:
+        #Search object.uri in line_section : line, start_point and end_point
+        if object.line.uri in uris:
+            return object.line
+        if object.start_point.uri in uris:
+            return object.start_point
+        if object.end_point.uri in uris:
+            return object.end_point
+        #Search object.uri in line_section.routes
+        for route in object.routes:
+            if route.uri in uris:
+                return route
+
+        #Search object.uri in line_section.via
+        for via in object.via:
+            if via.uri in uris:
+                return via
+    return None
+
+def get_object_in_line_section_by_type(pt_object, object_type):
+    """
+    verify if object exists in line_section
+    :param pt_object: public transport object
+    :param object_type: public transport object type
+    :return: object found
+    """
+    if pt_object.type == object_type:
+        return pt_object
+
+    for object in pt_object.line_section:
+        #Search object.uri in line_section : line, start_point and end_point
+        if object.line.type == object_type:
+            return object.line
+        if object.start_point.type == object_type:
+            return object.start_point
+        if object.end_point.type == object_type:
+            return object.end_point
+    return None
+
+def get_object_in_line_section(pt_object, object_type, uris):
+    """
+    verify if object exists in line_section
+    :param pt_object: public transport object
+    :param object_type: public transport object type
+    :param uris: public transport object uri
+    :return: object found
+    """
+    #Verify object by object uri:
+    if uris:
+        return get_object_in_line_section_by_uri(pt_object, uris)
+
+
+    #Verify object by object type:
+    if object_type:
+        return get_object_in_line_section_by_type(pt_object, object_type)
+
+    return None
 
 def group_impacts_by_pt_object(impacts, object_type, uris, get_pt_object):
     """
@@ -168,7 +235,13 @@ def group_impacts_by_pt_object(impacts, object_type, uris, get_pt_object):
     dictionary = {}
     for impact in impacts:
         for pt_object in impact.objects:
-            if is_pt_object_valid(pt_object, object_type, uris):
+            if pt_object.type != 'line_section':
+               result = is_pt_object_valid(pt_object, object_type, uris)
+               if not result:
+                   pt_object = None
+            else:
+                pt_object = get_object_in_line_section(pt_object, object_type, uris)
+            if pt_object:
                 if pt_object.uri in dictionary:
                     resp = dictionary[pt_object.uri]
                 else:
@@ -187,7 +260,6 @@ def group_impacts_by_pt_object(impacts, object_type, uris, get_pt_object):
     result = dictionary.values()
     result.sort(key=lambda x: x['name'])
     return result
-
 
 def parse_error(error):
     to_return = None
