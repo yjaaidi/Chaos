@@ -35,7 +35,7 @@ import uuid
 import flask
 from chaos.formats import id_format
 from jsonschema import ValidationError
-
+import time
 
 def make_pager(resultset, endpoint, **kwargs):
     prev_link = None
@@ -275,3 +275,9 @@ def get_uuid(value, name):
         raise ValidationError(("The {} argument value is not valid, you gave: {}"
                                .format(name, value)))
     return value
+
+
+def get_pos_time(sql_time):
+    if sql_time:
+        return int(time.mktime(sql_time.timetuple()))
+    return 0
