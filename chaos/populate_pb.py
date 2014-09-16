@@ -94,7 +94,6 @@ class PopulatePb(object):
                 informed_entitie = impact_pb.informed_entities.add()
                 informed_entitie.pt_object_type = self.get_pt_object_type(pt_object.type)
                 informed_entitie.uri = pt_object.uri
-                informed_entitie.id = pt_object.id
                 self.created_upated_at(pt_object, informed_entitie)
 
     def populate_impact(self):
