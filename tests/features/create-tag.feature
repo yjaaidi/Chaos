@@ -1,8 +1,13 @@
 Feature: Create tag
 
-    Scenario: wording is required
+    Scenario: name is required
         When I post to "/tags"
+        """
+        {"nameaa": "foo"}
+        """
         Then the status code should be "400"
+        And the header "Content-Type" should be "application/json"
+        And the field "error.message" should be "'name' is a required property"
 
     Scenario: creation of tag
         When I post to "/tags" with:
