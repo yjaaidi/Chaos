@@ -283,9 +283,6 @@ def SendDisruptionToNavitia(disruption_id, disruption=None):
     if not chaos.publisher._is_active:
         return
 
-    if not id_format.match(disruption_id):
-        return # Quoi faire?
-
     if not disruption:
         disruption = chaos.models.Disruption.get(disruption_id)
     impacts = chaos.models.Impact.impacts_by_disruption(disruption_id)
