@@ -57,6 +57,6 @@ else:  # Default is std out
 
 db = SQLAlchemy(app)
 
-publisher = Publisher(app.config['RABBITMQ_CONNECTION_STRING'], app.config['EXCHANGE'], app.config['ENABLE_RABBITMQ'])
+publisher = Publisher(app.config['RABBITMQ_CONNECTION_STRING'], app.config['EXCHANGE'], app.config['CONTRIBUTOR'], app.config['ENABLE_RABBITMQ'])
 
 import chaos.api

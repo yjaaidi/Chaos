@@ -28,8 +28,13 @@
 # www.navitia.io
 
 import chaos_pb2, gtfs_realtime_pb2
-from chaos.utils import get_pos_time
+import time
 
+
+def get_pos_time(sql_time):
+    if sql_time:
+        return int(time.mktime(sql_time.timetuple()))
+    return 0
 
 class PopulatePb(object):
     def __init__(self, disruption, impacts=None):

@@ -11,13 +11,6 @@ def test_get_date_time_valid():
         date_time = parse_datetime(str_date_time).replace(tzinfo=None)
         eq_(chaos.utils.get_datetime(str_date_time, 'strtodatetime'), date_time)
 
-def test_get_pos_time_valid():
-    with chaos.app.app_context():
-        str_date_time = "1970-01-01T01:00:00Z"
-        date_time = parse_datetime(str_date_time).replace(tzinfo=None)
-        print date_time
-        eq_(chaos.utils.get_pos_time(date_time), 0)
-
 @raises(ValueError)
 def test_get_date_time_invalid():
     with chaos.app.app_context():

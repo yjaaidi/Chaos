@@ -351,6 +351,10 @@ class Impact(TimestampMixin, db.Model):
         return query.join(alias, Impact.severity).order_by(alias.priority)
 
     @classmethod
+    def impacts_by_disruption(cls, disruption_id):
+        return cls.query.filter_by(status='published').filter(and_(cls.disruption_id == disruption_id)).all()
+
+    @classmethod
     def all_with_filter(cls, start_date, end_date, pt_object_type, uris):
         pt_object_alias = aliased(PTobject)
         query = cls.query.filter(cls.status == 'published')

@@ -36,6 +36,8 @@ import flask
 from chaos.formats import id_format
 from jsonschema import ValidationError
 import time
+from chaos.populate_pb import PopulatePb
+import chaos
 
 def make_pager(resultset, endpoint, **kwargs):
     prev_link = None
@@ -277,7 +279,16 @@ def get_uuid(value, name):
     return value
 
 
-def get_pos_time(sql_time):
-    if sql_time:
-        return int(time.mktime(sql_time.timetuple()))
-    return 0
+def SendDisruptionToNavitia(disruption_id, disruption=None):
+    if not chaos.publisher._is_active:
+        return
+
+    if not id_format.match(disruption_id):
+        return # Quoi faire?
+
+    if not disruption:
+        disruption = chaos.models.Disruption.get(disruption_id)
+    impacts = chaos.models.Impact.impacts_by_disruption(disruption_id)
+    resp_populate = PopulatePb(disruption, impacts)
+    resp_populate.populate()
+    chaos.publisher.publish(resp_populate.response.SerializeToString(), chaos.publisher._contributor)
