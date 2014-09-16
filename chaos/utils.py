@@ -185,7 +185,7 @@ def get_object_in_line_section_by_uri(pt_object, uris):
         for via in object.via:
             if via.uri in uris:
                 return via
-    return (None,)
+    return None
 
 def get_object_in_line_section_by_type(pt_object, object_type):
     """
@@ -205,7 +205,7 @@ def get_object_in_line_section_by_type(pt_object, object_type):
             return object.start_point
         if object.end_point.type == object_type:
             return object.end_point
-    return (None,)
+    return None
 
 def get_object_in_line_section(pt_object, object_type, uris):
     """
@@ -224,7 +224,7 @@ def get_object_in_line_section(pt_object, object_type, uris):
     if object_type:
         return get_object_in_line_section_by_type(pt_object, object_type)
 
-    return (None,)
+    return None
 
 def group_impacts_by_pt_object(impacts, object_type, uris, get_pt_object):
     """
