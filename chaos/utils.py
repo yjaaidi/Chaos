@@ -176,16 +176,15 @@ def get_object_in_line_section_by_uri(pt_object, uris):
             return object.start_point
         if object.end_point.uri in uris:
             return object.end_point
-        else:
-            #Search object.uri in line_section.routes
-            for route in object.routes:
-                if route.uri in uris:
-                    return route
+        #Search object.uri in line_section.routes
+        for route in object.routes:
+            if route.uri in uris:
+                return route
 
-            #Search object.uri in line_section.via
-            for via in object.via:
-                if via.uri in uris:
-                    return via
+        #Search object.uri in line_section.via
+        for via in object.via:
+            if via.uri in uris:
+                return via
     return (None,)
 
 def get_object_in_line_section_by_type(pt_object, object_type):
@@ -216,9 +215,6 @@ def get_object_in_line_section(pt_object, object_type, uris):
     :param uris: public transport object uri
     :return: object found
     """
-    if not (object_type or uris):
-        return (None,)
-
     #Verify object by object uri:
     if uris:
         return get_object_in_line_section_by_uri(pt_object, uris)
