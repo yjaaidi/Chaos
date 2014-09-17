@@ -2,8 +2,12 @@ Feature: Create cause
 
     Scenario: wording is required
         When I post to "/causes"
+        """
+        {"wordingAA": "foo"}
+        """
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
+        And the field "error.message" should be "'wording' is a required property"
 
     Scenario: creation of cause
         When I post to "/causes" with:

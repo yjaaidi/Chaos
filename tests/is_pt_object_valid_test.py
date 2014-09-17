@@ -67,4 +67,3 @@ def filter_constructor_not_uri_and_not_pt_object_type():
     one_pt_object.uri = 'b'
     one_pt_object.type = 'stop_area'
     eq_(is_pt_object_valid(one_pt_object,None, None), False)
-
