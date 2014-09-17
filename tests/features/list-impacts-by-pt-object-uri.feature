@@ -383,9 +383,7 @@ Feature: list impacts by ptobject and/or uri(s)
         And the header "Content-Type" should be "application/json"
         And the field "objects" should have a size of 1
         And the field "objects.0.impacts" should have a size of 1
-        And the field "objects.0.impacts.0.objects.0.type" should be "line_section"
-        And the field "objects.0.impacts.0.objects.0.line_section.0.start_point.type" should be "stop_area"
-        And the field "objects.0.impacts.0.objects.0.line_section.0.start_point.id" should be "stop_area:JDR:SA:BASTI"
+        And the field "objects.0.impacts.0.objects" should have a size of 2
 
         #Fetch impact by uri of object in line of line_section
         When I get "/impacts?uri[]=line:JDR:M1&start_date=2013-12-02T23:52:12Z&end_date=2014-10-21T23:52:12Z"
@@ -393,9 +391,7 @@ Feature: list impacts by ptobject and/or uri(s)
         And the header "Content-Type" should be "application/json"
         And the field "objects" should have a size of 1
         And the field "objects.0.impacts" should have a size of 1
-        And the field "objects.0.impacts.0.objects.0.type" should be "line_section"
-        And the field "objects.0.impacts.0.objects.0.line_section.0.line.type" should be "line"
-        And the field "objects.0.impacts.0.objects.0.line_section.0.line.id" should be "line:JDR:M1"
+        And the field "objects.0.impacts.0.objects" should have a size of 2
 
         #Fetch impact by uri of object in route of line_section
         When I get "/impacts?uri[]=route:JDR:M14&start_date=2013-12-02T23:52:12Z&end_date=2014-10-21T23:52:12Z"
@@ -403,9 +399,7 @@ Feature: list impacts by ptobject and/or uri(s)
         And the header "Content-Type" should be "application/json"
         And the field "objects" should have a size of 1
         And the field "objects.0.impacts" should have a size of 1
-        And the field "objects.0.impacts.0.objects.0.type" should be "line_section"
-        And the field "objects.0.impacts.0.objects.0.line_section.0.line.type" should be "line"
-        And the field "objects.0.impacts.0.objects.0.line_section.0.line.id" should be "line:JDR:M1"
+        And the field "objects.0.impacts.0.objects" should have a size of 2
 
         #Fetch impact by uri of object in via of line_section
         When I get "/impacts?uri[]=stop_area:JDR:SA:REUIL&start_date=2013-12-02T23:52:12Z&end_date=2014-10-21T23:52:12Z"
@@ -413,9 +407,7 @@ Feature: list impacts by ptobject and/or uri(s)
         And the header "Content-Type" should be "application/json"
         And the field "objects" should have a size of 1
         And the field "objects.0.impacts" should have a size of 1
-        And the field "objects.0.impacts.0.objects.0.type" should be "line_section"
-        And the field "objects.0.impacts.0.objects.0.line_section.0.line.type" should be "line"
-        And the field "objects.0.impacts.0.objects.0.line_section.0.line.id" should be "line:JDR:M1"
+        And the field "objects.0.impacts.0.objects" should have a size of 2
 
         #Fetch impact by uri of object in via et route of line_section
         When I get "/impacts?uri[]=stop_area:JDR:SA:NATIO&uri[]=route:JDR:M1_R&start_date=2013-12-02T23:52:12Z&end_date=2014-10-21T23:52:12Z"
@@ -423,9 +415,7 @@ Feature: list impacts by ptobject and/or uri(s)
         And the header "Content-Type" should be "application/json"
         And the field "objects" should have a size of 1
         And the field "objects.0.impacts" should have a size of 1
-        And the field "objects.0.impacts.0.objects.0.type" should be "line_section"
-        And the field "objects.0.impacts.0.objects.0.line_section.0.line.type" should be "line"
-        And the field "objects.0.impacts.0.objects.0.line_section.0.line.id" should be "line:JDR:M1"
+        And the field "objects.0.impacts.0.objects" should have a size of 2
 
     Scenario: Filter on uri of an object in line_section to display impacts (two impacts in database)
         Given I have the following disruptions in my database:
@@ -483,8 +473,6 @@ Feature: list impacts by ptobject and/or uri(s)
         And the header "Content-Type" should be "application/json"
         And the field "objects" should have a size of 1
         And the field "objects.0.impacts" should have a size of 2
-        And the field "objects.0.impacts.0.objects.0.type" should be "line_section"
-        And the field "objects.0.impacts.0.objects.0.line_section.0.start_point.type" should be "stop_area"
-        And the field "objects.0.impacts.0.objects.0.line_section.0.start_point.id" should be "stop_area:JDR:SA:BASTI"
+        And the field "objects.0.impacts.0.objects" should have a size of 2
         And the field "objects.0.impacts.1.objects.0.type" should be "stop_area"
         And the field "objects.0.impacts.1.objects.0.id" should be "stop_area:JDR:SA:NATIO"
