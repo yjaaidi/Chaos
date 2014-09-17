@@ -36,11 +36,14 @@ def get_pos_time(sql_time):
         return int(time.mktime(sql_time.timetuple()))
     return 0
 
+
 class PopulatePb(object):
-    def __init__(self, disruption, impacts=None):
+    def __init__(self, disruption, is_deleted=False):
         self.disruption = disruption
-        self.impacts = impacts
-        self.response = chaos_pb2.Disruption()
+        self.feed_entity = gtfs_realtime_pb2.FeedEntity()
+        self.extend_feed_entity = self.feed_entity.Extensions[chaos_pb2.disruption]
+        self.feed_entity.is_deleted = is_deleted
+        self.feed_entity.id = disruption.id
 
     def get_pt_object_type(self, type):
         collection = {
@@ -56,7 +59,8 @@ class PopulatePb(object):
 
     def created_upated_at(self, src, dest):
         dest.created_at = get_pos_time(src.created_at)
-        dest.updated_at = get_pos_time(src.updated_at)
+        if src.updated_at:
+            dest.updated_at = get_pos_time(src.updated_at)
 
     def populate_severity(self, impact_pb, severity):
         impact_pb.severity.id = severity.id
@@ -72,7 +76,8 @@ class PopulatePb(object):
         for application_period in impact.application_periods:
             application_period_pb = impact_pb.application_periods.add()
             application_period_pb.start = get_pos_time(application_period.start_date)
-            application_period_pb.end = get_pos_time(application_period.end_date)
+            if application_period.end_date:
+                application_period_pb.end = get_pos_time(application_period.end_date)
 
     def populate_channel(self, channel_pb, channel):
         channel_pb.id = channel.id
@@ -97,42 +102,46 @@ class PopulatePb(object):
                 self.created_upated_at(pt_object, informed_entitie)
 
     def populate_impact(self):
-        if self.impacts:
-            for impact in self.impacts:
-                impact_pb = self.response.impacts.add()
-                impact_pb.id = impact.id
-                self.created_upated_at(impact, impact_pb)
-                self.populate_severity(impact_pb, impact.severity)
-                self.populate_application_periods(impact, impact_pb)
-                self.populate_messages(impact, impact_pb)
-                self.populate_pt_objects(impact, impact_pb)
+        for impact in self.disruption.impacts:
+            impact_pb = self.extend_feed_entity.impacts.add()
+            impact_pb.id = impact.id
+            self.created_upated_at(impact, impact_pb)
+            self.populate_severity(impact_pb, impact.severity)
+            self.populate_application_periods(impact, impact_pb)
+            self.populate_messages(impact, impact_pb)
+            self.populate_pt_objects(impact, impact_pb)
 
     def populate_localization(self):
-        localization = self.response.localization.add()
+        localization = self.extend_feed_entity.localization.add()
         localization.stop_id = str(self.disruption.localization_id)
 
     def populate_tag(self):
         if self.disruption.tags:
             for tag in self.disruption.tags:
-                tag_pb = self.response.tags.add()
+                tag_pb = self.extend_feed_entity.tags.add()
                 tag_pb.id = tag.id
                 tag_pb.name = tag.name
                 self.created_upated_at(tag, tag_pb)
 
     def populate_cause(self):
-        self.response.cause.id = self.disruption.cause.id
-        self.response.cause.wording = self.disruption.cause.wording
+        self.extend_feed_entity.cause.id = self.disruption.cause.id
+        self.extend_feed_entity.cause.wording = self.disruption.cause.wording
 
     def populate_disruption(self):
-        self.response.id = self.disruption.id
-        self.response.reference = self.disruption.reference
+        self.extend_feed_entity.id = self.disruption.id
+        self.extend_feed_entity.reference = self.disruption.reference
         if self.disruption.note:
-            self.response.note = self.disruption.note
-        self.created_upated_at(self.disruption, self.response)
+            self.extend_feed_entity.note = self.disruption.note
+        self.created_upated_at(self.disruption, self.extend_feed_entity)
+        self.extend_feed_entity.publication_periods.start = get_pos_time(self.disruption.start_publication_date)
+        if self.disruption.end_publication_date:
+            self.extend_feed_entity.publication_periods.end = get_pos_time(self.disruption.end_publication_date)
         self.populate_cause()
         self.populate_localization()
         self.populate_tag()
         self.populate_impact()
 
     def populate(self):
+        if self.feed_entity.is_deleted:
+            return
         self.populate_disruption()

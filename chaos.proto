@@ -28,6 +28,9 @@ message Disruption{
     repeated Tag tags = 11;
 
     optional string note = 12;
+
+    // the application period define when the impact happen
+    required transit_realtime.TimeRange publication_periods = 13;
 }
 
 message Cause{

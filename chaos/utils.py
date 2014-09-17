@@ -279,13 +279,9 @@ def get_uuid(value, name):
     return value
 
 
-def SendDisruptionToNavitia(disruption_id, disruption=None):
-    if not chaos.publisher._is_active:
-        return
-
-    if not disruption:
-        disruption = chaos.models.Disruption.get(disruption_id)
-    impacts = chaos.models.Impact.impacts_by_disruption(disruption_id)
-    resp_populate = PopulatePb(disruption, impacts)
+def send_disruption_to_navitia(disruption):
+    if disruption.status != 'archived':
+        disruption.impacts = chaos.models.Impact.impacts_by_disruption(disruption.id)
+    resp_populate = PopulatePb(disruption, disruption.status == 'archived')
     resp_populate.populate()
-    chaos.publisher.publish(resp_populate.response.SerializeToString(), chaos.publisher._contributor)
+    chaos.publisher.publish(resp_populate.feed_entity.SerializeToString(), chaos.publisher._contributor)
