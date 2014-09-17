@@ -36,7 +36,7 @@ import flask
 from chaos.formats import id_format
 from jsonschema import ValidationError
 import time
-from chaos.populate_pb import PopulatePb
+from chaos.populate_pb import populate_pb
 import chaos
 
 def make_pager(resultset, endpoint, **kwargs):
@@ -284,6 +284,5 @@ def send_disruption_to_navitia(disruption):
         return
     if disruption.status != 'archived':
         disruption.impacts = chaos.models.Impact.impacts_by_disruption(disruption.id)
-    resp_populate = PopulatePb(disruption, disruption.status == 'archived')
-    resp_populate.populate()
-    chaos.publisher.publish(resp_populate.feed_entity.SerializeToString(), chaos.publisher._contributor)
+    feed_entity = populate_pb(disruption)
+    chaos.publisher.publish(feed_entity.SerializeToString(), chaos.publisher._contributor)
