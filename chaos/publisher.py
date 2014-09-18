@@ -9,10 +9,10 @@ import weakref
 class Publisher(object):
     def __init__(self, connection_string, exchange, contributor, is_active=True):
         self._is_active = is_active
+        self._contributor = contributor
         if not is_active:
             return
 
-        self._contributor = contributor
         self._connection = BrokerConnection(connection_string)
         self._exchange = Exchange(exchange, durable=True, delivry_mode=2, type='topic')
         self._connection.connect()
