@@ -23,8 +23,7 @@ Feature: Manipulate impacts in a Disruption
         And the header "Content-Type" should be "application/json"
         And the field "impact.application_periods" should exist
         And the field "impact.severity.wording" should be "good news"
-        And the field "impact.application_periods.0.begin" should be "2014-04-29T16:52:00Z"
-        And the field "impact.application_periods.0.end" should be "2014-06-22T02:15:00Z"
+        And the field "impact.application_periods" should have a size of 2
 
     Scenario: Add an impact in a disruption with two PTobjects and two application_periods
 

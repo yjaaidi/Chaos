@@ -46,10 +46,6 @@ Feature: Update (put) impacts in a Disruption
         And the field "impact.objects.0.id" should be "network:JDR:1"
         And the field "impact.objects.1.id" should be "network:JDR:2"
         And the field "impact.application_periods" should have a size of 2
-        And the field "impact.application_periods.0.begin" should be "2014-06-01T16:52:00Z"
-        And the field "impact.application_periods.0.end" should be "2014-10-22T02:15:00Z"
-        And the field "impact.application_periods.1.begin" should be "2014-06-29T16:52:00Z"
-        And the field "impact.application_periods.1.end" should be "2014-11-22T02:15:00Z"
 
 
     Scenario: Update an impact in a disruption with ptobject/application_periods and without severity in json
