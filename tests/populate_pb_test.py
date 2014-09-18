@@ -59,6 +59,7 @@ def get_disruption():
     message.channel.name = "email"
     message.channel.max_size = 250
     message.channel.content_type = "html"
+    impact.status = "published"
     impact.messages.append(message)
 
     disruption.impacts.append(impact)
