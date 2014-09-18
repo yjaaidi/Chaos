@@ -371,9 +371,13 @@ Feature: Manipulate impacts in a Disruption
         And the field "impact.objects.1.line_section.0.via" should have a size of 2
 
     Scenario: Put impact with line_section : delete line_section
+        Given I have the following causes in my database:
+            | wording   | created_at          | updated_at          | is_visible | id                                   |
+            | weather   | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | True       | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |
+
         Given I have the following disruptions in my database:
-            | reference | note  | created_at          | updated_at          | status    | id                                   |
-            | foo       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |
+            | reference | note  | created_at          | updated_at          | status    | id                                   | cause_id                             |
+            | foo       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |
 
         Given I have the following severities in my database:
                 | wording   | color   | created_at          | updated_at          | is_visible | id                                   |
@@ -431,9 +435,13 @@ Feature: Manipulate impacts in a Disruption
         And the field "impact.objects.0.type" should be "network"
 
     Scenario: Put impact with line_section : modify line of line_section
+        Given I have the following causes in my database:
+            | wording   | created_at          | updated_at          | is_visible | id                                   |
+            | weather   | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | True       | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |
+
         Given I have the following disruptions in my database:
-            | reference | note  | created_at          | updated_at          | status    | id                                   |
-            | foo       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |
+            | reference | note  | created_at          | updated_at          | status    | id                                   | cause_id                             |
+            | foo       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |
 
         Given I have the following severities in my database:
                 | wording   | color   | created_at          | updated_at          | is_visible | id                                   |
@@ -502,9 +510,14 @@ Feature: Manipulate impacts in a Disruption
         And the field "impact.objects.1.line_section.0.via" should have a size of 2
 
     Scenario: Put impact with line_section : delete pt_object simple
+
+        Given I have the following causes in my database:
+            | wording   | created_at          | updated_at          | is_visible | id                                   |
+            | weather   | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | True       | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |
+
         Given I have the following disruptions in my database:
-            | reference | note  | created_at          | updated_at          | status    | id                                   |
-            | foo       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |
+            | reference | note  | created_at          | updated_at          | status    | id                                   | cause_id                             |
+            | foo       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |
 
         Given I have the following severities in my database:
                 | wording   | color   | created_at          | updated_at          | is_visible | id                                   |

@@ -140,8 +140,8 @@ def populate_disruption(disruption, disruption_pb):
     disruption_pb.publication_periods.start = get_pos_time(disruption.start_publication_date)
     if disruption.end_publication_date:
         disruption_pb.publication_periods.end = get_pos_time(disruption.end_publication_date)
-    if disruption.cause:
-        populate_cause(disruption.cause, disruption_pb.cause)
+
+    populate_cause(disruption.cause, disruption_pb.cause)
     populate_localization(disruption, disruption_pb)
     populate_tag(disruption, disruption_pb)
     populate_impact(disruption, disruption_pb)
