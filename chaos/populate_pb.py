@@ -102,13 +102,14 @@ def populate_pt_objects(impact, impact_pb):
 
 def populate_impact(disruption, disruption_pb):
     for impact in disruption.impacts:
-        impact_pb = disruption_pb.impacts.add()
-        impact_pb.id = impact.id
-        created_upated_at(impact, impact_pb)
-        populate_severity(impact_pb, impact.severity)
-        populate_application_periods(impact, impact_pb)
-        populate_messages(impact, impact_pb)
-        populate_pt_objects(impact, impact_pb)
+        if impact.status == "published":
+            impact_pb = disruption_pb.impacts.add()
+            impact_pb.id = impact.id
+            created_upated_at(impact, impact_pb)
+            populate_severity(impact_pb, impact.severity)
+            populate_application_periods(impact, impact_pb)
+            populate_messages(impact, impact_pb)
+            populate_pt_objects(impact, impact_pb)
 
 
 def populate_localization(disruption, disruption_pb):
@@ -139,7 +140,6 @@ def populate_disruption(disruption, disruption_pb):
     disruption_pb.publication_periods.start = get_pos_time(disruption.start_publication_date)
     if disruption.end_publication_date:
         disruption_pb.publication_periods.end = get_pos_time(disruption.end_publication_date)
-
     populate_cause(disruption.cause, disruption_pb.cause)
     populate_localization(disruption, disruption_pb)
     populate_tag(disruption, disruption_pb)
@@ -148,10 +148,10 @@ def populate_disruption(disruption, disruption_pb):
 
 def populate_pb(disruption):
     feed_entity = gtfs_realtime_pb2.FeedEntity()
+    feed_entity.id = disruption.id
     feed_entity.is_deleted = disruption.status == "archived"
 
     if not feed_entity.is_deleted:
         disruption_pb = feed_entity.Extensions[chaos_pb2.disruption]
         populate_disruption(disruption, disruption_pb)
-
     return feed_entity
