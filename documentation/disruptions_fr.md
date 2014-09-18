@@ -1044,15 +1044,18 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient l'impact cr�
                             "line_section": {
                                 "line": {
                                     "id":"line:AME:3",
-                                    "type":"line"
+                                    "type":"line",
+                                    "name": "Lancy / Cepoy - Antibes / Saint Firmin"
                                 },
                                 "start_point": {
                                     "id":"stop_area:MTD:SA:154",
-                                    "type":"stop_area"
+                                    "type":"stop_area",
+                                    "name": "Pichon"
                                 },
                                 "end_point": {
                                     "id":"stop_area:MTD:SA:155",
-                                    "type":"stop_area"
+                                    "type":"stop_area",
+                                    "name": "Pinsons"
                                 },
                                 "sens":0,
                                 "routes":[
@@ -1075,6 +1078,7 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient l'impact cr�
                                 "via":[
                                     {
                                     "id":"stop_area:MTD:SA:154",
+                                    "name": "Pinsons",
                                     "type":"stoparea"
                                     }
                                 ]
@@ -1169,14 +1173,17 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient l'impact cr�
                             "line_section": {
                                 "line": {
                                     "id":"line:AME:3",
+                                    "name": "Lancy / Cepoy - Antibes / Saint Firmin",
                                     "type":"line"
                                 },
                                 "start_point": {
                                     "id":"stop_area:MTD:SA:154",
+                                    "name": "Pinsons",
                                     "type":"stop_area"
                                 },
                                 "end_point": {
                                     "id":"stop_area:MTD:SA:155",
+                                    "name": "Pinsons",
                                     "type":"stop_area"
                                 },
                                 "sens":0,
@@ -1200,6 +1207,7 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient l'impact cr�
                                 "via":[
                                     {
                                     "id":"stop_area:MTD:SA:154",
+                                    "name": "Pinsons",
                                     "type":"stoparea"
                                     }
                                 ]
@@ -1315,14 +1323,17 @@ Lors d'un succés une réponse 200 est retourné, celle ci contient l'impact mod
                             "line_section": {
                                 "line": {
                                     "id":"line:AME:3",
+                                    "name": "Lancy / Cepoy - Antibes / Saint Firmin",
                                     "type":"line"
                                 },
                                 "start_point": {
                                     "id":"stop_area:MTD:SA:154",
+                                    "name": "Pinsons",
                                     "type":"stop_area"
                                 },
                                 "end_point": {
                                     "id":"stop_area:MTD:SA:155",
+                                    "name": "Pinsons",
                                     "type":"stop_area"
                                 },
                                 "sens":0,
@@ -1346,6 +1357,7 @@ Lors d'un succés une réponse 200 est retourné, celle ci contient l'impact mod
                                 "via":[
                                     {
                                     "id":"stop_area:MTD:SA:154",
+                                    "name": "Pinsons",
                                     "type":"stoparea"
                                     }
                                 ]
@@ -1430,14 +1442,17 @@ Lors d'un succés une réponse 200 est retourné, celle ci contient l'impact mod
                             "line_section": {
                                 "line": {
                                     "id":"line:AME:3",
+                                    "name": "Lancy / Cepoy - Antibes / Saint Firmin",
                                     "type":"line"
                                 },
                                 "start_point": {
                                     "id":"stop_area:MTD:SA:154",
+                                    "name": "pincons",
                                     "type":"stop_area"
                                 },
                                 "end_point": {
                                     "id":"stop_area:MTD:SA:155",
+                                    "name": "pincons",
                                     "type":"stop_area"
                                 },
                                 "sens":0,
@@ -1461,6 +1476,7 @@ Lors d'un succés une réponse 200 est retourné, celle ci contient l'impact mod
                                 "via":[
                                     {
                                     "id":"stop_area:MTD:SA:154",
+                                    "name": "pincons",
                                     "type":"stoparea"
                                     }
                                 ]
