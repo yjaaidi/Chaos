@@ -257,6 +257,7 @@ class Disruptions(flask_restful.Resource):
                     disruption.tags.append(tag)
 
         db.session.commit()
+        chaos.utils.send_disruption_to_navitia(disruption)
         return marshal({'disruption': disruption}, one_disruption_fields), 201
 
     def put(self, id):
@@ -300,6 +301,7 @@ class Disruptions(flask_restful.Resource):
             disruption.tags.remove(tag)
 
         db.session.commit()
+        chaos.utils.send_disruption_to_navitia(disruption)
         return marshal({'disruption': disruption}, one_disruption_fields), 200
 
     def delete(self, id):
@@ -309,6 +311,7 @@ class Disruptions(flask_restful.Resource):
         disruption = models.Disruption.get(id)
         disruption.archive()
         db.session.commit()
+        chaos.utils.send_disruption_to_navitia(disruption)
         return None, 204
 
 
@@ -672,7 +675,7 @@ class Impacts(flask_restful.Resource):
         self.manage_application_periods(impact, json)
         self.manage_message(impact, json)
         db.session.commit()
-
+        chaos.utils.send_disruption_to_navitia(models.Disruption.get(disruption_id))
         return marshal({'impact': impact}, one_impact_fields), 201
 
     def put(self, disruption_id, id):
@@ -732,7 +735,7 @@ class Impacts(flask_restful.Resource):
         self.manage_application_periods(impact, json)
         self.manage_message(impact, json)
         db.session.commit()
-
+        chaos.utils.send_disruption_to_navitia(models.Disruption.get(disruption_id))
         return marshal({'impact': impact}, one_impact_fields), 200
 
     def delete(self, disruption_id, id):
@@ -742,6 +745,7 @@ class Impacts(flask_restful.Resource):
         impact = models.Impact.get(id)
         impact.archive()
         db.session.commit()
+        chaos.utils.send_disruption_to_navitia(models.Disruption.get(disruption_id))
         return None, 204
 
 class Channel(flask_restful.Resource):

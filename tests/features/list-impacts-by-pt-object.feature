@@ -336,11 +336,7 @@ Feature: list impacts by ptobject
         And the field "objects" should have a size of 1
         And the field "objects.0.type" should be "line_section"
         And the field "objects.0.id" should be "line:JDR:M1:7ffab234-3d49-4eea-aa2c-22f8680230b6"
-        And the field "objects.0.impacts.0.objects.0.type" should be "stop_area"
-        And the field "objects.0.impacts.0.objects.1.type" should be "line_section"
-        And the field "objects.0.impacts.0.objects.1.line_section.0.line.id" should be "line:JDR:M1"
-        And the field "objects.0.impacts.0.objects.1.line_section.0.start_point.id" should be "stop_area:JDR:SA:BASTI"
-        And the field "objects.0.impacts.0.objects.1.line_section.0.end_point.id" should be "stop_area:JDR:SA:CHVIN"
+        And the field "objects.0.impacts.0.objects" should have a size of 2
 
     Scenario: Use ptobject 'line_section' filter to display impacts with line_section and routes (sort ptobject by name)
         Given I have the following disruptions in my database:
@@ -388,13 +384,7 @@ Feature: list impacts by ptobject
         And the field "objects" should have a size of 1
         And the field "objects.0.type" should be "line_section"
         And the field "objects.0.id" should be "line:JDR:M1:7ffab234-3d49-4eea-aa2c-22f8680230b6"
-        And the field "objects.0.impacts.0.objects.0.type" should be "stop_area"
-        And the field "objects.0.impacts.0.objects.1.type" should be "line_section"
-        And the field "objects.0.impacts.0.objects.1.line_section.0.line.id" should be "line:JDR:M1"
-        And the field "objects.0.impacts.0.objects.1.line_section.0.start_point.id" should be "stop_area:JDR:SA:BASTI"
-        And the field "objects.0.impacts.0.objects.1.line_section.0.end_point.id" should be "stop_area:JDR:SA:CHVIN"
-        And the field "objects.0.impacts.0.objects.1.line_section.0.routes.0.id" should be "route:JDR:M14"
-        And the field "objects.0.impacts.0.objects.1.line_section.0.routes.0.type" should be "route"
+        And the field "objects.0.impacts.0.objects" should have a size of 2
 
 
     Scenario: Use ptobject 'line_section' filter to display impacts with line_section with routes and via (sort ptobject by name)
@@ -448,15 +438,7 @@ Feature: list impacts by ptobject
         And the field "objects" should have a size of 1
         And the field "objects.0.type" should be "line_section"
         And the field "objects.0.id" should be "line:JDR:M1:7ffab234-3d49-4eea-aa2c-22f8680230b6"
-        And the field "objects.0.impacts.0.objects.0.type" should be "stop_area"
-        And the field "objects.0.impacts.0.objects.1.type" should be "line_section"
-        And the field "objects.0.impacts.0.objects.1.line_section.0.line.id" should be "line:JDR:M1"
-        And the field "objects.0.impacts.0.objects.1.line_section.0.start_point.id" should be "stop_area:JDR:SA:BASTI"
-        And the field "objects.0.impacts.0.objects.1.line_section.0.end_point.id" should be "stop_area:JDR:SA:CHVIN"
-        And the field "objects.0.impacts.0.objects.1.line_section.0.routes.0.id" should be "route:JDR:M14"
-        And the field "objects.0.impacts.0.objects.1.line_section.0.routes.0.type" should be "route"
-        And the field "objects.0.impacts.0.objects.1.line_section.0.via.0.id" should be "stop_area:JDR:SA:BASTI"
-        And the field "objects.0.impacts.0.objects.1.line_section.0.via.0.type" should be "stop_area"
+        And the field "objects.0.impacts.0.objects" should have a size of 2
 
     Scenario: Filter on type (pt_object_type) of an object in line_section to display impacts
         Given I have the following disruptions in my database:

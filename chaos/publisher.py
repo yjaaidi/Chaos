@@ -7,8 +7,9 @@ from gevent import spawn_later
 import weakref
 
 class Publisher(object):
-    def __init__(self, connection_string, exchange, is_active=True):
+    def __init__(self, connection_string, exchange, contributor, is_active=True):
         self._is_active = is_active
+        self._contributor = contributor
         if not is_active:
             return
 
@@ -21,7 +22,7 @@ class Publisher(object):
         if not self._is_active:
             return
 
-        with producers[self.connection].acquire(block=True, timeout=2) as producer:
+        with producers[self._connection].acquire(block=True, timeout=2) as producer:
             producer.publish(item, exchange=self._exchange, routing_key=contributor, declare=[self._exchange])
 
     def info(self):

@@ -35,7 +35,9 @@ import uuid
 import flask
 from chaos.formats import id_format
 from jsonschema import ValidationError
-
+import time
+from chaos.populate_pb import populate_pb
+import chaos
 
 def make_pager(resultset, endpoint, **kwargs):
     prev_link = None
@@ -240,7 +242,7 @@ def group_impacts_by_pt_object(impacts, object_type, uris, get_pt_object):
                if not result:
                    pt_object = None
             else:
-                pt_object = get_object_in_line_section(pt_object, object_type, uris)
+                pt_object = get_object_in_line_section(pt_object,  object_type, uris)
             if pt_object:
                 if pt_object.uri in dictionary:
                     resp = dictionary[pt_object.uri]
@@ -275,3 +277,8 @@ def get_uuid(value, name):
         raise ValidationError(("The {} argument value is not valid, you gave: {}"
                                .format(name, value)))
     return value
+
+
+def send_disruption_to_navitia(disruption):
+    feed_entity = populate_pb(disruption)
+    chaos.publisher.publish(feed_entity.SerializeToString(), chaos.publisher._contributor)
