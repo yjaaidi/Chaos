@@ -57,7 +57,8 @@ class TimestampMixin(object):
 DisruptionStatus = db.Enum('published', 'archived', name='disruption_status')
 SeverityEffect = db.Enum('blocking', name='severity_effect')
 ImpactStatus = db.Enum('published', 'archived', name='impact_status')
-PtObjectType = db.Enum('network', 'stop_area', 'line', 'line_section', name='pt_object_type')
+PtObjectType = db.Enum('network', 'stop_area', 'line', 'line_section', 'route', name='pt_object_type')
+
 
 class Severity(TimestampMixin, db.Model):
     """
@@ -189,15 +190,46 @@ class Disruption(TimestampMixin, db.Model):
             query = query.join(cls.impacts)
             query = query.filter(Impact.status == 'published')
             query = query.join(Impact.objects)
+
+            #Here add a new query to find impacts with line =_section having uri as line, start_point or end_point
+            filters = []
+            alias_line = aliased(PTobject)
+            alias_start_point = aliased(PTobject)
+            alias_end_point = aliased(PTobject)
+            alias_route = aliased(PTobject)
+            alias_via = aliased(PTobject)
+            query_line_section = query
+            query_line_section = query_line_section.join(PTobject.line_section)
+            query_line_section = query_line_section.join(alias_line, LineSection.line_object_id == alias_line.id)
+            filters.append(alias_line.uri == uri)
+            query_line_section = query_line_section.join(PTobject, LineSection.object_id == PTobject.id)
+            query_line_section = query_line_section.join(alias_start_point, LineSection.start_object_id == alias_start_point.id)
+            filters.append(alias_start_point.uri == uri)
+            query_line_section = query_line_section.join(alias_end_point, LineSection.end_object_id == alias_end_point.id)
+            filters.append(alias_end_point.uri == uri)
+            query_line_section = query_line_section.join(alias_route, LineSection.routes)
+            filters.append(alias_route.uri == uri)
+            query_line_section = query_line_section.join(alias_via, LineSection.via)
+            filters.append(alias_via.uri == uri)
+            query_line_section = query_line_section.filter(or_(*filters))
+
             query = query.filter(PTobject.uri == uri)
 
         publication_status = set(publication_status)
         if len(publication_status) == len(publication_status_values):
-            return query
+            #For a query by uri use union with the query for line_section
+            if uri:
+                query = query.union_all(query_line_section)
+
         else:
             filters = [availlable_filters[status] for status in publication_status]
             query = query.filter(or_(*filters))
-            return query
+            #For a query by uri use union with the query for line_section
+            if uri:
+                query_line_section = query_line_section.filter(or_(*filters))
+                query = query.union_all(query_line_section)
+
+        return query.order_by(cls.end_publication_date)
 
     @property
     def publication_status(self):
@@ -219,6 +251,7 @@ associate_impact_pt_object = db.Table('associate_impact_pt_object',
                                       db.Column('pt_object_id', UUID, db.ForeignKey('pt_object.id')),
                                       db.PrimaryKeyConstraint('impact_id', 'pt_object_id', name='impact_pt_object_pk')
 )
+
 
 class Impact(TimestampMixin, db.Model):
     id = db.Column(UUID, primary_key=True)
@@ -252,8 +285,6 @@ class Impact(TimestampMixin, db.Model):
 
     def __init__(self, objects=None):
         self.id = str(uuid.uuid1())
-        if objects:
-            self.objects = objects
 
     def archive(self):
         """
@@ -286,6 +317,16 @@ class Impact(TimestampMixin, db.Model):
         for app_per in self.application_periods:
             db.session.delete(app_per)
 
+    def delete_line_section(self):
+        for pt_object in self.objects:
+            if pt_object.type == 'line_section':
+                line_section = LineSection.get_by_object_id(pt_object.id)
+                if line_section:
+                    db.session.delete(line_section)
+                self.delete(pt_object)
+                db.session.delete(pt_object)
+
+
     def insert_app_period(self, application_period):
         """
         Adds an ApplicationPeriods in a impact.
@@ -313,10 +354,9 @@ class Impact(TimestampMixin, db.Model):
     def all_with_filter(cls, start_date, end_date, pt_object_type, uris):
         pt_object_alias = aliased(PTobject)
         query = cls.query.filter(cls.status == 'published')
-        if pt_object_type:
-            query = query.filter(pt_object_alias.type == pt_object_type)
-
         query = query.join(ApplicationPeriods)
+        query = query.join(pt_object_alias, cls.objects)
+
         query = query.filter(
             and_(
                 or_(
@@ -334,11 +374,56 @@ class Impact(TimestampMixin, db.Model):
             )
         )
 
+        if pt_object_type or uris:
+            alias_line = aliased(PTobject)
+            alias_start_point = aliased(PTobject)
+            alias_end_point = aliased(PTobject)
+            alias_route = aliased(PTobject)
+            alias_via = aliased(PTobject)
+
+            query_line_section = query
+            query_line_section = query_line_section.join(pt_object_alias.line_section)
+            query_line_section = query_line_section.join(alias_line, LineSection.line_object_id == alias_line.id)
+            query_line_section = query_line_section.join(alias_start_point, LineSection.start_object_id == alias_start_point.id)
+            query_line_section = query_line_section.join(alias_end_point, LineSection.end_object_id == alias_end_point.id)
+            query_line_section = query_line_section.join(alias_route, LineSection.routes)
+            query_line_section = query_line_section.join(alias_via, LineSection.via)
+
+        if pt_object_type:
+            query = query.filter(pt_object_alias.type == pt_object_type)
+            type_filters = []
+            type_filters.append(alias_line.type == pt_object_type)
+            type_filters.append(alias_start_point.type == pt_object_type)
+            type_filters.append(alias_end_point.type == pt_object_type)
+            query_line_section = query_line_section.filter(or_(*type_filters))
+
         if uris:
+            uri_filters = []
+            uri_filters.append(alias_line.uri.in_(uris))
+            uri_filters.append(alias_start_point.uri.in_(uris))
+            uri_filters.append(alias_end_point.uri.in_(uris))
+            uri_filters.append(alias_route.uri.in_(uris))
+            uri_filters.append(alias_via.uri.in_(uris))
+            query_line_section = query_line_section.filter(or_(*uri_filters))
             query = query.filter(pt_object_alias.uri.in_(uris))
 
-        query = query.order_by(ApplicationPeriods.start_date)
+        query = query.union_all(query_line_section).order_by("application_periods_1.start_date")
+
         return query.all()
+
+associate_line_section_route_object = db.Table('associate_line_section_route_object',
+                                      db.metadata,
+                                      db.Column('line_section_id', UUID, db.ForeignKey('line_section.id')),
+                                      db.Column('route_object_id', UUID, db.ForeignKey('pt_object.id')),
+                                      db.PrimaryKeyConstraint('line_section_id', 'route_object_id', name='line_section_route_object_pk')
+)
+
+associate_line_section_via_object = db.Table('associate_line_section_via_object',
+                                      db.metadata,
+                                      db.Column('line_section_id', UUID, db.ForeignKey('line_section.id')),
+                                      db.Column('stop_area_object_id', UUID, db.ForeignKey('pt_object.id')),
+                                      db.PrimaryKeyConstraint('line_section_id', 'stop_area_object_id', name='line_section_stop_area_object_pk')
+)
 
 class PTobject(TimestampMixin, db.Model):
     __tablename__ = 'pt_object'
@@ -447,6 +532,8 @@ class LineSection(TimestampMixin, db.Model):
     start_point = db.relationship('PTobject', foreign_keys=start_object_id)
     end_point = db.relationship('PTobject', foreign_keys=end_object_id)
     pt_object = db.relationship('PTobject',  foreign_keys=object_id, backref='line_section')
+    routes = db.relationship("PTobject", secondary=associate_line_section_route_object, lazy='joined')
+    via = db.relationship("PTobject", secondary=associate_line_section_via_object, lazy='joined')
 
     def __repr__(self):
         return '<LineSection %r>' % self.id
@@ -459,3 +546,6 @@ class LineSection(TimestampMixin, db.Model):
     def get(cls, id):
         return cls.query.filter_by(id=id).first_or_404()
 
+    @classmethod
+    def get_by_object_id(cls, object_id):
+        return cls.query.filter_by(object_id=object_id).first()

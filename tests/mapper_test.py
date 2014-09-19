@@ -60,3 +60,18 @@ def test_fill_from_json_with_missing_json():
 
     mapper.fill_from_json(obj, json, fields)
     eq_(obj.foo, None)
+
+
+def test_alias_text_value_valid():
+    obj = Obj()
+    obj.value = 'AA'
+    text_alis = mapper.AliasText('value')
+    text_alis(obj, 'field', 'bb')
+    eq_(obj.value, 'bb')
+
+def test_alias_text_value_not_valid():
+    obj = Obj()
+    obj.value = 'AA'
+    text_alis = mapper.AliasText('value')
+    text_alis(obj, 'field', None)
+    eq_(obj.value, None)

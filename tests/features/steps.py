@@ -3,7 +3,8 @@ from nose.tools import *
 import json
 from chaos import db
 from chaos.models import Disruption, Severity, Cause, Impact, PTobject, Channel, Message, ApplicationPeriods, Tag,\
-    associate_impact_pt_object, associate_disruption_tag, LineSection
+    associate_impact_pt_object, associate_disruption_tag, LineSection, associate_line_section_route_object,\
+    associate_line_section_via_object
 import chaos
 
 model_classes = {'disruption': Disruption,
@@ -25,7 +26,9 @@ model_classes = {'disruption': Disruption,
 }
 
 associations = {'associate_impact_pt_object': associate_impact_pt_object,
-                'associate_disruption_tag': associate_disruption_tag
+                'associate_disruption_tag': associate_disruption_tag,
+                'associate_line_section_route_object': associate_line_section_route_object,
+                'associate_line_section_via_object': associate_line_section_via_object
 }
 
 def pythonify(value):
@@ -118,4 +121,5 @@ def given_i_have_the_relation_in_my_database(step, cls):
             values.append("'{}'".format(value))
         db.session.execute("INSERT INTO {} ({}) VALUES ({})".format(associations[cls], ','.join(keys), ','.join(values)))
     db.session.commit()
+
 

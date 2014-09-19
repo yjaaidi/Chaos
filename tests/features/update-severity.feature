@@ -58,3 +58,15 @@ Feature: update severity
         """
         Then the status code should be "404"
         And the header "Content-Type" should be "application/json"
+
+    Scenario: update severity by id invalid
+        Given I have the following severities in my database:
+            | wording   | color   | created_at          | updated_at          | is_visible | id                                   |
+            | blocking  | #123456 | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | False      | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |
+        When I put to "/severities/AA" with:
+        """
+        {"wording": "foo"}
+        """
+        Then the status code should be "400"
+        And the header "Content-Type" should be "application/json"
+        And the field "error.message" should be "id invalid"

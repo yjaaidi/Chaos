@@ -10,6 +10,16 @@ NAVITIA_TOKEN = None
 
 DEBUG = True
 
+#rabbitmq connections string: http://kombu.readthedocs.org/en/latest/userguide/connections.html#urls
+RABBITMQ_CONNECTION_STRING='amqp://guest:guest@localhost:5672//'
+
+#amqp exhange used for sending disruptions
+EXCHANGE='navitia'
+
+CONTRIBUTOR='shortterm.tn'
+#
+ENABLE_RABBITMQ=False
+
 #Log Level available
 # - DEBUG
 # - INFO

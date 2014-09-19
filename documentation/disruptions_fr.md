@@ -71,7 +71,7 @@ Retourne la liste de toutes les perturbations visibles.
 | publication_status[] | Filtre sur publication_status,  les valeurs possibles sont : past, ongoing, coming        | false    | [past, ongoing, coming] |
 | current_time         | Permet de changer l'heure d'appel, sert surtout pour le debug                             | false    | NOW                     |
 | tag[]                | filtre sur tag (identifiant du tag)                                                       | false    |                         |
-
+| uri                  | filtre sur uri de l'objet TC                                                              | false    |                         |
 
 Le paramétre ```publication_status``` permet, par rapport à l'heure de référence passée en paramètre, de retourner les perturbations en cours (c'est à dire ayant des dates/heures de publications encadrant la date/heure de référence), à venir (qui ont des dates/heures de publications postérieures à la date/heure de référence) ou passées (ayant des dates/heures de publications antérieures à la date/heure de référence).
 
@@ -659,12 +659,12 @@ Une réponse de type 204 est retournée en cas de succés.
 Cette fonction donne la liste des impacts par type d'objet.
 ##Parameters
 
-| Name                 | description                                                                               | required | default                 |
-| -------------------- | ----------------------------------------------------------------------------------------- | -------- | ----------------------- |
-| pt_object_type       | Filtre par type d'objet,  les valeurs possibles sont : network, stoparea, line            | false    |                         |
-| uri[]                | filtre par uri de l'objet TC                                                              | false    |                         |
-| start_date           | filtre sur la période d'application :date de début                                        | false    | Now():00:00:00Z         |
-| end_date             | filtre sur la période d'application :date de fin                                          | false    | Now():23:59:59Z         |
+| Name                 | description                                                                                  | required | default                 |
+| -------------------- | -------------------------------------------------------------------------------------------- | -------- | ----------------------- |
+| pt_object_type       | Filtre par type d'objet,  les valeurs possibles sont : network, stoparea, line, line_section | false    |                         |
+| uri[]                | filtre par uri de l'objet TC                                                                 | false    |                         |
+| start_date           | filtre sur la période d'application :date de début                                           | false    | Now():00:00:00Z         |
+| end_date             | filtre sur la période d'application :date de fin                                             | false    | Now():23:59:59Z         |
 
 
 
@@ -919,8 +919,46 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient l'impact cr�
                         "type": "network"
                     },
                     {
-                        "id": "network:RTP:378",
-                        "type": "network"
+                        "id": "line:AME:3",
+                        "type": "line_section"
+                        "line_section": {
+                            "line": {
+                                "id":"line:AME:3",
+                                "type":"line"
+                            },
+                            "start_point": {
+                                "id":"stop_area:MTD:SA:154",
+                                "type":"stop_area"
+                            },
+                            "end_point": {
+                                "id":"stop_area:MTD:SA:155",
+                                "type":"stop_area"
+                            },
+                            "sens":0,
+                            "routes":[
+                               {
+                                   "id": "route:MTD:9",
+                                   "name": "corquilleroy",
+                                   "type": "route"
+                               },
+                               {
+                                   "id": "route:MTD:10",
+                                   "name": "corquilleroy",
+                                   "type": "route"
+                               },
+                               {
+                                   "id": "route:MTD:Nav24",
+                                   "name": "pannes",
+                                   "type": "route"
+                               }
+                            ],
+                            "via":[
+                                {
+                                "id":"stop_area:MTD:SA:154",
+                                "type":"stoparea"
+                                }
+                            ]
+                        }
                     }
                 ],
                 "messages": [
@@ -1001,9 +1039,50 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient l'impact cr�
                             "type": "network",
                         },
                         {
-                            "id": "network:RTP:378",
-                            "name": "RER B",
-                            "type": "network",
+                            "id": "line:AME:3",
+                            "type": "line_section"
+                            "line_section": {
+                                "line": {
+                                    "id":"line:AME:3",
+                                    "type":"line",
+                                    "name": "Lancy / Cepoy - Antibes / Saint Firmin"
+                                },
+                                "start_point": {
+                                    "id":"stop_area:MTD:SA:154",
+                                    "type":"stop_area",
+                                    "name": "Pichon"
+                                },
+                                "end_point": {
+                                    "id":"stop_area:MTD:SA:155",
+                                    "type":"stop_area",
+                                    "name": "Pinsons"
+                                },
+                                "sens":0,
+                                "routes":[
+                                   {
+                                       "id": "route:MTD:9",
+                                       "name": "corquilleroy",
+                                       "type": "route"
+                                   },
+                                   {
+                                       "id": "route:MTD:10",
+                                       "name": "corquilleroy",
+                                       "type": "route"
+                                   },
+                                   {
+                                       "id": "route:MTD:Nav24",
+                                       "name": "pannes",
+                                       "type": "route"
+                                   }
+                                ],
+                                "via":[
+                                    {
+                                    "id":"stop_area:MTD:SA:154",
+                                    "name": "Pinsons",
+                                    "type":"stoparea"
+                                    }
+                                ]
+                            }
                         }
                     ],
                     "disruption" : {"href": "https://ogv2ws.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-1c3e-0008ca8617ea"}
@@ -1021,7 +1100,6 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient l'impact cr�
                 }
                 "meta": {}
             }
-
 
 
 #Impact [/disruptions/{disruption_id}/impacts/{id}]
@@ -1090,9 +1168,50 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient l'impact cr�
                             "type": "network",
                         },
                         {
-                            "id": "network:RTP:378",
-                            "name": "RER B",
-                            "type": "network",
+                            "id": "line:AME:3",
+                            "type": "line_section"
+                            "line_section": {
+                                "line": {
+                                    "id":"line:AME:3",
+                                    "name": "Lancy / Cepoy - Antibes / Saint Firmin",
+                                    "type":"line"
+                                },
+                                "start_point": {
+                                    "id":"stop_area:MTD:SA:154",
+                                    "name": "Pinsons",
+                                    "type":"stop_area"
+                                },
+                                "end_point": {
+                                    "id":"stop_area:MTD:SA:155",
+                                    "name": "Pinsons",
+                                    "type":"stop_area"
+                                },
+                                "sens":0,
+                                "routes":[
+                                   {
+                                       "id": "route:MTD:9",
+                                       "name": "corquilleroy",
+                                       "type": "route"
+                                   },
+                                   {
+                                       "id": "route:MTD:10",
+                                       "name": "corquilleroy",
+                                       "type": "route"
+                                   },
+                                   {
+                                       "id": "route:MTD:Nav24",
+                                       "name": "pannes",
+                                       "type": "route"
+                                   }
+                                ],
+                                "via":[
+                                    {
+                                    "id":"stop_area:MTD:SA:154",
+                                    "name": "Pinsons",
+                                    "type":"stoparea"
+                                    }
+                                ]
+                            }
                         }
                     ],
                     "disruption" : {"href": "https://ogv2ws.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-1c3e-0008ca8617ea"}
@@ -1197,6 +1316,52 @@ Lors d'un succés une réponse 200 est retourné, celle ci contient l'impact mod
                             "id": "network:RTP:378",
                             "name": "RER B",
                             "type": "network",
+                        },
+                        {
+                            "id": "line:AME:3",
+                            "type": "line_section"
+                            "line_section": {
+                                "line": {
+                                    "id":"line:AME:3",
+                                    "name": "Lancy / Cepoy - Antibes / Saint Firmin",
+                                    "type":"line"
+                                },
+                                "start_point": {
+                                    "id":"stop_area:MTD:SA:154",
+                                    "name": "Pinsons",
+                                    "type":"stop_area"
+                                },
+                                "end_point": {
+                                    "id":"stop_area:MTD:SA:155",
+                                    "name": "Pinsons",
+                                    "type":"stop_area"
+                                },
+                                "sens":0,
+                                "routes":[
+                                   {
+                                       "id": "route:MTD:9",
+                                       "name": "corquilleroy",
+                                       "type": "route"
+                                   },
+                                   {
+                                       "id": "route:MTD:10",
+                                       "name": "corquilleroy",
+                                       "type": "route"
+                                   },
+                                   {
+                                       "id": "route:MTD:Nav24",
+                                       "name": "pannes",
+                                       "type": "route"
+                                   }
+                                ],
+                                "via":[
+                                    {
+                                    "id":"stop_area:MTD:SA:154",
+                                    "name": "Pinsons",
+                                    "type":"stoparea"
+                                    }
+                                ]
+                            }
                         }
                     ],
                     "disruption" : {"href": "https://ogv2ws.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-1c3e-0008ca8617ea"}
@@ -1270,6 +1435,52 @@ Lors d'un succés une réponse 200 est retourné, celle ci contient l'impact mod
                             "id": "network:RTP:378",
                             "name": "RER B",
                             "type": "network",
+                        },
+                        {
+                            "id": "line:AME:3",
+                            "type": "line_section"
+                            "line_section": {
+                                "line": {
+                                    "id":"line:AME:3",
+                                    "name": "Lancy / Cepoy - Antibes / Saint Firmin",
+                                    "type":"line"
+                                },
+                                "start_point": {
+                                    "id":"stop_area:MTD:SA:154",
+                                    "name": "pincons",
+                                    "type":"stop_area"
+                                },
+                                "end_point": {
+                                    "id":"stop_area:MTD:SA:155",
+                                    "name": "pincons",
+                                    "type":"stop_area"
+                                },
+                                "sens":0,
+                                "routes":[
+                                   {
+                                       "id": "route:MTD:9",
+                                       "name": "corquilleroy",
+                                       "type": "route"
+                                   },
+                                   {
+                                       "id": "route:MTD:10",
+                                       "name": "corquilleroy",
+                                       "type": "route"
+                                   },
+                                   {
+                                       "id": "route:MTD:Nav24",
+                                       "name": "pannes",
+                                       "type": "route"
+                                   }
+                                ],
+                                "via":[
+                                    {
+                                    "id":"stop_area:MTD:SA:154",
+                                    "name": "pincons",
+                                    "type":"stoparea"
+                                    }
+                                ]
+                            }
                         }
                     ],
                     "disruption" : {"href": "https://ogv2ws.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-1c3e-0008ca8617ea"}
