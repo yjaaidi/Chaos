@@ -69,7 +69,7 @@ def get_disruption():
 
 def test_disruption():
     disruption = get_disruption()
-    feed_entity = populate_pb(disruption)
+    feed_entity = populate_pb(disruption).entity[0]
     eq_(feed_entity.is_deleted, False)
     disruption_pb = feed_entity.Extensions[chaos.chaos_pb2.disruption]
 
@@ -108,7 +108,7 @@ def test_disruption():
 def test_disruption_is_deleted():
     disruption = get_disruption()
     disruption.status = 'archived'
-    feed_entity = populate_pb(disruption)
+    feed_entity = populate_pb(disruption).entity[0]
 
     eq_(feed_entity.is_deleted, True)
 
