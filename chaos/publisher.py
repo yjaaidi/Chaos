@@ -22,17 +22,16 @@ class Publisher(object):
         if not self._is_active:
             return
 
-        with producers[self._connection].acquire(block=True, timeout=2) as producer:
-            producer.publish(item, exchange=self._exchange, routing_key=contributor, declare=[self._exchange])
+        producer = self._connection.Producer()
+        producer.publish(item, exchange=self._exchange, routing_key=contributor, declare=[self._exchange])
 
     def info(self):
         if not self._is_active:
             return {}
-        with connections[self._connection].acquire(block=True, timeout=2) as connection:
-            res = connection.info()
-            if 'password' in res:
-                del res['password']
-            return res
+        res = self._connection.info()
+        if 'password' in res:
+            del res['password']
+        return res
 
 
 def monitor_heartbeats(connection, rate=2):

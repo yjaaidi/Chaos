@@ -29,6 +29,7 @@
 
 import chaos_pb2, gtfs_realtime_pb2
 import time
+import datetime
 
 
 def get_pos_time(sql_time):
@@ -137,9 +138,10 @@ def populate_disruption(disruption, disruption_pb):
     if disruption.note:
         disruption_pb.note = disruption.note
     created_upated_at(disruption, disruption_pb)
-    disruption_pb.publication_periods.start = get_pos_time(disruption.start_publication_date)
+    if disruption.start_publication_date:
+        disruption_pb.publication_period.start = get_pos_time(disruption.start_publication_date)
     if disruption.end_publication_date:
-        disruption_pb.publication_periods.end = get_pos_time(disruption.end_publication_date)
+        disruption_pb.publication_period.end = get_pos_time(disruption.end_publication_date)
 
     populate_cause(disruption.cause, disruption_pb.cause)
     populate_localization(disruption, disruption_pb)
@@ -148,11 +150,17 @@ def populate_disruption(disruption, disruption_pb):
 
 
 def populate_pb(disruption):
-    feed_entity = gtfs_realtime_pb2.FeedEntity()
+    feed_message = gtfs_realtime_pb2.FeedMessage()
+    feed_message.header.gtfs_realtime_version = '1.0'
+    feed_message.header.incrementality = gtfs_realtime_pb2.FeedHeader.DIFFERENTIAL
+    feed_message.header.timestamp = get_pos_time(datetime.datetime.utcnow())
+
+
+    feed_entity = feed_message.entity.add()
     feed_entity.id = disruption.id
     feed_entity.is_deleted = disruption.status == "archived"
 
     if not feed_entity.is_deleted:
         disruption_pb = feed_entity.Extensions[chaos_pb2.disruption]
         populate_disruption(disruption, disruption_pb)
-    return feed_entity
+    return feed_message
