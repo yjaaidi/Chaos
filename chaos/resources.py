@@ -731,6 +731,11 @@ class Impacts(flask_restful.Resource):
                         return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 404
 
                     impact.objects.append(ptobject)
+        # Severity
+        severity_json = json['severity']
+        if severity_json['id'] != impact.severity_id:
+            impact.severity_id = severity_json['id']
+            impact.severity = models.Severity.get(impact.severity_id)
 
         self.manage_application_periods(impact, json)
         self.manage_message(impact, json)
