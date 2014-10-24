@@ -3,9 +3,9 @@
 #http://docs.sqlalchemy.org/en/rel_0_9/dialects/postgresql.html#psycopg2
 SQLALCHEMY_DATABASE_URI = 'postgresql://navitia:navitia@localhost/chaos_testing'
 
-NAVITIA_URL = 'http://par-vm196.srv.canaltp.fr'
+NAVITIA_URL = 'http://navitia2-ws.ctp.dev.canaltp.fr/'
 NAVITIA_COVERAGE = 'jdr'
-NAVITIA_TOKEN = None
+NAVITIA_TOKEN = 'e74598a0-239b-4d9f-92e3-18cfc120672b'
 
 
 DEBUG = True
