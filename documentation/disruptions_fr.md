@@ -1,8 +1,8 @@
 FORMAT: 1A
 HOST: https://ogv2ws.apiary-mock.com
 
-Version du document: 2.0
-Date de derniére modification: 22/07/2014
+Version du document: 2.1
+Date de derniére modification: 30/10/2014
 
 #Web Services Ogesper v2
 Les web Services Ogesper v2 permettent la gestion des perturbations sur un référentiel de transport.
@@ -35,7 +35,7 @@ disruption valide.
 
 Les différents concepts manipulés sont présentés dans la diagramme suivant:
 
-![schema conceptuel](https://raw.githubusercontent.com/CanalTP/Chaos/master/documentation/Conceptuel.jpg?token=448185__eyJzY29wZSI6IlJhd0Jsb2I6Q2FuYWxUUC9DaGFvcy9tYXN0ZXIvZG9jdW1lbnRhdGlvbi9Db25jZXB0dWVsLmpwZyIsImV4cGlyZXMiOjE0MDYwNDA1MDN9--b3e9f38f53f9b6a80d21d45ad545144fa69f5521)
+![schema conceptuel](https://raw.githubusercontent.com/CanalTP/Chaos/master/documentation/Conceptuel.jpg?token=AAbWuaL-akym2v2qwvhG2Tm-DwxVFMgYks5UWxsnwA%3D%3D)
 
 
 La gestion des erreurs est embryonaire, en cas d'erreur technique une réponse de type 500 est retourné sans plus d'information.
