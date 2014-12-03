@@ -430,6 +430,10 @@ class PTobject(TimestampMixin, db.Model):
     id = db.Column(UUID, primary_key=True)
     type = db.Column(PtObjectType, nullable=False, default='network', index=True)
     uri = db.Column(db.Text, primary_key=True)
+    line_section = db.relationship('LineSection',
+                                   foreign_keys='LineSection.object_id',
+                                   backref='pt_object',
+                                   uselist=False)
 
     def __repr__(self):
         return '<PTobject %r>' % self.id
@@ -443,7 +447,7 @@ class PTobject(TimestampMixin, db.Model):
         """
         Adds a line_section in an object.
         """
-        self.line_section.append(line_section)
+        self.line_section = line_section
         db.session.add(line_section)
 
     @classmethod
@@ -531,7 +535,6 @@ class LineSection(TimestampMixin, db.Model):
     line = db.relationship('PTobject', foreign_keys=line_object_id)
     start_point = db.relationship('PTobject', foreign_keys=start_object_id)
     end_point = db.relationship('PTobject', foreign_keys=end_object_id)
-    pt_object = db.relationship('PTobject',  foreign_keys=object_id, backref='line_section')
     routes = db.relationship("PTobject", secondary=associate_line_section_route_object, lazy='joined')
     via = db.relationship("PTobject", secondary=associate_line_section_via_object, lazy='joined')
 
