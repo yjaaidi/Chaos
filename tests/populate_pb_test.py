@@ -4,7 +4,7 @@ from chaos.populate_pb import populate_pb, get_pt_object_type
 from aniso8601 import parse_datetime
 
 
-def get_disruption():
+def get_disruption(with_via=True, with_routes=True):
 
     # Disruption
     disruption = chaos.models.Disruption()
@@ -42,6 +42,48 @@ def get_disruption():
     ptobject = chaos.models.PTobject()
     ptobject.uri = "line:123"
     ptobject.type = "line"
+    impact.objects.append(ptobject)
+
+    #LineSection
+    ptobject = chaos.models.PTobject()
+    ptobject.uri = "line_section:123"
+    ptobject.type = "line_section"
+    ptobject.line_section = chaos.models.LineSection()
+    ptobject.line_section.sens = 1
+    ptobject.line_section.line = chaos.models.PTobject()
+    ptobject.line_section.line.uri = 'line:1'
+    ptobject.line_section.line.type = 'line'
+
+    ptobject.line_section.start_point = chaos.models.PTobject()
+    ptobject.line_section.start_point.uri = 'stop_area:1'
+    ptobject.line_section.start_point.type = 'stop_area'
+
+    ptobject.line_section.end_point = chaos.models.PTobject()
+    ptobject.line_section.end_point.uri = 'stop_area:2'
+    ptobject.line_section.end_point.type = 'stop_area'
+
+    if with_routes:
+        route = chaos.models.PTobject()
+        route.uri = 'route:1'
+        route.type = 'route'
+        ptobject.line_section.routes.append(route)
+
+        route = chaos.models.PTobject()
+        route.uri = 'route:2'
+        route.type = 'route'
+        ptobject.line_section.routes.append(route)
+
+    if with_via:
+        via = chaos.models.PTobject()
+        via.uri = 'stop_area:11'
+        via.type = 'stop_area'
+        ptobject.line_section.via.append(via)
+
+        via = chaos.models.PTobject()
+        via.uri = 'stop_area:22'
+        via.type = 'stop_area'
+        ptobject.line_section.via.append(via)
+
     impact.objects.append(ptobject)
 
     # Messages
@@ -87,23 +129,240 @@ def test_disruption():
     eq_(disruption_pb.impacts[0].severity.color,  "#FFFF00")
 
     eq_(len(disruption_pb.impacts[0].application_periods),  1)
-    eq_(len(disruption_pb.impacts[0].informed_entities),  2)
+    eq_(len(disruption_pb.impacts[0].informed_entities), 3)
 
-    eq_(disruption_pb.impacts[0].informed_entities[0].uri,  disruption.impacts[0].objects[0].uri)
-    eq_(disruption_pb.impacts[0].informed_entities[0].pt_object_type, get_pt_object_type(disruption.impacts[0].objects[0].type))
+    eq_(disruption_pb.impacts[0].informed_entities[0].uri, disruption.impacts[0].objects[0].uri)
+    eq_(disruption_pb.impacts[0].informed_entities[0].pt_object_type,
+    get_pt_object_type(disruption.impacts[0].objects[0].type))
 
-    eq_(disruption_pb.impacts[0].informed_entities[1].uri,  disruption.impacts[0].objects[1].uri)
-    eq_(disruption_pb.impacts[0].informed_entities[1].pt_object_type, get_pt_object_type(disruption.impacts[0].objects[1].type))
+    eq_(disruption_pb.impacts[0].informed_entities[1].uri, disruption.impacts[0].objects[1].uri)
+    eq_(disruption_pb.impacts[0].informed_entities[1].pt_object_type,
+    get_pt_object_type(disruption.impacts[0].objects[1].type))
 
-    eq_(disruption_pb.impacts[0].messages[0].text,  disruption.impacts[0].messages[0].text)
-    eq_(disruption_pb.impacts[0].messages[0].channel.name,  disruption.impacts[0].messages[0].channel.name)
-    eq_(disruption_pb.impacts[0].messages[0].channel.max_size,  disruption.impacts[0].messages[0].channel.max_size)
-    eq_(disruption_pb.impacts[0].messages[0].channel.content_type,  disruption.impacts[0].messages[0].channel.content_type)
+    eq_(disruption_pb.impacts[0].informed_entities[2].uri, disruption.impacts[0].objects[2].uri)
+    eq_(disruption_pb.impacts[0].informed_entities[2].pt_object_type,
+    get_pt_object_type(disruption.impacts[0].objects[2].type))
 
-    eq_(disruption_pb.impacts[0].messages[1].text,  disruption.impacts[0].messages[1].text)
-    eq_(disruption_pb.impacts[0].messages[1].channel.name,  disruption.impacts[0].messages[1].channel.name)
-    eq_(disruption_pb.impacts[0].messages[1].channel.max_size,  disruption.impacts[0].messages[1].channel.max_size)
-    eq_(disruption_pb.impacts[0].messages[1].channel.content_type,  disruption.impacts[0].messages[1].channel.content_type)
+    eq_(disruption_pb.impacts[0].informed_entities[2].pt_line_section.line.uri,
+    disruption.impacts[0].objects[2].line_section.line.uri)
+    eq_(disruption_pb.impacts[0].informed_entities[2].pt_line_section.line.pt_object_type,
+    get_pt_object_type(disruption.impacts[0].objects[2].line_section.line.type))
+
+    eq_(disruption_pb.impacts[0].informed_entities[2].pt_line_section.start_point.uri,
+    disruption.impacts[0].objects[2].line_section.start_point.uri)
+    eq_(disruption_pb.impacts[0].informed_entities[2].pt_line_section.start_point.pt_object_type,
+    get_pt_object_type(disruption.impacts[0].objects[2].line_section.start_point.type))
+
+    eq_(disruption_pb.impacts[0].informed_entities[2].pt_line_section.end_point.uri,
+    disruption.impacts[0].objects[2].line_section.end_point.uri)
+    eq_(disruption_pb.impacts[0].informed_entities[2].pt_line_section.end_point.pt_object_type,
+    get_pt_object_type(disruption.impacts[0].objects[2].line_section.end_point.type))
+
+    eq_(len(disruption_pb.impacts[0].informed_entities[2].pt_line_section.routes), 2)
+    eq_(len(disruption_pb.impacts[0].informed_entities[2].pt_line_section.via), 2)
+
+    eq_(disruption_pb.impacts[0].messages[0].text, disruption.impacts[0].messages[0].text)
+    eq_(disruption_pb.impacts[0].messages[0].channel.name, disruption.impacts[0].messages[0].channel.name)
+    eq_(disruption_pb.impacts[0].messages[0].channel.max_size, disruption.impacts[0].messages[0].channel.max_size)
+    eq_(disruption_pb.impacts[0].messages[0].channel.content_type,
+    disruption.impacts[0].messages[0].channel.content_type)
+
+    eq_(disruption_pb.impacts[0].messages[1].text, disruption.impacts[0].messages[1].text)
+    eq_(disruption_pb.impacts[0].messages[1].channel.name, disruption.impacts[0].messages[1].channel.name)
+    eq_(disruption_pb.impacts[0].messages[1].channel.max_size, disruption.impacts[0].messages[1].channel.max_size)
+    eq_(disruption_pb.impacts[0].messages[1].channel.content_type,
+    disruption.impacts[0].messages[1].channel.content_type)
+
+
+def test_disruption_without_via():
+    disruption = get_disruption(False)
+    feed_entity = populate_pb(disruption).entity[0]
+    eq_(feed_entity.is_deleted, False)
+    disruption_pb = feed_entity.Extensions[chaos.chaos_pb2.disruption]
+
+    eq_(disruption_pb.reference, disruption.reference)
+    eq_(disruption_pb.cause.wording, disruption.cause.wording)
+    eq_(len(disruption_pb.localization), 1)
+    eq_(disruption_pb.localization[0].stop_id, disruption.localization_id)
+    eq_(len(disruption_pb.tags), 2)
+    eq_(disruption_pb.tags[0].name, disruption.tags[0].name)
+    eq_(disruption_pb.tags[1].name, disruption.tags[1].name)
+
+
+    eq_(len(disruption_pb.impacts), 1)
+    eq_(disruption_pb.impacts[0].severity.wording, "SeverityTest")
+    eq_(disruption_pb.impacts[0].severity.color, "#FFFF00")
+
+    eq_(len(disruption_pb.impacts[0].application_periods), 1)
+    eq_(len(disruption_pb.impacts[0].informed_entities), 3)
+
+    eq_(disruption_pb.impacts[0].informed_entities[0].uri, disruption.impacts[0].objects[0].uri)
+    eq_(disruption_pb.impacts[0].informed_entities[0].pt_object_type,
+    get_pt_object_type(disruption.impacts[0].objects[0].type))
+
+    eq_(disruption_pb.impacts[0].informed_entities[1].uri, disruption.impacts[0].objects[1].uri)
+    eq_(disruption_pb.impacts[0].informed_entities[1].pt_object_type,
+    get_pt_object_type(disruption.impacts[0].objects[1].type))
+
+    eq_(disruption_pb.impacts[0].informed_entities[2].uri, disruption.impacts[0].objects[2].uri)
+    eq_(disruption_pb.impacts[0].informed_entities[2].pt_object_type,
+    get_pt_object_type(disruption.impacts[0].objects[2].type))
+
+    eq_(disruption_pb.impacts[0].informed_entities[2].pt_line_section.line.uri,
+    disruption.impacts[0].objects[2].line_section.line.uri)
+    eq_(disruption_pb.impacts[0].informed_entities[2].pt_line_section.line.pt_object_type,
+    get_pt_object_type(disruption.impacts[0].objects[2].line_section.line.type))
+
+    eq_(disruption_pb.impacts[0].informed_entities[2].pt_line_section.start_point.uri,
+    disruption.impacts[0].objects[2].line_section.start_point.uri)
+    eq_(disruption_pb.impacts[0].informed_entities[2].pt_line_section.start_point.pt_object_type,
+    get_pt_object_type(disruption.impacts[0].objects[2].line_section.start_point.type))
+
+    eq_(disruption_pb.impacts[0].informed_entities[2].pt_line_section.end_point.uri,
+    disruption.impacts[0].objects[2].line_section.end_point.uri)
+    eq_(disruption_pb.impacts[0].informed_entities[2].pt_line_section.end_point.pt_object_type,
+    get_pt_object_type(disruption.impacts[0].objects[2].line_section.end_point.type))
+
+    eq_(len(disruption_pb.impacts[0].informed_entities[2].pt_line_section.routes), 2)
+    eq_(len(disruption_pb.impacts[0].informed_entities[2].pt_line_section.via), 0)
+
+    eq_(disruption_pb.impacts[0].messages[0].text, disruption.impacts[0].messages[0].text)
+    eq_(disruption_pb.impacts[0].messages[0].channel.name, disruption.impacts[0].messages[0].channel.name)
+    eq_(disruption_pb.impacts[0].messages[0].channel.max_size, disruption.impacts[0].messages[0].channel.max_size)
+    eq_(disruption_pb.impacts[0].messages[0].channel.content_type,
+    disruption.impacts[0].messages[0].channel.content_type)
+
+    eq_(disruption_pb.impacts[0].messages[1].text, disruption.impacts[0].messages[1].text)
+    eq_(disruption_pb.impacts[0].messages[1].channel.name, disruption.impacts[0].messages[1].channel.name)
+    eq_(disruption_pb.impacts[0].messages[1].channel.max_size, disruption.impacts[0].messages[1].channel.max_size)
+    eq_(disruption_pb.impacts[0].messages[1].channel.content_type,
+    disruption.impacts[0].messages[1].channel.content_type)
+
+
+def test_disruption_without_routes():
+    disruption = get_disruption(True, False)
+    feed_entity = populate_pb(disruption).entity[0]
+    eq_(feed_entity.is_deleted, False)
+    disruption_pb = feed_entity.Extensions[chaos.chaos_pb2.disruption]
+
+    eq_(disruption_pb.reference, disruption.reference)
+    eq_(disruption_pb.cause.wording, disruption.cause.wording)
+    eq_(len(disruption_pb.localization), 1)
+    eq_(disruption_pb.localization[0].stop_id, disruption.localization_id)
+    eq_(len(disruption_pb.tags), 2)
+    eq_(disruption_pb.tags[0].name, disruption.tags[0].name)
+    eq_(disruption_pb.tags[1].name, disruption.tags[1].name)
+
+
+    eq_(len(disruption_pb.impacts), 1)
+    eq_(disruption_pb.impacts[0].severity.wording, "SeverityTest")
+    eq_(disruption_pb.impacts[0].severity.color, "#FFFF00")
+
+    eq_(len(disruption_pb.impacts[0].application_periods), 1)
+    eq_(len(disruption_pb.impacts[0].informed_entities), 3)
+
+    eq_(disruption_pb.impacts[0].informed_entities[0].uri, disruption.impacts[0].objects[0].uri)
+    eq_(disruption_pb.impacts[0].informed_entities[0].pt_object_type,
+    get_pt_object_type(disruption.impacts[0].objects[0].type))
+
+    eq_(disruption_pb.impacts[0].informed_entities[1].uri, disruption.impacts[0].objects[1].uri)
+    eq_(disruption_pb.impacts[0].informed_entities[1].pt_object_type,
+    get_pt_object_type(disruption.impacts[0].objects[1].type))
+
+    eq_(disruption_pb.impacts[0].informed_entities[2].uri, disruption.impacts[0].objects[2].uri)
+    eq_(disruption_pb.impacts[0].informed_entities[2].pt_object_type,
+    get_pt_object_type(disruption.impacts[0].objects[2].type))
+
+    eq_(disruption_pb.impacts[0].informed_entities[2].pt_line_section.line.uri,
+    disruption.impacts[0].objects[2].line_section.line.uri)
+    eq_(disruption_pb.impacts[0].informed_entities[2].pt_line_section.line.pt_object_type,
+    get_pt_object_type(disruption.impacts[0].objects[2].line_section.line.type))
+
+    eq_(disruption_pb.impacts[0].informed_entities[2].pt_line_section.start_point.uri,
+    disruption.impacts[0].objects[2].line_section.start_point.uri)
+    eq_(disruption_pb.impacts[0].informed_entities[2].pt_line_section.start_point.pt_object_type,
+    get_pt_object_type(disruption.impacts[0].objects[2].line_section.start_point.type))
+
+    eq_(disruption_pb.impacts[0].informed_entities[2].pt_line_section.end_point.uri,
+    disruption.impacts[0].objects[2].line_section.end_point.uri)
+    eq_(disruption_pb.impacts[0].informed_entities[2].pt_line_section.end_point.pt_object_type,
+    get_pt_object_type(disruption.impacts[0].objects[2].line_section.end_point.type))
+
+    eq_(len(disruption_pb.impacts[0].informed_entities[2].pt_line_section.routes), 0)
+    eq_(len(disruption_pb.impacts[0].informed_entities[2].pt_line_section.via), 2)
+
+    eq_(disruption_pb.impacts[0].messages[0].text, disruption.impacts[0].messages[0].text)
+    eq_(disruption_pb.impacts[0].messages[0].channel.name, disruption.impacts[0].messages[0].channel.name)
+    eq_(disruption_pb.impacts[0].messages[0].channel.max_size, disruption.impacts[0].messages[0].channel.max_size)
+    eq_(disruption_pb.impacts[0].messages[0].channel.content_type,
+    disruption.impacts[0].messages[0].channel.content_type)
+
+    eq_(disruption_pb.impacts[0].messages[1].text, disruption.impacts[0].messages[1].text)
+    eq_(disruption_pb.impacts[0].messages[1].channel.name, disruption.impacts[0].messages[1].channel.name)
+    eq_(disruption_pb.impacts[0].messages[1].channel.max_size, disruption.impacts[0].messages[1].channel.max_size)
+    eq_(disruption_pb.impacts[0].messages[1].channel.content_type,
+    disruption.impacts[0].messages[1].channel.content_type)
+
+
+def test_disruption_without_routes():
+    disruption = get_disruption(False, False)
+    feed_entity = populate_pb(disruption).entity[0]
+    eq_(feed_entity.is_deleted, False)
+    disruption_pb = feed_entity.Extensions[chaos.chaos_pb2.disruption]
+
+    eq_(disruption_pb.reference, disruption.reference)
+    eq_(disruption_pb.cause.wording, disruption.cause.wording)
+    eq_(len(disruption_pb.localization), 1)
+    eq_(disruption_pb.localization[0].stop_id, disruption.localization_id)
+    eq_(len(disruption_pb.tags), 2)
+    eq_(disruption_pb.tags[0].name, disruption.tags[0].name)
+    eq_(disruption_pb.tags[1].name, disruption.tags[1].name)
+
+
+    eq_(len(disruption_pb.impacts), 1)
+    eq_(disruption_pb.impacts[0].severity.wording, "SeverityTest")
+    eq_(disruption_pb.impacts[0].severity.color, "#FFFF00")
+
+    eq_(len(disruption_pb.impacts[0].application_periods), 1)
+    eq_(len(disruption_pb.impacts[0].informed_entities), 3)
+    eq_(disruption_pb.impacts[0].informed_entities[0].uri, disruption.impacts[0].objects[0].uri)
+    eq_(disruption_pb.impacts[0].informed_entities[0].pt_object_type,
+    get_pt_object_type(disruption.impacts[0].objects[0].type))
+    eq_(disruption_pb.impacts[0].informed_entities[1].uri, disruption.impacts[0].objects[1].uri)
+    eq_(disruption_pb.impacts[0].informed_entities[1].pt_object_type,
+    get_pt_object_type(disruption.impacts[0].objects[1].type))
+
+    eq_(disruption_pb.impacts[0].informed_entities[2].uri, disruption.impacts[0].objects[2].uri)
+    eq_(disruption_pb.impacts[0].informed_entities[2].pt_object_type,
+    get_pt_object_type(disruption.impacts[0].objects[2].type))
+
+    eq_(disruption_pb.impacts[0].informed_entities[2].pt_line_section.line.uri,
+    disruption.impacts[0].objects[2].line_section.line.uri)
+    eq_(disruption_pb.impacts[0].informed_entities[2].pt_line_section.line.pt_object_type,
+    get_pt_object_type(disruption.impacts[0].objects[2].line_section.line.type))
+
+    eq_(disruption_pb.impacts[0].informed_entities[2].pt_line_section.start_point.uri,
+    disruption.impacts[0].objects[2].line_section.start_point.uri)
+    eq_(disruption_pb.impacts[0].informed_entities[2].pt_line_section.start_point.pt_object_type,
+    get_pt_object_type(disruption.impacts[0].objects[2].line_section.start_point.type))
+
+    eq_(disruption_pb.impacts[0].informed_entities[2].pt_line_section.end_point.uri,
+    disruption.impacts[0].objects[2].line_section.end_point.uri)
+    eq_(disruption_pb.impacts[0].informed_entities[2].pt_line_section.end_point.pt_object_type,
+    get_pt_object_type(disruption.impacts[0].objects[2].line_section.end_point.type))
+
+    eq_(len(disruption_pb.impacts[0].informed_entities[2].pt_line_section.routes), 0)
+    eq_(len(disruption_pb.impacts[0].informed_entities[2].pt_line_section.via), 0)
+    eq_(disruption_pb.impacts[0].messages[0].text, disruption.impacts[0].messages[0].text)
+    eq_(disruption_pb.impacts[0].messages[0].channel.name, disruption.impacts[0].messages[0].channel.name)
+    eq_(disruption_pb.impacts[0].messages[0].channel.max_size, disruption.impacts[0].messages[0].channel.max_size)
+    eq_(disruption_pb.impacts[0].messages[0].channel.content_type,
+    disruption.impacts[0].messages[0].channel.content_type)
+    eq_(disruption_pb.impacts[0].messages[1].text, disruption.impacts[0].messages[1].text)
+    eq_(disruption_pb.impacts[0].messages[1].channel.name, disruption.impacts[0].messages[1].channel.name)
+    eq_(disruption_pb.impacts[0].messages[1].channel.max_size, disruption.impacts[0].messages[1].channel.max_size)
+    eq_(disruption_pb.impacts[0].messages[1].channel.content_type,
+    disruption.impacts[0].messages[1].channel.content_type)
 
 def test_disruption_is_deleted():
     disruption = get_disruption()
