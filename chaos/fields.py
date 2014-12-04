@@ -95,6 +95,14 @@ class FieldLocalization(fields.Raw):
             retVal[0]["type"] = "stop_area"
         return retVal
 
+
+class FieldContributor(fields.Raw):
+    def output(self, key, obj):
+        if hasattr(obj, 'contributor'):
+            return obj.contributor.contributor_code
+        return None
+
+
 href_field = {
     "href": fields.String
 }
@@ -146,6 +154,7 @@ disruption_fields = {
         'end': FieldDateTime(attribute='end_publication_date')
     },
     'publication_status': fields.Raw,
+    'contributor': FieldContributor,
     'impacts': FieldPaginateImpacts(attribute='impacts'),
     'localization': FieldLocalization,
     'cause': fields.Nested(cause_fields, allow_null=True),
