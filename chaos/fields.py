@@ -220,7 +220,7 @@ objectTC_fields = {
     'id': fields.Raw(attribute='uri'),
     'type': fields.Raw,
     'name': FieldObjectName(),
-    'line_section': fields.Nested(line_section_fields, display_null=False)
+    'line_section': fields.Nested(line_section_fields, display_null=False, allow_null=True)
 }
 
 channel_fields = {
