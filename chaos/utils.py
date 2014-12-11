@@ -170,7 +170,8 @@ def get_object_in_line_section_by_uri(pt_object, uris):
     if pt_object.uri in uris:
         return pt_object
 
-    for object in pt_object.line_section:
+    if pt_object.line_section:
+        object = pt_object.line_section
         #Search object.uri in line_section : line, start_point and end_point
         if object.line.uri in uris:
             return object.line
@@ -199,7 +200,8 @@ def get_object_in_line_section_by_type(pt_object, object_type):
     if pt_object.type == object_type:
         return pt_object
 
-    for object in pt_object.line_section:
+    if pt_object.line_section:
+        object = pt_object.line_section
         #Search object.uri in line_section : line, start_point and end_point
         if object.line.type == object_type:
             return object.line

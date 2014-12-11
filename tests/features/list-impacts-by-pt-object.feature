@@ -494,8 +494,8 @@ Feature: list impacts by ptobject
         And the field "objects" should have a size of 1
         And the field "objects.0.impacts" should have a size of 1
         And the field "objects.0.impacts.0.objects.0.type" should be "line_section"
-        And the field "objects.0.impacts.0.objects.0.line_section.0.start_point.type" should be "stop_area"
-        And the field "objects.0.impacts.0.objects.0.line_section.0.start_point.id" should be "stop_area:JDR:SA:BASTI"
+        And the field "objects.0.impacts.0.objects.0.line_section.start_point.type" should be "stop_area"
+        And the field "objects.0.impacts.0.objects.0.line_section.start_point.id" should be "stop_area:JDR:SA:BASTI"
 
         #Fetch impact by type of object in start_point, end_point and line of line_section
         When I get "/impacts?pt_object_type=network&start_date=2013-12-02T23:52:12Z&end_date=2014-10-21T23:52:12Z"

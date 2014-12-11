@@ -17,7 +17,7 @@ class BuildPbfCommand(Command):
         pass
 
     def run(self):
-        os.system('{protoc} -I. --python_out=chaos *.proto'.format(protoc=protoc))
+        os.system('{protoc} -Iproto --python_out=chaos proto/*.proto'.format(protoc=protoc))
 
 
 setup(

@@ -60,6 +60,8 @@ class FieldUrlDisruption(fields.Raw):
 
 class FieldObjectName(fields.Raw):
     def output(self, key, obj):
+        if obj == None:
+            return None
         if obj.type == 'line_section':
             return None
         navitia = Navitia(current_app.config['NAVITIA_URL'],
@@ -218,7 +220,7 @@ objectTC_fields = {
     'id': fields.Raw(attribute='uri'),
     'type': fields.Raw,
     'name': FieldObjectName(),
-    'line_section': fields.List(fields.Nested(line_section_fields, display_null=False), display_empty=False)
+    'line_section': fields.Nested(line_section_fields, display_null=False, allow_null=True)
 }
 
 channel_fields = {

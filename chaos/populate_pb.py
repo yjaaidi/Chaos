@@ -29,6 +29,7 @@
 
 import chaos_pb2, gtfs_realtime_pb2
 import time
+import datetime
 
 
 def get_pos_time(sql_time):
@@ -91,13 +92,32 @@ def populate_messages(impact, impact_pb):
         populate_channel(message_pb.channel, message.channel)
 
 
+def populate_informed_entitie(pt_object, informed_entitie):
+    informed_entitie.pt_object_type = get_pt_object_type(pt_object.type)
+    informed_entitie.uri = pt_object.uri
+    created_upated_at(pt_object, informed_entitie)
+
+
 def populate_pt_objects(impact, impact_pb):
     for pt_object in impact.objects:
-        if pt_object.type != 'line_section':
-            informed_entitie = impact_pb.informed_entities.add()
-            informed_entitie.pt_object_type = get_pt_object_type(pt_object.type)
-            informed_entitie.uri = pt_object.uri
-            created_upated_at(pt_object, informed_entitie)
+        informed_entitie = impact_pb.informed_entities.add()
+        populate_informed_entitie(pt_object, informed_entitie)
+        if pt_object.type == 'line_section':
+            if hasattr(pt_object.line_section, 'sens'):
+                if pt_object.line_section.sens:
+                    informed_entitie.pt_line_section.sens = long(pt_object.line_section.sens)
+            populate_informed_entitie(pt_object.line_section.line, informed_entitie.pt_line_section.line)
+            populate_informed_entitie(pt_object.line_section.start_point, informed_entitie.pt_line_section.start_point)
+            populate_informed_entitie(pt_object.line_section.end_point, informed_entitie.pt_line_section.end_point)
+            if hasattr(pt_object.line_section, 'routes'):
+                for route in pt_object.line_section.routes:
+                    route_pb = informed_entitie.pt_line_section.routes.add()
+                    populate_informed_entitie(route, route_pb)
+            if hasattr(pt_object.line_section, 'via'):
+                for via in pt_object.line_section.via:
+                    via_pb = informed_entitie.pt_line_section.via.add()
+                    populate_informed_entitie(via, via_pb)
+
 
 
 def populate_impact(disruption, disruption_pb):
@@ -137,9 +157,10 @@ def populate_disruption(disruption, disruption_pb):
     if disruption.note:
         disruption_pb.note = disruption.note
     created_upated_at(disruption, disruption_pb)
-    disruption_pb.publication_periods.start = get_pos_time(disruption.start_publication_date)
+    if disruption.start_publication_date:
+        disruption_pb.publication_period.start = get_pos_time(disruption.start_publication_date)
     if disruption.end_publication_date:
-        disruption_pb.publication_periods.end = get_pos_time(disruption.end_publication_date)
+        disruption_pb.publication_period.end = get_pos_time(disruption.end_publication_date)
 
     populate_cause(disruption.cause, disruption_pb.cause)
     populate_localization(disruption, disruption_pb)
@@ -148,11 +169,17 @@ def populate_disruption(disruption, disruption_pb):
 
 
 def populate_pb(disruption):
-    feed_entity = gtfs_realtime_pb2.FeedEntity()
+    feed_message = gtfs_realtime_pb2.FeedMessage()
+    feed_message.header.gtfs_realtime_version = '1.0'
+    feed_message.header.incrementality = gtfs_realtime_pb2.FeedHeader.DIFFERENTIAL
+    feed_message.header.timestamp = get_pos_time(datetime.datetime.utcnow())
+
+
+    feed_entity = feed_message.entity.add()
     feed_entity.id = disruption.id
     feed_entity.is_deleted = disruption.status == "archived"
 
     if not feed_entity.is_deleted:
         disruption_pb = feed_entity.Extensions[chaos_pb2.disruption]
         populate_disruption(disruption, disruption_pb)
-    return feed_entity
+    return feed_message
