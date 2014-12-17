@@ -209,6 +209,7 @@ class Disruption(TimestampMixin, db.Model):
     client = db.relationship('Client', backref='disruptions', lazy='joined')
     contributor_id = db.Column(UUID, db.ForeignKey(Contributor.id), nullable=False)
     contributor = db.relationship('Contributor', backref='disruptions', lazy='joined')
+    version = db.Column(db.Integer, nullable=False, default=1)
 
     def __repr__(self):
         return '<Disruption %r>' % self.id
