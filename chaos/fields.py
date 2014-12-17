@@ -147,6 +147,7 @@ disruption_fields = {
     'reference': fields.Raw,
     'note': fields.Raw,
     'status': fields.Raw,
+    'version': fields.Raw,
     'created_at': FieldDateTime,
     'updated_at': FieldDateTime,
     'publication_period': {
