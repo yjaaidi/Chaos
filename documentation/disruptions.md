@@ -56,6 +56,7 @@ Return all visible disruptions.
                         "status": "published",
                         "publication_status": "ongoing",
                         "contributor": "shortterm.tn",
+                        "version": 1,
                         "cause": {
                             "id": "3d1f34b2-e8df-11e3-8c3e-0008ca8657ea",
                             "wording": "Condition météo"
@@ -312,6 +313,7 @@ Create one valid disruption with impacts
                     "status": "published",
                     "publication_status": "ongoing",
                     "contributor": "shortterm.tn",
+                    "version": 2,
                     "cause": {
                         "id": "3d1f34b2-e8df-1ae3-8c3e-0008ca8657ea",
                         "wording": "Condition météo"
@@ -389,6 +391,7 @@ Retrieve one existing disruption:
                     "status": "published",
                     "publication_status": "ongoing",
                     "contributor": "shortterm.tn",
+                    "version": 2,
                     "cause": {
                         "id": "3d1e32b2-e8df-11e3-8c3e-0008ca8657ea",
                         "wording": "Condition météo"
@@ -508,6 +511,7 @@ Retrieve one existing disruption:
                     "status": "published",
                     "publication_status": "ongoing",
                     "contributor": "shortterm.tn",
+                    "version": 2,
                     "cause": {
                         "id": "3d1f32b2-e8df-11e3-8c3e-0008ca8657ea",
                         "wording": "Condition météo"
