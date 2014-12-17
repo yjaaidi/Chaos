@@ -21,6 +21,8 @@ Feature: list disruptions with current time
             | toto      |       | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | published | 7ffab234-3d48-4eea-aa2c-22f8680230b6 | 2014-04-20T23:52:12    | 2014-04-30T23:55:12      | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
 
         I fill in header "X-Contributors" with "contrib1"
+        I fill in header "X-Coverage" with "jdr"
+        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
         When I get "/disruptions?current_time=2014-04-01T23:52:12Z"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
@@ -50,6 +52,8 @@ Feature: list disruptions with current time
             | toto      |       | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | published | 7ffab234-3d48-4eea-aa2c-22f8680230b6 | 2014-04-20T23:52:12    | 2014-04-30T23:55:12      | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
 
         I fill in header "X-Contributors" with "contrib1"
+        I fill in header "X-Coverage" with "jdr"
+        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
         When I get "/disruptions?current_time=2014-04-03T23:52:12Z"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
@@ -79,6 +83,8 @@ Feature: list disruptions with current time
             | toto      |       | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | published | 7ffab234-3d48-4eea-aa2c-22f8680230b6 | 2014-04-20T23:52:12    | 2014-04-30T23:55:12      | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
 
         I fill in header "X-Contributors" with "contrib1"
+        I fill in header "X-Coverage" with "jdr"
+        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
         When I get "/disruptions?current_time=2014-04-16T23:52:12Z"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
@@ -108,6 +114,8 @@ Feature: list disruptions with current time
             | toto      |       | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | published | 7ffab234-3d48-4eea-aa2c-22f8680230b6 | 2014-04-20T23:52:12    | 2014-04-30T23:55:12      | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
 
         I fill in header "X-Contributors" with "contrib1"
+        I fill in header "X-Coverage" with "jdr"
+        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
         When I get "/disruptions?current_time=2014-04-21T23:52:12Z"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
@@ -137,6 +145,8 @@ Feature: list disruptions with current time
             | toto      |       | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | published | 7ffab234-3d48-4eea-aa2c-22f8680230b6 | 2014-04-20T23:52:12    | 2014-04-30T23:55:12      | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
 
         I fill in header "X-Contributors" with "contrib1"
+        I fill in header "X-Coverage" with "jdr"
+        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
         When I get "/disruptions?current_time=2014-05-01T23:52:12Z"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
@@ -164,6 +174,8 @@ Feature: list disruptions with current time
             | foo       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 2014-04-02T23:52:12    |      None                | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
 
         I fill in header "X-Contributors" with "contrib1"
+        I fill in header "X-Coverage" with "jdr"
+        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
         When I get "/disruptions?current_time=2014-03-01T23:52:12Z"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
@@ -189,6 +201,8 @@ Feature: list disruptions with current time
             | foo       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 2014-04-02T23:52:12    |      None                | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
 
         I fill in header "X-Contributors" with "contrib1"
+        I fill in header "X-Coverage" with "jdr"
+        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
         When I get "/disruptions?current_time=2014-05-01T23:52:12Z"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
