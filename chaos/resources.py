@@ -263,8 +263,10 @@ class Disruptions(flask_restful.Resource):
         parser_get.add_argument("current_time", type=utils.get_datetime)
         parser_get.add_argument("uri", type=str)
 
+    @validate_navitia()
     @validate_contributor()
-    def get(self, contributor, id=None):
+    def get(self, contributor, navitia, id=None):
+        self.navitia = navitia
         if id:
             if not id_format.match(id):
                 return marshal({'error': {'message': "id invalid"}},
