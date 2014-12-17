@@ -67,6 +67,11 @@ def when_i_post_to(step, method, url):
 def i_fill_in_header(step, field_name, value):
     world.headers[field_name] = value
 
+@step('I clean header')
+def i_clean_header(step):
+    if hasattr(world, 'headers'):
+        world.headers = {'content-type': 'application/json'}
+
 @step(u'Then the status code should be "(\d+)"')
 def then_the_status_code_should_be(step, status_code):
     eq_(world.response.status_code, int(status_code))
