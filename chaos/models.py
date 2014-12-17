@@ -217,6 +217,9 @@ class Disruption(TimestampMixin, db.Model):
     def __init__(self):
         self.id = str(uuid.uuid1())
 
+    def upgrade_version(self):
+        self.version = self.version + 1
+
     def archive(self):
         """
         archive the disruption, it will not be visible on any media
