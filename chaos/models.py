@@ -59,6 +59,45 @@ SeverityEffect = db.Enum('blocking', name='severity_effect')
 ImpactStatus = db.Enum('published', 'archived', name='impact_status')
 PtObjectType = db.Enum('network', 'stop_area', 'line', 'line_section', 'route', name='pt_object_type')
 
+class Client(TimestampMixin, db.Model):
+    __tablename__ = 'client'
+    id = db.Column(UUID, primary_key=True)
+    client_code = db.Column(db.Text, unique=True, nullable=False)
+
+    def __init__(self, code=None):
+        self.id = str(uuid.uuid1())
+        self.client_code = code
+
+    @classmethod
+    def get_by_code(cls, code):
+        return cls.query.filter_by(client_code=code).first()
+
+    @classmethod
+    def get_or_create(cls, code):
+        client = cls.query.filter_by(client_code=code).first()
+        if not client:
+            client = Client(code)
+        return client
+
+class Contributor(TimestampMixin, db.Model):
+    __tablename__ = 'contributor'
+    id = db.Column(UUID, primary_key=True)
+    contributor_code = db.Column(db.Text, unique=True, nullable=False)
+
+    def __init__(self, code=None):
+        self.id = str(uuid.uuid1())
+        self.contributor_code = code
+
+    @classmethod
+    def get_by_code(cls, code):
+        return cls.query.filter_by(contributor_code=code).first()
+
+    @classmethod
+    def get_or_create(cls, code):
+        contributor = cls.query.filter_by(contributor_code=code).first()
+        if not contributor:
+            contributor = Contributor(code)
+        return contributor
 
 class Severity(TimestampMixin, db.Model):
     """
@@ -70,6 +109,8 @@ class Severity(TimestampMixin, db.Model):
     is_visible = db.Column(db.Boolean, unique=False, nullable=False, default=True)
     priority = db.Column(db.Integer, unique=False, nullable=True)
     effect = db.Column(SeverityEffect, nullable=True)
+    client_id = db.Column(UUID, db.ForeignKey(Client.id), nullable=False)
+    client = db.relationship('Client', backref='severity', lazy='joined')
 
     def __init__(self):
         self.id = str(uuid.uuid1())
@@ -78,12 +119,13 @@ class Severity(TimestampMixin, db.Model):
         return '<Severity %r>' % self.id
 
     @classmethod
-    def all(cls):
-        return cls.query.filter_by(is_visible=True).order_by(cls.priority).all()
+    def all(cls, client_id):
+        return cls.query.filter_by(client_id=client_id, is_visible=True).order_by(cls.priority).all()
 
     @classmethod
-    def get(cls, id):
-        return cls.query.filter_by(id=id, is_visible=True).first_or_404()
+    def get(cls, id, client_id):
+        return cls.query.filter_by(id=id, client_id=client_id, is_visible=True).first_or_404()
+
 
 
 class Cause(TimestampMixin, db.Model):
@@ -93,6 +135,8 @@ class Cause(TimestampMixin, db.Model):
     id = db.Column(UUID, primary_key=True)
     wording = db.Column(db.Text, unique=False, nullable=False)
     is_visible = db.Column(db.Boolean, unique=False, nullable=False, default=True)
+    client_id = db.Column(UUID, db.ForeignKey(Client.id), nullable=False)
+    client = db.relationship('Client', backref='causes', lazy='joined')
 
     def __init__(self):
         self.id = str(uuid.uuid1())
@@ -101,12 +145,13 @@ class Cause(TimestampMixin, db.Model):
         return '<Cause %r>' % self.id
 
     @classmethod
-    def all(cls):
-        return cls.query.filter_by(is_visible=True).all()
+    def all(cls, client_id):
+        return cls.query.filter_by(client_id=client_id, is_visible=True).all()
 
     @classmethod
-    def get(cls, id):
-        return cls.query.filter_by(id=id, is_visible=True).first_or_404()
+    def get(cls, id, client_id):
+        return cls.query.filter_by(id=id, client_id=client_id, is_visible=True).first_or_404()
+
 
 
 associate_disruption_tag = db.Table('associate_disruption_tag',
@@ -122,8 +167,11 @@ class Tag(TimestampMixin, db.Model):
     """
     __tablename__ = 'tag'
     id = db.Column(UUID, primary_key=True)
-    name = db.Column(db.Text, unique=True, nullable=False)
+    name = db.Column(db.Text, unique=False, nullable=False)
     is_visible = db.Column(db.Boolean, unique=False, nullable=False, default=True)
+    client_id = db.Column(UUID, db.ForeignKey(Client.id), nullable=False)
+    client = db.relationship('Client', backref='tags', lazy='joined')
+    __table_args__ = (db.UniqueConstraint('name', 'client_id', name='tag_name_client_id_key'),)
 
     def __init__(self):
         self.id = str(uuid.uuid1())
@@ -132,12 +180,16 @@ class Tag(TimestampMixin, db.Model):
         return '<Tag %r>' % self.id
 
     @classmethod
-    def all(cls):
-        return cls.query.filter_by(is_visible=True).all()
+    def all(cls, client_id):
+        return cls.query.filter_by(client_id=client_id,is_visible=True).all()
 
     @classmethod
-    def get(cls, id):
-        return cls.query.filter_by(id=id, is_visible=True).first_or_404()
+    def get(cls, id, client_id):
+        return cls.query.filter_by(id=id, client_id=client_id, is_visible=True).first_or_404()
+
+    @classmethod
+    def get_archived_by_name(cls, name, client_id):
+        return cls.query.filter_by(name=name, client_id=client_id, is_visible=False).first()
 
 
 class Disruption(TimestampMixin, db.Model):
@@ -153,6 +205,10 @@ class Disruption(TimestampMixin, db.Model):
     cause_id = db.Column(UUID, db.ForeignKey(Cause.id))
     cause = db.relationship('Cause', backref='disruption', lazy='joined')
     tags = db.relationship("Tag", secondary=associate_disruption_tag, backref="disruptions")
+    client_id = db.Column(UUID, db.ForeignKey(Client.id), nullable=False)
+    client = db.relationship('Client', backref='disruptions', lazy='joined')
+    contributor_id = db.Column(UUID, db.ForeignKey(Contributor.id), nullable=False)
+    contributor = db.relationship('Contributor', backref='disruptions', lazy='joined')
 
     def __repr__(self):
         return '<Disruption %r>' % self.id
@@ -169,19 +225,19 @@ class Disruption(TimestampMixin, db.Model):
             impact.archive()
 
     @classmethod
-    def get(cls, id):
-        return cls.query.filter_by(id=id, status='published').first_or_404()
+    def get(cls, id, contributor_id):
+        return cls.query.filter_by(id=id, contributor_id=contributor_id, status='published').first_or_404()
 
     @classmethod
     @paginate()
-    def all_with_filter(cls, publication_status, tags, uri):
+    def all_with_filter(cls, contributor_id, publication_status, tags, uri):
         availlable_filters = {
             'past': and_(cls.end_publication_date != None, cls.end_publication_date < get_current_time()),
             'ongoing': and_(cls.start_publication_date <= get_current_time(),
                             or_(cls.end_publication_date == None, cls.end_publication_date >= get_current_time())),
             'coming': Disruption.start_publication_date > get_current_time()
         }
-        query = cls.query.filter_by(status='published')
+        query = cls.query.filter_by(contributor_id=contributor_id, status='published')
 
         if tags:
             query = query.filter(cls.tags.any(Tag.id.in_(tags)))
@@ -339,23 +395,30 @@ class Impact(TimestampMixin, db.Model):
 
 
     @classmethod
-    def get(cls, id):
-        return cls.query.filter_by(id=id, status='published').first_or_404()
+    def get(cls, id, contributor_id):
+        query = cls.query.filter_by(id=id, status='published')
+        query = query.join(Disruption)
+        query = query.filter(Disruption.contributor_id == contributor_id)
+        return query.first_or_404()
 
     @classmethod
     @paginate()
-    def all(cls, disruption_id):
+    def all(cls, disruption_id, contributor_id):
         alias = aliased(Severity)
         query = cls.query.filter_by(status='published')
         query = query.filter(and_(cls.disruption_id == disruption_id))
+        query = query.join(Disruption)
+        query = query.filter(Disruption.contributor_id == contributor_id)
         return query.join(alias, Impact.severity).order_by(alias.priority)
 
     @classmethod
-    def all_with_filter(cls, start_date, end_date, pt_object_type, uris):
+    def all_with_filter(cls, start_date, end_date, pt_object_type, uris, contributor_id):
         pt_object_alias = aliased(PTobject)
         query = cls.query.filter(cls.status == 'published')
+        query = query.join(Disruption)
         query = query.join(ApplicationPeriods)
         query = query.join(pt_object_alias, cls.objects)
+        query = query.filter(Disruption.contributor_id == contributor_id)
 
         query = query.filter(
             and_(
@@ -484,6 +547,8 @@ class Channel(TimestampMixin, db.Model):
     max_size = db.Column(db.Integer, unique=False, nullable=True)
     content_type = db.Column(db.Text, unique=False, nullable=True)
     is_visible = db.Column(db.Boolean, unique=False, nullable=False, default=True)
+    client_id = db.Column(UUID, db.ForeignKey(Client.id), nullable=False)
+    client = db.relationship('Client', backref='channels', lazy='joined')
 
     def __init__(self):
         self.id = str(uuid.uuid1())
@@ -492,12 +557,12 @@ class Channel(TimestampMixin, db.Model):
         return '<Channel %r>' % self.id
 
     @classmethod
-    def all(cls):
-        return cls.query.filter_by(is_visible=True).all()
+    def all(cls, client_id):
+        return cls.query.filter_by(client_id=client_id, is_visible=True).all()
 
     @classmethod
-    def get(cls, id):
-        return cls.query.filter_by(id=id, is_visible=True).first_or_404()
+    def get(cls, id, client_id):
+        return cls.query.filter_by(id=id, client_id=client_id, is_visible=True).first_or_404()
 
 
 class Message(TimestampMixin, db.Model):

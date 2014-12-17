@@ -1,13 +1,21 @@
 Feature: list impacts by ptobject and/or uri(s)
 
     Scenario: Use uri filter to display impacts
-        Given I have the following disruptions in my database:
-            | reference | note  | created_at          | updated_at          | status    | id                                   |
-            | foo       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |
+        Given I have the following clients in my database:
+            | client_code   | created_at          | updated_at          | id                                   |
+            | 5             | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
 
         Given I have the following severities in my database:
-                | wording   | color   | created_at          | updated_at          | is_visible | id                                   |
-                | good news | #654321 | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | True       | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |
+                | wording   | color   | created_at          | updated_at          | is_visible | id                                   |client_id                            |
+                | good news | #654321 | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | True       | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
+
+        Given I have the following contributors in my database:
+            | contributor_code   | created_at          | updated_at          | id                                   |
+            | contrib1           | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
+
+        Given I have the following disruptions in my database:
+            | reference | note  | created_at          | updated_at          | status    | id                                   | client_id                            | contributor_id                       |
+            | foo       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
 
         Given I have the following impacts in my database:
             | created_at          | updated_at          | status    | id                                   | disruption_id                        |severity_id                          |
@@ -48,6 +56,9 @@ Feature: list impacts by ptobject and/or uri(s)
             | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab232-3d47-4eea-aa2c-22f8680230b6 | 7ffab234-3d49-4eec-aa2c-22f8680230b4 |2014-01-20 16:52:00                  |2014-01-30 16:52:00 |
 
 
+        I fill in header "X-Contributors" with "contrib1"
+        I fill in header "X-Coverage" with "jdr"
+        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
         When I get "/impacts?uri[]=network:JDR:1&start_date=2013-12-02T23:52:12Z&end_date=2014-05-21T23:52:12Z"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
@@ -55,13 +66,21 @@ Feature: list impacts by ptobject and/or uri(s)
         And the field "objects.0.impacts" should have a size of 3
 
     Scenario: Use uris filter to display impacts
-        Given I have the following disruptions in my database:
-            | reference | note  | created_at          | updated_at          | status    | id                                   |
-            | foo       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |
+        Given I have the following clients in my database:
+            | client_code   | created_at          | updated_at          | id                                   |
+            | 5             | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
 
         Given I have the following severities in my database:
-                | wording   | color   | created_at          | updated_at          | is_visible | id                                   |
-                | good news | #654321 | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | True       | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |
+                | wording   | color   | created_at          | updated_at          | is_visible | id                                   |client_id                            |
+                | good news | #654321 | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | True       | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
+
+        Given I have the following contributors in my database:
+            | contributor_code   | created_at          | updated_at          | id                                   |
+            | contrib1           | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
+
+        Given I have the following disruptions in my database:
+            | reference | note  | created_at          | updated_at          | status    | id                                   | client_id                            | contributor_id                       |
+            | foo       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
 
         Given I have the following impacts in my database:
             | created_at          | updated_at          | status    | id                                   | disruption_id                        |severity_id                          |
@@ -102,6 +121,9 @@ Feature: list impacts by ptobject and/or uri(s)
             | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab232-3d47-4eea-aa2c-22f8680230b6 | 7ffab234-3d49-4eec-aa2c-22f8680230b4 |2014-01-20 16:52:00                  |2014-01-30 16:52:00 |
 
 
+        I fill in header "X-Contributors" with "contrib1"
+        I fill in header "X-Coverage" with "jdr"
+        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
         When I get "/impacts?uri[]=network:JDR:1&uri[]=network:JDR:2&start_date=2013-12-02T23:52:12Z&end_date=2014-05-21T23:52:12Z"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
@@ -110,13 +132,21 @@ Feature: list impacts by ptobject and/or uri(s)
         And the field "objects.1.impacts" should have a size of 3
 
     Scenario: Use uri and pt_object_type filter to display impacts
-        Given I have the following disruptions in my database:
-            | reference | note  | created_at          | updated_at          | status    | id                                   |
-            | foo       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |
+        Given I have the following clients in my database:
+            | client_code   | created_at          | updated_at          | id                                   |
+            | 5             | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
 
         Given I have the following severities in my database:
-                | wording   | color   | created_at          | updated_at          | is_visible | id                                   |
-                | good news | #654321 | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | True       | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |
+                | wording   | color   | created_at          | updated_at          | is_visible | id                                   |client_id                            |
+                | good news | #654321 | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | True       | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
+
+        Given I have the following contributors in my database:
+            | contributor_code   | created_at          | updated_at          | id                                   |
+            | contrib1           | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
+
+        Given I have the following disruptions in my database:
+            | reference | note  | created_at          | updated_at          | status    | id                                   | client_id                            | contributor_id                       |
+            | foo       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
 
         Given I have the following impacts in my database:
             | created_at          | updated_at          | status    | id                                   | disruption_id                        |severity_id                          |
@@ -157,6 +187,9 @@ Feature: list impacts by ptobject and/or uri(s)
             | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab232-3d47-4eea-aa2c-22f8680230b6 | 7ffab234-3d49-4eec-aa2c-22f8680230b4 |2014-01-20 16:52:00                  |2014-01-30 16:52:00 |
 
 
+        I fill in header "X-Contributors" with "contrib1"
+        I fill in header "X-Coverage" with "jdr"
+        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
         When I get "/impacts?pt_object_type=network&uri[]=network:JDR:1&start_date=2013-12-02T23:52:12Z&end_date=2014-05-21T23:52:12Z"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
@@ -164,13 +197,21 @@ Feature: list impacts by ptobject and/or uri(s)
         And the field "objects.0.impacts" should have a size of 3
 
     Scenario: Use uris and pt_object_type filter to display impacts
-        Given I have the following disruptions in my database:
-            | reference | note  | created_at          | updated_at          | status    | id                                   |
-            | foo       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |
+        Given I have the following clients in my database:
+            | client_code   | created_at          | updated_at          | id                                   |
+            | 5             | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
 
         Given I have the following severities in my database:
-                | wording   | color   | created_at          | updated_at          | is_visible | id                                   |
-                | good news | #654321 | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | True       | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |
+                | wording   | color   | created_at          | updated_at          | is_visible | id                                   |client_id                            |
+                | good news | #654321 | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | True       | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
+
+        Given I have the following contributors in my database:
+            | contributor_code   | created_at          | updated_at          | id                                   |
+            | contrib1           | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
+
+        Given I have the following disruptions in my database:
+            | reference | note  | created_at          | updated_at          | status    | id                                   | client_id                            | contributor_id                       |
+            | foo       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
 
         Given I have the following impacts in my database:
             | created_at          | updated_at          | status    | id                                   | disruption_id                        |severity_id                          |
@@ -211,6 +252,9 @@ Feature: list impacts by ptobject and/or uri(s)
             | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab232-3d47-4eea-aa2c-22f8680230b6 | 7ffab234-3d49-4eec-aa2c-22f8680230b4 |2014-01-20 16:52:00                  |2014-01-30 16:52:00 |
 
 
+        I fill in header "X-Contributors" with "contrib1"
+        I fill in header "X-Coverage" with "jdr"
+        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
         When I get "/impacts?pt_object_type=network&uri[]=network:JDR:1&uri[]=network:JDR:2&start_date=2013-12-02T23:52:12Z&end_date=2014-05-21T23:52:12Z"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
@@ -219,13 +263,21 @@ Feature: list impacts by ptobject and/or uri(s)
         And the field "objects.1.impacts" should have a size of 3
 
     Scenario: Use uri for network and uri for stop_area filter to display impacts
-        Given I have the following disruptions in my database:
-            | reference | note  | created_at          | updated_at          | status    | id                                   |
-            | foo       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |
+        Given I have the following clients in my database:
+            | client_code   | created_at          | updated_at          | id                                   |
+            | 5             | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
 
         Given I have the following severities in my database:
-                | wording   | color   | created_at          | updated_at          | is_visible | id                                   |
-                | good news | #654321 | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | True       | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |
+                | wording   | color   | created_at          | updated_at          | is_visible | id                                   |client_id                            |
+                | good news | #654321 | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | True       | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
+
+        Given I have the following contributors in my database:
+            | contributor_code   | created_at          | updated_at          | id                                   |
+            | contrib1           | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
+
+        Given I have the following disruptions in my database:
+            | reference | note  | created_at          | updated_at          | status    | id                                   | client_id                            | contributor_id                       |
+            | foo       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
 
         Given I have the following impacts in my database:
             | created_at          | updated_at          | status    | id                                   | disruption_id                        |severity_id                          |
@@ -266,6 +318,9 @@ Feature: list impacts by ptobject and/or uri(s)
             | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab232-3d47-4eea-aa2c-22f8680230b6 | 7ffab234-3d49-4eec-aa2c-22f8680230b4 |2014-01-20 16:52:00                  |2014-01-30 16:52:00 |
 
 
+        I fill in header "X-Contributors" with "contrib1"
+        I fill in header "X-Coverage" with "jdr"
+        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
         When I get "/impacts?uri[]=network:JDR:1&uri[]=stop_area:JDR:SA:CHVIN&start_date=2013-12-02T23:52:12Z&end_date=2014-05-21T23:52:12Z"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
@@ -278,13 +333,21 @@ Feature: list impacts by ptobject and/or uri(s)
         And the field "objects.1.name" should be "RATP"
 
     Scenario: Not uri not pt_object_type filter to display impacts
-        Given I have the following disruptions in my database:
-            | reference | note  | created_at          | updated_at          | status    | id                                   |
-            | foo       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |
+        Given I have the following clients in my database:
+            | client_code   | created_at          | updated_at          | id                                   |
+            | 5             | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
 
         Given I have the following severities in my database:
-                | wording   | color   | created_at          | updated_at          | is_visible | id                                   |
-                | good news | #654321 | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | True       | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |
+                | wording   | color   | created_at          | updated_at          | is_visible | id                                   |client_id                            |
+                | good news | #654321 | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | True       | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
+
+        Given I have the following contributors in my database:
+            | contributor_code   | created_at          | updated_at          | id                                   |
+            | contrib1           | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
+
+        Given I have the following disruptions in my database:
+            | reference | note  | created_at          | updated_at          | status    | id                                   | client_id                            | contributor_id                       |
+            | foo       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
 
         Given I have the following impacts in my database:
             | created_at          | updated_at          | status    | id                                   | disruption_id                        |severity_id                          |
@@ -325,18 +388,29 @@ Feature: list impacts by ptobject and/or uri(s)
             | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab232-3d47-4eea-aa2c-22f8680230b6 | 7ffab234-3d49-4eec-aa2c-22f8680230b4 |2014-01-20 16:52:00                  |2014-01-30 16:52:00 |
 
 
+        I fill in header "X-Contributors" with "contrib1"
+        I fill in header "X-Coverage" with "jdr"
+        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
         When I get "/impacts?start_date=2013-12-02T23:52:12Z&end_date=2014-05-21T23:52:12Z"
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
 
     Scenario: Filter on uri of an object in line_section to display impacts
-        Given I have the following disruptions in my database:
-            | reference | note  | created_at          | updated_at          | status    | id                                   |
-            | foo       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |
+        Given I have the following clients in my database:
+            | client_code   | created_at          | updated_at          | id                                   |
+            | 5             | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
 
         Given I have the following severities in my database:
-                | wording   | color   | created_at          | updated_at          | is_visible | id                                   |
-                | good news | #654321 | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | True       | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |
+                | wording   | color   | created_at          | updated_at          | is_visible | id                                   |client_id                            |
+                | good news | #654321 | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | True       | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
+
+        Given I have the following contributors in my database:
+            | contributor_code   | created_at          | updated_at          | id                                   |
+            | contrib1           | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
+
+        Given I have the following disruptions in my database:
+            | reference | note  | created_at          | updated_at          | status    | id                                   | client_id                            | contributor_id                       |
+            | foo       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
 
         Given I have the following impacts in my database:
             | created_at          | updated_at          | status    | id                                   | disruption_id                        |severity_id                          |
@@ -377,6 +451,9 @@ Feature: list impacts by ptobject and/or uri(s)
             | created_at          | updated_at          |id                                   | impact_id                            |start_date                           |end_date            |
             | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab232-3d47-4eea-aa2c-22f8680230b1 | 7ffab232-3d47-4eea-aa2c-22f8680230b6 |2014-01-20 16:52:00                  |2014-01-30 16:52:00 |
 
+        I fill in header "X-Contributors" with "contrib1"
+        I fill in header "X-Coverage" with "jdr"
+        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
         #Fetch impact by uri of object in start_point of line_section
         When I get "/impacts?uri[]=stop_area:JDR:SA:BASTI&start_date=2013-12-02T23:52:12Z&end_date=2014-10-21T23:52:12Z"
         Then the status code should be "200"
@@ -418,13 +495,21 @@ Feature: list impacts by ptobject and/or uri(s)
         And the field "objects.0.impacts.0.objects" should have a size of 2
 
     Scenario: Filter on uri of an object in line_section to display impacts (two impacts in database)
-        Given I have the following disruptions in my database:
-            | reference | note  | created_at          | updated_at          | status    | id                                   |
-            | foo       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |
+        Given I have the following clients in my database:
+            | client_code   | created_at          | updated_at          | id                                   |
+            | 5             | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
 
         Given I have the following severities in my database:
-                | wording   | color   | created_at          | updated_at          | is_visible | id                                   |
-                | good news | #654321 | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | True       | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |
+                | wording   | color   | created_at          | updated_at          | is_visible | id                                   |client_id                            |
+                | good news | #654321 | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | True       | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
+
+        Given I have the following contributors in my database:
+            | contributor_code   | created_at          | updated_at          | id                                   |
+            | contrib1           | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
+
+        Given I have the following disruptions in my database:
+            | reference | note  | created_at          | updated_at          | status    | id                                   | client_id                            | contributor_id                       |
+            | foo       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
 
         Given I have the following impacts in my database:
             | created_at          | updated_at          | status    | id                                   | disruption_id                        |severity_id                          |
@@ -467,6 +552,10 @@ Feature: list impacts by ptobject and/or uri(s)
             | created_at          | updated_at          |id                                   | impact_id                            |start_date                           |end_date            |
             | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab232-3d47-4eea-aa2c-22f8680230b1 | 7ffab232-3d47-4eea-aa2c-22f8680230b6 |2014-01-20 16:52:00                  |2014-01-30 16:52:00 |
             | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |8ffab232-3d47-4eea-aa2c-22f8680230b1 | 8ffab232-3d47-4eea-aa2c-22f8680230b6 |2014-01-20 16:52:00                  |2014-01-30 16:52:00 |
+
+        I fill in header "X-Contributors" with "contrib1"
+        I fill in header "X-Coverage" with "jdr"
+        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
         #Fetch impact by uri of object in start_point of line_section
         When I get "/impacts?uri[]=stop_area:JDR:SA:NATIO&start_date=2013-12-02T23:52:12Z&end_date=2014-10-21T23:52:12Z"
         Then the status code should be "200"

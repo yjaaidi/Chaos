@@ -28,8 +28,8 @@
 # www.navitia.io
 
 from flask_restful import fields, url_for
-from flask import current_app
-from  utils import make_pager
+from flask import current_app, request
+from  utils import make_pager, get_coverage, get_token
 from chaos.navitia import Navitia
 
 
@@ -65,8 +65,9 @@ class FieldObjectName(fields.Raw):
         if obj.type == 'line_section':
             return None
         navitia = Navitia(current_app.config['NAVITIA_URL'],
-                          current_app.config['NAVITIA_COVERAGE'],
-                          current_app.config['NAVITIA_TOKEN'])
+                              get_coverage(request),
+                              get_token(request))
+
         response = navitia.get_pt_object(obj.uri, obj.type)
         if response and 'name' in response:
             return response['name']
@@ -79,9 +80,8 @@ class FieldLocalization(fields.Raw):
 
         if obj.localization_id:
             navitia = Navitia(current_app.config['NAVITIA_URL'],
-                              current_app.config['NAVITIA_COVERAGE'],
-                              current_app.config['NAVITIA_TOKEN'])
-
+                              get_coverage(request),
+                              get_token(request))
             response = navitia.get_pt_object(obj.localization_id, 'stop_area')
             if response and 'name' in response:
                 retVal = [response]
@@ -94,6 +94,14 @@ class FieldLocalization(fields.Raw):
                 ]
             retVal[0]["type"] = "stop_area"
         return retVal
+
+
+class FieldContributor(fields.Raw):
+    def output(self, key, obj):
+        if hasattr(obj, 'contributor'):
+            return obj.contributor.contributor_code
+        return None
+
 
 href_field = {
     "href": fields.String
@@ -146,6 +154,7 @@ disruption_fields = {
         'end': FieldDateTime(attribute='end_publication_date')
     },
     'publication_status': fields.Raw,
+    'contributor': FieldContributor,
     'impacts': FieldPaginateImpacts(attribute='impacts'),
     'localization': FieldLocalization,
     'cause': fields.Nested(cause_fields, allow_null=True),
