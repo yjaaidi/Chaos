@@ -104,6 +104,7 @@ Le champs ```tags``` contient une liste de tag de la perturbation.
                         "status": "published",
                         "publication_status": "ongoing",
                         "contributor": "shortterm.tn",
+                        "version": 1,
                         "publication_period" : {
                             "begin":"2014-04-31T17:00:00Z",
                             "end":"2014-05-01T17:00:00Z"
@@ -319,6 +320,7 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient la perturbat
                     "status": "published",
                     "publication_status": "ongoing",
                     "contributor": "shortterm.tn",
+                    "version": 1,
                     "publication_period" : {
                         "begin": "2014-04-31T17:00:00Z",
                         "end": null
@@ -419,6 +421,7 @@ Retourne une perturbation (si elle existe):
                     "status": "published",
                     "publication_status": "ongoing",
                     "contributor": "shortterm.tn",
+                    "version": 1,
                     "publication_period" : {
                         "begin": "2014-04-31T17:00:00Z",
                         "end": null
@@ -554,6 +557,7 @@ Lors d'un succés une réponse 200 est retourné, celle ci contient la perturbat
                     "status": "published",
                     "publication_status": "ongoing",
                     "contributor": "shortterm.tn",
+                    "version": 2,
                     "publication_period" : {
                         "begin": "2014-04-31T17:00:00Z",
                         "end": null

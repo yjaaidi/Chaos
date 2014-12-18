@@ -379,7 +379,7 @@ class Disruptions(flask_restful.Resource):
         for diff in difference:
             tag = tags_db[diff]
             disruption.tags.remove(tag)
-
+        disruption.upgrade_version()
         db.session.commit()
         chaos.utils.send_disruption_to_navitia(disruption)
         return marshal({'disruption': disruption}, one_disruption_fields), 200
@@ -390,6 +390,7 @@ class Disruptions(flask_restful.Resource):
             return marshal({'error': {'message': "id invalid"}},
                            error_fields), 400
         disruption = models.Disruption.get(id, contributor.id)
+        disruption.upgrade_version()
         disruption.archive()
         db.session.commit()
         chaos.utils.send_disruption_to_navitia(disruption)
@@ -780,6 +781,7 @@ class Impacts(flask_restful.Resource):
 
         self.manage_application_periods(impact, json)
         self.manage_message(impact, json)
+        disruption.upgrade_version()
         db.session.commit()
         chaos.utils.send_disruption_to_navitia(disruption)
         return marshal({'impact': impact}, one_impact_fields), 201
@@ -849,8 +851,10 @@ class Impacts(flask_restful.Resource):
 
         self.manage_application_periods(impact, json)
         self.manage_message(impact, json)
+        disruption = models.Disruption.get(disruption_id, contributor.id)
+        disruption.upgrade_version()
         db.session.commit()
-        chaos.utils.send_disruption_to_navitia(models.Disruption.get(disruption_id, contributor.id))
+        chaos.utils.send_disruption_to_navitia(disruption)
         return marshal({'impact': impact}, one_impact_fields), 200
 
     @validate_contributor()
@@ -860,8 +864,10 @@ class Impacts(flask_restful.Resource):
                                error_fields), 400
         impact = models.Impact.get(id, contributor.id)
         impact.archive()
+        disruption = models.Disruption.get(disruption_id, contributor.id)
+        disruption.upgrade_version()
         db.session.commit()
-        chaos.utils.send_disruption_to_navitia(models.Disruption.get(disruption_id, contributor.id))
+        chaos.utils.send_disruption_to_navitia(disruption)
         return None, 204
 
 class Channel(flask_restful.Resource):
