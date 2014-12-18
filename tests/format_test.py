@@ -178,9 +178,30 @@ def test_disruption_with_localisation_validation():
     validate(json, formats.disruptions_input_format)
 
 @raises(ValidationError)
+def test_disruption_with_list_localisation_doublon():
+    json = {"severity": {"id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657ea"},"localization":[{"id": "stop_area:aaaa", "type":"stop_area"}, {"id": "stop_area:aaaa", "type":"stop_area"}], "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}}
+    validate(json, formats.disruptions_input_format)
+
+@raises(ValidationError)
 def test_disruption_with_list_localisation_validation():
     json = {"reference": "foo", "contributor": "contrib1", "note": "hello","localization":{"id": "aaaa", "type":"stop_area"}}
     validate(json, formats.disruptions_input_format)
+
+@raises(ValidationError)
+def test_disruption_with_list_localisation_stop_point():
+    json = {"reference": "foo", "contributor": "contrib1", "note": "hello","localization":[{"id": "aaaa", "type":"stop_point"}]}
+    validate(json, formats.disruptions_input_format)
+
+@raises(ValidationError)
+def test_disruption_with_list_localisation_line():
+    json = {"reference": "foo", "contributor": "contrib1", "note": "hello","localization":[{"id": "aaaa", "type":"line"}]}
+    validate(json, formats.disruptions_input_format)
+
+@raises(ValidationError)
+def test_disruption_with_list_localisation_network():
+    json = {"reference": "foo", "contributor": "contrib1", "note": "hello","localization":[{"id": "aaaa", "type":"network"}]}
+    validate(json, formats.disruptions_input_format)
+
 def test_impact_whith_message_validation():
     json = {"severity":{"id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657ea"}, "messages":[{"text":"aaaaaa","channel":{"id": "3d1f42b2-e8df-11e3-8c3e-0008ca86c7ea"}}]}
     validate(json, formats.impact_input_format)

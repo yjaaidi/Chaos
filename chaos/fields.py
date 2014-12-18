@@ -76,23 +76,23 @@ class FieldObjectName(fields.Raw):
 
 class FieldLocalization(fields.Raw):
     def output(self, key, obj):
-        retVal = None
-
-        if obj.localization_id:
-            navitia = Navitia(current_app.config['NAVITIA_URL'],
-                              get_coverage(request),
-                              get_token(request))
-            response = navitia.get_pt_object(obj.localization_id, 'stop_area')
+        retVal = []
+        navitia = Navitia(current_app.config['NAVITIA_URL'],
+                          get_coverage(request),
+                          get_token(request))
+        for localization in obj.localizations:
+            response = navitia.get_pt_object(localization.uri, localization.type)
             if response and 'name' in response:
-                retVal = [response]
+                response["type"] = localization.type
+                retVal.append(response)
             else:
-                retVal = [
+                retVal.append(
                     {
                         "id": obj.localization_id,
-                        "name": "Unable to find object"
+                        "name": "Unable to find object",
+                        "type": localization.type
                     }
-                ]
-            retVal[0]["type"] = "stop_area"
+                )
         return retVal
 
 
@@ -157,7 +157,7 @@ disruption_fields = {
     'publication_status': fields.Raw,
     'contributor': FieldContributor,
     'impacts': FieldPaginateImpacts(attribute='impacts'),
-    'localization': FieldLocalization,
+    'localization': FieldLocalization(attribute='localizations'),
     'cause': fields.Nested(cause_fields, allow_null=True),
     'tags': fields.List(fields.Nested(tag_fields)),
 }
