@@ -133,8 +133,10 @@ def populate_impact(disruption, disruption_pb):
 
 
 def populate_localization(disruption, disruption_pb):
-    localization_pb = disruption_pb.localization.add()
-    localization_pb.stop_id = str(disruption.localization_id)
+    if hasattr(disruption, 'localizations'):
+        if disruption.localizations:
+            for localization in disruption.localizations:
+                populate_informed_entitie(localization, disruption_pb.localization.add())
 
 
 def populate_tag(disruption, disruption_pb):
