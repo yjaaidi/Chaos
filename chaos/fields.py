@@ -29,7 +29,7 @@
 
 from flask_restful import fields, url_for
 from flask import current_app, request
-from  utils import make_pager, get_coverage, get_token
+from utils import make_pager, get_coverage, get_token
 from chaos.navitia import Navitia
 
 
@@ -60,13 +60,14 @@ class FieldUrlDisruption(fields.Raw):
 
 class FieldObjectName(fields.Raw):
     def output(self, key, obj):
-        if obj == None:
+        if not obj:
             return None
         if obj.type == 'line_section':
             return None
-        navitia = Navitia(current_app.config['NAVITIA_URL'],
-                              get_coverage(request),
-                              get_token(request))
+        navitia = Navitia(
+            current_app.config['NAVITIA_URL'],
+            get_coverage(request),
+            get_token(request))
 
         response = navitia.get_pt_object(obj.uri, obj.type)
         if response and 'name' in response:
@@ -81,7 +82,9 @@ class FieldLocalization(fields.Raw):
                           get_coverage(request),
                           get_token(request))
         for localization in obj.localizations:
-            response = navitia.get_pt_object(localization.uri, localization.type)
+            response = navitia.get_pt_object(
+                localization.uri,
+                localization.type)
             if response and 'name' in response:
                 response["type"] = localization.type
                 retVal.append(response)
@@ -218,19 +221,28 @@ one_objectTC_fields = {
 }
 
 line_section_fields = {
-    'line' : fields.Nested(one_objectTC_fields, display_null=False),
+    'line': fields.Nested(one_objectTC_fields, display_null=False),
     'start_point': fields.Nested(one_objectTC_fields, display_null=False),
     'end_point': fields.Nested(one_objectTC_fields, display_null=False),
-    'sens':fields.Integer(default=None),
-    'routes':fields.List(fields.Nested(one_objectTC_fields, display_null=False), display_empty=False),
-    'via':fields.List(fields.Nested(one_objectTC_fields, display_null=False), display_empty=False)
+    'sens': fields.Integer(default=None),
+    'routes': fields.List(
+        fields.Nested(one_objectTC_fields, display_null=False),
+        display_empty=False),
+    'via': fields.List(
+        fields.Nested(
+            one_objectTC_fields,
+            display_null=False),
+        display_empty=False)
 }
 
 objectTC_fields = {
     'id': fields.Raw(attribute='uri'),
     'type': fields.Raw,
     'name': FieldObjectName(),
-    'line_section': fields.Nested(line_section_fields, display_null=False, allow_null=True)
+    'line_section': fields.Nested(
+        line_section_fields,
+        display_null=False,
+        allow_null=True)
 }
 
 channel_fields = {
