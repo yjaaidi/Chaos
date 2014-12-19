@@ -77,7 +77,7 @@ class FieldObjectName(fields.Raw):
 
 class FieldLocalization(fields.Raw):
     def output(self, key, obj):
-        retVal = []
+        to_return = []
         navitia = Navitia(current_app.config['NAVITIA_URL'],
                           get_coverage(request),
                           get_token(request))
@@ -87,16 +87,16 @@ class FieldLocalization(fields.Raw):
                 localization.type)
             if response and 'name' in response:
                 response["type"] = localization.type
-                retVal.append(response)
+                to_return.append(response)
             else:
-                retVal.append(
+                to_return.append(
                     {
                         "id": obj.localization_id,
                         "name": "Unable to find object",
                         "type": localization.type
                     }
                 )
-        return retVal
+        return to_return
 
 
 class FieldContributor(fields.Raw):
