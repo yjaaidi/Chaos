@@ -91,7 +91,7 @@ class FieldLocalization(fields.Raw):
             else:
                 to_return.append(
                     {
-                        "id": obj.localization_id,
+                        "id": localization.uri,
                         "name": "Unable to find object",
                         "type": localization.type
                     }
