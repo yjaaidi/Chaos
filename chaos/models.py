@@ -402,10 +402,6 @@ class Impact(TimestampMixin, db.Model):
         self.application_periods.append(application_period)
         db.session.add(application_period)
 
-    def delete(self, ptobject):
-        self.objects.remove(ptobject)
-
-
     @classmethod
     def get(cls, id, contributor_id):
         query = cls.query.filter_by(id=id, status='published')
