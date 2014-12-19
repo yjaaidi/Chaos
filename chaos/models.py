@@ -192,6 +192,14 @@ class Tag(TimestampMixin, db.Model):
         return cls.query.filter_by(name=name, client_id=client_id, is_visible=False).first()
 
 
+associate_disruption_pt_object = db.Table('associate_disruption_pt_object',
+                                          db.metadata,
+                                          db.Column('disruption_id', UUID, db.ForeignKey('disruption.id')),
+                                          db.Column('pt_object_id', UUID, db.ForeignKey('pt_object.id')),
+                                          db.PrimaryKeyConstraint('disruption_id', 'pt_object_id', name='disruption_pt_object_pk')
+)
+
+
 class Disruption(TimestampMixin, db.Model):
     __tablename__ = 'disruption'
     id = db.Column(UUID, primary_key=True)
@@ -201,7 +209,6 @@ class Disruption(TimestampMixin, db.Model):
     start_publication_date = db.Column(db.DateTime(), nullable=True)
     end_publication_date = db.Column(db.DateTime(), nullable=True)
     impacts = db.relationship('Impact', backref='disruption', lazy='dynamic')
-    localization_id = db.Column(db.Text, unique=False, nullable=True)
     cause_id = db.Column(UUID, db.ForeignKey(Cause.id))
     cause = db.relationship('Cause', backref='disruption', lazy='joined')
     tags = db.relationship("Tag", secondary=associate_disruption_tag, backref="disruptions")
@@ -210,6 +217,7 @@ class Disruption(TimestampMixin, db.Model):
     contributor_id = db.Column(UUID, db.ForeignKey(Contributor.id), nullable=False)
     contributor = db.relationship('Contributor', backref='disruptions', lazy='joined')
     version = db.Column(db.Integer, nullable=False, default=1)
+    localizations = db.relationship("PTobject", secondary=associate_disruption_pt_object, backref="disruptions")
 
     def __repr__(self):
         return '<Disruption %r>' % self.id
@@ -393,10 +401,6 @@ class Impact(TimestampMixin, db.Model):
         """
         self.application_periods.append(application_period)
         db.session.add(application_period)
-
-    def delete(self, ptobject):
-        self.objects.remove(ptobject)
-
 
     @classmethod
     def get(cls, id, contributor_id):

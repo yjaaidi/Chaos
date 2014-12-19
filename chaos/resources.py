@@ -160,6 +160,64 @@ class validate_navitia(object):
         return wrapper
 
 
+def fill_and_get_pt_object(navitia, all_objects, json, add_to_db=True):
+    """
+    :param all_objects: dictionary of objects to be added in this session
+    :param json: Flux which contains json information of pt_object
+    :param add_to_db: ptobject insert into database
+    :return: a pt_object and modify all_objects param
+    """
+
+    if json["id"] in all_objects:
+        return all_objects[json["id"]]
+
+    pt_object = models.PTobject.get_pt_object_by_uri(json["id"])
+
+    if pt_object:
+        all_objects[json["id"]] = pt_object
+        return pt_object
+
+    if not navitia.get_pt_object(json['id'], json['type']):
+        raise exceptions.ObjectUnknown()
+
+    pt_object = models.PTobject()
+    mapper.fill_from_json(pt_object, json, object_mapping)
+    if add_to_db:
+        db.session.add(pt_object)
+    all_objects[json["id"]] = pt_object
+    return pt_object
+
+
+def manage_pt_object_without_line_section(navitia, db_objects, json_attribute, json_data):
+    '''
+    :param navitia:
+    :param db_objects: pt_object in database models : localisations, objects
+    :param json_pt_object: attribute in json
+    :param json_data: data
+    :return:
+    '''
+    pt_object_db = dict()
+    for ptobject in db_objects:
+            pt_object_db[ptobject.uri] = ptobject
+
+    pt_object_dict = dict()
+    if json_attribute in json_data:
+        for pt_object_json in json_data[json_attribute]:
+            if pt_object_json["type"] == 'line_section':
+                continue
+            try:
+                ptobject = fill_and_get_pt_object(navitia, pt_object_dict, pt_object_json, False)
+            except exceptions.ObjectUnknown:
+                raise exceptions.ObjectUnknown('ptobject {} doesn\'t exist'.format(pt_object_json['id']))
+
+            if ptobject.uri not in pt_object_db:
+                db_objects.append(ptobject)
+
+    for ptobject_uri in pt_object_db:
+        if ptobject_uri not in pt_object_dict:
+            db_objects.remove(pt_object_db[ptobject_uri])
+
+
 class Index(flask_restful.Resource):
 
     def get(self):
@@ -316,10 +374,11 @@ class Disruptions(flask_restful.Resource):
         disruption.client = client
 
         #Add localization present in Json
-        if 'localization' in json and json['localization']:
-            if not self.navitia.get_pt_object(disruption.localization_id, json['localization'][0]["type"]):
-                        return marshal({'error': {'message': 'ptobject {} doesn\'t exist'.format(disruption.localization_id)}},
-                            error_fields), 404
+        try:
+            manage_pt_object_without_line_section(self.navitia, disruption.localizations, 'localization', json)
+        except exceptions.ObjectUnknown, e:
+            return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 404
+
         db.session.add(disruption)
 
         #Add all tags present in Json
@@ -359,10 +418,10 @@ class Disruptions(flask_restful.Resource):
             disruption.contributor = models.Contributor.get_or_create(json['contributor'])
 
         #Add localization present in Json
-        if 'localization' in json and json['localization']:
-            if not self.navitia.get_pt_object(disruption.localization_id, json['localization'][0]["type"]):
-                    return marshal({'error': {'message': 'ptobject {} doesn\'t exist'.format(disruption.localization_id)}},
-                            error_fields), 404
+        try:
+            manage_pt_object_without_line_section(self.navitia, disruption.localizations, 'localization', json)
+        except exceptions.ObjectUnknown, e:
+            return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 404
 
         #Add/delete tags present/ not present in Json
         tags_db = dict((tag.id, tag) for tag in disruption.tags)
@@ -587,33 +646,6 @@ class Impacts(flask_restful.Resource):
         parser_get.add_argument("start_page", type=int, default=1)
         parser_get.add_argument("items_per_page", type=int, default=20)
 
-    def fill_and_get_pt_object(self, all_objects, json, add_to_db=True):
-        """
-        :param all_objects: dictionary of objects to be added in this session
-        :param json: Flux which contains json information of pt_object
-        :param add_to_db: ptobject insert into database
-        :return: a pt_object and modify all_objects param
-        """
-
-        if json["id"] in all_objects:
-            return all_objects[json["id"]]
-
-        pt_object = models.PTobject.get_pt_object_by_uri(json["id"])
-
-        if pt_object:
-            all_objects[json["id"]] = pt_object
-            return pt_object
-
-        if not self.navitia.get_pt_object(json['id'], json['type']):
-            raise exceptions.ObjectUnknown()
-
-        pt_object = models.PTobject()
-        mapper.fill_from_json(pt_object, json, object_mapping)
-        if add_to_db:
-            db.session.add(pt_object)
-        all_objects[json["id"]] = pt_object
-        return pt_object
-
     def fill_and_add_line_section(self, impact_id, all_objects, pt_object_json):
         """
         :param impact_id: impact_id to construct uri of line_section object
@@ -630,19 +662,19 @@ class Impacts(flask_restful.Resource):
         line_section = models.LineSection(ptobject.id)
 
         try:
-            line_object = self.fill_and_get_pt_object(all_objects, line_section_json['line'])
+            line_object = fill_and_get_pt_object(self.navitia, all_objects, line_section_json['line'])
         except exceptions.ObjectUnknown:
             raise exceptions.ObjectUnknown('{} {} doesn\'t exist'.format(line_section_json['line']['type'], line_section_json['line']['id']))
         line_section.line = line_object
 
         try:
-            start_object = self.fill_and_get_pt_object(all_objects, line_section_json['start_point'])
+            start_object = fill_and_get_pt_object(self.navitia, all_objects, line_section_json['start_point'])
         except exceptions.ObjectUnknown:
             raise exceptions.ObjectUnknown('{} {} doesn\'t exist'.format(line_section_json['line']['type'], line_section_json['line']['id']))
         line_section.start_point = start_object
 
         try:
-            end_object = self.fill_and_get_pt_object(all_objects, line_section_json['end_point'])
+            end_object = fill_and_get_pt_object(self.navitia, all_objects, line_section_json['end_point'])
         except exceptions.ObjectUnknown:
             raise exceptions.ObjectUnknown('{} {} doesn\'t exist'.format(line_section_json['line']['type'], line_section_json['line']['id']))
         line_section.end_point = end_object
@@ -652,7 +684,7 @@ class Impacts(flask_restful.Resource):
         if 'routes' in line_section_json:
             for route in line_section_json["routes"]:
                 try:
-                    route_object = self.fill_and_get_pt_object(all_objects, route, True)
+                    route_object = fill_and_get_pt_object(self.navitia, all_objects, route, True)
                     line_section.routes.append(route_object)
                 except exceptions.ObjectUnknown:
                     raise exceptions.ObjectUnknown('{} {} doesn\'t exist'.format(route['type'], route['id']))
@@ -662,7 +694,7 @@ class Impacts(flask_restful.Resource):
         if 'via' in line_section_json:
             for via in line_section_json["via"]:
                 try:
-                    via_object = self.fill_and_get_pt_object(all_objects, via, True)
+                    via_object = fill_and_get_pt_object(self.navitia, all_objects, via, True)
                     line_section.via.append(via_object)
                 except exceptions.ObjectUnknown:
                     raise exceptions.ObjectUnknown('{} {} doesn\'t exist'.format(via['type'], via['id']))
@@ -759,16 +791,14 @@ class Impacts(flask_restful.Resource):
         #The ptobject is not added in the database before commit. If we have duplicate ptobject
         #in the json we have to handle it by using a dictionary. Each time we add a ptobject, we also
         #add it in the dictionary
+        try:
+            manage_pt_object_without_line_section(self.navitia, impact.objects, 'objects', json)
+        except exceptions.ObjectUnknown, e:
+            return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 404
+
         all_objects = dict()
         if 'objects' in json:
             for pt_object_json in json['objects']:
-                if pt_object_json["type"] != 'line_section':
-                    try:
-                        ptobject = self.fill_and_get_pt_object(all_objects, pt_object_json, False)
-                    except exceptions.ObjectUnknown:
-                        return marshal({'error': {'message': '{} {} doesn\'t exist'.format(pt_object_json["type"], pt_object_json['id'])}},
-                                error_fields), 404
-
                 #For an pt_objects of the type 'line_section' we format uri : uri:impact_id
                 # we insert this object in the table pt_object
                 if pt_object_json["type"] == 'line_section':
@@ -777,7 +807,7 @@ class Impacts(flask_restful.Resource):
                     except exceptions.ObjectUnknown, e:
                         return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 404
 
-                impact.objects.append(ptobject)
+                    impact.objects.append(ptobject)
 
         self.manage_application_periods(impact, json)
         self.manage_message(impact, json)
@@ -810,27 +840,11 @@ class Impacts(flask_restful.Resource):
         #Fetch all the objects (except line_section) of impact in the database and insert code(uri) in the dictionary "pt_object_db".
         #For each object (except line_section) present in json but absent in pt_object_db, we add in database.
         #For each object (except line_section) present in the database but absent in json we delete in database.
-        pt_object_db = dict()
-        for ptobject in impact.objects:
-            if ptobject.type != 'line_section':
-                pt_object_db[ptobject.uri] = ptobject
-        pt_object_dict = dict()
+        try:
+            manage_pt_object_without_line_section(self.navitia, impact.objects, 'objects', json)
+        except exceptions.ObjectUnknown, e:
+            return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 404
         if 'objects' in json:
-            for pt_object_json in json['objects']:
-                if pt_object_json["type"] != 'line_section':
-                    try:
-                        ptobject = self.fill_and_get_pt_object(pt_object_dict, pt_object_json, False)
-                    except exceptions.ObjectUnknown:
-                        return marshal({'error': {'message': '{} {} doesn\'t exist'.format(pt_object_json["type"], pt_object_json['id'])}},
-                        error_fields), 404
-
-                    if ptobject.uri not in pt_object_db:
-                        impact.objects.append(ptobject)
-
-            for ptobject_uri in pt_object_db:
-                if ptobject_uri not in pt_object_dict:
-                    impact.delete(pt_object_db[ptobject_uri])
-
             #For each object of type line_section we delete line_section, routes and via
             #Create a new line_section add add routes and via
             impact.delete_line_section()
