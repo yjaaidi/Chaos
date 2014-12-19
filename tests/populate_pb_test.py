@@ -11,7 +11,10 @@ def get_disruption(with_via=True, with_routes=True):
     disruption.cause = chaos.models.Cause()
     disruption.cause.wording = "CauseTest"
     disruption.reference = "DisruptionTest"
-    disruption.localization_id = "123"
+    localization = chaos.models.PTobject()
+    localization.uri = "stop_area:123"
+    localization.type = "stop_area"
+    disruption.localizations.append(localization)
 
     # Tag
     tag = chaos.models.Tag()
@@ -118,7 +121,7 @@ def test_disruption():
     eq_(disruption_pb.reference,  disruption.reference)
     eq_(disruption_pb.cause.wording,  disruption.cause.wording)
     eq_(len(disruption_pb.localization),  1)
-    eq_(disruption_pb.localization[0].stop_id,  disruption.localization_id)
+    eq_(disruption_pb.localization[0].uri,  disruption.localizations[0].uri)
     eq_(len(disruption_pb.tags),  2)
     eq_(disruption_pb.tags[0].name,  disruption.tags[0].name)
     eq_(disruption_pb.tags[1].name,  disruption.tags[1].name)
@@ -183,7 +186,7 @@ def test_disruption_without_via():
     eq_(disruption_pb.reference, disruption.reference)
     eq_(disruption_pb.cause.wording, disruption.cause.wording)
     eq_(len(disruption_pb.localization), 1)
-    eq_(disruption_pb.localization[0].stop_id, disruption.localization_id)
+    eq_(disruption_pb.localization[0].uri,  disruption.localizations[0].uri)
     eq_(len(disruption_pb.tags), 2)
     eq_(disruption_pb.tags[0].name, disruption.tags[0].name)
     eq_(disruption_pb.tags[1].name, disruption.tags[1].name)
@@ -248,7 +251,7 @@ def test_disruption_without_routes():
     eq_(disruption_pb.reference, disruption.reference)
     eq_(disruption_pb.cause.wording, disruption.cause.wording)
     eq_(len(disruption_pb.localization), 1)
-    eq_(disruption_pb.localization[0].stop_id, disruption.localization_id)
+    eq_(disruption_pb.localization[0].uri,  disruption.localizations[0].uri)
     eq_(len(disruption_pb.tags), 2)
     eq_(disruption_pb.tags[0].name, disruption.tags[0].name)
     eq_(disruption_pb.tags[1].name, disruption.tags[1].name)
@@ -313,7 +316,7 @@ def test_disruption_without_routes():
     eq_(disruption_pb.reference, disruption.reference)
     eq_(disruption_pb.cause.wording, disruption.cause.wording)
     eq_(len(disruption_pb.localization), 1)
-    eq_(disruption_pb.localization[0].stop_id, disruption.localization_id)
+    eq_(disruption_pb.localization[0].uri,  disruption.localizations[0].uri)
     eq_(len(disruption_pb.tags), 2)
     eq_(disruption_pb.tags[0].name, disruption.tags[0].name)
     eq_(disruption_pb.tags[1].name, disruption.tags[1].name)
