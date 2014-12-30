@@ -113,6 +113,7 @@ href_field = {
 cause_fields = {
     'id': fields.Raw,
     'wording': fields.Raw,
+    'category': fields.Raw,
     'created_at': FieldDateTime,
     'updated_at': FieldDateTime,
     'self': {'href': fields.Url('cause', absolute=True)},

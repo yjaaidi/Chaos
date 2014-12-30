@@ -39,3 +39,16 @@ Feature: Create cause
         And the header "Content-Type" should be "application/json"
         And the field "causes" should have a size of 1
         And the field "causes.0.wording" should be "foo"
+
+    Scenario: Cause with category
+        I fill in header "X-Customer-Id" with "5"
+        Given I post to "/causes" with:
+        """
+        {"wording": "foo", "category": "cat-1"}
+        """
+        When I get "/causes"
+        Then the status code should be "200"
+        And the header "Content-Type" should be "application/json"
+        And the field "causes" should have a size of 1
+        And the field "causes.0.wording" should be "foo"
+        And the field "causes.0.category" should be "cat-1"
