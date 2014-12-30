@@ -59,7 +59,8 @@ Return all visible disruptions.
                         "version": 1,
                         "cause": {
                             "id": "3d1f34b2-e8df-11e3-8c3e-0008ca8657ea",
-                            "wording": "Condition météo"
+                            "wording": "Condition météo",
+                            "category": "category-1"
                         },
                         tags": [
                             {
@@ -120,7 +121,8 @@ Return all visible disruptions.
                         "contributor": "shortterm.tn",
                         "cause": {
                             "id": "3d1f34b2-e8ef-11e3-8c3e-0008ca8657ea",
-                            "wording": "train cassé"
+                            "wording": "train cassé",
+                            "category": "category-1"
                         },
                         tags": [
                             {
@@ -162,7 +164,8 @@ Return all visible disruptions.
                         "contributor": "shortterm.tn",
                         "cause": {
                             "id": "3d1f34b2-e2df-11e3-8c3e-0008ca8657ea",
-                            "wording": "émeute"
+                            "wording": "émeute",
+                            "category": "category-1"
                         },
                         tags": [
                             {
@@ -316,7 +319,8 @@ Create one valid disruption with impacts
                     "version": 2,
                     "cause": {
                         "id": "3d1f34b2-e8df-1ae3-8c3e-0008ca8657ea",
-                        "wording": "Condition météo"
+                        "wording": "Condition météo",
+                        "category": "category-1"
                     },
                     tags": [
                         {
@@ -394,7 +398,8 @@ Retrieve one existing disruption:
                     "version": 2,
                     "cause": {
                         "id": "3d1e32b2-e8df-11e3-8c3e-0008ca8657ea",
-                        "wording": "Condition météo"
+                        "wording": "Condition météo",
+                        "category": "category-1"
                     },
                     tags": [
                         {
@@ -514,7 +519,8 @@ Retrieve one existing disruption:
                     "version": 2,
                     "cause": {
                         "id": "3d1f32b2-e8df-11e3-8c3e-0008ca8657ea",
-                        "wording": "Condition météo"
+                        "wording": "Condition météo",
+                        "category": "category-1"
                     },
                     tags": [
                         {
@@ -1485,18 +1491,21 @@ Return all the severities ordered by priority.
                     {
                         "id": "3d1f42b2-e8df-11e4-8c3e-0008ca8617ea",
                         "wording": "météo",
+                        "category": "category-1",
                         "created_at": "2014-04-31T16:52:18Z",
                         "updated_at": "2014-04-31T16:55:18Z"
                     },
                     {
                         "id": "3d1f42b2-e8df-11e5-8c3e-0008ca8617ea",
                         "wording": "gréve",
+                        "category": "category-2",
                         "created_at": "2014-04-31T16:52:18Z",
                         "updated_at": "2014-04-31T16:55:18Z"
                     },
                     {
                         "id": "3d1f42b2-e8df-11e6-8c3e-0008ca8617ea",
                         "wording": "accident voyageur",
+                        "category": "null"
                         "created_at": "2014-04-31T16:52:18Z",
                         "updated_at": "2014-04-31T16:55:18Z"
                     }
@@ -1523,6 +1532,7 @@ Return all the severities ordered by priority.
                 "cause": {
                     "id": "3d1f42b2-e8df-11e4-8c3e-0008ca8617ea",
                     "wording": "météo",
+                    "category": "category-1",
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": null
                 },
@@ -1872,6 +1882,7 @@ Retrieve one existing cause:
                 "cause": {
                     "id": "3d1f42b2-e8df-11e4-8c3e-0008ca8617ea",
                     "wording": "météo",
+                    "category": "category-1",
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": null
                 },
@@ -1913,6 +1924,7 @@ Retrieve one existing cause:
                 "cause": {
                     "id": "3d1f42b3-e8df-11e3-8c3e-0008ca8617ea",
                     "wording": "accident voyageur",
+                    "category": "category-1",
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": "2014-04-31T16:55:18Z"
                 },
