@@ -137,6 +137,7 @@ class Cause(TimestampMixin, db.Model):
     is_visible = db.Column(db.Boolean, unique=False, nullable=False, default=True)
     client_id = db.Column(UUID, db.ForeignKey(Client.id), nullable=False)
     client = db.relationship('Client', backref='causes', lazy='joined')
+    category = db.Column(db.Text, unique=False, nullable=True)
 
     def __init__(self):
         self.id = str(uuid.uuid1())

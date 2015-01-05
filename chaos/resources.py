@@ -70,7 +70,8 @@ severity_mapping = {
 }
 
 cause_mapping = {
-    'wording': None
+    'wording': None,
+    'category': None
 }
 
 tag_mapping = {
