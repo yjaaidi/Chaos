@@ -700,6 +700,10 @@ class Impacts(flask_restful.Resource):
                 except exceptions.ObjectUnknown:
                     raise exceptions.ObjectUnknown('{} {} doesn\'t exist'.format(via['type'], via['id']))
 
+        #Fill sens from json
+        if 'sens' in line_section_json:
+            line_section.sens = line_section_json["sens"]
+
         ptobject.insert_line_section(line_section)
 
         return ptobject

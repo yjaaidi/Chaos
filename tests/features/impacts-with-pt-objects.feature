@@ -337,7 +337,7 @@ Feature: Manipulate impacts in a Disruption
         I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
         When I post to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/impacts" with:
         """
-        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id":"line:JDR:M1", "type":"line_section","line_section": {"line":{"id":"line:JDR:M1","type":"line"}, "start_point":{"id":"stop_area:JDR:SA:PTVIN", "type":"stop_area"}, "end_point":{"id":"stop_area:JDR:SA:BERAU", "type":"stop_area"}, "sens":0 }}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"},{"begin": "2014-04-29T16:52:00Z","end": "2014-05-22T02:15:00Z"}]}
+        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id":"line:JDR:M1", "type":"line_section","line_section": {"line":{"id":"line:JDR:M1","type":"line"}, "start_point":{"id":"stop_area:JDR:SA:PTVIN", "type":"stop_area"}, "end_point":{"id":"stop_area:JDR:SA:BERAU", "type":"stop_area"}, "sens":1 }}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"},{"begin": "2014-04-29T16:52:00Z","end": "2014-05-22T02:15:00Z"}]}
         """
         Then the status code should be "201"
         And the header "Content-Type" should be "application/json"
@@ -346,6 +346,7 @@ Feature: Manipulate impacts in a Disruption
         And the field "impact.objects.0.line_section.line.id" should be "line:JDR:M1"
         And the field "impact.objects.0.line_section.start_point.id" should be "stop_area:JDR:SA:PTVIN"
         And the field "impact.objects.0.line_section.end_point.id" should be "stop_area:JDR:SA:BERAU"
+        And the field "impact.objects.0.line_section.sens" should be 1
 
     Scenario: Add an impact in a disruption with 2 objects line_section valid
 
@@ -795,7 +796,7 @@ Feature: Manipulate impacts in a Disruption
         I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
         When I put to "/disruptions/7ffab230-3d48-4eea-aa2c-22f8680230b6/impacts/7ffab232-3d47-4eea-aa2c-22f8680230b6" with:
         """
-        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id":"line:JDR:TT", "type":"line_section","line_section": {"line":{"id":"line:JDR:TT","type":"line"}, "start_point":{"id":"stop_area:JDR:SA:BASTI", "type":"stop_area"}, "end_point":{"id":"stop_area:JDR:SA:CHVIN", "type":"stop_area"}, "sens":0, "routes":[{"type":"route", "id":"route:JDR:M14"}, {"type":"route", "id":"route:JDR:M1_R"}], "via":[{"id":"stop_area:JDR:SA:NATIO", "type":"stop_area"}, {"id":"stop_area:JDR:SA:REUIL", "type":"stop_area"}] }}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}
+        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id":"line:JDR:TT", "type":"line_section","line_section": {"line":{"id":"line:JDR:TT","type":"line"}, "start_point":{"id":"stop_area:JDR:SA:BASTI", "type":"stop_area"}, "end_point":{"id":"stop_area:JDR:SA:CHVIN", "type":"stop_area"}, "sens":2, "routes":[{"type":"route", "id":"route:JDR:M14"}, {"type":"route", "id":"route:JDR:M1_R"}], "via":[{"id":"stop_area:JDR:SA:NATIO", "type":"stop_area"}, {"id":"stop_area:JDR:SA:REUIL", "type":"stop_area"}] }}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}
         """
 
         Then the status code should be "200"
@@ -811,3 +812,5 @@ Feature: Manipulate impacts in a Disruption
         And the field "impact.objects.0.line_section.end_point.id" should be "stop_area:JDR:SA:CHVIN"
         And the field "impact.objects.0.line_section.routes" should have a size of 2
         And the field "impact.objects.0.line_section.via" should have a size of 2
+        And the field "impact.objects.0.line_section.sens" should be 2
+
