@@ -473,6 +473,10 @@ Retrieve one existing disruption:
     * Headers
 
             Content-Type: application/json
+            Authorization: [navitia token]
+            X-Customer-Id: [customer id]
+            X-Contributors: [contributor id]
+            X-Coverage: [navitia coverage]
 
     * Body
 
@@ -837,6 +841,10 @@ Create a new impact.
     + headers
 
             Content-Type: application/json
+            Authorization: [navitia token]
+            X-Customer-Id: [customer id]
+            X-Contributors: [contributor id]
+            X-Coverage: [navitia coverage]
 
     + body
 
@@ -1051,6 +1059,10 @@ Create a new impact.
     * Headers
 
             Content-Type: application/json
+            Authorization: [navitia token]
+            X-Customer-Id: [customer id]
+            X-Contributors: [contributor id]
+            X-Coverage: [navitia coverage]
 
     * Body
 
@@ -1452,6 +1464,8 @@ Return all the severities ordered by priority.
     + headers
 
             Content-Type: application/json
+            X-Customer-Id: [customer id]
+
     * Body
 
                 {
@@ -1518,6 +1532,8 @@ Return all the severities ordered by priority.
     + headers
 
             Content-Type: application/json
+            X-Customer-Id: [customer id]
+
     * Body
 
                 {
@@ -1576,6 +1592,8 @@ Return all the severities ordered by priority.
     + headers
 
             Content-Type: application/json
+            X-Customer-Id: [customer id]
+
     * Body
 
                 {
@@ -1640,6 +1658,7 @@ Retrieve one existing tag:
     * Headers
 
             Content-Type: application/json
+            X-Customer-Id: [customer id]
 
     * Body
 
@@ -1745,6 +1764,8 @@ Archive a tag.
     + headers
 
             Content-Type: application/json
+            X-Customer-Id: [customer id]
+
     * Body
 
                 {
@@ -1813,6 +1834,7 @@ Retrieve one existing severity:
     * Headers
 
             Content-Type: application/json
+            X-Customer-Id: [customer id]
 
     * Body
 
@@ -1909,6 +1931,7 @@ Retrieve one existing cause:
     * Headers
 
             Content-Type: application/json
+            X-Customer-Id: [customer id]
 
     * Body
 

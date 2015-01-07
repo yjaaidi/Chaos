@@ -525,6 +525,10 @@ Lors d'un succés une réponse 200 est retourné, celle ci contient la perturbat
     * Headers
 
             Content-Type: application/json
+            Authorization: [navitia token]
+            X-Customer-Id: [customer id]
+            X-Contributors: [contributor id]
+            X-Coverage: [navitia coverage]
 
     * Body
 
@@ -914,6 +918,10 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient l'impact cr�
     + headers
 
             Content-Type: application/json
+            Authorization: [navitia token]
+            X-Customer-Id: [customer id]
+            X-Contributors: [contributor id]
+            X-Coverage: [navitia coverage]
 
     + body
 
@@ -1266,6 +1274,10 @@ Lors d'un succés une réponse 200 est retourné, celle ci contient l'impact mod
     * Headers
 
             Content-Type: application/json
+            Authorization: [navitia token]
+            X-Customer-Id: [customer id]
+            X-Contributors: [contributor id]
+            X-Coverage: [navitia coverage]
 
     * Body
 
@@ -1623,6 +1635,8 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient la sévérit
     + headers
 
             Content-Type: application/json
+            X-Customer-Id: [customer id]
+
     * Body
 
                 {
@@ -1717,6 +1731,7 @@ Lors d'un succés une réponse 200 est retourné, celle ci contient la sévérit
     * Headers
 
             Content-Type: application/json
+            X-Customer-Id: [customer id]
 
     * Body
 
@@ -1849,6 +1864,8 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient la cause cr�
     + headers
 
             Content-Type: application/json
+            X-Customer-Id: [customer id]
+
     * Body
 
                 {
@@ -1935,6 +1952,7 @@ Lors d'un succés une réponse 200 est retourné, celle ci contient la cause mod
     * Headers
 
             Content-Type: application/json
+            X-Customer-Id: [customer id]
 
     * Body
 
@@ -2056,6 +2074,8 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient le tag cré�
     + headers
 
             Content-Type: application/json
+            X-Customer-Id: [customer id]
+
     * Body
 
                 {
@@ -2140,6 +2160,7 @@ Lors d'un succés une réponse 200 est retourné, celle ci contient le tag modif
     * Headers
 
             Content-Type: application/json
+            X-Customer-Id: [customer id]
 
     * Body
 
@@ -2267,6 +2288,8 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient la canal cr�
     + headers
 
             Content-Type: application/json
+            X-Customer-Id: [customer id]
+
     * Body
 
                 {
