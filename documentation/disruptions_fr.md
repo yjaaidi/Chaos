@@ -58,6 +58,17 @@ Enfin, en cas de paramétre non valide, y compris un json ne respestant pas les 
             }
 
 
+##Headers
+
+| Name                 | description                                                                       | required | default                 |
+| -------------------- | --------------------------------------------------------------------------------- | -------- | ----------------------- |
+| Content-Type         | type du texte                                                                     | true     | application/json        |
+| Authorization        | token pour avoir accès aux services navitia                                       | true     |                         |
+| X-Customer-Id        | client code. Les données référentielles comme cause, channel sont liées au client | true     |                         |
+| X-Contributors       | contributor code. Un disruption est lié au contributor                            | true     |                         |
+| X-Coverage           | coverage des services navitia                                                     | true     |                         |
+
+
 # Liste des perturbations [/disruptions]
 
 ##Récupérer les disruptions [GET]
