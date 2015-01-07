@@ -22,6 +22,16 @@ It's an api for blabla
             }
 
 
+##Headers
+
+| Name                 | description                                                                    | required | default                 |
+| -------------------- | ------------------------------------------------------------------------------ | -------- | ----------------------- |
+| Content-Type         | input text type                                                                | true     | application/json        |
+| Authorization        | token for navitia services                                                     | true     |                         |
+| X-Customer-Id        | client code. A client is owner of cause, channel, severity and tag             | true     |                         |
+| X-Contributors       | contributor code. A contributor is owner of a disruption                       | true     |                         |
+| X-Coverage           | coverage of navitia services                                                   | true     |                         |
+
 # List of disruptions [/disruptions]
 
 ##Retrieve disruptions [GET]
@@ -473,6 +483,10 @@ Retrieve one existing disruption:
     * Headers
 
             Content-Type: application/json
+            Authorization: [navitia token]
+            X-Customer-Id: [customer id]
+            X-Contributors: [contributor id]
+            X-Coverage: [navitia coverage]
 
     * Body
 
@@ -837,6 +851,10 @@ Create a new impact.
     + headers
 
             Content-Type: application/json
+            Authorization: [navitia token]
+            X-Customer-Id: [customer id]
+            X-Contributors: [contributor id]
+            X-Coverage: [navitia coverage]
 
     + body
 
@@ -1051,6 +1069,10 @@ Create a new impact.
     * Headers
 
             Content-Type: application/json
+            Authorization: [navitia token]
+            X-Customer-Id: [customer id]
+            X-Contributors: [contributor id]
+            X-Coverage: [navitia coverage]
 
     * Body
 
@@ -1452,6 +1474,8 @@ Return all the severities ordered by priority.
     + headers
 
             Content-Type: application/json
+            X-Customer-Id: [customer id]
+
     * Body
 
                 {
@@ -1518,6 +1542,8 @@ Return all the severities ordered by priority.
     + headers
 
             Content-Type: application/json
+            X-Customer-Id: [customer id]
+
     * Body
 
                 {
@@ -1576,6 +1602,8 @@ Return all the severities ordered by priority.
     + headers
 
             Content-Type: application/json
+            X-Customer-Id: [customer id]
+
     * Body
 
                 {
@@ -1640,6 +1668,7 @@ Retrieve one existing tag:
     * Headers
 
             Content-Type: application/json
+            X-Customer-Id: [customer id]
 
     * Body
 
@@ -1745,6 +1774,8 @@ Archive a tag.
     + headers
 
             Content-Type: application/json
+            X-Customer-Id: [customer id]
+
     * Body
 
                 {
@@ -1813,6 +1844,7 @@ Retrieve one existing severity:
     * Headers
 
             Content-Type: application/json
+            X-Customer-Id: [customer id]
 
     * Body
 
@@ -1909,6 +1941,7 @@ Retrieve one existing cause:
     * Headers
 
             Content-Type: application/json
+            X-Customer-Id: [customer id]
 
     * Body
 
