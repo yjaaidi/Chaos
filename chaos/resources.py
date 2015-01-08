@@ -70,7 +70,8 @@ severity_mapping = {
 }
 
 cause_mapping = {
-    'wording': None
+    'wording': None,
+    'category': None
 }
 
 tag_mapping = {
@@ -698,6 +699,10 @@ class Impacts(flask_restful.Resource):
                     line_section.via.append(via_object)
                 except exceptions.ObjectUnknown:
                     raise exceptions.ObjectUnknown('{} {} doesn\'t exist'.format(via['type'], via['id']))
+
+        #Fill sens from json
+        if 'sens' in line_section_json:
+            line_section.sens = line_section_json["sens"]
 
         ptobject.insert_line_section(line_section)
 

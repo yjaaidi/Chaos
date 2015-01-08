@@ -22,6 +22,16 @@ It's an api for blabla
             }
 
 
+##Headers
+
+| Name                 | description                                                                    | required | default                 |
+| -------------------- | ------------------------------------------------------------------------------ | -------- | ----------------------- |
+| Content-Type         | input text type                                                                | true     | application/json        |
+| Authorization        | token for navitia services                                                     | true     |                         |
+| X-Customer-Id        | client code. A client is owner of cause, channel, severity and tag             | true     |                         |
+| X-Contributors       | contributor code. A contributor is owner of a disruption                       | true     |                         |
+| X-Coverage           | coverage of navitia services                                                   | true     |                         |
+
 # List of disruptions [/disruptions]
 
 ##Retrieve disruptions [GET]
@@ -59,7 +69,8 @@ Return all visible disruptions.
                         "version": 1,
                         "cause": {
                             "id": "3d1f34b2-e8df-11e3-8c3e-0008ca8657ea",
-                            "wording": "Condition météo"
+                            "wording": "Condition météo",
+                            "category": "category-1"
                         },
                         tags": [
                             {
@@ -120,7 +131,8 @@ Return all visible disruptions.
                         "contributor": "shortterm.tn",
                         "cause": {
                             "id": "3d1f34b2-e8ef-11e3-8c3e-0008ca8657ea",
-                            "wording": "train cassé"
+                            "wording": "train cassé",
+                            "category": "category-1"
                         },
                         tags": [
                             {
@@ -162,7 +174,8 @@ Return all visible disruptions.
                         "contributor": "shortterm.tn",
                         "cause": {
                             "id": "3d1f34b2-e2df-11e3-8c3e-0008ca8657ea",
-                            "wording": "émeute"
+                            "wording": "émeute",
+                            "category": "category-1"
                         },
                         tags": [
                             {
@@ -316,7 +329,8 @@ Create one valid disruption with impacts
                     "version": 2,
                     "cause": {
                         "id": "3d1f34b2-e8df-1ae3-8c3e-0008ca8657ea",
-                        "wording": "Condition météo"
+                        "wording": "Condition météo",
+                        "category": "category-1"
                     },
                     tags": [
                         {
@@ -394,7 +408,8 @@ Retrieve one existing disruption:
                     "version": 2,
                     "cause": {
                         "id": "3d1e32b2-e8df-11e3-8c3e-0008ca8657ea",
-                        "wording": "Condition météo"
+                        "wording": "Condition météo",
+                        "category": "category-1"
                     },
                     tags": [
                         {
@@ -468,6 +483,10 @@ Retrieve one existing disruption:
     * Headers
 
             Content-Type: application/json
+            Authorization: [navitia token]
+            X-Customer-Id: [customer id]
+            X-Contributors: [contributor id]
+            X-Coverage: [navitia coverage]
 
     * Body
 
@@ -514,7 +533,8 @@ Retrieve one existing disruption:
                     "version": 2,
                     "cause": {
                         "id": "3d1f32b2-e8df-11e3-8c3e-0008ca8657ea",
-                        "wording": "Condition météo"
+                        "wording": "Condition météo",
+                        "category": "category-1"
                     },
                     tags": [
                         {
@@ -831,6 +851,10 @@ Create a new impact.
     + headers
 
             Content-Type: application/json
+            Authorization: [navitia token]
+            X-Customer-Id: [customer id]
+            X-Contributors: [contributor id]
+            X-Coverage: [navitia coverage]
 
     + body
 
@@ -1045,6 +1069,10 @@ Create a new impact.
     * Headers
 
             Content-Type: application/json
+            Authorization: [navitia token]
+            X-Customer-Id: [customer id]
+            X-Contributors: [contributor id]
+            X-Coverage: [navitia coverage]
 
     * Body
 
@@ -1446,6 +1474,8 @@ Return all the severities ordered by priority.
     + headers
 
             Content-Type: application/json
+            X-Customer-Id: [customer id]
+
     * Body
 
                 {
@@ -1485,18 +1515,21 @@ Return all the severities ordered by priority.
                     {
                         "id": "3d1f42b2-e8df-11e4-8c3e-0008ca8617ea",
                         "wording": "météo",
+                        "category": "category-1",
                         "created_at": "2014-04-31T16:52:18Z",
                         "updated_at": "2014-04-31T16:55:18Z"
                     },
                     {
                         "id": "3d1f42b2-e8df-11e5-8c3e-0008ca8617ea",
                         "wording": "gréve",
+                        "category": "category-2",
                         "created_at": "2014-04-31T16:52:18Z",
                         "updated_at": "2014-04-31T16:55:18Z"
                     },
                     {
                         "id": "3d1f42b2-e8df-11e6-8c3e-0008ca8617ea",
                         "wording": "accident voyageur",
+                        "category": "null"
                         "created_at": "2014-04-31T16:52:18Z",
                         "updated_at": "2014-04-31T16:55:18Z"
                     }
@@ -1509,6 +1542,8 @@ Return all the severities ordered by priority.
     + headers
 
             Content-Type: application/json
+            X-Customer-Id: [customer id]
+
     * Body
 
                 {
@@ -1523,6 +1558,7 @@ Return all the severities ordered by priority.
                 "cause": {
                     "id": "3d1f42b2-e8df-11e4-8c3e-0008ca8617ea",
                     "wording": "météo",
+                    "category": "category-1",
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": null
                 },
@@ -1566,6 +1602,8 @@ Return all the severities ordered by priority.
     + headers
 
             Content-Type: application/json
+            X-Customer-Id: [customer id]
+
     * Body
 
                 {
@@ -1630,6 +1668,7 @@ Retrieve one existing tag:
     * Headers
 
             Content-Type: application/json
+            X-Customer-Id: [customer id]
 
     * Body
 
@@ -1735,6 +1774,8 @@ Archive a tag.
     + headers
 
             Content-Type: application/json
+            X-Customer-Id: [customer id]
+
     * Body
 
                 {
@@ -1803,6 +1844,7 @@ Retrieve one existing severity:
     * Headers
 
             Content-Type: application/json
+            X-Customer-Id: [customer id]
 
     * Body
 
@@ -1872,6 +1914,7 @@ Retrieve one existing cause:
                 "cause": {
                     "id": "3d1f42b2-e8df-11e4-8c3e-0008ca8617ea",
                     "wording": "météo",
+                    "category": "category-1",
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": null
                 },
@@ -1898,6 +1941,7 @@ Retrieve one existing cause:
     * Headers
 
             Content-Type: application/json
+            X-Customer-Id: [customer id]
 
     * Body
 
@@ -1913,6 +1957,7 @@ Retrieve one existing cause:
                 "cause": {
                     "id": "3d1f42b3-e8df-11e3-8c3e-0008ca8617ea",
                     "wording": "accident voyageur",
+                    "category": "category-1",
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": "2014-04-31T16:55:18Z"
                 },
