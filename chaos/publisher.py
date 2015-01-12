@@ -7,9 +7,8 @@ from gevent import spawn_later
 import weakref
 
 class Publisher(object):
-    def __init__(self, connection_string, exchange, contributor, is_active=True):
+    def __init__(self, connection_string, exchange, is_active=True):
         self._is_active = is_active
-        self._contributor = contributor
         if not is_active:
             return
 
