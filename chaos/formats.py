@@ -155,7 +155,7 @@ severity_input_format = {
 cause_input_format = {
     'type': 'object',
     'properties': {'wording': {'type': 'string', 'maxLength': 250},
-                   'category': {'type': 'string', 'maxLength': 250}
+                   'category': {'type': ['string', 'null'], 'maxLength': 250}
                    },
     'required': ['wording']
 }
