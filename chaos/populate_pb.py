@@ -28,13 +28,12 @@
 # www.navitia.io
 
 import chaos_pb2, gtfs_realtime_pb2
-import time
 import datetime
 
 
 def get_pos_time(sql_time):
     if sql_time:
-        return int(time.mktime(sql_time.timetuple()))
+        return int((sql_time - datetime.datetime(1970, 1, 1)).total_seconds())
     return 0
 
 
