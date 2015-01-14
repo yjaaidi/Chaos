@@ -1,7 +1,8 @@
 from nose.tools import *
 import chaos
-from chaos.populate_pb import populate_pb, get_pt_object_type
+from chaos.populate_pb import populate_pb, get_pt_object_type, get_pos_time
 from aniso8601 import parse_datetime
+import datetime
 
 
 def get_disruption(with_via=True, with_routes=True):
@@ -111,6 +112,14 @@ def get_disruption(with_via=True, with_routes=True):
 
     return disruption
 
+def test_get_pos_time():
+    dates = [
+                datetime.datetime(2014, 1, 14, 9, 0),
+                datetime.datetime(2014, 8, 14, 12, 0),
+                datetime.datetime(2014, 3, 29, 2, 0)
+            ]
+    for d in dates:
+        eq_(d, datetime.datetime.utcfromtimestamp(get_pos_time(d)))
 
 def test_disruption():
     disruption = get_disruption()
