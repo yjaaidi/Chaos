@@ -231,6 +231,7 @@ class Index(flask_restful.Resource):
             "channels": {"href": url_for('channel', _external=True)},
             "impactsbyobject": {"href": url_for('impactsbyobject', _external=True)},
             "tags": {"href": url_for('tag', _external=True)},
+            "categories": {"href": url_for('category', _external=True)},
             "status": {"href": url_for('status', _external=True)}
 
 
