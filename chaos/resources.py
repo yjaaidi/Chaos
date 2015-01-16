@@ -680,6 +680,18 @@ class Category(flask_restful.Resource):
             return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 400
         return marshal({'category': category}, one_category_fields), 200
+
+    @validate_client()
+    def delete(self, client, id):
+        if not id_format.match(id):
+            return marshal({'error': {'message': "id invalid"}},
+                           error_fields), 400
+        category = models.Category.get(id, client.id)
+        category.is_visible = False
+        db.session.commit()
+        return None, 204
+
+
 class ImpactsByObject(flask_restful.Resource):
     def __init__(self):
         current_datetime = utils.get_current_time()
