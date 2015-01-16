@@ -606,6 +606,19 @@ class Tag(flask_restful.Resource):
         return None, 204
 
 
+class Category(flask_restful.Resource):
+
+    @validate_client()
+    def get(self, client, id=None):
+        if id:
+            if not id_format.match(id):
+                return marshal({'error': {'message': "id invalid"}},
+                           error_fields), 400
+            response = {'category': models.Category.get(id, client.id)}
+            return marshal(response, one_category_fields)
+        else:
+            response = {'categories': models.Category.all(client.id), 'meta': {}}
+            return marshal(response, categories_fields)
 class ImpactsByObject(flask_restful.Resource):
     def __init__(self):
         current_datetime = utils.get_current_time()

@@ -145,6 +145,23 @@ one_tag_fields = {
     'tag': fields.Nested(tag_fields)
 }
 
+categories_fields = {
+    'categories': fields.List(fields.Nested(tag_fields)),
+    'meta': {}
+}
+
+category_fields = {
+    'id': fields.Raw,
+    'name': fields.Raw,
+    'created_at': FieldDateTime,
+    'updated_at': FieldDateTime,
+    'self': {'href': fields.Url('category', absolute=True)}
+}
+
+one_category_fields = {
+    'category': fields.Nested(category_fields)
+}
+
 disruption_fields = {
     'id': fields.Raw,
     'self': {'href': fields.Url('disruption', absolute=True)},
