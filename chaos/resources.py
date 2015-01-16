@@ -35,7 +35,7 @@ from flask.ext.restful import abort
 from fields import *
 from formats import *
 from formats import impact_input_format, channel_input_format, pt_object_type_values,\
-    tag_input_format
+    tag_input_format, category_input_format
 from chaos import mapper, exceptions
 from chaos import utils
 import chaos
@@ -75,6 +75,10 @@ cause_mapping = {
 }
 
 tag_mapping = {
+    'name': None
+}
+
+category_mapping = {
     'name': None
 }
 
@@ -650,6 +654,32 @@ class Category(flask_restful.Resource):
             return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 400
         return marshal({'category': category}, one_category_fields), 201
+
+    @validate_client()
+    def put(self, client, id):
+        if not id_format.match(id):
+            return marshal({'error': {'message': "id invalid"}},
+                    error_fields), 400
+        category = models.Category.get(id, client.id)
+        json = request.get_json()
+        logging.getLogger(__name__).debug('PUT category: %s', json)
+
+        try:
+            validate(json, category_input_format)
+        except ValidationError, e:
+            logging.debug(str(e))
+            #TODO: generate good error messages
+            return marshal({'error': {'message': utils.parse_error(e)}},
+                           error_fields), 400
+
+        mapper.fill_from_json(category, json, category_mapping)
+        try:
+            db.session.commit()
+        except IntegrityError, e:
+            logging.debug(str(e))
+            return marshal({'error': {'message': utils.parse_error(e)}},
+                           error_fields), 400
+        return marshal({'category': category}, one_category_fields), 200
 class ImpactsByObject(flask_restful.Resource):
     def __init__(self):
         current_datetime = utils.get_current_time()
