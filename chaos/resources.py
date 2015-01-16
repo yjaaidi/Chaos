@@ -619,6 +619,37 @@ class Category(flask_restful.Resource):
         else:
             response = {'categories': models.Category.all(client.id), 'meta': {}}
             return marshal(response, categories_fields)
+
+    @validate_client(True)
+    def post(self, client):
+        json = request.get_json()
+        logging.getLogger(__name__).debug('Post category: %s', json)
+        try:
+            validate(json, category_input_format)
+        except ValidationError, e:
+            logging.debug(str(e))
+            #TODO: generate good error messages
+            return marshal({'error': {'message': utils.parse_error(e)}},
+                           error_fields), 400
+
+        #if an archived tag exists with same name use the same instead of creating a new one.
+        archived_category = models.Category.get_archived_by_name(json['name'], client.id)
+        if archived_category:
+            category = archived_category
+            category.is_visible = True
+        else:
+            category = models.Category()
+            mapper.fill_from_json(category, json, category_mapping)
+            category.client = client
+            db.session.add(category)
+
+        try:
+            db.session.commit()
+        except IntegrityError, e:
+            logging.debug(str(e))
+            return marshal({'error': {'message': utils.parse_error(e)}},
+                           error_fields), 400
+        return marshal({'category': category}, one_category_fields), 201
 class ImpactsByObject(flask_restful.Resource):
     def __init__(self):
         current_datetime = utils.get_current_time()

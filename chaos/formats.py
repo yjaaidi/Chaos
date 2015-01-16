@@ -110,6 +110,13 @@ tag_input_format = {
     'required': ['name']
 }
 
+category_input_format = {
+    'type': 'object',
+    'properties': {'name': {'type': 'string', 'maxLength': 250},
+                   },
+    'required': ['name']
+}
+
 disruptions_input_format = {
     'type': 'object',
     'properties': {'reference': {'type': 'string', 'maxLength': 250},
