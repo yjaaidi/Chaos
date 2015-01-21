@@ -70,8 +70,7 @@ severity_mapping = {
 }
 
 cause_mapping = {
-    'wording': None,
-    'category': None
+    'category': {'id': mapper.AliasText(attribute='category_id')},
 }
 
 tag_mapping = {
@@ -464,6 +463,15 @@ class Disruptions(flask_restful.Resource):
 
 class Cause(flask_restful.Resource):
 
+    def manage_wordings(self, cause, json_wordings):
+        cause.delete_wordings()
+        for json_wording in json_wordings:
+            db_wording = models.Wording()
+            db_wording.key = json_wording["key"]
+            db_wording.value = json_wording["value"]
+            cause.wordings.append(db_wording)
+        cause.wording = cause.wordings[0].value
+
     @validate_client()
     def get(self, client, id=None):
         if id:
@@ -491,6 +499,7 @@ class Cause(flask_restful.Resource):
         cause = models.Cause()
         mapper.fill_from_json(cause, json, cause_mapping)
         cause.client = client
+        self.manage_wordings(cause, json["wordings"])
         db.session.add(cause)
         db.session.commit()
         return marshal({'cause': cause}, one_cause_fields), 201
@@ -513,6 +522,7 @@ class Cause(flask_restful.Resource):
                            error_fields), 400
 
         mapper.fill_from_json(cause, json, cause_mapping)
+        self.manage_wordings(cause, json["wordings"])
         db.session.commit()
         return marshal({'cause': cause}, one_cause_fields), 200
 

@@ -115,13 +115,21 @@ wording_fields = {
     "value": fields.Raw
 }
 
+category_fields = {
+    'id': fields.Raw,
+    'name': fields.Raw,
+    'created_at': FieldDateTime,
+    'updated_at': FieldDateTime,
+    'self': {'href': fields.Url('category', absolute=True)}
+}
+
 cause_fields = {
     'id': fields.Raw,
-    'wording': fields.Raw,
     'created_at': FieldDateTime,
     'updated_at': FieldDateTime,
     'self': {'href': fields.Url('cause', absolute=True)},
-    "wordings": fields.List(fields.Nested(wording_fields))
+    "wordings": fields.List(fields.Nested(wording_fields)),
+    'category': fields.Nested(category_fields, allow_null=True),
 }
 
 causes_fields = {
@@ -130,7 +138,7 @@ causes_fields = {
 }
 
 one_cause_fields = {
-    'cause': fields.Nested(cause_fields)
+    'cause': fields.Nested(cause_fields, display_null=False)
 }
 
 tag_fields = {
@@ -138,7 +146,7 @@ tag_fields = {
     'name': fields.Raw,
     'created_at': FieldDateTime,
     'updated_at': FieldDateTime,
-    'self': {'href': fields.Url('tag', absolute=True)},
+    'self': {'href': fields.Url('tag', absolute=True)}
 }
 
 tags_fields = {
@@ -150,14 +158,6 @@ one_tag_fields = {
     'tag': fields.Nested(tag_fields)
 }
 
-category_fields = {
-    'id': fields.Raw,
-    'name': fields.Raw,
-    'created_at': FieldDateTime,
-    'updated_at': FieldDateTime,
-    'self': {'href': fields.Url('category', absolute=True)},
-    'causes': fields.List(fields.Nested(cause_fields))
-}
 
 one_category_fields = {
     'category': fields.Nested(category_fields)

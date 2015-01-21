@@ -210,7 +210,13 @@ class Cause(TimestampMixin, db.Model):
     def get(cls, id, client_id):
         return cls.query.filter_by(id=id, client_id=client_id, is_visible=True).first_or_404()
 
-
+    def delete_wordings(self):
+        index = len(self.wordings) - 1
+        while index >= 0:
+            wording = self.wordings[index]
+            self.wordings.remove(wording)
+            db.session.delete(wording)
+            index -= 1
 
 associate_disruption_tag = db.Table('associate_disruption_tag',
                                     db.metadata,

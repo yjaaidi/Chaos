@@ -159,12 +159,31 @@ severity_input_format = {
     'required': ['wording']
 }
 
+key_value_input_format = {
+    'type': 'object',
+    'properties': {'key': {'type': 'string', 'maxLength': 250},
+                   'value': {'type': 'string', 'maxLength': 250}
+                   },
+    'required': ['key', 'value']
+}
+
 cause_input_format = {
     'type': 'object',
-    'properties': {'wording': {'type': 'string', 'maxLength': 250},
-                   'category': {'type': ['string', 'null'], 'maxLength': 250}
+    'properties': {'category': {'type': 'object',
+                                'properties': {
+                                    'id': {
+                                        'type': 'string', 'pattern': id_format_text
+                                    }
+                                },
+                                'required': ['id']
                    },
-    'required': ['wording']
+                   'wordings': {'type': 'array',
+                               'items': key_value_input_format,
+                               "uniqueItems": True,
+                               "minItems": 1
+                   }
+    },
+    'required': ['wordings']
 }
 
 
