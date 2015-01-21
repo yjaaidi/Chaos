@@ -28,8 +28,6 @@ Feature: list category
             Then the status code should be "200"
             And the header "Content-Type" should be "application/json"
             And the field "categories" should have a size of 2
-            And the field "categories.0.name" should be "weather"
-            And the field "categories.1.name" should be "strike"
 
         Scenario: only visible categories have to be return
             Given I have the following clients in my database:
@@ -46,8 +44,6 @@ Feature: list category
             Then the status code should be "200"
             And the header "Content-Type" should be "application/json"
             And the field "categories" should have a size of 2
-            And the field "categories.0.name" should be "weather"
-            And the field "categories.1.name" should be "strike"
 
         Scenario: I can view one category
             Given I have the following clients in my database:

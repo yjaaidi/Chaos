@@ -12,15 +12,6 @@ def test_wording_is_required_in_severity():
     except ValidationError, e:
         eq_(parse_error(e), "'wording' is a required property", True)
 
-
-def test_wording_is_required_in_cause():
-    try:
-        validate({}, cause_input_format)
-        assert False
-    except ValidationError, e:
-        eq_(parse_error(e), "'wording' is a required property", True)
-
-
 def test_name_is_required_in_channel():
     try:
         validate({"max_size": 500, "content_type": "text/type"}, channel_input_format)

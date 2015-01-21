@@ -28,8 +28,6 @@ Feature: list cause
             Then the status code should be "200"
             And the header "Content-Type" should be "application/json"
             And the field "causes" should have a size of 2
-            And the field "causes.0.wording" should be "weather"
-            And the field "causes.1.wording" should be "strike"
 
         Scenario: only visible causes have to be return
             Given I have the following clients in my database:
@@ -46,8 +44,6 @@ Feature: list cause
             Then the status code should be "200"
             And the header "Content-Type" should be "application/json"
             And the field "causes" should have a size of 2
-            And the field "causes.0.wording" should be "weather"
-            And the field "causes.1.wording" should be "strike"
 
         Scenario: I can view one cause
             Given I have the following clients in my database:
@@ -62,7 +58,6 @@ Feature: list cause
             When I get "/causes/7ffab230-3d48-4eea-aa2c-22f8680230b6"
             Then the status code should be "200"
             And the header "Content-Type" should be "application/json"
-            And the field "cause.wording" should be "weather"
 
         Scenario: I have a 400 if the id doesn't have the correct format
             Given I have the following clients in my database:
@@ -95,17 +90,15 @@ Feature: list cause
             Given I have the following clients in my database:
             | client_code   | created_at          | updated_at          | id                                   |
             | 5             | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
-
+        Given I have the following categories in my database:
+            | name      | note  | created_at          | updated_at          | id                                   | client_id                            |
+            | foo       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
             Given I have the following causes in my database:
-                | wording   |  created_at          | updated_at          | is_visible |category | id                                   |client_id                            |
-                | weather   |  2014-04-02T23:52:12 | 2014-04-02T23:55:12 | True       |null     | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
-                | strike    |  2014-04-04T23:52:12 | 2014-04-06T22:52:12 | True       |cat-1    |7ffab232-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
+                | wording   |  created_at          | updated_at          | is_visible |category_id                          | id                                   |client_id                            |
+                | weather   |  2014-04-02T23:52:12 | 2014-04-02T23:55:12 | True       | None                                | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
+                | strike    |  2014-04-04T23:52:12 | 2014-04-06T22:52:12 | True       |7ffab230-3d48-4eea-aa2c-22f8680230b6 |7ffab232-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
             I fill in header "X-Customer-Id" with "5"
             When I get "/causes"
             Then the status code should be "200"
             And the header "Content-Type" should be "application/json"
             And the field "causes" should have a size of 2
-            And the field "causes.0.wording" should be "weather"
-            And the field "causes.1.wording" should be "strike"
-            And the field "causes.0.category" should be "null"
-            And the field "causes.1.category" should be "cat-1"
