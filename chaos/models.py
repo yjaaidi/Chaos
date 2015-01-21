@@ -203,12 +203,21 @@ class Cause(TimestampMixin, db.Model):
         return '<Cause %r>' % self.id
 
     @classmethod
-    def all(cls, client_id):
-        return cls.query.filter_by(client_id=client_id, is_visible=True).all()
+    def all(cls, client_id, category_id=None):
+        kargs = {"client_id": client_id,
+                 "is_visible": True}
+        if category_id:
+            kargs["category_id"] = category_id
+        return cls.query.filter_by(**kargs).all()
 
     @classmethod
-    def get(cls, id, client_id):
-        return cls.query.filter_by(id=id, client_id=client_id, is_visible=True).first_or_404()
+    def get(cls, id, client_id, category_id=None):
+        kargs = {"client_id": client_id,
+                 "is_visible": True,
+                 "id": id}
+        if category_id:
+            kargs["category_id"] = category_id
+        return cls.query.filter_by(**kargs).first_or_404()
 
     def delete_wordings(self):
         index = len(self.wordings) - 1

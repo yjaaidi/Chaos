@@ -462,7 +462,6 @@ class Disruptions(flask_restful.Resource):
 
 
 class Cause(flask_restful.Resource):
-
     def manage_wordings(self, cause, json_wordings):
         cause.delete_wordings()
         for json_wording in json_wordings:
@@ -473,15 +472,15 @@ class Cause(flask_restful.Resource):
         cause.wording = cause.wordings[0].value
 
     @validate_client()
-    def get(self, client, id=None):
+    def get(self, client, id=None, category_id=None):
         if id:
             if not id_format.match(id):
                 return marshal({'error': {'message': "id invalid"}},
                            error_fields), 400
-            response = {'cause': models.Cause.get(id, client.id)}
+            response = {'cause': models.Cause.get(id, client.id, category_id)}
             return marshal(response, one_cause_fields)
         else:
-            response = {'causes': models.Cause.all(client.id), 'meta': {}}
+            response = {'causes': models.Cause.all(client.id, category_id), 'meta': {}}
             return marshal(response, causes_fields)
 
     @validate_client(True)
