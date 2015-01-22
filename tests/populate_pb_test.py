@@ -17,6 +17,16 @@ def get_disruption(with_via=True, with_routes=True):
     localization.type = "stop_area"
     disruption.localizations.append(localization)
 
+    # Wording
+    wording = chaos.models.Wording()
+    wording.key = "key_1"
+    wording.value = "value_1"
+    disruption.cause.wordings.append(wording)
+    wording = chaos.models.Wording()
+    wording.key = "key_2"
+    wording.value = "value_2"
+    disruption.cause.wordings.append(wording)
+
     # Tag
     tag = chaos.models.Tag()
     tag.name = "rer"
@@ -121,6 +131,7 @@ def test_get_pos_time():
     for d in dates:
         eq_(d, datetime.datetime.utcfromtimestamp(get_pos_time(d)))
 
+
 def test_disruption():
     disruption = get_disruption()
     feed_entity = populate_pb(disruption).entity[0]
@@ -129,6 +140,7 @@ def test_disruption():
 
     eq_(disruption_pb.reference,  disruption.reference)
     eq_(disruption_pb.cause.wording,  disruption.cause.wording)
+    eq_(len(disruption_pb.cause.wordings), 2)
     eq_(len(disruption_pb.localization),  1)
     eq_(disruption_pb.localization[0].uri,  disruption.localizations[0].uri)
     eq_(len(disruption_pb.tags),  2)
