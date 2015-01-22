@@ -54,7 +54,6 @@ api.add_resource(resources.Severity,
 api.add_resource(resources.Cause,
                  '/causes',
                  '/causes/<string:id>',
-                 '/categories/<string:category_id>/causes',
                  endpoint='cause')
 
 api.add_resource(resources.Category,

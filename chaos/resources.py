@@ -462,6 +462,15 @@ class Disruptions(flask_restful.Resource):
 
 
 class Cause(flask_restful.Resource):
+
+    def __init__(self):
+        self.navitia = None
+        self.parsers = {}
+        self.parsers["get"] = reqparse.RequestParser()
+        parser_get = self.parsers["get"]
+        parser_get.add_argument("category_id",
+                                type=utils.get_uuid)
+
     def manage_wordings(self, cause, json_wordings):
         cause.delete_wordings()
         for json_wording in json_wordings:
@@ -472,7 +481,9 @@ class Cause(flask_restful.Resource):
         cause.wording = cause.wordings[0].value
 
     @validate_client()
-    def get(self, client, id=None, category_id=None):
+    def get(self, client, id=None):
+        args = self.parsers['get'].parse_args()
+        category_id = args['category_id']
         if id:
             if not id_format.match(id):
                 return marshal({'error': {'message': "id invalid"}},
