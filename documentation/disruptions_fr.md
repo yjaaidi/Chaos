@@ -177,7 +177,7 @@ Le champs ```tags``` contient une liste de tag de la perturbation.
                                 "href": "https://ogv2ws.apiary-mock.com/causes/32b07ff8-10e0-11e4-ae39-d4bed99855be"
                             },
                             "updated_at": null,
-                            "wordings": [{"key1": "foo1"}]
+                            "wordings": [{"key": "key1", "value": "foo1"}]
                         },
                         "impacts": {
                             "pagination": {
@@ -238,7 +238,7 @@ Le champs ```tags``` contient une liste de tag de la perturbation.
                                 "href": "https://ogv2ws.apiary-mock.com//causes/32b07ff8-10e0-11e4-ae39-d4bed99855be"
                             },
                             "updated_at": null,
-                            "wordings": [{"key1": "foo1"}],
+                            "wordings": [{"key": "key1", "value": "foo1"}],
                             "category": {"id": "32b07ff8-10e0-11e4-ae39-d4bed99855be", "name": "category-1"}
                         },
                         tags": [
@@ -356,7 +356,7 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient la perturbat
                             "href": "https://ogv2ws.apiary-mock.com//causes/32b07ff8-10e0-11e4-ae39-d4bed99855be"
                         },
                         "updated_at": null,
-                        "wordings": [{"key1": "foo1"}],
+                        "wordings": [{"key": "key1", "value": "foo1"}],
                         "category": {"id": "32b07ff8-10e0-11e4-ae39-d4bed99855be", "name": "category-1"}
                     },
                     "localization":[
@@ -456,7 +456,7 @@ Retourne une perturbation (si elle existe):
                             "href": "https://ogv2ws.apiary-mock.com//causes/32b07ff8-10e0-11e4-ae39-d4bed99855be"
                         },
                         "updated_at": null,
-                        "wordings": [{"key1": "foo1"}],
+                        "wordings": [{"key": "key1", "value": "foo1"}],
                         "category": {"id": "32b07ff8-10e0-11e4-ae39-d4bed99855be", "name": "category-1"}
                     },
                     "localization":[
@@ -596,7 +596,7 @@ Lors d'un succés une réponse 200 est retourné, celle ci contient la perturbat
                             "href": "https://ogv2ws.apiary-mock.com//causes/32b07ff8-10e0-11e4-ae39-d4bed99855be"
                         },
                         "updated_at": null,
-                        "wordings": [{"key1": "foo1"}],
+                        "wordings": [{"key": "key1", "value": "foo1"}],
                         "category": {"id": "32b07ff8-10e0-11e4-ae39-d4bed99855be", "name": "category-1"}
                     },
                     "localization":[
@@ -1836,7 +1836,7 @@ Le champs ```category``` contient la catégorie de la cause.
                         "self": {
                             "href": "https://ogv2ws.apiary-mock.com/causes/3d1f42b2-e8df-11e4-8c3e-0008ca8617ea"
                         }
-                        "wordings": [{"aa": "cc"}],
+                        "wordings": [{"key": "key1", "value": "foo1"}],
                         "category": {"id": "32b07ff8-10e0-11e4-ae39-d4bed99855be", "name": "test"}
                         "created_at": "2014-04-31T16:52:18Z",
                         "updated_at": "2014-04-31T16:55:18Z"
@@ -1846,7 +1846,7 @@ Le champs ```category``` contient la catégorie de la cause.
                         "self": {
                             "href": "https://ogv2ws.apiary-mock.com/causes/3d1f42b2-e8df-11e5-8c3e-0008ca8617ea"
                         }
-                        "wordings": [{"key1": "foo1"}],
+                        "wordings": [{"key": "key1", "value": "foo1"}],
                         "category": {"id": "32b07ff8-10e0-11e4-ae39-d4bed99855be", "name": "category-1"}
                         "created_at": "2014-04-31T16:52:18Z",
                         "updated_at": "2014-04-31T16:55:18Z"
@@ -1856,7 +1856,7 @@ Le champs ```category``` contient la catégorie de la cause.
                         "self": {
                             "href": "https://ogv2ws.apiary-mock.com/causes/3d1f42b2-e8df-11e6-8c3e-0008ca8617ea"
                         }
-                        "wordings": [{"msg": "accident voyageur"}],
+                        "wordings": [{"key": "msg", "value": "accident voyageur"}],
                         "created_at": "2014-04-31T16:52:18Z",
                         "updated_at": "2014-04-31T16:55:18Z"
                     }
@@ -1888,7 +1888,7 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient la cause cr�
 
                 {
                     "category": {"id": "32b07ff8-10e0-11e4-ae39-d4bed99855be"},
-                    "wordings": [{"msg": "météo"}]
+                    "wordings": [{"key": "msg", "value": "accident voyageur"}],
                 }
 
 - response 200 (application/json)
@@ -1901,7 +1901,7 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient la cause cr�
                     "self": {
                         "href": "https://ogv2ws.apiary-mock.com/causes/3d1f42b2-e8df-11e4-8c3e-0008ca8617ea"
                     }
-                    "wordings": [{"msg": "météo"}],
+                    "wordings": [{"key": "msg", "value": "accident voyageur"}],
                     "category": {"id": "32b07ff8-10e0-11e4-ae39-d4bed99855be", "name": "test"}
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": null
@@ -1937,7 +1937,7 @@ Retourne une cause existante.
                     "self": {
                         "href": "https://ogv2ws.apiary-mock.com/causes/3d1f42b2-e8df-11e4-8c3e-0008ca8617ea"
                     }
-                    "wordings": [{"key1": "foo1"}],
+                    "wordings": [{"key": "msg", "value": "accident voyageur"}],
                     "category": {"id": "32b07ff8-10e0-11e4-ae39-d4bed99855be", "name": "category-1"}
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": null
@@ -1990,7 +1990,7 @@ Lors d'un succés une réponse 200 est retourné, celle ci contient la cause mod
                     "self": {
                         "href": "https://ogv2ws.apiary-mock.com/causes/3d1f42b2-e8df-11e4-8c3e-0008ca8617ea"
                     }
-                    "wordings": [{"msg": "météo"}],
+                    "wordings": [{"key": "msg", "value": "accident voyageur"}],
                     "category": {"id": "32b07ff8-10e0-11e4-ae39-d4bed99855be", "name": "test"}
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": "2014-04-31T16:55:18Z"

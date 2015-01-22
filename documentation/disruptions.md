@@ -70,7 +70,7 @@ Return all visible disruptions.
                         "version": 1,
                         "cause": {
                             "id": "3d1f34b2-e8df-11e3-8c3e-0008ca8657ea",
-                            "wordings": [{"key1": "foo1"}],
+                            "wordings": [{"key": "msg", "value": "accident voyageur"}],
                             "category": {"id": "32b07ff8-10e0-11e4-ae39-d4bed99855be", "name": "category-1"}
                         },
                         tags": [
@@ -132,7 +132,7 @@ Return all visible disruptions.
                         "contributor": "shortterm.tn",
                         "cause": {
                             "id": "3d1f34b2-e8ef-11e3-8c3e-0008ca8657ea",
-                            "wordings": [{"key1": "foo1"}],
+                            "wordings": [{"key": "msg", "value": "accident voyageur"}],
                             "category": {"id": "32b07ff8-10e0-11e4-ae39-d4bed99855be", "name": "category-1"}
                         },
                         tags": [
@@ -175,7 +175,7 @@ Return all visible disruptions.
                         "contributor": "shortterm.tn",
                         "cause": {
                             "id": "3d1f34b2-e2df-11e3-8c3e-0008ca8657ea",
-                            "wordings": [{"key1": "foo1"}],
+                            "wordings": [{"key": "msg", "value": "accident voyageur"}],
                             "category": {"id": "32b07ff8-10e0-11e4-ae39-d4bed99855be", "name": "category-1"}
                         },
                         tags": [
@@ -330,7 +330,7 @@ Create one valid disruption with impacts
                     "version": 2,
                     "cause": {
                         "id": "3d1f34b2-e8df-1ae3-8c3e-0008ca8657ea",
-                        "wordings": [{"key1": "foo1"}],
+                        "wordings": [{"key": "msg", "value": "accident voyageur"}],
                         "category": {"id": "32b07ff8-10e0-11e4-ae39-d4bed99855be", "name": "category-1"}
                     },
                     tags": [
@@ -409,7 +409,7 @@ Retrieve one existing disruption:
                     "version": 2,
                     "cause": {
                         "id": "3d1e32b2-e8df-11e3-8c3e-0008ca8657ea",
-                        "wordings": [{"key1": "foo1"}],
+                        "wordings": [{"key": "msg", "value": "accident voyageur"}],
                         "category": {"id": "32b07ff8-10e0-11e4-ae39-d4bed99855be", "name": "category-1"}
                     },
                     tags": [
@@ -534,7 +534,7 @@ Retrieve one existing disruption:
                     "version": 2,
                     "cause": {
                         "id": "3d1f32b2-e8df-11e3-8c3e-0008ca8657ea",
-                        "wordings": [{"key1": "foo1"}],
+                        "wordings": [{"key": "msg", "value": "accident voyageur"}],
                         "category": {"id": "32b07ff8-10e0-11e4-ae39-d4bed99855be", "name": "category-1"}
                     },
                     tags": [
@@ -1521,21 +1521,21 @@ Return all the severities ordered by priority.
                 "causes": [
                     {
                         "id": "3d1f42b2-e8df-11e4-8c3e-0008ca8617ea",
-                        "wordings": [{"aa": "cc"}],
+                        "wordings": [{"key": "msg", "value": "accident voyageur"}],
                         "category": {"id": "32b07ff8-10e0-11e4-ae39-d4bed99855be", "name": "test"}
                         "created_at": "2014-04-31T16:52:18Z",
                         "updated_at": "2014-04-31T16:55:18Z"
                     },
                     {
                         "id": "3d1f42b2-e8df-11e5-8c3e-0008ca8617ea",
-                        "wordings": [{"key1": "foo1"}],
+                        "wordings": [{"key": "msg", "value": "accident voyageur"}],
                         "category": {"id": "32b07ff8-10e0-11e4-ae39-d4bed99855be", "name": "category-1"}
                         "created_at": "2014-04-31T16:52:18Z",
                         "updated_at": "2014-04-31T16:55:18Z"
                     },
                     {
                         "id": "3d1f42b2-e8df-11e6-8c3e-0008ca8617ea",
-                        "wordings": [{"msg": "accident voyageur"}],
+                        "wordings": [{"key": "msg", "value": "accident voyageur"}],
                         "created_at": "2014-04-31T16:52:18Z",
                         "updated_at": "2014-04-31T16:55:18Z"
                     }
@@ -1564,7 +1564,7 @@ Return all the severities ordered by priority.
             {
                 "cause": {
                     "id": "3d1f42b2-e8df-11e4-8c3e-0008ca8617ea",
-                    "wordings": [{"msg": "météo"}],
+                    "wordings": [{"key": "msg", "value": "accident voyageur"}],
                     "category": {"id": "32b07ff8-10e0-11e4-ae39-d4bed99855be", "name": "test"}
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": null
@@ -1920,7 +1920,7 @@ Retrieve one existing cause:
             {
                 "cause": {
                     "id": "3d1f42b2-e8df-11e4-8c3e-0008ca8617ea",
-                    "wordings": [{"aa": "cc"}],
+                    "wordings": [{"key": "msg", "value": "accident voyageur"}],
                     "category": {"id": "32b07ff8-10e0-11e4-ae39-d4bed99855be", "name": "test"}
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": null
@@ -1964,7 +1964,7 @@ Retrieve one existing cause:
             {
                 "cause": {
                     "id": "3d1f42b3-e8df-11e3-8c3e-0008ca8617ea",
-                    "wordings": [{"msg": "accident voyageur"}],
+                    "wordings": [{"key": "msg", "value": "accident voyageur"}],
                     "category": {"id": "32b07ff8-10e0-11e4-ae39-d4bed99855be", "name": "cat-1"}
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": "2014-04-31T16:55:18Z"
