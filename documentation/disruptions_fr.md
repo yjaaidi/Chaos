@@ -1865,7 +1865,7 @@ Les champs suivant peuvent etre défini:
 
   - wordings (obligatoire)
 
-Le champs ```wordings``` correspond au cle/valeur qui sera affiché pour cette cause.
+Le champs ```wordings``` correspond aux cle/valeur qui seront affichés pour cette cause.
 
 Lors d'un succés une réponse 201 est retourné, celle ci contient la cause créée.
 
@@ -2380,18 +2380,18 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient la canal cr�
                 "meta": {}
             }
 
-##Créer un category [POST]
+##Créer une category [POST]
 
-La création d'un category est réalisée via une requête ```POST``` sur la resource ```category```.
-Le content-type de la requete doit etre json et le corps de celle ci doit contenir un json correspondant au format d'un category.
+La création d'une category est réalisée via une requête ```POST``` sur la resource ```category```.
+Le content-type de la requete doit etre json et le corps de celle ci doit contenir un json correspondant au format d'une category.
 
 Les champs suivant peuvent etre défini:
 
   - name (obligatoire)
 
-Le champs ```name``` correspond au libellé qui sera affiché pour ce category.
+Le champs ```name``` correspond au libellé qui sera affiché pour cette category.
 
-Lors d'un succés une réponse 201 est retourné, celle ci contient le category créé.
+Lors d'un succés une réponse 201 est retourné, celle ci contient la category créé.
 
 ###Exemple
 - request
@@ -2439,7 +2439,7 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient le category 
 
 ##Paramètres
 
-Retourne un category existant.
+Retourne une category existant.
 
 - response 200 (application/json)
 
@@ -2469,13 +2469,13 @@ Retourne un category existant.
                 "meta": {}
             }
 
-##Mise à jour d'un category [PUT]
-La mise à jour d'un category est réalisé via une requête ```PUT``` sur la resource ```categories```.
-Le content-type de la requete doit etre json et le corps de celle ci doit contenir un json correspondant au format d'un category.
+##Mise à jour d'une category [PUT]
+La mise à jour d'une category est réalisé via une requête ```PUT``` sur la resource ```categories```.
+Le content-type de la requete doit etre json et le corps de celle ci doit contenir un json correspondant au format d'une category.
 
 Les contraintes sont les meme que pour la création.
 
-Lors d'un succés une réponse 200 est retourné, celle ci contient le category modifié.
+Lors d'un succés une réponse 200 est retourné, celle ci contient la category modifié.
 ###Exemple
 
 
@@ -2529,8 +2529,8 @@ Lors d'un succés une réponse 200 est retourné, celle ci contient le category 
                 "meta": {}
             }
 
-##Archive un category [DELETE]
-Archive un category.
+##Archive une category [DELETE]
+Archive une category.
 ###Paramètres
 
 
