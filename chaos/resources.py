@@ -464,7 +464,6 @@ class Disruptions(flask_restful.Resource):
 class Cause(flask_restful.Resource):
 
     def __init__(self):
-        self.navitia = None
         self.parsers = {}
         self.parsers["get"] = reqparse.RequestParser()
         parser_get = self.parsers["get"]
