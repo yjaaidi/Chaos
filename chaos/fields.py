@@ -128,7 +128,7 @@ cause_fields = {
     'created_at': FieldDateTime,
     'updated_at': FieldDateTime,
     'self': {'href': fields.Url('cause', absolute=True)},
-    "wordings": fields.List(fields.Nested(wording_fields)),
+    'wordings': fields.List(fields.Nested(wording_fields)),
     'category': fields.Nested(category_fields, allow_null=True),
 }
 

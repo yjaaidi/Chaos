@@ -645,7 +645,7 @@ class Category(flask_restful.Resource):
             return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 400
 
-        #if an archived tag exists with same name use the same instead of creating a new one.
+        #if an archived category exists with same name use the same instead of creating a new one.
         archived_category = models.Category.get_archived_by_name(json['name'], client.id)
         if archived_category:
             category = archived_category

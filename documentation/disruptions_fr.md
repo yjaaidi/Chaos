@@ -54,7 +54,7 @@ Enfin, en cas de paramétre non valide, y compris un json ne respestant pas les 
                 "severities": {"href": "https://ogv2ws.apiary-mock.com/severities"},
                 "causes": {"href": "https://ogv2ws.apiary-mock.com/causes"},
                 "channels": {"href": "https://ogv2ws.apiary-mock.com/channels"},
-                "tags": {"href": "https://ogv2ws.apiary-mock.com/tags",
+                "tags": {"href": "https://ogv2ws.apiary-mock.com/tags"},
                 "categories": {"href": "https://chaos.apiary-mock.com/categories"}
             }
 
