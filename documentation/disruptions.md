@@ -1506,6 +1506,12 @@ Return all the severities ordered by priority.
 #List of causes [/causes]
 
 ##Retrieve the list of all causes [GET]
+##Paramètres
+
+| Name                 | description                                                                               | required | default                 |
+| -------------------- | ----------------------------------------------------------------------------------------- | -------- | ----------------------- |
+| category             |  filter by category (id of category)                                                      | false    |                         |
+
 
 - response 200 (application/json)
 

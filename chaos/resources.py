@@ -468,7 +468,7 @@ class Cause(flask_restful.Resource):
         self.parsers = {}
         self.parsers["get"] = reqparse.RequestParser()
         parser_get = self.parsers["get"]
-        parser_get.add_argument("category_id",
+        parser_get.add_argument("category",
                                 type=utils.get_uuid)
 
     def manage_wordings(self, cause, json_wordings):
@@ -483,7 +483,7 @@ class Cause(flask_restful.Resource):
     @validate_client()
     def get(self, client, id=None):
         args = self.parsers['get'].parse_args()
-        category_id = args['category_id']
+        category_id = args['category']
         if id:
             if not id_format.match(id):
                 return marshal({'error': {'message': "id invalid"}},

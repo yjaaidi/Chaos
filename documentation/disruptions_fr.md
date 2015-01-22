@@ -1817,6 +1817,14 @@ supprime une sévérité.
 
 ##Retourne la liste de toutes les causes [GET]
 
+##Paramètres
+
+| Name                 | description                                                                               | required | default                 |
+| -------------------- | ----------------------------------------------------------------------------------------- | -------- | ----------------------- |
+| category             | filtre sur tag (identifiant du category)                                                  | false    |                         |
+
+Le champs ```category``` contient la catégorie de la cause.
+
 - response 200 (application/json)
 
     * Body
