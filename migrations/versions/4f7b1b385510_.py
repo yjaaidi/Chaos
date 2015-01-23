@@ -34,13 +34,11 @@ def upgrade():
     )
 
     connection = op.get_bind()
-    rows = connection.execute('select created_at as created_at, id as id, '
-                              'wording as value, \'external_long\' as key, client_id from cause')
-    for row in rows:
-        op.execute("insert into  wording (created_at, id, key, value) values(\'{}\', \'{}\', \'{}\', \'{}\')".
-                   format(row['created_at'], row['id'], row['key'], row['value']))
-        op.execute("insert into  associate_wording_cause (wording_id, cause_id) values(\'{}\', \'{}\')".
-                   format(row['id'], row['id']))
+    connection.execute('insert into  wording (created_at, id, key, value) '
+                       'select created_at , id ,  \'external_long\', wording from cause')
+
+    connection.execute('insert into  associate_wording_cause (wording_id, cause_id) '
+                       'SELECT id, id from cause')
     ### end Alembic commands ###
 
 

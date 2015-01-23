@@ -31,14 +31,10 @@ def upgrade():
     op.add_column('cause', sa.Column('category_id', postgresql.UUID(), nullable=True))
 
     connection = op.get_bind()
-    rows = connection.execute('select created_at as created_at, id as id, category, client_id from cause')
-    for row in rows:
-        if row['category'] and row['category'] != '':
-            op.execute("insert into category (id, name, created_at, client_id, is_visible) "
-                       "values(\'{}\', \'{}\', \'{}\', \'{}\', {})".
-                       format(row['id'], row['category'], row['created_at'], row['client_id'], True))
-            op.execute("update cause set category_id= \'{}\' where id=\'{}\' ".
-                       format(row['id'], row['id']))
+    connection.execute('insert into category (id, name, created_at, client_id, is_visible) '
+                       'select distinct on (category) id, category, created_at, client_id, \'True\' '
+                       'from cause where category is not null')
+    connection.execute('update cause ca set category_id=c.id from category c where ca.category=c.name')
 
     op.drop_column('cause', 'category')
     ### end Alembic commands ###
