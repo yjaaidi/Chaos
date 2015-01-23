@@ -150,6 +150,10 @@ def populate_tag(disruption, disruption_pb):
 def populate_cause(cause, cause_pb):
     cause_pb.id = cause.id
     cause_pb.wording = cause.wording
+    for wording in cause.wordings:
+        wording_pb = cause_pb.wordings.add()
+        wording_pb.key = wording.key
+        wording_pb.value = wording.value
 
 
 def populate_disruption(disruption, disruption_pb):

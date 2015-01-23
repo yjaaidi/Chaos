@@ -99,6 +99,7 @@ class Contributor(TimestampMixin, db.Model):
             contributor = Contributor(code)
         return contributor
 
+
 class Severity(TimestampMixin, db.Model):
     """
     represent the severity of an impact
@@ -127,17 +128,72 @@ class Severity(TimestampMixin, db.Model):
         return cls.query.filter_by(id=id, client_id=client_id, is_visible=True).first_or_404()
 
 
+class Category(TimestampMixin, db.Model):
+    """
+    represent the category of a cause
+    """
+    __tablename__ = 'category'
+    id = db.Column(UUID, primary_key=True)
+    name = db.Column(db.Text, unique=False, nullable=False)
+    is_visible = db.Column(db.Boolean, unique=False, nullable=False, default=True)
+    client_id = db.Column(UUID, db.ForeignKey(Client.id), nullable=False)
+    client = db.relationship('Client', backref='categories', lazy='joined')
+    causes = db.relationship('Cause', backref='category', lazy='joined')
+    __table_args__ = (db.UniqueConstraint('name', 'client_id', name='category_name_client_id_key'),)
+
+    def __init__(self):
+        self.id = str(uuid.uuid1())
+
+    def __repr__(self):
+        return '<Category %r>' % self.id
+
+    @classmethod
+    def all(cls, client_id):
+        return cls.query.filter_by(client_id=client_id,is_visible=True).all()
+
+    @classmethod
+    def get(cls, id, client_id):
+        return cls.query.filter_by(id=id, client_id=client_id, is_visible=True).first_or_404()
+
+    @classmethod
+    def get_archived_by_name(cls, name, client_id):
+        return cls.query.filter_by(name=name, client_id=client_id, is_visible=False).first()
+
+
+class Wording(TimestampMixin, db.Model):
+    """
+    represent the Wording of a cause
+    """
+    id = db.Column(UUID, primary_key=True)
+    key = db.Column(db.Text, unique=False, nullable=False)
+    value = db.Column(db.Text, unique=False, nullable=False)
+
+    def __init__(self):
+        self.id = str(uuid.uuid1())
+
+    def __repr__(self):
+        return '<Wording %r>' % self.id
+
+associate_wording_cause = db.Table('associate_wording_cause',
+                                    db.metadata,
+                                    db.Column('wording_id', UUID, db.ForeignKey('wording.id')),
+                                    db.Column('cause_id', UUID, db.ForeignKey('cause.id')),
+                                    db.PrimaryKeyConstraint('wording_id', 'cause_id', name='wording_cause_pk')
+)
+
 
 class Cause(TimestampMixin, db.Model):
     """
     represent the cause of a disruption
     """
     id = db.Column(UUID, primary_key=True)
+    # TODO A supprimer plus tard
     wording = db.Column(db.Text, unique=False, nullable=False)
     is_visible = db.Column(db.Boolean, unique=False, nullable=False, default=True)
     client_id = db.Column(UUID, db.ForeignKey(Client.id), nullable=False)
     client = db.relationship('Client', backref='causes', lazy='joined')
-    category = db.Column(db.Text, unique=False, nullable=True)
+    category_id = db.Column(UUID, db.ForeignKey(Category.id), nullable=True)
+    wordings = db.relationship("Wording", secondary=associate_wording_cause, backref="causes")
 
     def __init__(self):
         self.id = str(uuid.uuid1())
@@ -146,14 +202,29 @@ class Cause(TimestampMixin, db.Model):
         return '<Cause %r>' % self.id
 
     @classmethod
-    def all(cls, client_id):
-        return cls.query.filter_by(client_id=client_id, is_visible=True).all()
+    def all(cls, client_id, category_id=None):
+        kargs = {"client_id": client_id,
+                 "is_visible": True}
+        if category_id:
+            kargs["category_id"] = category_id
+        return cls.query.filter_by(**kargs).all()
 
     @classmethod
-    def get(cls, id, client_id):
-        return cls.query.filter_by(id=id, client_id=client_id, is_visible=True).first_or_404()
+    def get(cls, id, client_id, category_id=None):
+        kargs = {"client_id": client_id,
+                 "is_visible": True,
+                 "id": id}
+        if category_id:
+            kargs["category_id"] = category_id
+        return cls.query.filter_by(**kargs).first_or_404()
 
-
+    def delete_wordings(self):
+        index = len(self.wordings) - 1
+        while index >= 0:
+            wording = self.wordings[index]
+            self.wordings.remove(wording)
+            db.session.delete(wording)
+            index -= 1
 
 associate_disruption_tag = db.Table('associate_disruption_tag',
                                     db.metadata,
@@ -161,6 +232,7 @@ associate_disruption_tag = db.Table('associate_disruption_tag',
                                     db.Column('disruption_id', UUID, db.ForeignKey('disruption.id')),
                                     db.PrimaryKeyConstraint('tag_id', 'disruption_id', name='tag_disruption_pk')
 )
+
 
 class Tag(TimestampMixin, db.Model):
     """

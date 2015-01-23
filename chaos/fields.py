@@ -110,13 +110,26 @@ href_field = {
     "href": fields.String
 }
 
+wording_fields = {
+    "key": fields.Raw,
+    "value": fields.Raw
+}
+
+category_fields = {
+    'id': fields.Raw,
+    'name': fields.Raw,
+    'created_at': FieldDateTime,
+    'updated_at': FieldDateTime,
+    'self': {'href': fields.Url('category', absolute=True)}
+}
+
 cause_fields = {
     'id': fields.Raw,
-    'wording': fields.Raw,
-    'category': fields.Raw,
     'created_at': FieldDateTime,
     'updated_at': FieldDateTime,
     'self': {'href': fields.Url('cause', absolute=True)},
+    'wordings': fields.List(fields.Nested(wording_fields)),
+    'category': fields.Nested(category_fields, allow_null=True),
 }
 
 causes_fields = {
@@ -125,7 +138,7 @@ causes_fields = {
 }
 
 one_cause_fields = {
-    'cause': fields.Nested(cause_fields)
+    'cause': fields.Nested(cause_fields, display_null=False)
 }
 
 tag_fields = {
@@ -133,7 +146,7 @@ tag_fields = {
     'name': fields.Raw,
     'created_at': FieldDateTime,
     'updated_at': FieldDateTime,
-    'self': {'href': fields.Url('tag', absolute=True)},
+    'self': {'href': fields.Url('tag', absolute=True)}
 }
 
 tags_fields = {
@@ -143,6 +156,17 @@ tags_fields = {
 
 one_tag_fields = {
     'tag': fields.Nested(tag_fields)
+}
+
+
+one_category_fields = {
+    'category': fields.Nested(category_fields)
+}
+
+
+categories_fields = {
+    'categories': fields.List(fields.Nested(category_fields)),
+    'meta': {}
 }
 
 disruption_fields = {

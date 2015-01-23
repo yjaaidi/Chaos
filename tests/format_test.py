@@ -65,22 +65,24 @@ def test_severities_validation_is_int_or_null_2():
     json = {'wording': 'aa', 'priority': '1'}
     validate(json, formats.severity_input_format)
 
+
 def test_causes_validation():
-    json = {'wording': 'foo'}
+    json = {'wordings': [{"key": "aa", "value": "bb"}], 'category': {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}}
     validate(json, formats.cause_input_format)
 
-    json = {'wording': 'a'*250}
+@raises(ValidationError)
+def test_causes_without_wordings_validation():
+    json = {'category': {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}}
     validate(json, formats.cause_input_format)
 
+@raises(ValidationError)
+def test_causes_wordings_empty_validation():
+    json = {'wordings': [], 'category': {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}}
+    validate(json, formats.cause_input_format)
 
 @raises(ValidationError)
 def test_causes_validation_wording_is_required():
     json = {}
-    validate(json, formats.cause_input_format)
-
-@raises(ValidationError)
-def test_causes_validation_wording_has_max_length():
-    json = {'wording': 'a'*251}
     validate(json, formats.cause_input_format)
 
 def test_validate_channel_format():

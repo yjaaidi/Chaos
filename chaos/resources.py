@@ -35,7 +35,7 @@ from flask.ext.restful import abort
 from fields import *
 from formats import *
 from formats import impact_input_format, channel_input_format, pt_object_type_values,\
-    tag_input_format
+    tag_input_format, category_input_format
 from chaos import mapper, exceptions
 from chaos import utils
 import chaos
@@ -70,11 +70,14 @@ severity_mapping = {
 }
 
 cause_mapping = {
-    'wording': None,
-    'category': None
+    'category': {'id': mapper.AliasText(attribute='category_id')},
 }
 
 tag_mapping = {
+    'name': None
+}
+
+category_mapping = {
     'name': None
 }
 
@@ -231,6 +234,7 @@ class Index(flask_restful.Resource):
             "channels": {"href": url_for('channel', _external=True)},
             "impactsbyobject": {"href": url_for('impactsbyobject', _external=True)},
             "tags": {"href": url_for('tag', _external=True)},
+            "categories": {"href": url_for('category', _external=True)},
             "status": {"href": url_for('status', _external=True)}
 
 
@@ -459,16 +463,34 @@ class Disruptions(flask_restful.Resource):
 
 class Cause(flask_restful.Resource):
 
+    def __init__(self):
+        self.parsers = {}
+        self.parsers["get"] = reqparse.RequestParser()
+        parser_get = self.parsers["get"]
+        parser_get.add_argument("category",
+                                type=utils.get_uuid)
+
+    def manage_wordings(self, cause, json_wordings):
+        cause.delete_wordings()
+        for json_wording in json_wordings:
+            db_wording = models.Wording()
+            db_wording.key = json_wording["key"]
+            db_wording.value = json_wording["value"]
+            cause.wordings.append(db_wording)
+        cause.wording = cause.wordings[0].value
+
     @validate_client()
     def get(self, client, id=None):
+        args = self.parsers['get'].parse_args()
+        category_id = args['category']
         if id:
             if not id_format.match(id):
                 return marshal({'error': {'message': "id invalid"}},
                            error_fields), 400
-            response = {'cause': models.Cause.get(id, client.id)}
+            response = {'cause': models.Cause.get(id, client.id, category_id)}
             return marshal(response, one_cause_fields)
         else:
-            response = {'causes': models.Cause.all(client.id), 'meta': {}}
+            response = {'causes': models.Cause.all(client.id, category_id), 'meta': {}}
             return marshal(response, causes_fields)
 
     @validate_client(True)
@@ -486,6 +508,7 @@ class Cause(flask_restful.Resource):
         cause = models.Cause()
         mapper.fill_from_json(cause, json, cause_mapping)
         cause.client = client
+        self.manage_wordings(cause, json["wordings"])
         db.session.add(cause)
         db.session.commit()
         return marshal({'cause': cause}, one_cause_fields), 201
@@ -508,6 +531,7 @@ class Cause(flask_restful.Resource):
                            error_fields), 400
 
         mapper.fill_from_json(cause, json, cause_mapping)
+        self.manage_wordings(cause, json["wordings"])
         db.session.commit()
         return marshal({'cause': cause}, one_cause_fields), 200
 
@@ -601,6 +625,88 @@ class Tag(flask_restful.Resource):
                            error_fields), 400
         tag = models.Tag.get(id, client.id)
         tag.is_visible = False
+        db.session.commit()
+        return None, 204
+
+
+class Category(flask_restful.Resource):
+
+    @validate_client()
+    def get(self, client, id=None):
+        if id:
+            if not id_format.match(id):
+                return marshal({'error': {'message': "id invalid"}},
+                           error_fields), 400
+            response = {'category': models.Category.get(id, client.id)}
+            return marshal(response, one_category_fields)
+        else:
+            response = {'categories': models.Category.all(client.id), 'meta': {}}
+            return marshal(response, categories_fields)
+
+    @validate_client(True)
+    def post(self, client):
+        json = request.get_json()
+        logging.getLogger(__name__).debug('Post category: %s', json)
+        try:
+            validate(json, category_input_format)
+        except ValidationError, e:
+            logging.debug(str(e))
+            #TODO: generate good error messages
+            return marshal({'error': {'message': utils.parse_error(e)}},
+                           error_fields), 400
+
+        #if an archived category exists with same name use the same instead of creating a new one.
+        archived_category = models.Category.get_archived_by_name(json['name'], client.id)
+        if archived_category:
+            category = archived_category
+            category.is_visible = True
+        else:
+            category = models.Category()
+            mapper.fill_from_json(category, json, category_mapping)
+            category.client = client
+            db.session.add(category)
+
+        try:
+            db.session.commit()
+        except IntegrityError, e:
+            logging.debug(str(e))
+            return marshal({'error': {'message': utils.parse_error(e)}},
+                           error_fields), 400
+        return marshal({'category': category}, one_category_fields), 201
+
+    @validate_client()
+    def put(self, client, id):
+        if not id_format.match(id):
+            return marshal({'error': {'message': "id invalid"}},
+                    error_fields), 400
+        category = models.Category.get(id, client.id)
+        json = request.get_json()
+        logging.getLogger(__name__).debug('PUT category: %s', json)
+
+        try:
+            validate(json, category_input_format)
+        except ValidationError, e:
+            logging.debug(str(e))
+            #TODO: generate good error messages
+            return marshal({'error': {'message': utils.parse_error(e)}},
+                           error_fields), 400
+
+        mapper.fill_from_json(category, json, category_mapping)
+        try:
+            db.session.commit()
+        except IntegrityError, e:
+            logging.debug(str(e))
+            return marshal({'error': {'message': utils.parse_error(e)}},
+                           error_fields), 400
+        return marshal({'category': category}, one_category_fields), 200
+
+    @validate_client()
+    def delete(self, client, id):
+        if not id_format.match(id):
+            return marshal({'error': {'message': "id invalid"}},
+                           error_fields), 400
+        category = models.Category.get(id, client.id)
+        category.is_visible = False
         db.session.commit()
         return None, 204
 

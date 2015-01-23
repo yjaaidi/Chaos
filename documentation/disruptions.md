@@ -18,7 +18,8 @@ It's an api for blabla
                 "causes": {"href": "https://chaos.apiary-mock.com/causes"},
                 "channels": {"href": "https://chaos.apiary-mock.com/channels"},
                 "impactsbyobject": {"href": "https://chaos.apiary-mock.com/impactsbyobject"},
-                "tags": {"href": "https://chaos.apiary-mock.com/tags"}
+                "tags": {"href": "https://chaos.apiary-mock.com/tags"},
+                "categories": {"href": "https://chaos.apiary-mock.com/categories"}
             }
 
 
@@ -69,8 +70,8 @@ Return all visible disruptions.
                         "version": 1,
                         "cause": {
                             "id": "3d1f34b2-e8df-11e3-8c3e-0008ca8657ea",
-                            "wording": "Condition météo",
-                            "category": "category-1"
+                            "wordings": [{"key": "msg", "value": "accident voyageur"}],
+                            "category": {"id": "32b07ff8-10e0-11e4-ae39-d4bed99855be", "name": "category-1"}
                         },
                         tags": [
                             {
@@ -131,8 +132,8 @@ Return all visible disruptions.
                         "contributor": "shortterm.tn",
                         "cause": {
                             "id": "3d1f34b2-e8ef-11e3-8c3e-0008ca8657ea",
-                            "wording": "train cassé",
-                            "category": "category-1"
+                            "wordings": [{"key": "msg", "value": "accident voyageur"}],
+                            "category": {"id": "32b07ff8-10e0-11e4-ae39-d4bed99855be", "name": "category-1"}
                         },
                         tags": [
                             {
@@ -174,8 +175,8 @@ Return all visible disruptions.
                         "contributor": "shortterm.tn",
                         "cause": {
                             "id": "3d1f34b2-e2df-11e3-8c3e-0008ca8657ea",
-                            "wording": "émeute",
-                            "category": "category-1"
+                            "wordings": [{"key": "msg", "value": "accident voyageur"}],
+                            "category": {"id": "32b07ff8-10e0-11e4-ae39-d4bed99855be", "name": "category-1"}
                         },
                         tags": [
                             {
@@ -329,8 +330,8 @@ Create one valid disruption with impacts
                     "version": 2,
                     "cause": {
                         "id": "3d1f34b2-e8df-1ae3-8c3e-0008ca8657ea",
-                        "wording": "Condition météo",
-                        "category": "category-1"
+                        "wordings": [{"key": "msg", "value": "accident voyageur"}],
+                        "category": {"id": "32b07ff8-10e0-11e4-ae39-d4bed99855be", "name": "category-1"}
                     },
                     tags": [
                         {
@@ -408,8 +409,8 @@ Retrieve one existing disruption:
                     "version": 2,
                     "cause": {
                         "id": "3d1e32b2-e8df-11e3-8c3e-0008ca8657ea",
-                        "wording": "Condition météo",
-                        "category": "category-1"
+                        "wordings": [{"key": "msg", "value": "accident voyageur"}],
+                        "category": {"id": "32b07ff8-10e0-11e4-ae39-d4bed99855be", "name": "category-1"}
                     },
                     tags": [
                         {
@@ -533,8 +534,8 @@ Retrieve one existing disruption:
                     "version": 2,
                     "cause": {
                         "id": "3d1f32b2-e8df-11e3-8c3e-0008ca8657ea",
-                        "wording": "Condition météo",
-                        "category": "category-1"
+                        "wordings": [{"key": "msg", "value": "accident voyageur"}],
+                        "category": {"id": "32b07ff8-10e0-11e4-ae39-d4bed99855be", "name": "category-1"}
                     },
                     tags": [
                         {
@@ -1505,6 +1506,12 @@ Return all the severities ordered by priority.
 #List of causes [/causes]
 
 ##Retrieve the list of all causes [GET]
+##Paramètres
+
+| Name                 | description                                                                               | required | default                 |
+| -------------------- | ----------------------------------------------------------------------------------------- | -------- | ----------------------- |
+| category             |  filter by category (id of category)                                                      | false    |                         |
+
 
 - response 200 (application/json)
 
@@ -1514,22 +1521,21 @@ Return all the severities ordered by priority.
                 "causes": [
                     {
                         "id": "3d1f42b2-e8df-11e4-8c3e-0008ca8617ea",
-                        "wording": "météo",
-                        "category": "category-1",
+                        "wordings": [{"key": "msg", "value": "accident voyageur"}],
+                        "category": {"id": "32b07ff8-10e0-11e4-ae39-d4bed99855be", "name": "test"}
                         "created_at": "2014-04-31T16:52:18Z",
                         "updated_at": "2014-04-31T16:55:18Z"
                     },
                     {
                         "id": "3d1f42b2-e8df-11e5-8c3e-0008ca8617ea",
-                        "wording": "gréve",
-                        "category": "category-2",
+                        "wordings": [{"key": "msg", "value": "accident voyageur"}],
+                        "category": {"id": "32b07ff8-10e0-11e4-ae39-d4bed99855be", "name": "category-1"}
                         "created_at": "2014-04-31T16:52:18Z",
                         "updated_at": "2014-04-31T16:55:18Z"
                     },
                     {
                         "id": "3d1f42b2-e8df-11e6-8c3e-0008ca8617ea",
-                        "wording": "accident voyageur",
-                        "category": "null"
+                        "wordings": [{"key": "msg", "value": "accident voyageur"}],
                         "created_at": "2014-04-31T16:52:18Z",
                         "updated_at": "2014-04-31T16:55:18Z"
                     }
@@ -1547,7 +1553,8 @@ Return all the severities ordered by priority.
     * Body
 
                 {
-                    "wording": "météo"
+                    "wordings": [{"msg": "météo"}],
+                    "category": {"id": "32b07ff8-10e0-11e4-ae39-d4bed99855be"}
                 }
 
 - response 200 (application/json)
@@ -1557,8 +1564,8 @@ Return all the severities ordered by priority.
             {
                 "cause": {
                     "id": "3d1f42b2-e8df-11e4-8c3e-0008ca8617ea",
-                    "wording": "météo",
-                    "category": "category-1",
+                    "wordings": [{"key": "msg", "value": "accident voyageur"}],
+                    "category": {"id": "32b07ff8-10e0-11e4-ae39-d4bed99855be", "name": "test"}
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": null
                 },
@@ -1913,8 +1920,8 @@ Retrieve one existing cause:
             {
                 "cause": {
                     "id": "3d1f42b2-e8df-11e4-8c3e-0008ca8617ea",
-                    "wording": "météo",
-                    "category": "category-1",
+                    "wordings": [{"key": "msg", "value": "accident voyageur"}],
+                    "category": {"id": "32b07ff8-10e0-11e4-ae39-d4bed99855be", "name": "test"}
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": null
                 },
@@ -1946,7 +1953,8 @@ Retrieve one existing cause:
     * Body
 
             {
-                "wording": "accident voyageur"
+                    "wordings": [{"msg": "accident voyageur"}],
+                    "category": {"id": "32b07ff8-10e0-11e4-ae39-d4bed99855be"}
             }
 
 - Response 200 (application/json)
@@ -1956,8 +1964,8 @@ Retrieve one existing cause:
             {
                 "cause": {
                     "id": "3d1f42b3-e8df-11e3-8c3e-0008ca8617ea",
-                    "wording": "accident voyageur",
-                    "category": "category-1",
+                    "wordings": [{"key": "msg", "value": "accident voyageur"}],
+                    "category": {"id": "32b07ff8-10e0-11e4-ae39-d4bed99855be", "name": "cat-1"}
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": "2014-04-31T16:55:18Z"
                 },
@@ -1987,6 +1995,171 @@ Archive a cause.
             {
                 "error": {
                     "message": "No cause"
+                },
+                "meta": {}
+            }
+
+#List of categories [/categories]
+
+##Retrieve the list of all categories [GET]
+
+- response 200 (application/json)
+
+    * Body
+
+            {
+                "categories": [
+                    {
+                        "id": "3d1f42b2-e8df-11e4-8c3e-0008ca8617ea",
+                        "name": "meteo",
+                        "created_at": "2014-04-31T16:52:18Z",
+                        "updated_at": "2014-04-31T16:55:18Z"
+                    },
+                    {
+                        "id": "3d1f42b2-e8df-11e5-8c3e-0008ca8617ea",
+                        "name": "probleme",
+                        "created_at": "2014-04-31T16:52:18Z",
+                        "updated_at": "2014-04-31T16:55:18Z"
+                    },
+                    {
+                        "id": "3d1f42b2-e8df-11e6-8c3e-0008ca8617ea",
+                        "name": "rer",
+                        "created_at": "2014-04-31T16:52:18Z",
+                        "updated_at": "2014-04-31T16:55:18Z"
+                    }
+                ],
+                "meta": {}
+            }
+
+##Create a category [POST]
+- request
+    + headers
+
+            Content-Type: application/json
+            X-Customer-Id: [customer id]
+
+    * Body
+
+                {
+                    "name": "meteo"
+                }
+
+- response 200 (application/json)
+
+    * Body
+
+            {
+                "category": {
+                    "id": "3d1f42b2-e8df-11e4-8c3e-0008ca8617ea",
+                    "name": "meteo",
+                    "created_at": "2014-04-31T16:52:18Z",
+                    "updated_at": null
+                },
+                "meta": {}
+            }
+
+# categories [/categories/{id}]
+##Retrieve one category [GET]
+
+##Parameters
+
+Retrieve one existing category:
+
+- response 200 (application/json)
+
+    * Body
+
+            {
+                "category": {
+                    "id": "3d1f42b2-e8df-11e4-8c3e-0008ca8617ea",
+                    "self": {
+                        "href": "https://ogv2ws.apiary-mock.com/categories/3d1f42b2-e8df-11e4-8c3e-0008ca8617ea"
+                    }
+                    "name": "rer",
+                    "created_at": "2014-04-31T16:52:18Z",
+                    "updated_at": null
+                },
+                "meta": {}
+            }
+
+
+- response 404 (application/json)
+    * Body
+
+            {
+                "error": {
+                    "message": "No category"
+                },
+                "meta": {}
+            }
+
+##Update a category [PUT]
+
+###Parameters
+
+- Request
+
+    * Headers
+
+            Content-Type: application/json
+            X-Customer-Id: [customer id]
+
+    * Body
+
+            {
+                "name": "rer"
+            }
+
+- Response 200 (application/json)
+
+    * Body
+
+            {
+                "category": {
+                    "id": "3d1f42b3-e8df-11e3-8c3e-0008ca8617ea",
+                    "self": {
+                        "href": "https://ogv2ws.apiary-mock.com/categories/3d1f42b2-e8df-11e4-8c3e-0008ca8617ea"
+                    }
+                    "name": "rer",
+                    "created_at": "2014-04-31T16:52:18Z",
+                    "updated_at": "2014-04-31T16:55:18Z"
+                },
+                "meta": {}
+            }
+
+- response 404 (application/json)
+    * Body
+
+            {
+                "error": {
+                    "message": "No category"
+                },
+                "meta": {}
+            }
+
+- response 400 (application/json)
+    * Body
+
+            {
+                "error": {
+                    "message": "'name' is a required property"
+                }
+                "meta": {}
+            }
+
+##Delete a category [DELETE]
+Archive a category.
+###Parameters
+
+
+- Response 204
+
+- response 404 (application/json)
+    * Body
+
+            {
+                "error": {
+                    "message": "No category"
                 },
                 "meta": {}
             }
