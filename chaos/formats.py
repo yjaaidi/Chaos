@@ -149,23 +149,31 @@ disruptions_input_format = {
     'required': ['reference', 'cause', 'contributor']
 }
 
-severity_input_format = {
-    'type': 'object',
-    'properties': {'wording': {'type': 'string', 'maxLength': 250},
-                   'color': {'type': ['string', 'null'], 'maxLength': 20},
-                   'priority': {'type': ['integer', 'null']},
-                   'effect': {'enum': ['blocking', None]},
-                   },
-    'required': ['wording']
-}
-
 key_value_input_format = {
     'type': 'object',
-    'properties': {'key': {'type': 'string', 'maxLength': 250},
+    'properties': {'key': {'type': 'string', 'maxLength': 250, 'minLength': 1},
                    'value': {'type': 'string', 'maxLength': 250}
                    },
     'required': ['key', 'value']
 }
+
+severity_input_format = {
+    'type': 'object',
+    'properties': {
+        'wordings': {
+            'type': 'array',
+            'items': key_value_input_format,
+            "uniqueItems": True,
+            "minItems": 1
+        },
+        'color': {'type': ['string', 'null'], 'maxLength': 20},
+        'priority': {'type': ['integer', 'null']},
+        'effect': {'enum': ['blocking', None]},
+        },
+    'required': ['wordings']
+}
+
+
 
 cause_input_format = {
     'type': 'object',

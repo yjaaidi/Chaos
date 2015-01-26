@@ -63,7 +63,6 @@ disruption_mapping = {
 }
 
 severity_mapping = {
-    'wording': None,
     'color': None,
     'priority': None,
     'effect': None,
@@ -222,6 +221,15 @@ def manage_pt_object_without_line_section(navitia, db_objects, json_attribute, j
             db_objects.remove(pt_object_db[ptobject_uri])
 
 
+def manage_wordings(db_object, json_wordings):
+    db_object.delete_wordings()
+    for json_wording in json_wordings:
+        db_wording = models.Wording()
+        db_wording.key = json_wording["key"]
+        db_wording.value = json_wording["value"]
+        db_object.wordings.append(db_wording)
+    db_object.wording = db_object.wordings[0].value
+
 class Index(flask_restful.Resource):
 
     def get(self):
@@ -270,6 +278,7 @@ class Severity(flask_restful.Resource):
         severity = models.Severity()
         mapper.fill_from_json(severity, json, severity_mapping)
         severity.client = client
+        manage_wordings(severity, json["wordings"])
         db.session.add(severity)
         db.session.commit()
         return marshal({'severity': severity}, one_severity_fields), 201
@@ -293,6 +302,7 @@ class Severity(flask_restful.Resource):
                            error_fields), 400
 
         mapper.fill_from_json(severity, json, severity_mapping)
+        manage_wordings(severity, json["wordings"])
         db.session.commit()
         return marshal({'severity': severity}, one_severity_fields), 200
 
@@ -469,16 +479,6 @@ class Cause(flask_restful.Resource):
         parser_get = self.parsers["get"]
         parser_get.add_argument("category",
                                 type=utils.get_uuid)
-
-    def manage_wordings(self, cause, json_wordings):
-        cause.delete_wordings()
-        for json_wording in json_wordings:
-            db_wording = models.Wording()
-            db_wording.key = json_wording["key"]
-            db_wording.value = json_wording["value"]
-            cause.wordings.append(db_wording)
-        cause.wording = cause.wordings[0].value
-
     @validate_client()
     def get(self, client, id=None):
         args = self.parsers['get'].parse_args()
@@ -508,7 +508,7 @@ class Cause(flask_restful.Resource):
         cause = models.Cause()
         mapper.fill_from_json(cause, json, cause_mapping)
         cause.client = client
-        self.manage_wordings(cause, json["wordings"])
+        manage_wordings(cause, json["wordings"])
         db.session.add(cause)
         db.session.commit()
         return marshal({'cause': cause}, one_cause_fields), 201
@@ -531,7 +531,7 @@ class Cause(flask_restful.Resource):
                            error_fields), 400
 
         mapper.fill_from_json(cause, json, cause_mapping)
-        self.manage_wordings(cause, json["wordings"])
+        manage_wordings(cause, json["wordings"])
         db.session.commit()
         return marshal({'cause': cause}, one_cause_fields), 200
 
