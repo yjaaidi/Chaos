@@ -28,8 +28,8 @@
 # www.navitia.io
 
 from flask_restful import fields, url_for
-from flask import current_app
-from  utils import make_pager
+from flask import current_app, request
+from utils import make_pager, get_coverage, get_token
 from chaos.navitia import Navitia
 
 
@@ -60,13 +60,15 @@ class FieldUrlDisruption(fields.Raw):
 
 class FieldObjectName(fields.Raw):
     def output(self, key, obj):
-        if obj == None:
+        if not obj:
             return None
         if obj.type == 'line_section':
             return None
-        navitia = Navitia(current_app.config['NAVITIA_URL'],
-                          current_app.config['NAVITIA_COVERAGE'],
-                          current_app.config['NAVITIA_TOKEN'])
+        navitia = Navitia(
+            current_app.config['NAVITIA_URL'],
+            get_coverage(request),
+            get_token(request))
+
         response = navitia.get_pt_object(obj.uri, obj.type)
         if response and 'name' in response:
             return response['name']
@@ -75,36 +77,59 @@ class FieldObjectName(fields.Raw):
 
 class FieldLocalization(fields.Raw):
     def output(self, key, obj):
-        retVal = None
-
-        if obj.localization_id:
-            navitia = Navitia(current_app.config['NAVITIA_URL'],
-                              current_app.config['NAVITIA_COVERAGE'],
-                              current_app.config['NAVITIA_TOKEN'])
-
-            response = navitia.get_pt_object(obj.localization_id, 'stop_area')
+        to_return = []
+        navitia = Navitia(current_app.config['NAVITIA_URL'],
+                          get_coverage(request),
+                          get_token(request))
+        for localization in obj.localizations:
+            response = navitia.get_pt_object(
+                localization.uri,
+                localization.type)
             if response and 'name' in response:
-                retVal = [response]
+                response["type"] = localization.type
+                to_return.append(response)
             else:
-                retVal = [
+                to_return.append(
                     {
-                        "id": obj.localization_id,
-                        "name": "Unable to find object"
+                        "id": localization.uri,
+                        "name": "Unable to find object",
+                        "type": localization.type
                     }
-                ]
-            retVal[0]["type"] = "stop_area"
-        return retVal
+                )
+        return to_return
+
+
+class FieldContributor(fields.Raw):
+    def output(self, key, obj):
+        if hasattr(obj, 'contributor'):
+            return obj.contributor.contributor_code
+        return None
+
 
 href_field = {
     "href": fields.String
 }
 
+wording_fields = {
+    "key": fields.Raw,
+    "value": fields.Raw
+}
+
+category_fields = {
+    'id': fields.Raw,
+    'name': fields.Raw,
+    'created_at': FieldDateTime,
+    'updated_at': FieldDateTime,
+    'self': {'href': fields.Url('category', absolute=True)}
+}
+
 cause_fields = {
     'id': fields.Raw,
-    'wording': fields.Raw,
     'created_at': FieldDateTime,
     'updated_at': FieldDateTime,
     'self': {'href': fields.Url('cause', absolute=True)},
+    'wordings': fields.List(fields.Nested(wording_fields)),
+    'category': fields.Nested(category_fields, allow_null=True),
 }
 
 causes_fields = {
@@ -113,7 +138,7 @@ causes_fields = {
 }
 
 one_cause_fields = {
-    'cause': fields.Nested(cause_fields)
+    'cause': fields.Nested(cause_fields, display_null=False)
 }
 
 tag_fields = {
@@ -121,7 +146,7 @@ tag_fields = {
     'name': fields.Raw,
     'created_at': FieldDateTime,
     'updated_at': FieldDateTime,
-    'self': {'href': fields.Url('tag', absolute=True)},
+    'self': {'href': fields.Url('tag', absolute=True)}
 }
 
 tags_fields = {
@@ -133,12 +158,24 @@ one_tag_fields = {
     'tag': fields.Nested(tag_fields)
 }
 
+
+one_category_fields = {
+    'category': fields.Nested(category_fields)
+}
+
+
+categories_fields = {
+    'categories': fields.List(fields.Nested(category_fields)),
+    'meta': {}
+}
+
 disruption_fields = {
     'id': fields.Raw,
     'self': {'href': fields.Url('disruption', absolute=True)},
     'reference': fields.Raw,
     'note': fields.Raw,
     'status': fields.Raw,
+    'version': fields.Raw,
     'created_at': FieldDateTime,
     'updated_at': FieldDateTime,
     'publication_period': {
@@ -146,8 +183,9 @@ disruption_fields = {
         'end': FieldDateTime(attribute='end_publication_date')
     },
     'publication_status': fields.Raw,
+    'contributor': FieldContributor,
     'impacts': FieldPaginateImpacts(attribute='impacts'),
-    'localization': FieldLocalization,
+    'localization': FieldLocalization(attribute='localizations'),
     'cause': fields.Nested(cause_fields, allow_null=True),
     'tags': fields.List(fields.Nested(tag_fields)),
 }
@@ -208,19 +246,28 @@ one_objectTC_fields = {
 }
 
 line_section_fields = {
-    'line' : fields.Nested(one_objectTC_fields, display_null=False),
+    'line': fields.Nested(one_objectTC_fields, display_null=False),
     'start_point': fields.Nested(one_objectTC_fields, display_null=False),
     'end_point': fields.Nested(one_objectTC_fields, display_null=False),
-    'sens':fields.Integer(default=None),
-    'routes':fields.List(fields.Nested(one_objectTC_fields, display_null=False), display_empty=False),
-    'via':fields.List(fields.Nested(one_objectTC_fields, display_null=False), display_empty=False)
+    'sens': fields.Integer(default=None),
+    'routes': fields.List(
+        fields.Nested(one_objectTC_fields, display_null=False),
+        display_empty=False),
+    'via': fields.List(
+        fields.Nested(
+            one_objectTC_fields,
+            display_null=False),
+        display_empty=False)
 }
 
 objectTC_fields = {
     'id': fields.Raw(attribute='uri'),
     'type': fields.Raw,
     'name': FieldObjectName(),
-    'line_section': fields.Nested(line_section_fields, display_null=False, allow_null=True)
+    'line_section': fields.Nested(
+        line_section_fields,
+        display_null=False,
+        allow_null=True)
 }
 
 channel_fields = {

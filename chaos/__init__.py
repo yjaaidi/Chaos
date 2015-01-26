@@ -27,7 +27,7 @@
 # https://groups.google.com/d/forum/navitia
 # www.navitia.io
 
-VERSION = '0.6.0'
+VERSION = '0.9.0'
 
 #remplace blocking method by a non blocking equivalent
 #this enable us to use gevent for launching background task
@@ -57,6 +57,6 @@ else:  # Default is std out
 
 db = SQLAlchemy(app)
 
-publisher = Publisher(app.config['RABBITMQ_CONNECTION_STRING'], app.config['EXCHANGE'], app.config['CONTRIBUTOR'], app.config['ENABLE_RABBITMQ'])
+publisher = Publisher(app.config['RABBITMQ_CONNECTION_STRING'], app.config['EXCHANGE'], app.config['ENABLE_RABBITMQ'])
 
 import chaos.api

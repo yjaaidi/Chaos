@@ -28,13 +28,12 @@
 # www.navitia.io
 
 import chaos_pb2, gtfs_realtime_pb2
-import time
 import datetime
 
 
 def get_pos_time(sql_time):
     if sql_time:
-        return int(time.mktime(sql_time.timetuple()))
+        return int((sql_time - datetime.datetime(1970, 1, 1)).total_seconds())
     return 0
 
 
@@ -133,8 +132,10 @@ def populate_impact(disruption, disruption_pb):
 
 
 def populate_localization(disruption, disruption_pb):
-    localization_pb = disruption_pb.localization.add()
-    localization_pb.stop_id = str(disruption.localization_id)
+    if hasattr(disruption, 'localizations'):
+        if disruption.localizations:
+            for localization in disruption.localizations:
+                populate_informed_entitie(localization, disruption_pb.localization.add())
 
 
 def populate_tag(disruption, disruption_pb):
@@ -149,6 +150,10 @@ def populate_tag(disruption, disruption_pb):
 def populate_cause(cause, cause_pb):
     cause_pb.id = cause.id
     cause_pb.wording = cause.wording
+    for wording in cause.wordings:
+        wording_pb = cause_pb.wordings.add()
+        wording_pb.key = wording.key
+        wording_pb.value = wording.value
 
 
 def populate_disruption(disruption, disruption_pb):

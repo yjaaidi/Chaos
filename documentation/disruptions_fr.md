@@ -54,8 +54,20 @@ Enfin, en cas de paramétre non valide, y compris un json ne respestant pas les 
                 "severities": {"href": "https://ogv2ws.apiary-mock.com/severities"},
                 "causes": {"href": "https://ogv2ws.apiary-mock.com/causes"},
                 "channels": {"href": "https://ogv2ws.apiary-mock.com/channels"},
-                "tags": {"href": "https://ogv2ws.apiary-mock.com/tags"}
+                "tags": {"href": "https://ogv2ws.apiary-mock.com/tags"},
+                "categories": {"href": "https://chaos.apiary-mock.com/categories"}
             }
+
+
+##Headers
+
+| Name                 | description                                                                       | required | default                 |
+| -------------------- | --------------------------------------------------------------------------------- | -------- | ----------------------- |
+| Content-Type         | type du texte                                                                     | true     | application/json        |
+| Authorization        | token pour avoir accès aux services navitia                                       | true     |                         |
+| X-Customer-Id        | client code. Les données référentielles comme cause, channel sont liées au client | true     |                         |
+| X-Contributors       | contributor code. Un disruption est lié au contributor                            | true     |                         |
+| X-Coverage           | coverage des services navitia                                                     | true     |                         |
 
 
 # Liste des perturbations [/disruptions]
@@ -103,6 +115,8 @@ Le champs ```tags``` contient une liste de tag de la perturbation.
                         "note": "blablbla",
                         "status": "published",
                         "publication_status": "ongoing",
+                        "contributor": "shortterm.tn",
+                        "version": 1,
                         "publication_period" : {
                             "begin":"2014-04-31T17:00:00Z",
                             "end":"2014-05-01T17:00:00Z"
@@ -139,6 +153,7 @@ Le champs ```tags``` contient une liste de tag de la perturbation.
                         "note": null,
                         "status": "published",
                         "publication_status": "coming",
+                        "contributor": "shortterm.tn",
                         "publication_period" : {
                             "begin": "2014-04-31T17:00:00Z",
                             "end": null
@@ -155,15 +170,14 @@ Le champs ```tags``` contient une liste de tag de la perturbation.
                             }
                         ],
                         "cause": {
-
+                            "category": {"id": "32b07ff8-10e0-11e4-ae39-d4bed99855be", "name": "category-1"},
                             "created_at": "2014-07-21T14:06:23Z",
                             "id": "32b07ff8-10e0-11e4-ae39-d4bed99855be",
                             "self": {
                                 "href": "https://ogv2ws.apiary-mock.com/causes/32b07ff8-10e0-11e4-ae39-d4bed99855be"
                             },
                             "updated_at": null,
-                            "wording": "foo1"
-
+                            "wordings": [{"key": "key1", "value": "foo1"}]
                         },
                         "impacts": {
                             "pagination": {
@@ -211,6 +225,7 @@ Le champs ```tags``` contient une liste de tag de la perturbation.
                         "note": "retour probable d'ici 5H",
                         "status": "published",
                         "publication_status": "past",
+                        "contributor": "shortterm.tn",
                         "publication_period" : {
                             "begin": "2014-04-31T17:00:00Z",
                             "end": null
@@ -223,8 +238,8 @@ Le champs ```tags``` contient une liste de tag de la perturbation.
                                 "href": "https://ogv2ws.apiary-mock.com//causes/32b07ff8-10e0-11e4-ae39-d4bed99855be"
                             },
                             "updated_at": null,
-                            "wording": "foo1"
-
+                            "wordings": [{"key": "key1", "value": "foo1"}],
+                            "category": {"id": "32b07ff8-10e0-11e4-ae39-d4bed99855be", "name": "category-1"}
                         },
                         tags": [
                             {
@@ -272,6 +287,7 @@ Le content-type de la requete doit etre json et le corps de celle ci doit conten
 Les champs suivant peuvent etre défini:
 
   - reference (obligatoire)
+  - contributor (obligatoire)
   - note
   - publication_period
   - localization
@@ -287,6 +303,7 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient la perturbat
 
             {
                 "reference": "foo",
+                "contributor": "shortterm.tn",
                 "note": null,
                 "publication_period" : {
                     "begin": "2014-04-31T17:00:00Z",
@@ -313,6 +330,8 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient la perturbat
                     "note": null,
                     "status": "published",
                     "publication_status": "ongoing",
+                    "contributor": "shortterm.tn",
+                    "version": 1,
                     "publication_period" : {
                         "begin": "2014-04-31T17:00:00Z",
                         "end": null
@@ -337,8 +356,8 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient la perturbat
                             "href": "https://ogv2ws.apiary-mock.com//causes/32b07ff8-10e0-11e4-ae39-d4bed99855be"
                         },
                         "updated_at": null,
-                        "wording": "foo1"
-
+                        "wordings": [{"key": "key1", "value": "foo1"}],
+                        "category": {"id": "32b07ff8-10e0-11e4-ae39-d4bed99855be", "name": "category-1"}
                     },
                     "localization":[
                     {
@@ -412,6 +431,8 @@ Retourne une perturbation (si elle existe):
                     "note": "blablbla",
                     "status": "published",
                     "publication_status": "ongoing",
+                    "contributor": "shortterm.tn",
+                    "version": 1,
                     "publication_period" : {
                         "begin": "2014-04-31T17:00:00Z",
                         "end": null
@@ -435,8 +456,8 @@ Retourne une perturbation (si elle existe):
                             "href": "https://ogv2ws.apiary-mock.com//causes/32b07ff8-10e0-11e4-ae39-d4bed99855be"
                         },
                         "updated_at": null,
-                        "wording": "foo1"
-
+                        "wordings": [{"key": "key1", "value": "foo1"}],
+                        "category": {"id": "32b07ff8-10e0-11e4-ae39-d4bed99855be", "name": "category-1"}
                     },
                     "localization":[
                     {
@@ -498,6 +519,7 @@ Le content-type de la requete doit etre json et le corps de celle ci doit conten
 Les champs suivant peuvent etre mis à jour:
 
   - reference
+  - contributor
   - note
   - publication_period
   - localization
@@ -514,11 +536,16 @@ Lors d'un succés une réponse 200 est retourné, celle ci contient la perturbat
     * Headers
 
             Content-Type: application/json
+            Authorization: [navitia token]
+            X-Customer-Id: [customer id]
+            X-Contributors: [contributor id]
+            X-Coverage: [navitia coverage]
 
     * Body
 
             {
                 "reference": "foo",
+                "contributor": "shortterm.tn",
                 "note": null,
                 "publication_period" : {
                     "begin": "2014-04-31T17:00:00Z",
@@ -544,6 +571,8 @@ Lors d'un succés une réponse 200 est retourné, celle ci contient la perturbat
                     "note": null,
                     "status": "published",
                     "publication_status": "ongoing",
+                    "contributor": "shortterm.tn",
+                    "version": 2,
                     "publication_period" : {
                         "begin": "2014-04-31T17:00:00Z",
                         "end": null
@@ -567,8 +596,8 @@ Lors d'un succés une réponse 200 est retourné, celle ci contient la perturbat
                             "href": "https://ogv2ws.apiary-mock.com//causes/32b07ff8-10e0-11e4-ae39-d4bed99855be"
                         },
                         "updated_at": null,
-                        "wording": "foo1"
-
+                        "wordings": [{"key": "key1", "value": "foo1"}],
+                        "category": {"id": "32b07ff8-10e0-11e4-ae39-d4bed99855be", "name": "category-1"}
                     },
                     "localization":[
                     {
@@ -900,6 +929,10 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient l'impact cr�
     + headers
 
             Content-Type: application/json
+            Authorization: [navitia token]
+            X-Customer-Id: [customer id]
+            X-Contributors: [contributor id]
+            X-Coverage: [navitia coverage]
 
     + body
 
@@ -1252,6 +1285,10 @@ Lors d'un succés une réponse 200 est retourné, celle ci contient l'impact mod
     * Headers
 
             Content-Type: application/json
+            Authorization: [navitia token]
+            X-Customer-Id: [customer id]
+            X-Contributors: [contributor id]
+            X-Coverage: [navitia coverage]
 
     * Body
 
@@ -1609,6 +1646,8 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient la sévérit
     + headers
 
             Content-Type: application/json
+            X-Customer-Id: [customer id]
+
     * Body
 
                 {
@@ -1703,6 +1742,7 @@ Lors d'un succés une réponse 200 est retourné, celle ci contient la sévérit
     * Headers
 
             Content-Type: application/json
+            X-Customer-Id: [customer id]
 
     * Body
 
@@ -1777,6 +1817,14 @@ supprime une sévérité.
 
 ##Retourne la liste de toutes les causes [GET]
 
+##Paramètres
+
+| Name                 | description                                                                               | required | default                 |
+| -------------------- | ----------------------------------------------------------------------------------------- | -------- | ----------------------- |
+| category             | filtre sur tag (identifiant du category)                                                  | false    |                         |
+
+Le champs ```category``` contient la catégorie de la cause.
+
 - response 200 (application/json)
 
     * Body
@@ -1788,7 +1836,8 @@ supprime une sévérité.
                         "self": {
                             "href": "https://ogv2ws.apiary-mock.com/causes/3d1f42b2-e8df-11e4-8c3e-0008ca8617ea"
                         }
-                        "wording": "météo",
+                        "wordings": [{"key": "key1", "value": "foo1"}],
+                        "category": {"id": "32b07ff8-10e0-11e4-ae39-d4bed99855be", "name": "test"}
                         "created_at": "2014-04-31T16:52:18Z",
                         "updated_at": "2014-04-31T16:55:18Z"
                     },
@@ -1797,7 +1846,8 @@ supprime une sévérité.
                         "self": {
                             "href": "https://ogv2ws.apiary-mock.com/causes/3d1f42b2-e8df-11e5-8c3e-0008ca8617ea"
                         }
-                        "wording": "gréve",
+                        "wordings": [{"key": "key1", "value": "foo1"}],
+                        "category": {"id": "32b07ff8-10e0-11e4-ae39-d4bed99855be", "name": "category-1"}
                         "created_at": "2014-04-31T16:52:18Z",
                         "updated_at": "2014-04-31T16:55:18Z"
                     },
@@ -1806,7 +1856,7 @@ supprime une sévérité.
                         "self": {
                             "href": "https://ogv2ws.apiary-mock.com/causes/3d1f42b2-e8df-11e6-8c3e-0008ca8617ea"
                         }
-                        "wording": "accident voyageur",
+                        "wordings": [{"key": "msg", "value": "accident voyageur"}],
                         "created_at": "2014-04-31T16:52:18Z",
                         "updated_at": "2014-04-31T16:55:18Z"
                     }
@@ -1821,9 +1871,9 @@ Le content-type de la requete doit etre json et le corps de celle ci doit conten
 
 Les champs suivant peuvent etre défini:
 
-  - wording (obligatoire)
+  - wordings (obligatoire)
 
-Le champs ```wording``` correspond au libellé qui sera affiché pour cette cause.
+Le champs ```wordings``` correspond aux cle/valeur qui seront affichés pour cette cause.
 
 Lors d'un succés une réponse 201 est retourné, celle ci contient la cause créée.
 
@@ -1832,10 +1882,13 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient la cause cr�
     + headers
 
             Content-Type: application/json
+            X-Customer-Id: [customer id]
+
     * Body
 
                 {
-                    "wording": "météo"
+                    "category": {"id": "32b07ff8-10e0-11e4-ae39-d4bed99855be"},
+                    "wordings": [{"key": "msg", "value": "accident voyageur"}],
                 }
 
 - response 200 (application/json)
@@ -1848,7 +1901,8 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient la cause cr�
                     "self": {
                         "href": "https://ogv2ws.apiary-mock.com/causes/3d1f42b2-e8df-11e4-8c3e-0008ca8617ea"
                     }
-                    "wording": "météo",
+                    "wordings": [{"key": "msg", "value": "accident voyageur"}],
+                    "category": {"id": "32b07ff8-10e0-11e4-ae39-d4bed99855be", "name": "test"}
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": null
                 },
@@ -1883,7 +1937,8 @@ Retourne une cause existante.
                     "self": {
                         "href": "https://ogv2ws.apiary-mock.com/causes/3d1f42b2-e8df-11e4-8c3e-0008ca8617ea"
                     }
-                    "wording": "météo",
+                    "wordings": [{"key": "msg", "value": "accident voyageur"}],
+                    "category": {"id": "32b07ff8-10e0-11e4-ae39-d4bed99855be", "name": "category-1"}
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": null
                 },
@@ -1916,11 +1971,13 @@ Lors d'un succés une réponse 200 est retourné, celle ci contient la cause mod
     * Headers
 
             Content-Type: application/json
+            X-Customer-Id: [customer id]
 
     * Body
 
             {
-                "wording": "accident voyageur"
+                "category": {"id": "32b07ff8-10e0-11e4-ae39-d4bed99855be"},
+                "wordings": [{"msg": "météo"}]
             }
 
 - Response 200 (application/json)
@@ -1933,7 +1990,8 @@ Lors d'un succés une réponse 200 est retourné, celle ci contient la cause mod
                     "self": {
                         "href": "https://ogv2ws.apiary-mock.com/causes/3d1f42b2-e8df-11e4-8c3e-0008ca8617ea"
                     }
-                    "wording": "accident voyageur",
+                    "wordings": [{"key": "msg", "value": "accident voyageur"}],
+                    "category": {"id": "32b07ff8-10e0-11e4-ae39-d4bed99855be", "name": "test"}
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": "2014-04-31T16:55:18Z"
                 },
@@ -1955,7 +2013,7 @@ Lors d'un succés une réponse 200 est retourné, celle ci contient la cause mod
 
             {
                 "error": {
-                    "message": "'wording' is a required property"
+                    "message": "'wordings' is a required property"
                 }
                 "meta": {}
             }
@@ -2036,6 +2094,8 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient le tag cré�
     + headers
 
             Content-Type: application/json
+            X-Customer-Id: [customer id]
+
     * Body
 
                 {
@@ -2120,6 +2180,7 @@ Lors d'un succés une réponse 200 est retourné, celle ci contient le tag modif
     * Headers
 
             Content-Type: application/json
+            X-Customer-Id: [customer id]
 
     * Body
 
@@ -2247,6 +2308,8 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient la canal cr�
     + headers
 
             Content-Type: application/json
+            X-Customer-Id: [customer id]
+
     * Body
 
                 {
@@ -2283,3 +2346,211 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient la canal cr�
                 }
                 "meta": {}
             }
+
+#Liste des categories [/categories]
+
+##Retourne la liste de tous les categories [GET]
+
+- response 200 (application/json)
+
+    * Body
+
+            {
+                "categories": [
+                    {
+                        "id": "3d1f42b2-e8df-11e4-8c3e-0008ca8617ea",
+                        "self": {
+                            "href": "https://ogv2ws.apiary-mock.com/categories/3d1f42b2-e8df-11e4-8c3e-0008ca8617ea"
+                        }
+                        "name": "probleme",
+                        "created_at": "2014-04-31T16:52:18Z",
+                        "updated_at": "2014-04-31T16:55:18Z"
+                    },
+                    {
+                        "id": "3d1f42b2-e8df-11e5-8c3e-0008ca8617ea",
+                        "self": {
+                            "href": "https://ogv2ws.apiary-mock.com/categories/3d1f42b2-e8df-11e5-8c3e-0008ca8617ea"
+                        }
+                        "name": "meteo",
+                        "created_at": "2014-04-31T16:52:18Z",
+                        "updated_at": "2014-04-31T16:55:18Z"
+                    },
+                    {
+                        "id": "3d1f42b2-e8df-11e6-8c3e-0008ca8617ea",
+                        "self": {
+                            "href": "https://ogv2ws.apiary-mock.com/categories/3d1f42b2-e8df-11e6-8c3e-0008ca8617ea"
+                        }
+                        "name": "rer",
+                        "created_at": "2014-04-31T16:52:18Z",
+                        "updated_at": "2014-04-31T16:55:18Z"
+                    }
+                ],
+                "meta": {}
+            }
+
+##Créer une category [POST]
+
+La création d'une category est réalisée via une requête ```POST``` sur la resource ```category```.
+Le content-type de la requete doit etre json et le corps de celle ci doit contenir un json correspondant au format d'une category.
+
+Les champs suivant peuvent etre défini:
+
+  - name (obligatoire)
+
+Le champs ```name``` correspond au libellé qui sera affiché pour cette category.
+
+Lors d'un succés une réponse 201 est retourné, celle ci contient la category créé.
+
+###Exemple
+- request
+    + headers
+
+            Content-Type: application/json
+            X-Customer-Id: [customer id]
+
+    * Body
+
+                {
+                    "name": "rer"
+                }
+
+- response 200 (application/json)
+
+    * Body
+
+            {
+                "category": {
+                    "id": "3d1f42b2-e8df-11e4-8c3e-0008ca8617ea",
+                    "self": {
+                        "href": "https://ogv2ws.apiary-mock.com/categories/3d1f42b2-e8df-11e4-8c3e-0008ca8617ea"
+                    }
+                    "name": "rer",
+                    "created_at": "2014-04-31T16:52:18Z",
+                    "updated_at": null
+                },
+                "meta": {}
+            }
+
+- response 400 (application/json)
+
+    * Body
+
+            {
+                "error": {
+                    "message": "'name' is a required property"
+                }
+                "meta": {}
+            }
+
+# categories [/categories/{id}]
+##Retourne une cause. [GET]
+
+##Paramètres
+
+Retourne une category existant.
+
+- response 200 (application/json)
+
+    * Body
+
+            {
+                "category": {
+                    "id": "3d1f42b2-e8df-11e4-8c3e-0008ca8617ea",
+                    "self": {
+                        "href": "https://ogv2ws.apiary-mock.com/categories/3d1f42b2-e8df-11e4-8c3e-0008ca8617ea"
+                    }
+                    "name": "rer",
+                    "created_at": "2014-04-31T16:52:18Z",
+                    "updated_at": null
+                },
+                "meta": {}
+            }
+
+
+- response 404 (application/json)
+    * Body
+
+            {
+                "error": {
+                    "message": "No category"
+                },
+                "meta": {}
+            }
+
+##Mise à jour d'une category [PUT]
+La mise à jour d'une category est réalisé via une requête ```PUT``` sur la resource ```categories```.
+Le content-type de la requete doit etre json et le corps de celle ci doit contenir un json correspondant au format d'une category.
+
+Les contraintes sont les meme que pour la création.
+
+Lors d'un succés une réponse 200 est retourné, celle ci contient la category modifié.
+###Exemple
+
+
+- Request
+
+    * Headers
+
+            Content-Type: application/json
+            X-Customer-Id: [customer id]
+
+    * Body
+
+            {
+                "name": "rer"
+            }
+
+- Response 200 (application/json)
+
+    * Body
+
+            {
+                "category": {
+                    "id": "3d1f42b3-e8df-11e3-8c3e-0008ca8617ea",
+                    "self": {
+                        "href": "https://ogv2ws.apiary-mock.com/categories/3d1f42b2-e8df-11e4-8c3e-0008ca8617ea"
+                    }
+                    "name": "rer",
+                    "created_at": "2014-04-31T16:52:18Z",
+                    "updated_at": "2014-04-31T16:55:18Z"
+                },
+                "meta": {}
+            }
+
+- response 404 (application/json)
+    * Body
+
+            {
+                "error": {
+                    "message": "No category"
+                },
+                "meta": {}
+            }
+
+- response 400 (application/json)
+    * Body
+
+            {
+                "error": {
+                    "message": "'name' is a required property"
+                }
+                "meta": {}
+            }
+
+##Archive une category [DELETE]
+Archive une category.
+###Paramètres
+
+
+- Response 204
+
+- response 404 (application/json)
+    * Body
+
+            {
+                "error": {
+                    "message": "No category"
+                },
+                "meta": {}
+            }
+

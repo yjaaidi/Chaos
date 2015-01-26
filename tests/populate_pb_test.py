@@ -1,7 +1,8 @@
 from nose.tools import *
 import chaos
-from chaos.populate_pb import populate_pb, get_pt_object_type
+from chaos.populate_pb import populate_pb, get_pt_object_type, get_pos_time
 from aniso8601 import parse_datetime
+import datetime
 
 
 def get_disruption(with_via=True, with_routes=True):
@@ -11,7 +12,20 @@ def get_disruption(with_via=True, with_routes=True):
     disruption.cause = chaos.models.Cause()
     disruption.cause.wording = "CauseTest"
     disruption.reference = "DisruptionTest"
-    disruption.localization_id = "123"
+    localization = chaos.models.PTobject()
+    localization.uri = "stop_area:123"
+    localization.type = "stop_area"
+    disruption.localizations.append(localization)
+
+    # Wording
+    wording = chaos.models.Wording()
+    wording.key = "key_1"
+    wording.value = "value_1"
+    disruption.cause.wordings.append(wording)
+    wording = chaos.models.Wording()
+    wording.key = "key_2"
+    wording.value = "value_2"
+    disruption.cause.wordings.append(wording)
 
     # Tag
     tag = chaos.models.Tag()
@@ -108,6 +122,15 @@ def get_disruption(with_via=True, with_routes=True):
 
     return disruption
 
+def test_get_pos_time():
+    dates = [
+                datetime.datetime(2014, 1, 14, 9, 0),
+                datetime.datetime(2014, 8, 14, 12, 0),
+                datetime.datetime(2014, 3, 29, 2, 0)
+            ]
+    for d in dates:
+        eq_(d, datetime.datetime.utcfromtimestamp(get_pos_time(d)))
+
 
 def test_disruption():
     disruption = get_disruption()
@@ -117,8 +140,9 @@ def test_disruption():
 
     eq_(disruption_pb.reference,  disruption.reference)
     eq_(disruption_pb.cause.wording,  disruption.cause.wording)
+    eq_(len(disruption_pb.cause.wordings), 2)
     eq_(len(disruption_pb.localization),  1)
-    eq_(disruption_pb.localization[0].stop_id,  disruption.localization_id)
+    eq_(disruption_pb.localization[0].uri,  disruption.localizations[0].uri)
     eq_(len(disruption_pb.tags),  2)
     eq_(disruption_pb.tags[0].name,  disruption.tags[0].name)
     eq_(disruption_pb.tags[1].name,  disruption.tags[1].name)
@@ -183,7 +207,7 @@ def test_disruption_without_via():
     eq_(disruption_pb.reference, disruption.reference)
     eq_(disruption_pb.cause.wording, disruption.cause.wording)
     eq_(len(disruption_pb.localization), 1)
-    eq_(disruption_pb.localization[0].stop_id, disruption.localization_id)
+    eq_(disruption_pb.localization[0].uri,  disruption.localizations[0].uri)
     eq_(len(disruption_pb.tags), 2)
     eq_(disruption_pb.tags[0].name, disruption.tags[0].name)
     eq_(disruption_pb.tags[1].name, disruption.tags[1].name)
@@ -248,7 +272,7 @@ def test_disruption_without_routes():
     eq_(disruption_pb.reference, disruption.reference)
     eq_(disruption_pb.cause.wording, disruption.cause.wording)
     eq_(len(disruption_pb.localization), 1)
-    eq_(disruption_pb.localization[0].stop_id, disruption.localization_id)
+    eq_(disruption_pb.localization[0].uri,  disruption.localizations[0].uri)
     eq_(len(disruption_pb.tags), 2)
     eq_(disruption_pb.tags[0].name, disruption.tags[0].name)
     eq_(disruption_pb.tags[1].name, disruption.tags[1].name)
@@ -313,7 +337,7 @@ def test_disruption_without_routes():
     eq_(disruption_pb.reference, disruption.reference)
     eq_(disruption_pb.cause.wording, disruption.cause.wording)
     eq_(len(disruption_pb.localization), 1)
-    eq_(disruption_pb.localization[0].stop_id, disruption.localization_id)
+    eq_(disruption_pb.localization[0].uri,  disruption.localizations[0].uri)
     eq_(len(disruption_pb.tags), 2)
     eq_(disruption_pb.tags[0].name, disruption.tags[0].name)
     eq_(disruption_pb.tags[1].name, disruption.tags[1].name)

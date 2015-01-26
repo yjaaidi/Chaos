@@ -56,6 +56,11 @@ api.add_resource(resources.Cause,
                  '/causes/<string:id>',
                  endpoint='cause')
 
+api.add_resource(resources.Category,
+                 '/categories',
+                 '/categories/<string:id>',
+                 endpoint='category')
+
 api.add_resource(resources.Tag,
                  '/tags',
                  '/tags/<string:id>',
