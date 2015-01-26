@@ -4,13 +4,27 @@ Feature: update severity
         Given I have the following clients in my database:
             | client_code   | created_at          | updated_at          | id                                   |
             | 5             | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
+
+        Given I have the following wording in my database:
+            | key       | value     | color   | created_at          | updated_at          | id                                   |
+            |  key1     | blocking  | #123456 | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |
+            |  key2     | good news | #654321 | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |
+
         Given I have the following severities in my database:
             | wording   | color   | created_at          | updated_at          | is_visible | id                                   |client_id                            |
             | blocking  | #123456 | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | True       | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
             | good news | #654321 | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | False      | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
+
+        Given I have the relation associate_wording_severity in my database:
+            | wording_id                                | severity_id                           |
+            |  7ffab230-3d48-4eea-aa2c-22f8680230b6     | 7ffab230-3d48-4eea-aa2c-22f8680230b6  |
+            |  7ffab232-3d48-4eea-aa2c-22f8680230b6     | 7ffab230-3d48-4eea-aa2c-22f8680230b6  |
+            |  7ffab232-3d48-4eea-aa2c-22f8680230b6     | 7ffab232-3d48-4eea-aa2c-22f8680230b6  |
+
+
         When I put to "/severities/7ffab230-3d48-4eea-aa2c-22f8680230b6" with:
         """
-        {"wording": "foo", "color": "blue"}
+        {"wordings": [{"key": "test", "value": "foo"}], "color": "blue"}
         """
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
@@ -19,15 +33,27 @@ Feature: update severity
         Given I have the following clients in my database:
             | client_code   | created_at          | updated_at          | id                                   |
             | 5             | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
+
+        Given I have the following wording in my database:
+            | key       | value     | color   | created_at          | updated_at          | id                                   |
+            |  key1     | blocking  | #123456 | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |
+            |  key2     | good news | #654321 | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |
+
         Given I have the following severities in my database:
             | wording   | color   | created_at          | updated_at          | is_visible | id                                   |client_id                            |
             | blocking  | #123456 | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | True       | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
             | good news | #654321 | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | False      | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
 
+        Given I have the relation associate_wording_severity in my database:
+            | wording_id                                | severity_id                           |
+            |  7ffab230-3d48-4eea-aa2c-22f8680230b6     | 7ffab230-3d48-4eea-aa2c-22f8680230b6  |
+            |  7ffab232-3d48-4eea-aa2c-22f8680230b6     | 7ffab230-3d48-4eea-aa2c-22f8680230b6  |
+            |  7ffab232-3d48-4eea-aa2c-22f8680230b6     | 7ffab232-3d48-4eea-aa2c-22f8680230b6  |
+
         I fill in header "X-Customer-Id" with "6"
         When I put to "/severities/7ffab230-3d48-4eea-aa2c-22f8680230b6" with:
         """
-        {"wording": "foo", "color": "blue"}
+        {"wordings": [{"key": "test", "value": "foo"}], "color": "blue"}
         """
         Then the status code should be "404"
         And the header "Content-Type" should be "application/json"
