@@ -167,7 +167,7 @@ class Category(TimestampMixin, db.Model):
 
     @classmethod
     def all(cls, client_id):
-        return cls.query.filter_by(client_id=client_id,is_visible=True).all()
+        return cls.query.filter_by(client_id=client_id,is_visible=True).order_by(cls.name).all()
 
     @classmethod
     def get(cls, id, client_id):
