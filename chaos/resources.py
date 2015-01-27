@@ -225,6 +225,9 @@ def manage_wordings(db_object, json_wordings):
     db_object.delete_wordings()
     for json_wording in json_wordings:
         db_wording = models.Wording()
+        key = json_wording["key"].strip()
+        if key == '':
+            raise exceptions.InvalidJson('Json invalid: key is empty, you give : {}'.format(json_wordings))
         db_wording.key = json_wording["key"]
         db_wording.value = json_wording["value"]
         db_object.wordings.append(db_wording)
@@ -278,7 +281,11 @@ class Severity(flask_restful.Resource):
         severity = models.Severity()
         mapper.fill_from_json(severity, json, severity_mapping)
         severity.client = client
-        manage_wordings(severity, json["wordings"])
+        try:
+            manage_wordings(severity, json["wordings"])
+        except exceptions.InvalidJson, e:
+            return marshal({'error': {'message': utils.parse_error(e)}},
+                           error_fields), 400
         db.session.add(severity)
         db.session.commit()
         return marshal({'severity': severity}, one_severity_fields), 201
@@ -302,7 +309,11 @@ class Severity(flask_restful.Resource):
                            error_fields), 400
 
         mapper.fill_from_json(severity, json, severity_mapping)
-        manage_wordings(severity, json["wordings"])
+        try:
+            manage_wordings(severity, json["wordings"])
+        except exceptions.InvalidJson, e:
+            return marshal({'error': {'message': utils.parse_error(e)}},
+                           error_fields), 400
         db.session.commit()
         return marshal({'severity': severity}, one_severity_fields), 200
 
@@ -508,7 +519,11 @@ class Cause(flask_restful.Resource):
         cause = models.Cause()
         mapper.fill_from_json(cause, json, cause_mapping)
         cause.client = client
-        manage_wordings(cause, json["wordings"])
+        try:
+            manage_wordings(cause, json["wordings"])
+        except exceptions.InvalidJson, e:
+            return marshal({'error': {'message': utils.parse_error(e)}},
+                           error_fields), 400
         db.session.add(cause)
         db.session.commit()
         return marshal({'cause': cause}, one_cause_fields), 201
@@ -531,7 +546,11 @@ class Cause(flask_restful.Resource):
                            error_fields), 400
 
         mapper.fill_from_json(cause, json, cause_mapping)
-        manage_wordings(cause, json["wordings"])
+        try:
+            manage_wordings(cause, json["wordings"])
+        except exceptions.InvalidJson, e:
+            return marshal({'error': {'message': utils.parse_error(e)}},
+                           error_fields), 400
         db.session.commit()
         return marshal({'cause': cause}, one_cause_fields), 200
 
