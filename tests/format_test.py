@@ -17,7 +17,7 @@ def test_validate_cause_format():
     Draft4Validator.check_schema(formats.cause_input_format)
 
 def test_severities_validation():
-    json = {'wording': 'foo', 'color': 'a'*20}
+    json = {'wordings': [{'key': 'foo', 'value': 'test'}], 'color': 'a'*20}
     validate(json, formats.severity_input_format)
 
     json['priority'] = 2
@@ -28,12 +28,12 @@ def test_severities_validation():
 
 @raises(ValidationError)
 def test_severities_validation_color_has_max_length():
-    json = {'wording': 'foo', 'color': 'a'*21}
+    json = {'wordings': [{'key': 'foo', 'value': 'test'}], 'color': 'a'*21}
     validate(json, formats.severity_input_format)
 
 @raises(ValidationError)
 def test_severities_validation_wording_has_max_length():
-    json = {'wording': 'a'*251}
+    json = {'wordings': [{'key': 'foo', 'value': 't'*251}]}
     validate(json, formats.severity_input_format)
 
 @raises(ValidationError)
@@ -42,27 +42,27 @@ def test_severities_validation_wording_is_required():
     validate(json, formats.severity_input_format)
 
 def test_severities_validation_effect_can_be_null_or_blocking():
-    json = {'wording': 'aa', 'effect': None}
+    json = {'wordings': [{'key': 'foo', 'value': 'test'}], 'effect': None}
     validate(json, formats.severity_input_format)
 
-    json = {'wording': 'aa', 'effect': 'blocking'}
+    json = {'wordings': [{'key': 'foo', 'value': 'test'}], 'effect': 'blocking'}
     validate(json, formats.severity_input_format)
 
 @raises(ValidationError)
 def test_severities_validation_value_of_effect_is_limited():
-    json = {'wording': 'aa', 'effect': 'nonblocking'}
+    json = {'wordings': [{'key': 'foo', 'value': 'test'}], 'effect': 'nonblocking'}
     validate(json, formats.severity_input_format)
 
 def test_severities_validation_priority_is_int_or_null():
-    json = {'wording': 'aa', 'priority': None}
+    json = {'wordings': [{'key': 'foo', 'value': 'test'}], 'priority': None}
     validate(json, formats.severity_input_format)
 
-    json = {'wording': 'aa', 'priority': 1}
+    json = {'wordings': [{'key': 'foo', 'value': 'test'}], 'priority': 1}
     validate(json, formats.severity_input_format)
 
 @raises(ValidationError)
 def test_severities_validation_is_int_or_null_2():
-    json = {'wording': 'aa', 'priority': '1'}
+    json = {'wordings': [{'key': 'foo', 'value': 'test'}], 'priority': '1'}
     validate(json, formats.severity_input_format)
 
 

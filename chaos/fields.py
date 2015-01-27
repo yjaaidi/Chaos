@@ -228,6 +228,7 @@ severity_fields = {
     'self': {'href': fields.Url('severity', absolute=True)},
     'priority': fields.Integer(default=None),
     'effect': fields.Raw(),
+    'wordings': fields.List(fields.Nested(wording_fields)),
 }
 
 severities_fields = {
