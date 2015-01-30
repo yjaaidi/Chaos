@@ -1,6 +1,6 @@
 from nose.tools import *
 from chaos import fields, models
-from datetime import datetime
+from datetime import datetime, time
 
 class Obj(object):
     pass
@@ -10,7 +10,7 @@ def test_none_field_date_time():
     eq_(class_datetime.format(None), 'null')
 
 @raises(AttributeError)
-def test_field_date_time_valid():
+def test_field_date_time_invalid():
     class_datetime = fields.FieldDateTime(Obj())
     eq_(class_datetime.format('2014-08-07 12:46:56.837613'), 'null')
 
@@ -29,3 +29,16 @@ def test_name_impact():
 def test_name_disruption():
     disruption = models.Disruption()
     eq_(str(disruption), "<Disruption '{}'>".format(disruption.id))
+
+def test_none_field_time():
+    class_time = fields.FieldTime(Obj())
+    eq_(class_time.format(None), 'null')
+
+@raises(AttributeError)
+def test_field_time_invalid():
+    class_time = fields.FieldTime(Obj())
+    eq_(class_time.format('12:46'), 'null')
+
+def test_field_time_valid():
+    class_time = fields.FieldTime(Obj())
+    eq_(class_time.format(time(hour=13, minute=5)), '13:05')
