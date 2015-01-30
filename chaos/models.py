@@ -421,6 +421,7 @@ class Impact(TimestampMixin, db.Model):
     application_periods = db.relationship('ApplicationPeriods', backref='impact', lazy='joined')
     severity = db.relationship('Severity', backref='impacts', lazy='joined')
     objects = db.relationship("PTobject", secondary=associate_impact_pt_object, lazy='joined')
+    patterns = db.relationship('Pattern', backref='impact', lazy='joined')
 
     def __repr__(self):
         return '<Impact %r>' % self.id
@@ -440,6 +441,7 @@ class Impact(TimestampMixin, db.Model):
         d['application_periods'] = self.application_periods
         d['severity'] = self.severity
         d['messages'] = self.messages
+        d['application_period_patterns'] = self.patterns
         return d
 
     def __init__(self, objects=None):
@@ -492,6 +494,19 @@ class Impact(TimestampMixin, db.Model):
         """
         self.application_periods.append(application_period)
         db.session.add(application_period)
+
+    def delete_patterns(self):
+        for pattern in self.patterns:
+            pattern.delete_time_slots()
+            self.patterns.remove(pattern)
+            db.session.delete(pattern)
+
+    def insert_pattern(self, pattern):
+        """
+        Adds a pattern of ApplicationPeriods in a impact.
+        """
+        self.patterns.append(pattern)
+        db.session.add(pattern)
 
     @classmethod
     def get(cls, id, contributor_id):
@@ -716,3 +731,53 @@ class LineSection(TimestampMixin, db.Model):
     @classmethod
     def get_by_object_id(cls, object_id):
         return cls.query.filter_by(object_id=object_id).first()
+
+
+class Pattern(TimestampMixin, db.Model):
+    """
+    represents the patterns of application periods of an impact
+    """
+    __tablename__ = 'pattern'
+    id = db.Column(UUID, primary_key=True)
+    start_date = db.Column(db.DateTime(), nullable=True)
+    end_date = db.Column(db.DateTime(), nullable=True)
+    weekly_pattern = db.Column(db.Text, unique=False, nullable=False)
+    impact_id = db.Column(UUID, db.ForeignKey(Impact.id), index=True)
+    time_slots = db.relationship('TimeSlot', backref='pattern', lazy='joined')
+
+    def __init__(self, impact_id=None):
+        self.id = str(uuid.uuid1())
+        self.impact_id = impact_id
+
+    def __repr__(self):
+        return '<Pattern %r>' % self.id
+
+    def delete_time_slots(self):
+        for time_slot in self.time_slots:
+            db.session.delete(time_slot)
+
+    def insert_time_slot(self, time_slot):
+        """
+        Adds a time slot in the pattern
+        """
+        self.time_slots.append(time_slot)
+        db.session.add(time_slot)
+
+
+class TimeSlot(TimestampMixin, db.Model):
+    """
+    represents the time slots of a pattern
+    """
+    __tablename__ = 'time_slot'
+    id = db.Column(UUID, primary_key=True)
+    begin = db.Column(db.Time(), nullable=True)
+    end = db.Column(db.Time(), nullable=True)
+    pattern_id = db.Column(UUID, db.ForeignKey(Pattern.id), index=True)
+
+    def __init__(self, pattern_id=None):
+        self.id = str(uuid.uuid1())
+        self.pattern_id = pattern_id
+
+    def __repr__(self):
+        return '<TimeSlot %r>' % self.id
+

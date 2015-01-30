@@ -40,6 +40,13 @@ class FieldDateTime(fields.Raw):
         else:
             return 'null'
 
+class FieldTime(fields.Raw):
+    def format(self, value):
+        if value:
+            return value.strftime('%H:%M')
+        else:
+            return 'null'
+
 
 class FieldPaginateImpacts(fields.Raw):
     '''
@@ -303,6 +310,18 @@ application_period_fields = {
     'end': FieldDateTime(attribute='end_date')
 }
 
+time_slot_fields = {
+    'begin': FieldTime,
+    'end': FieldTime
+}
+
+application_period_pattern_fields = {
+    'start_date': FieldDateTime,
+    'end_date': FieldDateTime,
+    'weekly_pattern': fields.Raw,
+    'time_slots': fields.List(fields.Nested(time_slot_fields, display_null=False), attribute='time_slots')
+}
+
 impact_fields = {
     'id': fields.Raw,
     'created_at': FieldDateTime,
@@ -313,7 +332,9 @@ impact_fields = {
     'severity': fields.Nested(severity_fields),
     'self': {'href': fields.Url('impact', absolute=True)},
     'disruption': FieldUrlDisruption(),
-    'messages': fields.List(fields.Nested(message_fields))
+    'messages': fields.List(fields.Nested(message_fields)),
+    'application_period_patterns':
+        fields.List(fields.Nested(application_period_pattern_fields), attribute='patterns')
 }
 
 one_impact_fields = {
