@@ -550,7 +550,7 @@ Feature: list impacts by ptobject and/or uri(s)
 
         Given I have the following applicationperiods in my database:
             | created_at          | updated_at          |id                                   | impact_id                            |start_date                           |end_date            |
-            | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab232-3d47-4eea-aa2c-22f8680230b1 | 7ffab232-3d47-4eea-aa2c-22f8680230b6 |2014-01-20 16:52:00                  |2014-01-30 16:52:00 |
+            | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab232-3d47-4eea-aa2c-22f8680230b1 | 7ffab232-3d47-4eea-aa2c-22f8680230b6 |2014-01-20 16:50:00                  |2014-01-30 16:50:00 |
             | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |8ffab232-3d47-4eea-aa2c-22f8680230b1 | 8ffab232-3d47-4eea-aa2c-22f8680230b6 |2014-01-20 16:52:00                  |2014-01-30 16:52:00 |
 
         I fill in header "X-Contributors" with "contrib1"
