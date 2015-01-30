@@ -27,7 +27,7 @@
 # https://groups.google.com/d/forum/navitia
 # www.navitia.io
 
-from aniso8601 import parse_datetime
+from aniso8601 import parse_datetime, parse_time
 from collections import Mapping, Sequence
 
 
@@ -41,7 +41,15 @@ class Datetime(object):
         else:
             setattr(item, self.attribute, None)
 
+class Time(object):
+    def __init__(self, attribute):
+        self.attribute = attribute
 
+    def __call__(self, item, field, value):
+        if value:
+            setattr(item, self.attribute, parse_time(value).replace(tzinfo=None))
+        else:
+            setattr(item, self.attribute, None)
 class AliasText(object):
     def __init__(self, attribute):
         self.attribute = attribute
