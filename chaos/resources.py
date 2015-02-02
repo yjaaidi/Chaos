@@ -869,7 +869,7 @@ class Impacts(flask_restful.Resource):
         impact.delete_app_periods()
         #patterns transformed to application_periods
         self.patterns_to_application_periods(impact)
-        if len(impact.application_periods) > 0:
+        if len(impact.patterns) > 0:
             return None
 
         if 'application_periods' in json:
