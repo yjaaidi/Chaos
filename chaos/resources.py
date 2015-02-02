@@ -867,7 +867,10 @@ class Impacts(flask_restful.Resource):
 
     def manage_application_periods(self, impact, json):
         impact.delete_app_periods()
+        #patterns transformed to application_periods
         self.patterns_to_application_periods(impact)
+        if len(impact.application_periods) > 0:
+            return None
 
         if 'application_periods' in json:
             for app_period in json["application_periods"]:
@@ -991,6 +994,7 @@ class Impacts(flask_restful.Resource):
                     impact.objects.append(ptobject)
 
 
+        #For each object application_period_patterns create and fill a pattern and time_slots
         self.manage_patterns(impact, json)
         #If one or more pattern(s) exist in the Impact a list of application_period
         #has to be created using the pattern : done in "manage_application_periods"
