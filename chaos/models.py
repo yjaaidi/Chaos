@@ -518,12 +518,12 @@ class Impact(TimestampMixin, db.Model):
     @classmethod
     @paginate()
     def all(cls, disruption_id, contributor_id):
+        alias = aliased(Severity)
         query = cls.query.filter_by(status='published')
         query = query.filter(and_(cls.disruption_id == disruption_id))
         query = query.join(Disruption)
         query = query.filter(Disruption.contributor_id == contributor_id)
-        query = query.order_by(Severity.priority)
-        return query
+        return query.join(alias, Impact.severity).order_by(alias.priority)
 
     @classmethod
     def all_with_filter(cls, start_date, end_date, pt_object_type, uris, contributor_id):
