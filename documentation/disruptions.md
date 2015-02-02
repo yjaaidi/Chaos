@@ -720,7 +720,7 @@ Return all impacts by ptobject.
 								"effect": "none",
 								"id": "3d1f42b2-e8df-11e3-8c3e-0008ca86c7ea",
 								"updated_at": "2014-04-31T16:55:18Z",
-								"wording": "Bonne nouvelle"
+								"wordings" : [{"key": "msg", "value": "Bonne nouvelle"}]
 							},
 							"updated_at": "2014-04-31T16:55:18Z"
 							}
@@ -759,7 +759,7 @@ Return all impacts of a impact.
 				"updated_at": "2014-04-31T16:55:18Z",
 				"severity": {
 					"id": "3d1f42b2-e8df-11e3-8c3e-0008ca86c7ea",
-					"wording": "Bonne nouvelle",
+					"wordings" : [{"key": "msg", "value": "Bonne nouvelle"}],
 					"created_at": "2014-04-31T16:52:18Z",
 					"updated_at": "2014-04-31T16:55:18Z",
 					"color": "#123456",
@@ -952,7 +952,7 @@ Create a new impact.
                     "updated_at": "2014-04-31T16:55:18Z",
                     "severity": {
                         "id": "3d1f42b2-e8df-11e3-8c3e-0008ca861aea",
-                        "wording": "Bonne nouvelle",
+                        "wordings" : [{"key": "msg", "value": "Bonne nouvelle"}],
                         "created_at": "2014-04-31T16:52:18Z",
                         "updated_at": "2014-04-31T16:55:18Z",
                         "color": "#123456",
@@ -1085,7 +1085,7 @@ Create a new impact.
                     "updated_at": "2014-04-31T16:55:18Z",
                     "severity": {
                         "id": "3d1f42b2-e8df-11e3-8c3e-0008ca861aea",
-                        "wording": "Bonne nouvelle",
+                        "wordings" : [{"key": "msg", "value": "Bonne nouvelle"}],
                         "created_at": "2014-04-31T16:52:18Z",
                         "updated_at": "2014-04-31T16:55:18Z",
                         "color": "#123456",
@@ -1200,7 +1200,7 @@ Create a new impact.
                     "updated_at": "2014-04-31T16:55:18Z",
                     "severity": {
                         "id": "3d1f42b2-e8df-11e3-8c3e-0008ca861aea",
-                        "wording": "Bonne nouvelle",
+                        "wordings" : [{"key": "msg", "value": "Bonne nouvelle"}],
                         "created_at": "2014-04-31T16:52:18Z",
                         "updated_at": "2014-04-31T16:55:18Z",
                         "color": "#123456",
@@ -1345,7 +1345,7 @@ Archive one impact.
                     "updated_at": "2014-04-31T16:55:18Z",
                     "severity": {
                         "id": "3d1f42b2-e8df-11e3-8c3e-0008ca861aea",
-                        "wording": "Bonne nouvelle",
+                        "wordings" : [{"key": "msg", "value": "Bonne nouvelle"}],
                         "created_at": "2014-04-31T16:52:18Z",
                         "updated_at": "2014-04-31T16:55:18Z",
                         "color": "#123456",
@@ -1441,7 +1441,7 @@ Return all the severities ordered by priority.
                 "severities": [
                     {
                         "id": "3d1f42b3-e8df-11e3-8c3e-0008ca8617ea",
-                        "wording": "normal",
+                        "wordings" : [{"key": "msg", "value": "Normal"}],
                         "effect": null,
                         "priority": 1,
                         "color": "#123456",
@@ -1450,7 +1450,7 @@ Return all the severities ordered by priority.
                     },
                     {
                         "id": "3d1f42b4-e8df-11e3-8c3e-0008ca8617ea",
-                        "wording": "majeur",
+                        "wordings" : [{"key": "msg", "value": "Majeur"}],
                         "effect": null,
                         "priority": 2,
                         "color": "#123456",
@@ -1459,7 +1459,7 @@ Return all the severities ordered by priority.
                     },
                     {
                         "id": "3d1f42b5-e8df-11e3-8c3e-0008ca8617ea",
-                        "wording": "bloquant",
+                        "wordings" : [{"key": "msg", "value": "Bloquant"}],
                         "effect": "blocking",
                         "priority": 3,
                         "color": "#123456",
@@ -1480,7 +1480,7 @@ Return all the severities ordered by priority.
     * Body
 
                 {
-                    "wording": "normal",
+                    "wordings" : [{"key": "msg", "value": "Normal"}],
                     "color": "#123456",
                     "priority": 1,
                     "effect": null
@@ -1493,7 +1493,7 @@ Return all the severities ordered by priority.
             {
                 "severity": {
                     "id": "3d1f42b3-e8df-11e3-8c3e-0008ca8617ea",
-                    "wording": "normal",
+                    "wordings" : [{"key": "msg", "value": "Normal"}],
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": null,
                     "color": "#123456",
@@ -1821,7 +1821,7 @@ Retrieve one existing severity:
             {
                 "severity": {
                     "id": "3d1f42b3-e8df-11e3-8c3e-0008ca8617ea",
-                    "wording": "normal",
+                    "wordings" : [{"key": "msg", "value": "Normal"}],
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": null,
                     "color": "#123456",
@@ -1856,7 +1856,7 @@ Retrieve one existing severity:
     * Body
 
             {
-                "wording": "Bonne nouvelle",
+                "wordings" : [{"key": "msg", "value": "Bonne nouvelle"}],
                 "color": "#123456",
                 "effect": null
             }
@@ -1869,7 +1869,7 @@ Retrieve one existing severity:
             {
                 "severity": {
                     "id": "3d1f42b3-e8df-11e3-8c3e-0008ca8617ea",
-                    "wording": "Bonne nouvelle",
+                    "wordings" : [{"key": "msg", "value": "Bonne nouvelle"}],
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": "2014-04-31T16:55:18Z",
                     "color": "#123456",

@@ -100,6 +100,15 @@ class Contributor(TimestampMixin, db.Model):
         return contributor
 
 
+associate_wording_severity = db.Table('associate_wording_severity',
+                                    db.metadata,
+                                    db.Column('wording_id', UUID, db.ForeignKey('wording.id')),
+                                    db.Column('severity_id', UUID, db.ForeignKey('severity.id')),
+                                    db.PrimaryKeyConstraint('wording_id', 'severity_id', name='wording_severity_pk')
+)
+
+
+
 class Severity(TimestampMixin, db.Model):
     """
     represent the severity of an impact
@@ -112,6 +121,15 @@ class Severity(TimestampMixin, db.Model):
     effect = db.Column(SeverityEffect, nullable=True)
     client_id = db.Column(UUID, db.ForeignKey(Client.id), nullable=False)
     client = db.relationship('Client', backref='severity', lazy='joined')
+    wordings = db.relationship("Wording", secondary=associate_wording_severity, backref="severities")
+
+    def delete_wordings(self):
+        index = len(self.wordings) - 1
+        while index >= 0:
+            wording = self.wordings[index]
+            self.wordings.remove(wording)
+            db.session.delete(wording)
+            index -= 1
 
     def __init__(self):
         self.id = str(uuid.uuid1())
@@ -149,7 +167,7 @@ class Category(TimestampMixin, db.Model):
 
     @classmethod
     def all(cls, client_id):
-        return cls.query.filter_by(client_id=client_id,is_visible=True).all()
+        return cls.query.filter_by(client_id=client_id,is_visible=True).order_by(cls.name).all()
 
     @classmethod
     def get(cls, id, client_id):
@@ -180,7 +198,6 @@ associate_wording_cause = db.Table('associate_wording_cause',
                                     db.Column('cause_id', UUID, db.ForeignKey('cause.id')),
                                     db.PrimaryKeyConstraint('wording_id', 'cause_id', name='wording_cause_pk')
 )
-
 
 class Cause(TimestampMixin, db.Model):
     """

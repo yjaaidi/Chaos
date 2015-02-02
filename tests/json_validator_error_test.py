@@ -10,7 +10,40 @@ def test_wording_is_required_in_severity():
         validate({}, severity_input_format)
         assert False
     except ValidationError, e:
-        eq_(parse_error(e), "'wording' is a required property", True)
+        eq_(parse_error(e), "'wordings' is a required property", True)
+
+
+def test_wording_is_empty_in_severity():
+    try:
+        validate({'wordings': []}, severity_input_format)
+        assert False
+    except ValidationError, e:
+        eq_(parse_error(e), "[] is too short", True)
+
+
+def test_wording_is_value_not_in__wordings_severity():
+    try:
+        validate({'wordings': [{'key': 'aa'}]}, severity_input_format)
+        assert False
+    except ValidationError, e:
+        eq_(parse_error(e), "'value' is a required property", True)
+
+
+def test_wording_is_key_not_in__wordings_severity():
+    try:
+        validate({'wordings': [{'key': 'aa'}]}, severity_input_format)
+        assert False
+    except ValidationError, e:
+        eq_(parse_error(e), "'value' is a required property", True)
+
+
+def test_wording_is_empty_key_in__wordings_severity():
+    try:
+        validate({'wordings': [{'key': '', 'value': 'aa'}]}, severity_input_format)
+        assert False
+    except ValidationError, e:
+        eq_(parse_error(e), "'' is too short", True)
+
 
 def test_name_is_required_in_channel():
     try:
