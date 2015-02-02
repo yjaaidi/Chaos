@@ -168,7 +168,7 @@ severity_input_format = {
         },
         'color': {'type': ['string', 'null'], 'maxLength': 20},
         'priority': {'type': ['integer', 'null']},
-        'effect': {'enum': ['blocking', None]},
+        'effect': {'enum': ['no_service', 'reduced_service', 'significant_delays', 'detour', 'additional_service', 'modified_service', 'other_effect', 'unknown_effect', 'stop_moved', None]},
         },
     'required': ['wordings']
 }
