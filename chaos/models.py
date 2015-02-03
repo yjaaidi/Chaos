@@ -133,6 +133,7 @@ class Severity(TimestampMixin, db.Model):
 
     def __init__(self):
         self.id = str(uuid.uuid1())
+        self.effect = 'unknown_effect'
 
     def __repr__(self):
         return '<Severity %r>' % self.id

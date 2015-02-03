@@ -37,7 +37,9 @@ def upgrade():
     tmp_type.drop(op.get_bind(), checkfirst=False)
 
     # Convert 'blocking' effects into 'no_service'
+    op.execute("UPDATE severity SET effect = 'unknown_effect'")
     updateBlockingSeverityEffects(blockingIds, 'no_service')
+    sa.sql.table('severity', sa.Column('effect', new_type, nullable=False, server_default='unknown_effect'))
 
 
 def downgrade():
@@ -57,6 +59,9 @@ def downgrade():
     tmp_type.drop(op.get_bind(), checkfirst=False)
 
     updateBlockingSeverityEffects(blockingIds, 'blocking')
+    sa.sql.table('severity', sa.Column('effect', old_type, nullable=True))
+    op.execute('UPDATE severity SET effect = NULL where effect <> \'blocking\'')
+
 
 def getBlockingSeverities(value):
     connection = op.get_bind()
