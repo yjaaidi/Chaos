@@ -420,7 +420,7 @@ class Impact(TimestampMixin, db.Model):
     messages = db.relationship('Message', backref='impact', lazy='joined')
     application_periods = db.relationship('ApplicationPeriods', backref='impact', lazy='joined')
     severity = db.relationship('Severity', backref='impacts', lazy='joined')
-    objects = db.relationship("PTobject", secondary=associate_impact_pt_object, lazy='joined')
+    objects = db.relationship("PTobject", secondary=associate_impact_pt_object, lazy='joined', order_by="PTobject.type, PTobject.uri")
     patterns = db.relationship('Pattern', backref='impact', lazy='joined')
 
     def __repr__(self):
