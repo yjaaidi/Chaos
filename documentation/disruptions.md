@@ -1460,7 +1460,7 @@ Return all the severities ordered by priority.
                     {
                         "id": "3d1f42b5-e8df-11e3-8c3e-0008ca8617ea",
                         "wordings" : [{"key": "msg", "value": "Bloquant"}],
-                        "effect": "blocking",
+                        "effect": "no_service",
                         "priority": 3,
                         "color": "#123456",
                         "created_at": "2014-04-31T16:52:18Z",
