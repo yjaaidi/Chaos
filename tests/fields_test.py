@@ -7,12 +7,12 @@ class Obj(object):
 
 def test_none_field_date_time():
     class_datetime = fields.FieldDateTime(Obj())
-    eq_(class_datetime.format(None), 'null')
+    eq_(class_datetime.format(None), None)
 
 @raises(AttributeError)
 def test_field_date_time_invalid():
     class_datetime = fields.FieldDateTime(Obj())
-    eq_(class_datetime.format('2014-08-07 12:46:56.837613'), 'null')
+    eq_(class_datetime.format('2014-08-07 12:46:56.837613'), None)
 
 def test_field_date_time_valid():
     class_datetime = fields.FieldDateTime(Obj())
@@ -32,12 +32,12 @@ def test_name_disruption():
 
 def test_none_field_time():
     class_time = fields.FieldTime(Obj())
-    eq_(class_time.format(None), 'null')
+    eq_(class_time.format(None), None)
 
 @raises(AttributeError)
 def test_field_time_invalid():
     class_time = fields.FieldTime(Obj())
-    eq_(class_time.format('12:46'), 'null')
+    eq_(class_time.format('12:46'), None)
 
 def test_field_time_valid():
     class_time = fields.FieldTime(Obj())

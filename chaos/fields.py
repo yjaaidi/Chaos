@@ -38,14 +38,14 @@ class FieldDateTime(fields.Raw):
         if value:
             return value.strftime('%Y-%m-%dT%H:%M:%SZ')
         else:
-            return 'null'
+            return None
 
 class FieldTime(fields.Raw):
     def format(self, value):
         if value:
             return value.strftime('%H:%M')
         else:
-            return 'null'
+            return None
 
 
 class FieldPaginateImpacts(fields.Raw):
