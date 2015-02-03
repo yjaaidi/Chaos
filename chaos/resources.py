@@ -358,7 +358,7 @@ def create_or_update_impact(disruption, json_impact, navitia, impact_id=None):
         impact_bd = models.Impact.get(impact_id, disruption.contributor.id)
     else:
         impact_bd = models.Impact()
-    impact_bd.severity = models.Severity.get(json_impact['severity']['id'], disruption.client.id)
+        impact_bd.severity = models.Severity.get(json_impact['severity']['id'], disruption.client.id)
     impact_bd.disruption_id = disruption.id
     db.session.add(impact_bd)
     #The ptobject is not added in the database before commit. If we have duplicate ptobject
@@ -394,6 +394,23 @@ def create_or_update_impact(disruption, json_impact, navitia, impact_id=None):
     manage_message(impact_bd, json_impact)
 
     return impact_bd
+
+
+def manage_impacts(disruption, json, navitia):
+    impacts_db = dict((impact.id, impact) for impact in disruption.impacts)
+    impacts_json = dict()
+    if 'impacts' in json:
+        for json_impact in json['impacts']:
+            if 'id' in json_impact:
+                impact_id = json_impact['id']
+            else:
+                impact_id = None
+            impact_bd = create_or_update_impact(disruption, json_impact, navitia, impact_id)
+            impacts_json[impact_bd.id] = impact_bd
+
+    difference = set(impacts_db) - set(impacts_json)
+    for diff in difference:
+        impacts_db[diff].archive()
 
 
 class Index(flask_restful.Resource):
@@ -570,6 +587,11 @@ class Disruptions(flask_restful.Resource):
       
         #Add all tags present in Json
         manage_tags(disruption, json)
+        #Add all impacts present in Json
+        try:
+            manage_impacts(disruption, json, self.navitia)
+        except exceptions.ObjectUnknown, e:
+            return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 404
 
         db.session.add(disruption)
         db.session.commit()
@@ -610,6 +632,12 @@ class Disruptions(flask_restful.Resource):
 
         #Add/delete tags present/ not present in Json
         manage_tags(disruption, json)
+
+        #Add all impacts present in Json
+        try:
+            manage_impacts(disruption, json, self.navitia)
+        except exceptions.ObjectUnknown, e:
+            return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 404
 
         disruption.upgrade_version()
         db.session.commit()
