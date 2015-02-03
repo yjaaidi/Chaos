@@ -293,6 +293,7 @@ Les champs suivant peuvent etre défini:
   - localization
   - cause (obligatoire)
   - tags
+  - impacts
 
 Lors d'un succés une réponse 201 est retourné, celle ci contient la perturbation créée.
 
@@ -311,7 +312,10 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient la perturbat
                 },
                 "localization":[{"id":"stop_area:JDR:SA:CHVIN", "type": "stop_area"}],
                 "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"},
-                "tags":[{"id": "ad9d80ce-17b8-11e4-a553-d4bed99855be"}]
+                "tags":[{"id": "ad9d80ce-17b8-11e4-a553-d4bed99855be"}],
+                "impacts":[{ "severity": {"id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657ea"},
+                             "application_periods": [{"begin": "2014-04-31T16:52:00Z","end": "2014-05-22T02:15:00Z"}]
+                          }]
             }
 
 
@@ -338,13 +342,13 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient la perturbat
                     },
                     "impacts": {
                         "pagination": {
-                            "start_page": 0,
+                            "start_page": 1,
                             "items_per_page": 20,
                             "total_results": 1,
                             "prev": null,
                             "next": null,
                             "first": {"href": "https://ogv2ws.apiary-mock.com/disruptions/1/impacts?start_page=1&item_per_page=20"},
-                            "last": null
+                            "last": {"href": "https://ogv2ws.apiary-mock.com/disruptions/1/impacts?start_page=1&item_per_page=20"}
                         }
                     },
 
@@ -525,6 +529,7 @@ Les champs suivant peuvent etre mis à jour:
   - localization
   - cause
   - tags
+  - impacts
 
 Si un champs n'est pas présent dans le json la valeur est considéré null.
 
@@ -553,7 +558,12 @@ Lors d'un succés une réponse 200 est retourné, celle ci contient la perturbat
                 },
                 "localization":[{"id":"stop_area:AME:SA:104", "type": "stop_area"}],
                 "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"},
-                "tags":[{"id": "ad9d80ce-17b8-11e4-a553-d4bed99855be"}]
+                "tags":[{"id": "ad9d80ce-17b8-11e4-a553-d4bed99855be"}],
+                "impacts":[{ "severity": {"id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657ea"},
+                             "application_periods": [{"begin": "2014-04-31T16:52:00Z","end": "2014-05-22T02:15:00Z"}]
+                          },{ "id":"7ffab230-3d48-4eea-aa2c-22f8680230b6", "severity": {"id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657ea"},
+                             "application_periods": [{"begin": "2014-04-31T16:52:00Z","end": "2014-05-22T02:15:00Z"}]
+                          }]
             }
 
 
@@ -579,13 +589,13 @@ Lors d'un succés une réponse 200 est retourné, celle ci contient la perturbat
                     },
                     "impacts": {
                         "pagination": {
-                            "start_page": 0,
+                            "start_page": 1,
                             "items_per_page": 20,
-                            "total_results": 0,
+                            "total_results": 2,
                             "prev": null,
                             "next": null,
-                            "first": null,
-                            "last": null
+                            "first": {"href": "https://ogv2ws.apiary-mock.com/disruptions/1/impacts?start_page=1&item_per_page=20"},
+                            "last": {"href": "https://ogv2ws.apiary-mock.com/disruptions/1/impacts?start_page=1&item_per_page=20"}
                         }
                     },
                     "cause": {
