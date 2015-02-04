@@ -496,7 +496,8 @@ class Impact(TimestampMixin, db.Model):
         db.session.add(application_period)
 
     def delete_patterns(self):
-        for pattern in self.patterns:
+        for i in range(len(self.patterns), 0, -1):
+            pattern = self.patterns[i - 1]
             pattern.delete_time_slots()
             self.patterns.remove(pattern)
             db.session.delete(pattern)
