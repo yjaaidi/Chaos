@@ -40,6 +40,7 @@ def get_disruption(with_via=True, with_routes=True):
     impact.severity = chaos.models.Severity()
     impact.severity.wording = "SeverityTest"
     impact.severity.color = "#FFFF00"
+    impact.severity.effect = "no_service"
 
     # ApplicationPeriods
     application_period = chaos.models.ApplicationPeriods()
@@ -151,6 +152,7 @@ def test_disruption():
     eq_(len(disruption_pb.impacts),  1)
     eq_(disruption_pb.impacts[0].severity.wording,  "SeverityTest")
     eq_(disruption_pb.impacts[0].severity.color,  "#FFFF00")
+    eq_(disruption_pb.impacts[0].severity.effect, chaos.gtfs_realtime_pb2.Alert.NO_SERVICE)
 
     eq_(len(disruption_pb.impacts[0].application_periods),  1)
     eq_(len(disruption_pb.impacts[0].informed_entities), 3)

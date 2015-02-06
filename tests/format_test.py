@@ -42,10 +42,10 @@ def test_severities_validation_wording_is_required():
     validate(json, formats.severity_input_format)
 
 def test_severities_validation_effect_can_be_null_or_blocking():
-    json = {'wordings': [{'key': 'foo', 'value': 'test'}], 'effect': None}
+    json = {'wordings': [{'key': 'foo', 'value': 'test'}], 'effect': 'no_service'}
     validate(json, formats.severity_input_format)
 
-    json = {'wordings': [{'key': 'foo', 'value': 'test'}], 'effect': 'blocking'}
+    json = {'wordings': [{'key': 'foo', 'value': 'test'}], 'effect': 'no_service'}
     validate(json, formats.severity_input_format)
 
 @raises(ValidationError)
