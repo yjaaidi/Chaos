@@ -225,7 +225,7 @@ time_slot_input_format = {
     'type': 'object',
     'properties': {
         'begin': {'type': ['string'], 'pattern': time_pattern},
-        'end': {'type': ['string', 'null'], 'pattern': time_pattern},
+        'end': {'type': ['string'], 'pattern': time_pattern},
         },
     'required': ['begin', 'end']
 }

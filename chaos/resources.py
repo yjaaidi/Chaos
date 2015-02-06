@@ -47,7 +47,7 @@ from functools import wraps
 
 import logging
 from utils import make_pager, option_value, get_client_code, get_contributor_code,\
-    get_token, get_coverage
+    get_token, get_coverage, get_application_periods
 
 __all__ = ['Disruptions', 'Index', 'Severity', 'Cause']
 
@@ -865,21 +865,17 @@ class Impacts(flask_restful.Resource):
         for diff in difference:
             impact.delete_message(messages_db[diff])
 
-    def manage_application_periods(self, impact, json):
+    def manage_application_periods(self, impact, application_periods):
         impact.delete_app_periods()
-        #patterns transformed to application_periods
-        self.patterns_to_application_periods(impact)
-        if len(impact.patterns) > 0:
-            return None
-
-        if 'application_periods' in json:
-            for app_period in json["application_periods"]:
-                application_period = models.ApplicationPeriods(impact.id)
-                mapper.fill_from_json(application_period, app_period, application_period_mapping)
-                impact.insert_app_period(application_period)
+        for app_period in application_periods:
+            db_application_period = models.ApplicationPeriods(impact.id)
+            db_application_period.start_date = app_period['begin']
+            db_application_period.end_date = app_period['end']
+            impact.insert_app_period(db_application_period)
 
     def manage_patterns(self, impact, json):
         impact.delete_patterns()
+
         if 'application_period_patterns' in json:
             for json_pattern in json['application_period_patterns']:
                 pattern = models.Pattern(impact.id)
@@ -893,27 +889,6 @@ class Impacts(flask_restful.Resource):
                 time_slot = models.TimeSlot(pattern.id)
                 mapper.fill_from_json(time_slot, json_time_slot, time_slot_mapping)
                 pattern.insert_time_slot(time_slot)
-
-    def pattern_to_application_periods(self, impact, pattern):
-        if len(pattern.time_slots) > 0:
-            temp_date = pattern.start_date
-            while temp_date < pattern.end_date:
-                patt_text = pattern.weekly_pattern
-                week_day = datetime.weekday(temp_date)
-                if (len(pattern.weekly_pattern) > week_day) and (patt_text[week_day] == '1'):
-                    for time_slot in pattern.time_slots:
-                        begin = time_slot.begin
-                        end = time_slot.end
-                        application_period = models.ApplicationPeriods(impact.id)
-                        application_period.start_date =  datetime.combine(temp_date.date(), begin)
-                        application_period.end_date = datetime.combine(temp_date.date(), end)
-                        impact.insert_app_period(application_period)
-                temp_date += timedelta(days=1)
-
-    def patterns_to_application_periods(self, impact):
-        if len(impact.patterns) > 0:
-            for pattern in impact.patterns:
-                self.pattern_to_application_periods(impact, pattern)
 
     @validate_contributor()
     @validate_navitia()
@@ -996,9 +971,11 @@ class Impacts(flask_restful.Resource):
 
         #For each object application_period_patterns create and fill a pattern and time_slots
         self.manage_patterns(impact, json)
-        #If one or more pattern(s) exist in the Impact a list of application_period
-        #has to be created using the pattern : done in "manage_application_periods"
-        self.manage_application_periods(impact, json)
+        #This method creates a list of application periods either from application_period_patterns
+        # or from apllication_periods in the data json
+        app_periods_by_pattern = get_application_periods(json)
+        self.manage_application_periods(impact, app_periods_by_pattern)
+
         self.manage_message(impact, json)
         disruption.upgrade_version()
         db.session.commit()
@@ -1052,10 +1029,13 @@ class Impacts(flask_restful.Resource):
             impact.severity_id = severity_json['id']
             impact.severity = models.Severity.get(impact.severity_id, client.id)
 
+        #For each object application_period_patterns create and fill a pattern and time_slots
         self.manage_patterns(impact, json)
-        #If one or more pattern(s) exist in the Impact a list of application_period
-        #has to be created using the pattern : done in "manage_application_periods"
-        self.manage_application_periods(impact, json)
+        #This method creates a list of application periods either from application_period_patterns
+        # or from apllication_periods in the data json
+        app_periods_by_pattern = get_application_periods(json)
+        self.manage_application_periods(impact, app_periods_by_pattern)
+
         self.manage_message(impact, json)
         disruption = models.Disruption.get(disruption_id, contributor.id)
         disruption.upgrade_version()

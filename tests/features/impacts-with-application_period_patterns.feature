@@ -1,3 +1,4 @@
+
 Feature: Manipulate impacts in a Disruption
 
     Scenario: Add an impact in a disruption with a application_period pattern having one time_slot
