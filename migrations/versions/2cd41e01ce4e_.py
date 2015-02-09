@@ -22,7 +22,7 @@ def upgrade():
     sa.Column('id', postgresql.UUID(), nullable=False),
     sa.Column('start_date', sa.DateTime(), nullable=True),
     sa.Column('end_date', sa.DateTime(), nullable=True),
-    sa.Column('weekly_pattern', sa.Text(), nullable=False),
+    sa.Column('weekly_pattern', postgresql.BIT(7), nullable=False),
     sa.Column('impact_id', postgresql.UUID(), nullable=True),
     sa.ForeignKeyConstraint(['impact_id'], [u'impact.id'], ),
     sa.PrimaryKeyConstraint('id')

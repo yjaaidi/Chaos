@@ -242,7 +242,7 @@ pattern_input_format = {
                       "minItems": 1
         }
     },
-    'required': ['time_slots']
+    'required': ['start_date', 'end_date', 'weekly_pattern', 'time_slots']
 }
 
 impact_input_format = {

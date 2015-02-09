@@ -32,7 +32,7 @@
 import uuid
 from chaos import db, utils
 from utils import paginate, get_current_time
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.dialects.postgresql import UUID, BIT
 from datetime import datetime
 from formats import publication_status_values
 from sqlalchemy import or_, and_, not_
@@ -742,7 +742,7 @@ class Pattern(TimestampMixin, db.Model):
     id = db.Column(UUID, primary_key=True)
     start_date = db.Column(db.DateTime(), nullable=True)
     end_date = db.Column(db.DateTime(), nullable=True)
-    weekly_pattern = db.Column(db.Text, unique=False, nullable=False)
+    weekly_pattern = db.Column(BIT(7), unique=False, nullable=False)
     impact_id = db.Column(UUID, db.ForeignKey(Impact.id), index=True)
     time_slots = db.relationship('TimeSlot', backref='pattern', lazy='joined')
 

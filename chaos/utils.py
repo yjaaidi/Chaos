@@ -306,23 +306,18 @@ def get_coverage(request):
         return request.headers['X-Coverage']
     raise HeaderAbsent("The parameter X-Coverage does not exist in the header")
 
-def get_application_periods_by_pattern(json_one_pattern):
+def get_application_periods_by_pattern(start_date, end_date, weekly_pattern, time_slots):
     result = []
-    start_date = parse_datetime(json_one_pattern['start_date']).replace(tzinfo=None)
-    end_date = parse_datetime(json_one_pattern['end_date']).replace(tzinfo=None)
-    weekly_pattern = json_one_pattern['weekly_pattern']
-    time_slots = json_one_pattern['time_slots']
-    if len(time_slots) > 0:
+    if time_slots:
         temp_date = start_date
         while temp_date < end_date:
             week_day = datetime.weekday(temp_date)
             if (len(weekly_pattern) > week_day) and (weekly_pattern[week_day] == '1'):
                 for time_slot in time_slots:
-                    period = {}
+
                     begin = parse_time(time_slot['begin']).replace(tzinfo=None)
                     end = parse_time(time_slot['end']).replace(tzinfo=None)
-                    period['begin'] = datetime.combine(temp_date.date(), begin)
-                    period['end'] = datetime.combine(temp_date.date(), end)
+                    period = (datetime.combine(temp_date.date(), begin), datetime.combine(temp_date.date(), end))
                     result.append(period)
             temp_date += timedelta(days=1)
     return result
@@ -330,9 +325,7 @@ def get_application_periods_by_pattern(json_one_pattern):
 def get_application_periods_by_periods(json_application_periods):
     result = []
     for app_periods in json_application_periods:
-        period = {}
-        period['begin'] = parse_datetime(app_periods['begin']).replace(tzinfo=None)
-        period['end'] = parse_datetime(app_periods['end']).replace(tzinfo=None)
+        period = (parse_datetime(app_periods['begin']).replace(tzinfo=None), parse_datetime(app_periods['end']).replace(tzinfo=None))
         result.append(period)
     return result
 
@@ -340,7 +333,11 @@ def get_application_periods(json):
     result = []
     if 'application_period_patterns' in json:
         for json_one_pattern in json['application_period_patterns']:
-            result += get_application_periods_by_pattern(json_one_pattern)
+            start_date = parse_datetime(json_one_pattern['start_date']).replace(tzinfo=None)
+            end_date = parse_datetime(json_one_pattern['end_date']).replace(tzinfo=None)
+            weekly_pattern = json_one_pattern['weekly_pattern']
+            time_slots = json_one_pattern['time_slots']
+            result += get_application_periods_by_pattern(start_date, end_date, weekly_pattern, time_slots)
     else:
         if 'application_periods' in  json:
             result = get_application_periods_by_periods(json['application_periods'])

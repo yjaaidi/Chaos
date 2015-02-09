@@ -869,8 +869,8 @@ class Impacts(flask_restful.Resource):
         impact.delete_app_periods()
         for app_period in application_periods:
             db_application_period = models.ApplicationPeriods(impact.id)
-            db_application_period.start_date = app_period['begin']
-            db_application_period.end_date = app_period['end']
+            db_application_period.start_date = app_period[0]
+            db_application_period.end_date = app_period[1]
             impact.insert_app_period(db_application_period)
 
     def manage_patterns(self, impact, json):
