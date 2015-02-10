@@ -77,3 +77,71 @@ def fill_from_json(item, json, fields):
             setattr(item, field, json[field])
         elif formater:
             formater(item, field, json[field])
+
+
+disruption_mapping = {
+    'reference': None,
+    'note': None,
+    'publication_period': {
+        'begin': Datetime(attribute='start_publication_date'),
+        'end': Datetime(attribute='end_publication_date')
+    },
+    'cause': {'id': AliasText(attribute='cause_id')}
+}
+
+severity_mapping = {
+    'color': None,
+    'priority': None,
+    'effect': None,
+}
+
+cause_mapping = {
+    'category': {'id': AliasText(attribute='category_id')},
+}
+
+tag_mapping = {
+    'name': None
+}
+
+category_mapping = {
+    'name': None
+}
+
+object_mapping = {
+    "id": AliasText(attribute='uri'),
+    "type": None
+}
+
+message_mapping = {
+    "text": None,
+    'channel': {'id': AliasText(attribute='channel_id')}
+}
+
+application_period_mapping = {
+    'begin': Datetime(attribute='start_date'),
+    'end': Datetime(attribute='end_date')
+}
+
+channel_mapping = {
+    'name': None,
+    'max_size': None,
+    'content_type': None
+}
+
+line_section_mapping = {
+    'line': None,
+    'start_point': None,
+    'end_point': None,
+    'sens': None
+}
+
+pattern_mapping = {
+    'start_date': Datetime(attribute='start_date'),
+    'end_date': Datetime(attribute='end_date'),
+    'weekly_pattern': None
+}
+
+time_slot_mapping = {
+    'begin': Time(attribute='begin'),
+    'end': Time(attribute='end')
+}

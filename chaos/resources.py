@@ -25,9 +25,8 @@
 # IRC #navitia on freenode
 # https://groups.google.com/d/forum/navitia
 # www.navitia.io
-from datetime import datetime, timedelta
 
-from flask import request, url_for, g, current_app
+from flask import g
 import flask_restful
 from flask_restful import marshal, reqparse
 from chaos import models, db, publisher
@@ -38,398 +37,16 @@ from formats import *
 from formats import impact_input_format, channel_input_format, pt_object_type_values,\
     tag_input_format, category_input_format
 from chaos import mapper, exceptions
-from chaos import utils
+from chaos import utils, db_helper
 import chaos
-from chaos.navitia import Navitia
 from sqlalchemy.exc import IntegrityError
-from functools import wraps
-
-
 import logging
-from utils import make_pager, option_value, get_client_code, get_contributor_code,\
-    get_token, get_coverage, get_application_periods
+from utils import make_pager, option_value
+from chaos.validate_params import validate_client, validate_contributor, validate_navitia
 
 __all__ = ['Disruptions', 'Index', 'Severity', 'Cause']
 
 
-disruption_mapping = {
-    'reference': None,
-    'note': None,
-    'publication_period': {
-        'begin': mapper.Datetime(attribute='start_publication_date'),
-        'end': mapper.Datetime(attribute='end_publication_date')
-    },
-    'cause': {'id': mapper.AliasText(attribute='cause_id')}
-}
-
-severity_mapping = {
-    'color': None,
-    'priority': None,
-    'effect': None,
-}
-
-cause_mapping = {
-    'category': {'id': mapper.AliasText(attribute='category_id')},
-}
-
-tag_mapping = {
-    'name': None
-}
-
-category_mapping = {
-    'name': None
-}
-
-object_mapping = {
-    "id": mapper.AliasText(attribute='uri'),
-    "type": None
-}
-
-message_mapping = {
-    "text": None,
-    'channel': {'id': mapper.AliasText(attribute='channel_id')}
-}
-
-application_period_mapping = {
-    'begin': mapper.Datetime(attribute='start_date'),
-    'end': mapper.Datetime(attribute='end_date')
-}
-
-channel_mapping = {
-    'name': None,
-    'max_size': None,
-    'content_type': None
-}
-
-line_section_mapping = {
-    'line': None,
-    'start_point': None,
-    'end_point': None,
-    'sens': None
-}
-
-pattern_mapping = {
-    'start_date': mapper.Datetime(attribute='start_date'),
-    'end_date': mapper.Datetime(attribute='end_date'),
-    'weekly_pattern': None
-}
-
-time_slot_mapping = {
-    'begin': mapper.Time(attribute='begin'),
-    'end': mapper.Time(attribute='end')
-}
-
-
-class validate_client(object):
-    def __init__(self, create_client=False):
-        self.create_client = create_client
-
-    def __call__(self, func):
-        @wraps(func)
-        def wrapper(*args, **kwargs):
-            try:
-                client_code = get_client_code(request)
-            except exceptions.HeaderAbsent, e:
-                return marshal({'error': {'message': utils.parse_error(e)}},
-                               error_fields), 400
-            if self.create_client:
-                client = models.Client.get_or_create(client_code)
-            else:
-                client = models.Client.get_by_code(client_code)
-            if not client:
-                return marshal({'error': {'message': 'X-Customer-Id {} Not Found'.format(client_code)}},
-                               error_fields), 404
-            return func(*args, client=client, **kwargs)
-        return wrapper
-
-
-class validate_contributor(object):
-    def __call__(self, func):
-        @wraps(func)
-        def wrapper(*args, **kwargs):
-            try:
-                contributor_code = get_contributor_code(request)
-            except exceptions.HeaderAbsent, e:
-                return marshal({'error': {'message': utils.parse_error(e)}},
-                               error_fields), 400
-            contributor = models.Contributor.get_by_code(contributor_code)
-            if not contributor:
-                return marshal({'error': {'message': 'X-Contributors {} Not Found'.format(contributor_code)}},
-                               error_fields), 404
-            return func(*args, contributor=contributor, **kwargs)
-        return wrapper
-
-
-class validate_navitia(object):
-    def __call__(self, func):
-        @wraps(func)
-        def wrapper(*args, **kwargs):
-            try:
-                coverage = get_coverage(request)
-                token = get_token(request)
-            except exceptions.HeaderAbsent, e:
-                return marshal({'error': {'message': utils.parse_error(e)}},
-                               error_fields), 400
-            nav = Navitia(current_app.config['NAVITIA_URL'], coverage, token)
-            return func(*args, navitia=nav, **kwargs)
-        return wrapper
-
-
-def fill_and_get_pt_object(navitia, all_objects, json, add_to_db=True):
-    """
-    :param all_objects: dictionary of objects to be added in this session
-    :param json: Flux which contains json information of pt_object
-    :param add_to_db: ptobject insert into database
-    :return: a pt_object and modify all_objects param
-    """
-
-    if json["id"] in all_objects:
-        return all_objects[json["id"]]
-
-    pt_object = models.PTobject.get_pt_object_by_uri(json["id"])
-
-    if pt_object:
-        all_objects[json["id"]] = pt_object
-        return pt_object
-
-    if not navitia.get_pt_object(json['id'], json['type']):
-        raise exceptions.ObjectUnknown()
-
-    pt_object = models.PTobject()
-    mapper.fill_from_json(pt_object, json, object_mapping)
-    if add_to_db:
-        db.session.add(pt_object)
-    all_objects[json["id"]] = pt_object
-    return pt_object
-
-
-def manage_pt_object_without_line_section(navitia, db_objects, json_attribute, json_data):
-    '''
-    :param navitia:
-    :param db_objects: pt_object in database models : localisations, objects
-    :param json_pt_object: attribute in json
-    :param json_data: data
-    :return:
-    '''
-    pt_object_db = dict()
-    for ptobject in db_objects:
-            pt_object_db[ptobject.uri] = ptobject
-
-    pt_object_dict = dict()
-    if json_attribute in json_data:
-        for pt_object_json in json_data[json_attribute]:
-            if pt_object_json["type"] == 'line_section':
-                continue
-            try:
-                ptobject = fill_and_get_pt_object(navitia, pt_object_dict, pt_object_json, False)
-            except exceptions.ObjectUnknown:
-                raise exceptions.ObjectUnknown('ptobject {} doesn\'t exist'.format(pt_object_json['id']))
-
-            if ptobject.uri not in pt_object_db:
-                db_objects.append(ptobject)
-
-    for ptobject_uri in pt_object_db:
-        if ptobject_uri not in pt_object_dict:
-            db_objects.remove(pt_object_db[ptobject_uri])
-
-
-def manage_wordings(db_object, json_wordings):
-    db_object.delete_wordings()
-    for json_wording in json_wordings:
-        db_wording = models.Wording()
-        key = json_wording["key"].strip()
-        if key == '':
-            raise exceptions.InvalidJson('Json invalid: key is empty, you give : {}'.format(json_wordings))
-        db_wording.key = json_wording["key"]
-        db_wording.value = json_wording["value"]
-        db_object.wordings.append(db_wording)
-    db_object.wording = db_object.wordings[0].value
-
-
-def manage_tags(disruption, json):
-    tags_db = dict((tag.id, tag) for tag in disruption.tags)
-    tags_json = {}
-    if 'tags' in json:
-        tags_json = dict((tag["id"], tag) for tag in json['tags'])
-        for tag_json in json['tags']:
-            if tag_json["id"] not in tags_db:
-                tag = models.Tag.get(tag_json['id'], disruption.client.id)
-                disruption.tags.append(tag)
-                tags_db[tag_json['id']] = tag
-    difference = set(tags_db) - set(tags_json)
-    for diff in difference:
-        tag = tags_db[diff]
-        disruption.tags.remove(tag)
-
-
-def fill_and_add_line_section(navitia, impact_id, all_objects, pt_object_json):
-    """
-    :param impact_id: impact_id to construct uri of line_section object
-    :param all_objects: dictionary of objects to be added in this session
-    :param pt_object_json: Flux which contains json information of pt_object
-    :return: pt_object and modify all_objects param
-    """
-    ptobject = models.PTobject()
-    mapper.fill_from_json(ptobject, pt_object_json, object_mapping)
-    ptobject.uri = ":".join((ptobject.uri, impact_id))
-
-    #Here we treat all the objects in line_section like line, start_point, end_point
-    line_section_json = pt_object_json['line_section']
-    line_section = models.LineSection(ptobject.id)
-
-    try:
-        line_object = fill_and_get_pt_object(navitia, all_objects, line_section_json['line'])
-    except exceptions.ObjectUnknown:
-        raise exceptions.ObjectUnknown('{} {} doesn\'t exist'.format(line_section_json['line']['type'], line_section_json['line']['id']))
-    line_section.line = line_object
-
-    try:
-        start_object = fill_and_get_pt_object(navitia, all_objects, line_section_json['start_point'])
-    except exceptions.ObjectUnknown:
-        raise exceptions.ObjectUnknown('{} {} doesn\'t exist'.format(line_section_json['line']['type'], line_section_json['line']['id']))
-    line_section.start_point = start_object
-
-    try:
-        end_object = fill_and_get_pt_object(navitia, all_objects, line_section_json['end_point'])
-    except exceptions.ObjectUnknown:
-        raise exceptions.ObjectUnknown('{} {} doesn\'t exist'.format(line_section_json['line']['type'], line_section_json['line']['id']))
-    line_section.end_point = end_object
-
-    #Here we manage routes in line_section
-    #"routes":[{"id":"route:MTD:9", "type": "route"}, {"id":"route:MTD:Nav23", "type": "route"}]
-    if 'routes' in line_section_json:
-        for route in line_section_json["routes"]:
-            try:
-                route_object = fill_and_get_pt_object(navitia, all_objects, route, True)
-                line_section.routes.append(route_object)
-            except exceptions.ObjectUnknown:
-                raise exceptions.ObjectUnknown('{} {} doesn\'t exist'.format(route['type'], route['id']))
-
-    #Here we manage via in line_section
-    #"via":[{"id":"stop_area:MTD:9", "type": "stop_area"}, {"id":"stop_area:MTD:Nav23", "type": "stop_area"}]
-    if 'via' in line_section_json:
-        for via in line_section_json["via"]:
-            try:
-                via_object = fill_and_get_pt_object(navitia, all_objects, via, True)
-                line_section.via.append(via_object)
-            except exceptions.ObjectUnknown:
-                raise exceptions.ObjectUnknown('{} {} doesn\'t exist'.format(via['type'], via['id']))
-
-    #Fill sens from json
-    if 'sens' in line_section_json:
-        line_section.sens = line_section_json["sens"]
-
-    ptobject.insert_line_section(line_section)
-    return ptobject
-
-
-def manage_message(impact, json):
-    messages_db = dict((msg.channel_id, msg) for msg in impact.messages)
-    messages_json = dict()
-    if 'messages' in json:
-        messages_json = dict((msg["channel"]["id"], msg) for msg in json['messages'])
-        for message_json in json['messages']:
-            if message_json["channel"]["id"] in messages_db:
-                msg = messages_db[message_json["channel"]["id"]]
-                mapper.fill_from_json(msg, message_json, message_mapping)
-            else:
-                message = models.Message()
-                message.impact_id = impact.id
-                mapper.fill_from_json(message, message_json, message_mapping)
-                impact.insert_message(message)
-                messages_db[message.channel_id] = message
-
-    difference = set(messages_db) - set(messages_json)
-    for diff in difference:
-        impact.delete_message(messages_db[diff])
-
-
-def manage_application_periods(impact, application_periods):
-    impact.delete_app_periods()
-    for app_period in application_periods:
-        db_application_period = models.ApplicationPeriods(impact.id)
-        db_application_period.start_date = app_period[0]
-        db_application_period.end_date = app_period[1]
-        impact.insert_app_period(db_application_period)
-
-
-def manage_patterns(impact, json):
-    impact.delete_patterns()
-    if 'application_period_patterns' in json:
-        for json_pattern in json['application_period_patterns']:
-            pattern = models.Pattern(impact.id)
-            mapper.fill_from_json(pattern, json_pattern, pattern_mapping)
-            impact.insert_pattern(pattern)
-            manage_time_slot(pattern, json_pattern)
-
-
-def manage_time_slot(pattern, json):
-    if 'time_slots' in json:
-        for json_time_slot in json['time_slots']:
-            time_slot = models.TimeSlot(pattern.id)
-            mapper.fill_from_json(time_slot, json_time_slot, time_slot_mapping)
-            pattern.insert_time_slot(time_slot)
-
-
-def create_or_update_impact(disruption, json_impact, navitia, impact_id=None):
-    if impact_id:
-        # impact exist in database
-        impact_bd = models.Impact.get(impact_id, disruption.contributor.id)
-    else:
-        impact_bd = models.Impact()
-        impact_bd.severity = models.Severity.get(json_impact['severity']['id'], disruption.client.id)
-    impact_bd.disruption_id = disruption.id
-    db.session.add(impact_bd)
-    #The ptobject is not added in the database before commit. If we have duplicate ptobject
-    #in the json we have to handle it by using a dictionary. Each time we add a ptobject, we also
-    #add it in the dictionary
-    try:
-        manage_pt_object_without_line_section(navitia, impact_bd.objects, 'objects', json_impact)
-    except exceptions.ObjectUnknown:
-        raise
-    all_objects = dict()
-    if 'objects' in json_impact:
-        for pt_object_json in json_impact['objects']:
-            #For an pt_objects of the type 'line_section' we format uri : uri:impact_id
-            # we insert this object in the table pt_object
-            if pt_object_json["type"] == 'line_section':
-                try:
-                    ptobject = fill_and_add_line_section(navitia, impact_bd.id, all_objects, pt_object_json)
-                except exceptions.ObjectUnknown:
-                    raise
-                impact_bd.objects.append(ptobject)
-     # Severity
-    severity_json = json_impact['severity']
-    if (not impact_bd.severity_id) or (impact_bd.severity_id and (severity_json['id'] != impact_bd.severity_id)):
-        impact_bd.severity_id = severity_json['id']
-        impact_bd.severity = models.Severity.get(impact_bd.severity_id, disruption.client.id)
-
-    #For each object application_period_patterns create and fill a pattern and time_slots
-    manage_patterns(impact_bd, json_impact)
-    #This method creates a list of application periods either from application_period_patterns
-    # or from apllication_periods in the data json
-    app_periods_by_pattern = get_application_periods(json_impact)
-    manage_application_periods(impact_bd, app_periods_by_pattern)
-    manage_message(impact_bd, json_impact)
-
-    return impact_bd
-
-
-def manage_impacts(disruption, json, navitia):
-    impacts_db = dict((impact.id, impact) for impact in disruption.impacts)
-    impacts_json = dict()
-    if 'impacts' in json:
-        for json_impact in json['impacts']:
-            if 'id' in json_impact:
-                impact_id = json_impact['id']
-            else:
-                impact_id = None
-            impact_bd = create_or_update_impact(disruption, json_impact, navitia, impact_id)
-            impacts_json[impact_bd.id] = impact_bd
-
-    difference = set(impacts_db) - set(impacts_json)
-    for diff in difference:
-        impacts_db[diff].archive()
 
 
 class Index(flask_restful.Resource):
@@ -478,10 +95,10 @@ class Severity(flask_restful.Resource):
                            error_fields), 400
 
         severity = models.Severity()
-        mapper.fill_from_json(severity, json, severity_mapping)
+        mapper.fill_from_json(severity, json, mapper.severity_mapping)
         severity.client = client
         try:
-            manage_wordings(severity, json["wordings"])
+            db_helper.manage_wordings(severity, json["wordings"])
         except exceptions.InvalidJson, e:
             return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 400
@@ -507,9 +124,9 @@ class Severity(flask_restful.Resource):
             return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 400
 
-        mapper.fill_from_json(severity, json, severity_mapping)
+        mapper.fill_from_json(severity, json, mapper.severity_mapping)
         try:
-            manage_wordings(severity, json["wordings"])
+            db_helper.manage_wordings(severity, json["wordings"])
         except exceptions.InvalidJson, e:
             return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 400
@@ -591,7 +208,7 @@ class Disruptions(flask_restful.Resource):
             return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 400
         disruption = models.Disruption()
-        mapper.fill_from_json(disruption, json, disruption_mapping)
+        mapper.fill_from_json(disruption, json, mapper.disruption_mapping)
 
         #Use contributor_code present in the json to get contributor_id
         if 'contributor' in json:
@@ -600,15 +217,15 @@ class Disruptions(flask_restful.Resource):
 
         #Add localization present in Json
         try:
-            manage_pt_object_without_line_section(self.navitia, disruption.localizations, 'localization', json)
+            db_helper.manage_pt_object_without_line_section(self.navitia, disruption.localizations, 'localization', json)
         except exceptions.ObjectUnknown, e:
             return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 404
       
         #Add all tags present in Json
-        manage_tags(disruption, json)
+        db_helper.manage_tags(disruption, json)
         #Add all impacts present in Json
         try:
-            manage_impacts(disruption, json, self.navitia)
+            db_helper.manage_impacts(disruption, json, self.navitia)
         except exceptions.ObjectUnknown, e:
             return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 404
 
@@ -637,7 +254,7 @@ class Disruptions(flask_restful.Resource):
             return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 400
 
-        mapper.fill_from_json(disruption, json, disruption_mapping)
+        mapper.fill_from_json(disruption, json, mapper.disruption_mapping)
 
         #Use contributor_code present in the json to get contributor_id
         if 'contributor' in json:
@@ -645,16 +262,16 @@ class Disruptions(flask_restful.Resource):
 
         #Add localization present in Json
         try:
-            manage_pt_object_without_line_section(self.navitia, disruption.localizations, 'localization', json)
+            db_helper.manage_pt_object_without_line_section(self.navitia, disruption.localizations, 'localization', json)
         except exceptions.ObjectUnknown, e:
             return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 404
 
         #Add/delete tags present/ not present in Json
-        manage_tags(disruption, json)
+        db_helper.manage_tags(disruption, json)
 
         #Add all impacts present in Json
         try:
-            manage_impacts(disruption, json, self.navitia)
+            db_helper.manage_impacts(disruption, json, self.navitia)
         except exceptions.ObjectUnknown, e:
             return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 404
 
@@ -711,10 +328,10 @@ class Cause(flask_restful.Resource):
                            error_fields), 400
 
         cause = models.Cause()
-        mapper.fill_from_json(cause, json, cause_mapping)
+        mapper.fill_from_json(cause, json, mapper.cause_mapping)
         cause.client = client
         try:
-            manage_wordings(cause, json["wordings"])
+            db_helper.manage_wordings(cause, json["wordings"])
         except exceptions.InvalidJson, e:
             return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 400
@@ -739,9 +356,9 @@ class Cause(flask_restful.Resource):
             return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 400
 
-        mapper.fill_from_json(cause, json, cause_mapping)
+        mapper.fill_from_json(cause, json, mapper.cause_mapping)
         try:
-            manage_wordings(cause, json["wordings"])
+            db_helper.manage_wordings(cause, json["wordings"])
         except exceptions.InvalidJson, e:
             return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 400
@@ -793,7 +410,7 @@ class Tag(flask_restful.Resource):
             tag.is_visible = True
         else:
             tag = models.Tag()
-            mapper.fill_from_json(tag, json, tag_mapping)
+            mapper.fill_from_json(tag, json, mapper.tag_mapping)
             tag.client = client
             db.session.add(tag)
 
@@ -822,7 +439,7 @@ class Tag(flask_restful.Resource):
             return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 400
 
-        mapper.fill_from_json(tag, json, tag_mapping)
+        mapper.fill_from_json(tag, json, mapper.tag_mapping)
         try:
             db.session.commit()
         except IntegrityError, e:
@@ -875,7 +492,7 @@ class Category(flask_restful.Resource):
             category.is_visible = True
         else:
             category = models.Category()
-            mapper.fill_from_json(category, json, category_mapping)
+            mapper.fill_from_json(category, json, mapper.category_mapping)
             category.client = client
             db.session.add(category)
 
@@ -904,7 +521,7 @@ class Category(flask_restful.Resource):
             return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 400
 
-        mapper.fill_from_json(category, json, category_mapping)
+        mapper.fill_from_json(category, json, mapper.category_mapping)
         try:
             db.session.commit()
         except IntegrityError, e:
@@ -1019,7 +636,7 @@ class Impacts(flask_restful.Resource):
 
         disruption = models.Disruption.get(disruption_id, contributor.id)
         try:
-            impact = create_or_update_impact(disruption, json, self.navitia)
+            impact = db_helper.create_or_update_impact(disruption, json, self.navitia)
         except exceptions.ObjectUnknown, e:
             return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 404
@@ -1050,7 +667,7 @@ class Impacts(flask_restful.Resource):
 
         disruption = models.Disruption.get(disruption_id, contributor.id)
         try:
-            impact = create_or_update_impact(disruption, json, self.navitia, id)
+            impact = db_helper.create_or_update_impact(disruption, json, self.navitia, id)
         except exceptions.ObjectUnknown, e:
             return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 404
@@ -1100,7 +717,7 @@ class Channel(flask_restful.Resource):
                            error_fields), 400
 
         channel = models.Channel()
-        mapper.fill_from_json(channel, json, channel_mapping)
+        mapper.fill_from_json(channel, json, mapper.channel_mapping)
         channel.client = client
         db.session.add(channel)
         db.session.commit()
@@ -1123,7 +740,7 @@ class Channel(flask_restful.Resource):
             return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 400
 
-        mapper.fill_from_json(channel, json, channel_mapping)
+        mapper.fill_from_json(channel, json, mapper.channel_mapping)
         db.session.commit()
         return marshal({'channel': channel}, one_channel_fields), 200
 

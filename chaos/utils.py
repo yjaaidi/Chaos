@@ -35,7 +35,6 @@ import uuid
 import flask
 from chaos.formats import id_format
 from jsonschema import ValidationError
-import time
 from chaos.populate_pb import populate_pb
 from chaos.exceptions import HeaderAbsent
 import chaos
