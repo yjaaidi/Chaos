@@ -657,6 +657,7 @@ Return all impacts by ptobject.
 					"id": "RER:A",
 					"impacts": [
 						{
+							"application_period_patterns": [],
 							"application_periods": [
 									{
 										"begin": "2014-03-29T16:52:00Z",
@@ -766,6 +767,7 @@ Return all impacts of a impact.
 					"priority": null,
 					"effect": null
 				},
+				"application_period_patterns": [],
 				"application_periods": [
 					{
 						"begin": "2014-04-31T16:52:00Z",
@@ -959,6 +961,7 @@ Create a new impact.
                         "priority": 1,
                         "effect": null
                     },
+                    "application_period_patterns": []
                     "application_periods": [
                         {
                             "begin": "2014-04-31T16:52:00Z",
@@ -1122,10 +1125,21 @@ Create a new impact.
                                 "updated_at": "2014-04-31T16:55:18Z"
                             }
                     ],
-                    "application_periods": [
+                    "application_period_patterns": [
                         {
-                            "begin": "2014-04-31T16:52:00Z",
-                            "end": "2014-05-22T02:15:00Z"
+                            "end_date": "2015-02-06T16:52:00Z",
+                            "start_date": "2015-02-01T16:52:00Z",
+                            "time_slots": [
+                                {
+                                    "begin": "07:45",
+                                    "end": "09:30"
+                                },
+                                {
+                                    "begin": "17:30",
+                                    "end": "20:30"
+                                }
+                                ],
+                            "weekly_pattern": "1111100"
                         }
                     ],
                     "objects": [
@@ -1237,10 +1251,55 @@ Create a new impact.
                                 "updated_at": "2014-04-31T16:55:18Z"
                             }
                     ],
+                    "application_period_patterns": [
+                        {
+                            "end_date": "2015-02-06T16:52:00Z",
+                            "start_date": "2015-02-01T16:52:00Z",
+                            "time_slots": [
+                                {
+                                    "begin": "07:45",
+                                    "end": "09:30"
+                                },
+                                {
+                                    "begin": "17:30",
+                                    "end": "20:30"
+                                }
+                                ],
+                            "weekly_pattern": "1111100"
+                        }
+                    ],
                     "application_periods": [
                         {
-                            "begin": "2014-04-31T16:52:00Z",
-                            "end": "2014-05-22T02:15:00Z"
+                            "begin": "2015-02-05T17:30:00Z",
+                            "end": "2015-02-05T20:30:00Z"
+                        },
+                        {
+                            "begin": "2015-02-05T07:45:00Z",
+                            "end": "2015-02-05T09:30:00Z"
+                        },
+                        {
+                            "begin": "2015-02-04T17:30:00Z",
+                            "end": "2015-02-04T20:30:00Z"
+                        },
+                        {
+                            "begin": "2015-02-04T07:45:00Z",
+                            "end": "2015-02-04T09:30:00Z"
+                        },
+                        {
+                            "begin": "2015-02-03T17:30:00Z",
+                            "end": "2015-02-03T20:30:00Z"
+                        },
+                        {
+                            "begin": "2015-02-03T07:45:00Z",
+                            "end": "2015-02-03T09:30:00Z"
+                        },
+                        {
+                            "begin": "2015-02-02T17:30:00Z",
+                            "end": "2015-02-02T20:30:00Z"
+                        },
+                        {
+                            "begin": "2015-02-02T07:45:00Z",
+                            "end": "2015-02-02T09:30:00Z"
                         }
                     ],
                     "objects": [
@@ -1352,6 +1411,7 @@ Archive one impact.
                         "priority": 1,
                         "effect": null
                     },
+                    "application_period_patterns": [],
                     "application_periods": [
                         {
                             "begin": "2014-04-31T16:52:00Z",

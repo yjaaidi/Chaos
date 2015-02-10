@@ -174,7 +174,7 @@ Feature: Manipulate impacts in a Disruption
         Then the status code should be "201"
         And the header "Content-Type" should be "application/json"
         And the field "impact.objects" should exist
-        And the field "impact.objects.0.id" should be "network:JDR:2"
+        And the field "impact.objects.0.id" should be "network:JDR:1"
         And the field "impact.objects.0.type" should be "network"
         And the field "impact.severity.id" should exist
         And the field "impact.severity.wording" should be "good news"

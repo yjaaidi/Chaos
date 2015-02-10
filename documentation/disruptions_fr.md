@@ -727,6 +727,7 @@ Cette fonction donne la liste des impacts par type d'objet.
                     "id": "RER:A",
                     "impacts": [
                         {
+                            "application_period_patterns": [],
                             "application_periods": [
                                     {
                                         "begin": "2014-03-29T16:52:00Z",
@@ -878,6 +879,7 @@ Aucun filtre actuellement sur la récupération de liste des impacts: l'interrog
                                     "updated_at": "2014-04-31T16:55:18Z"
                                 }
                         ],
+                        "application_period_patterns": [],
                         "application_periods": [
                             {
                                 "begin": "2014-04-31T16:52:00Z",
@@ -940,10 +942,21 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient l'impact cr�
                 "severity": {
                     "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657ea"
                 },
-                "application_periods": [
+                "application_period_patterns": [
                     {
-                        "begin": "2014-04-31T16:52:00Z",
-                        "end": "2014-05-22T02:15:00Z"
+                        "end_date": "2015-02-06T16:52:00Z",
+                        "start_date": "2015-02-01T16:52:00Z",
+                        "time_slots": [
+                            {
+                                "begin": "07:45",
+                                "end": "09:30"
+                            },
+                            {
+                                "begin": "17:30",
+                                "end": "20:30"
+                            }
+                        ],
+                        "weekly_pattern": "1111100"
                     }
                 ],
                 "objects": [
@@ -1059,10 +1072,55 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient l'impact cr�
                                 "updated_at": "2014-04-31T16:55:18Z"
                             }
                     ],
+                    "application_period_patterns": [
+                        {
+                            "end_date": "2015-02-06T16:52:00Z",
+                            "start_date": "2015-02-01T16:52:00Z",
+                            "time_slots": [
+                                {
+                                    "begin": "07:45",
+                                    "end": "09:30"
+                                },
+                                {
+                                    "begin": "17:30",
+                                    "end": "20:30"
+                                }
+                            ],
+                            "weekly_pattern": "1111100"
+                        }
+                    ],
                     "application_periods": [
                         {
-                            "begin": "2014-04-31T16:52:00Z",
-                            "end": "2014-05-22T02:15:00Z"
+                            "begin": "2015-02-05T17:30:00Z",
+                            "end": "2015-02-05T20:30:00Z"
+                        },
+                        {
+                            "begin": "2015-02-05T07:45:00Z",
+                            "end": "2015-02-05T09:30:00Z"
+                        },
+                        {
+                            "begin": "2015-02-04T17:30:00Z",
+                            "end": "2015-02-04T20:30:00Z"
+                        },
+                        {
+                            "begin": "2015-02-04T07:45:00Z",
+                            "end": "2015-02-04T09:30:00Z"
+                        },
+                        {
+                            "begin": "2015-02-03T17:30:00Z",
+                            "end": "2015-02-03T20:30:00Z"
+                        },
+                        {
+                            "begin": "2015-02-03T07:45:00Z",
+                            "end": "2015-02-03T09:30:00Z"
+                        },
+                        {
+                            "begin": "2015-02-02T17:30:00Z",
+                            "end": "2015-02-02T20:30:00Z"
+                        },
+                        {
+                            "begin": "2015-02-02T07:45:00Z",
+                            "end": "2015-02-02T09:30:00Z"
                         }
                     ],
                     "objects": [
@@ -1188,6 +1246,7 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient l'impact cr�
                                 "updated_at": "2014-04-31T16:55:18Z"
                             }
                     ],
+                    "application_period_patterns": [],
                     "application_periods": [
                         {
                             "begin": "2014-04-31T16:52:00Z",
@@ -1337,10 +1396,21 @@ Lors d'un succés une réponse 200 est retourné, celle ci contient l'impact mod
                                 "updated_at": "2014-04-31T16:55:18Z"
                             }
                     ],
-                    "application_periods": [
+                    "application_period_patterns": [
                         {
-                            "begin": "2014-04-31T16:52:00Z",
-                            "end": "2014-05-22T02:15:00Z"
+                            "end_date": "2015-02-06T16:52:00Z",
+                            "start_date": "2015-02-01T16:52:00Z",
+                            "time_slots": [
+                                {
+                                    "begin": "07:45",
+                                    "end": "09:30"
+                                },
+                                {
+                                    "begin": "17:30",
+                                    "end": "20:30"
+                                }
+                                ],
+                            "weekly_pattern": "1111100"
                         }
                     ],
                     "objects": [
@@ -1456,10 +1526,55 @@ Lors d'un succés une réponse 200 est retourné, celle ci contient l'impact mod
                                 "updated_at": "2014-04-31T16:55:18Z"
                             }
                     ],
+                    "application_period_patterns": [
+                        {
+                            "end_date": "2015-02-06T16:52:00Z",
+                            "start_date": "2015-02-01T16:52:00Z",
+                            "time_slots": [
+                                {
+                                    "begin": "07:45",
+                                    "end": "09:30"
+                                },
+                                {
+                                    "begin": "17:30",
+                                    "end": "20:30"
+                                }
+                                ],
+                            "weekly_pattern": "1111100"
+                        }
+                    ],
                     "application_periods": [
                         {
-                            "begin": "2014-04-31T16:52:00Z",
-                            "end": "2014-05-22T02:15:00Z"
+                            "begin": "2015-02-05T17:30:00Z",
+                            "end": "2015-02-05T20:30:00Z"
+                        },
+                        {
+                            "begin": "2015-02-05T07:45:00Z",
+                            "end": "2015-02-05T09:30:00Z"
+                        },
+                        {
+                            "begin": "2015-02-04T17:30:00Z",
+                            "end": "2015-02-04T20:30:00Z"
+                        },
+                        {
+                            "begin": "2015-02-04T07:45:00Z",
+                            "end": "2015-02-04T09:30:00Z"
+                        },
+                        {
+                            "begin": "2015-02-03T17:30:00Z",
+                            "end": "2015-02-03T20:30:00Z"
+                        },
+                        {
+                            "begin": "2015-02-03T07:45:00Z",
+                            "end": "2015-02-03T09:30:00Z"
+                        },
+                        {
+                            "begin": "2015-02-02T17:30:00Z",
+                            "end": "2015-02-02T20:30:00Z"
+                        },
+                        {
+                            "begin": "2015-02-02T07:45:00Z",
+                            "end": "2015-02-02T09:30:00Z"
                         }
                     ],
                     "objects": [

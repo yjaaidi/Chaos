@@ -38,6 +38,8 @@ id_format = re.compile(id_format_text)
 pt_object_type_values = ["network", "stop_area", "line", "line_section"]
 #Here Order of values is strict and is used to create query filters.
 publication_status_values = ["past", "ongoing", "coming"]
+time_pattern = '^\d{2}:\d{2}$'
+week_pattern = '^[0-1]{7,7}$'
 
 
 def get_object_format(object_type):
@@ -219,6 +221,30 @@ message_input_format = {
     'required': ['text', 'channel']
 }
 
+time_slot_input_format = {
+    'type': 'object',
+    'properties': {
+        'begin': {'type': ['string'], 'pattern': time_pattern},
+        'end': {'type': ['string'], 'pattern': time_pattern},
+        },
+    'required': ['begin', 'end']
+}
+
+pattern_input_format = {
+    'type': 'object',
+    'properties': {
+        'start_date': {'type': ['string'], 'pattern': datetime_pattern},
+        'end_date': {'type': ['string'], 'pattern': datetime_pattern},
+        'weekly_pattern': {'type': ['string'], 'pattern': week_pattern},
+        'time_slots': {'type': 'array',
+                      'items': time_slot_input_format,
+                      "uniqueItems": True,
+                      "minItems": 1
+        }
+    },
+    'required': ['start_date', 'end_date', 'weekly_pattern', 'time_slots']
+}
+
 impact_input_format = {
     'type': 'object',
     'properties': {
@@ -237,6 +263,10 @@ impact_input_format = {
         'messages': {'type': 'array',
                      'items': message_input_format,
                      "uniqueItems": True
+        },
+        'application_period_patterns': {'type': 'array',
+                                        'items': pattern_input_format,
+                                        'uniqueItems': True
         }
     },
     'required': ['severity']
