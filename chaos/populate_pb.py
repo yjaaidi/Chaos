@@ -55,16 +55,37 @@ def created_upated_at(src, dest):
     if src.updated_at:
         dest.updated_at = get_pos_time(src.updated_at)
 
+def get_severity_effect_value(effect):
+    available_effects = {
+        'no_service':           gtfs_realtime_pb2.Alert.NO_SERVICE,
+        'reduced_service':      gtfs_realtime_pb2.Alert.REDUCED_SERVICE,
+        'significant_delays':   gtfs_realtime_pb2.Alert.SIGNIFICANT_DELAYS,
+        'detour':               gtfs_realtime_pb2.Alert.DETOUR,
+        'additional_service':   gtfs_realtime_pb2.Alert.ADDITIONAL_SERVICE,
+        'modified_service':     gtfs_realtime_pb2.Alert.MODIFIED_SERVICE,
+        'other_effect':         gtfs_realtime_pb2.Alert.OTHER_EFFECT,
+        'unknown_effect':       gtfs_realtime_pb2.Alert.UNKNOWN_EFFECT,
+        'stop_moved':           gtfs_realtime_pb2.Alert.STOP_MOVED
+    }
+    if effect in available_effects.keys():
+        return available_effects[effect]
+
+    return available_effects['unknown_effect']
+
 
 def populate_severity(impact_pb, severity):
     impact_pb.severity.id = severity.id
     impact_pb.severity.wording = severity.wording
     if severity.color:
         impact_pb.severity.color = severity.color
-    if severity.effect:
-        impact_pb.severity.effect = gtfs_realtime_pb2.Alert.NO_SERVICE
-    else:
-        impact_pb.severity.effect = gtfs_realtime_pb2.Alert.UNKNOWN_EFFECT
+
+    impact_pb.severity.effect = get_severity_effect_value(severity.effect)
+
+
+    # if severity.effect:
+    #     impact_pb.severity.effect = gtfs_realtime_pb2.Alert.NO_SERVICE
+    # else:
+    #     impact_pb.severity.effect = gtfs_realtime_pb2.Alert.UNKNOWN_EFFECT
 
 
 def populate_application_periods(impact, impact_pb):

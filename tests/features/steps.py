@@ -5,7 +5,7 @@ from chaos import db
 from chaos.models import Disruption, Severity, Cause, Impact, PTobject, Channel, Message, ApplicationPeriods, Tag,\
     associate_impact_pt_object, associate_disruption_tag, LineSection, associate_line_section_route_object,\
     associate_line_section_via_object, Client, Contributor, associate_disruption_pt_object, Category, Wording, \
-    associate_wording_severity
+    associate_wording_severity, Pattern, TimeSlot
 import chaos
 
 model_classes = {'disruption': Disruption,
@@ -29,7 +29,9 @@ model_classes = {'disruption': Disruption,
                'contributors': Contributor,
                'contributor': Contributor,
                'categories': Category,
-               'wording': Wording
+               'wording': Wording,
+               'pattern': Pattern,
+               'timeslot': TimeSlot
 }
 
 associations = {'associate_impact_pt_object': associate_impact_pt_object,

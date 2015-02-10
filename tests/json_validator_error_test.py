@@ -2,7 +2,8 @@ from nose.tools import *
 from chaos.utils import parse_error
 from jsonschema import validate, ValidationError
 from chaos.formats import impact_input_format, channel_input_format, severity_input_format,\
-    cause_input_format, disruptions_input_format, tag_input_format, pt_object_type_values
+    cause_input_format, disruptions_input_format, tag_input_format, pt_object_type_values,\
+    pattern_input_format
 
 
 def test_wording_is_required_in_severity():
@@ -252,3 +253,10 @@ def test_contributor_is_required_in_disruption():
         assert False
     except ValidationError, e:
         eq_(parse_error(e), "'contributor' is a required property", True)
+
+def test_time_slots_is_required_in_pattern():
+    try:
+        validate({"start_date":"2015-02-01T16:52:00Z","end_date":"2015-02-06T16:52:00Z","weekly_pattern":"1111100"}, pattern_input_format)
+        assert False
+    except ValidationError, e:
+        eq_(parse_error(e), "'time_slots' is a required property", True)

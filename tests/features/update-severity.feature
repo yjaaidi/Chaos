@@ -128,14 +128,14 @@ Feature: update severity
         I fill in header "X-Customer-Id" with "5"
         When I put to "/severities/7ffab230-3d48-4eea-aa2c-22f8680230b6" with:
         """
-        {"wordings": [{"key": "test", "value": "foo"}], "color": "blue", "effect": "blocking"}
+        {"wordings": [{"key": "test", "value": "foo"}], "color": "blue", "effect": "no_service"}
         """
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
         And the field "severity.wordings.0.key" should be "test"
         And the field "severity.wordings.0.value" should be "foo"
-        And the field "severity.effect" should be "blocking"
-        And in the database for the severity "7ffab230-3d48-4eea-aa2c-22f8680230b6" the field "effect" should be "blocking"
+        And the field "severity.effect" should be "no_service"
+        And in the database for the severity "7ffab230-3d48-4eea-aa2c-22f8680230b6" the field "effect" should be "no_service"
 
     Scenario: I can't update a invisible severity
         Given I have the following clients in my database:
