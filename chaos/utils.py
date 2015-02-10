@@ -40,6 +40,7 @@ from chaos.populate_pb import populate_pb
 from chaos.exceptions import HeaderAbsent
 import chaos
 
+
 def make_pager(resultset, endpoint, **kwargs):
     prev_link = None
     next_link = None
@@ -161,6 +162,7 @@ def is_pt_object_valid(pt_object, object_type, uris):
     else:
         return False
 
+
 def get_object_in_line_section_by_uri(pt_object, uris):
     """
     verify if object exists in line_section
@@ -191,6 +193,7 @@ def get_object_in_line_section_by_uri(pt_object, uris):
                 return via
     return None
 
+
 def get_object_in_line_section_by_type(pt_object, object_type):
     """
     verify if object exists in line_section
@@ -212,6 +215,7 @@ def get_object_in_line_section_by_type(pt_object, object_type):
             return object.end_point
     return None
 
+
 def get_object_in_line_section(pt_object, object_type, uris):
     """
     verify if object exists in line_section
@@ -224,12 +228,12 @@ def get_object_in_line_section(pt_object, object_type, uris):
     if uris:
         return get_object_in_line_section_by_uri(pt_object, uris)
 
-
     #Verify object by object type:
     if object_type:
         return get_object_in_line_section_by_type(pt_object, object_type)
 
     return None
+
 
 def group_impacts_by_pt_object(impacts, object_type, uris, get_pt_object):
     """
@@ -266,6 +270,7 @@ def group_impacts_by_pt_object(impacts, object_type, uris, get_pt_object):
     result.sort(key=lambda x: x['name'])
     return result
 
+
 def parse_error(error):
     to_return = None
     try:
@@ -286,25 +291,30 @@ def send_disruption_to_navitia(disruption):
     feed_entity = populate_pb(disruption)
     chaos.publisher.publish(feed_entity.SerializeToString(), disruption.contributor.contributor_code)
 
+
 def get_client_code(request):
     if 'X-Customer-Id' in request.headers:
         return request.headers['X-Customer-Id']
     raise HeaderAbsent("The parameter X-Customer-Id does not exist in the header")
+
 
 def get_contributor_code(request):
     if 'X-Contributors' in request.headers:
         return request.headers['X-Contributors']
     raise HeaderAbsent("The parameter X-Contributors does not exist in the header")
 
+
 def get_token(request):
     if 'Authorization' in request.headers:
         return request.headers['Authorization']
     raise HeaderAbsent("The parameter Authorization does not exist in the header")
 
+
 def get_coverage(request):
     if 'X-Coverage' in request.headers:
         return request.headers['X-Coverage']
     raise HeaderAbsent("The parameter X-Coverage does not exist in the header")
+
 
 def get_application_periods_by_pattern(start_date, end_date, weekly_pattern, time_slots):
     result = []
@@ -322,12 +332,14 @@ def get_application_periods_by_pattern(start_date, end_date, weekly_pattern, tim
             temp_date += timedelta(days=1)
     return result
 
+
 def get_application_periods_by_periods(json_application_periods):
     result = []
     for app_periods in json_application_periods:
         period = (parse_datetime(app_periods['begin']).replace(tzinfo=None), parse_datetime(app_periods['end']).replace(tzinfo=None))
         result.append(period)
     return result
+
 
 def get_application_periods(json):
     result = []

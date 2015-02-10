@@ -119,6 +119,7 @@ time_slot_mapping = {
     'end': mapper.Time(attribute='end')
 }
 
+
 class validate_client(object):
     def __init__(self, create_client=False):
         self.create_client = create_client
@@ -343,13 +344,31 @@ def manage_message(impact, json):
         impact.delete_message(messages_db[diff])
 
 
-def manage_application_periods(impact, json):
+def manage_application_periods(impact, application_periods):
     impact.delete_app_periods()
-    if 'application_periods' in json:
-        for app_period in json["application_periods"]:
-            application_period = models.ApplicationPeriods(impact.id)
-            mapper.fill_from_json(application_period, app_period, application_period_mapping)
-            impact.insert_app_period(application_period)
+    for app_period in application_periods:
+        db_application_period = models.ApplicationPeriods(impact.id)
+        db_application_period.start_date = app_period[0]
+        db_application_period.end_date = app_period[1]
+        impact.insert_app_period(db_application_period)
+
+
+def manage_patterns(impact, json):
+    impact.delete_patterns()
+    if 'application_period_patterns' in json:
+        for json_pattern in json['application_period_patterns']:
+            pattern = models.Pattern(impact.id)
+            mapper.fill_from_json(pattern, json_pattern, pattern_mapping)
+            impact.insert_pattern(pattern)
+            manage_time_slot(pattern, json_pattern)
+
+
+def manage_time_slot(pattern, json):
+    if 'time_slots' in json:
+        for json_time_slot in json['time_slots']:
+            time_slot = models.TimeSlot(pattern.id)
+            mapper.fill_from_json(time_slot, json_time_slot, time_slot_mapping)
+            pattern.insert_time_slot(time_slot)
 
 
 def create_or_update_impact(disruption, json_impact, navitia, impact_id=None):
@@ -1035,7 +1054,7 @@ class Impacts(flask_restful.Resource):
         except exceptions.ObjectUnknown, e:
             return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 404
-		disruption = models.Disruption.get(disruption_id, contributor.id)
+        disruption = models.Disruption.get(disruption_id, contributor.id)
         disruption.upgrade_version()
         db.session.commit()
         chaos.utils.send_disruption_to_navitia(disruption)
