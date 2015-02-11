@@ -512,7 +512,12 @@ Retrieve one existing disruption:
                 "publication_period" : {
                     "begin": "2014-04-31T17:00:00Z",
                     "end": null
-                }
+                },
+                "impacts":[{ "severity": {"id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657ea"},
+                             "application_periods": [{"begin": "2014-04-31T16:52:00Z","end": "2014-05-22T02:15:00Z"}]
+                          },{ "id":"7ffab230-3d48-4eea-aa2c-22f8680230b6", "severity": {"id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657ea"},
+                             "application_periods": [{"begin": "2014-04-31T16:52:00Z","end": "2014-05-22T02:15:00Z"}]
+                          }]
             }
 
 
@@ -574,13 +579,13 @@ Retrieve one existing disruption:
                     },
                     "impacts": {
                         "pagination": {
-                            "start_index": 0,
+                            "start_page": 1,
                             "items_per_page": 20,
-                            "total_results": 0,
+                            "total_results": 2,
                             "prev": null,
                             "next": null,
-                            "first": null,
-                            "last": null
+                            "first": {"href": "https://ogv2ws.apiary-mock.com/disruptions/1/impacts?start_page=1&item_per_page=20"},
+                            "last": {"href": "https://ogv2ws.apiary-mock.com/disruptions/1/impacts?start_page=1&item_per_page=20"}
                         }
                     }
                 },
