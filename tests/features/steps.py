@@ -4,7 +4,8 @@ import json
 from chaos import db
 from chaos.models import Disruption, Severity, Cause, Impact, PTobject, Channel, Message, ApplicationPeriods, Tag,\
     associate_impact_pt_object, associate_disruption_tag, LineSection, associate_line_section_route_object,\
-    associate_line_section_via_object, Client, Contributor, associate_disruption_pt_object, Category
+    associate_line_section_via_object, Client, Contributor, associate_disruption_pt_object, Category, Wording, \
+    associate_wording_severity, Pattern, TimeSlot
 import chaos
 
 model_classes = {'disruption': Disruption,
@@ -27,14 +28,18 @@ model_classes = {'disruption': Disruption,
                'client': Client,
                'contributors': Contributor,
                'contributor': Contributor,
-               'categories': Category
+               'categories': Category,
+               'wording': Wording,
+               'pattern': Pattern,
+               'timeslot': TimeSlot
 }
 
 associations = {'associate_impact_pt_object': associate_impact_pt_object,
                 'associate_disruption_tag': associate_disruption_tag,
                 'associate_line_section_route_object': associate_line_section_route_object,
                 'associate_line_section_via_object': associate_line_section_via_object,
-                'associate_disruption_pt_object': associate_disruption_pt_object
+                'associate_disruption_pt_object': associate_disruption_pt_object,
+                'associate_wording_severity': associate_wording_severity
 }
 
 def pythonify(value):

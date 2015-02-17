@@ -17,7 +17,7 @@ def test_validate_cause_format():
     Draft4Validator.check_schema(formats.cause_input_format)
 
 def test_severities_validation():
-    json = {'wording': 'foo', 'color': 'a'*20}
+    json = {'wordings': [{'key': 'foo', 'value': 'test'}], 'color': 'a'*20}
     validate(json, formats.severity_input_format)
 
     json['priority'] = 2
@@ -28,12 +28,12 @@ def test_severities_validation():
 
 @raises(ValidationError)
 def test_severities_validation_color_has_max_length():
-    json = {'wording': 'foo', 'color': 'a'*21}
+    json = {'wordings': [{'key': 'foo', 'value': 'test'}], 'color': 'a'*21}
     validate(json, formats.severity_input_format)
 
 @raises(ValidationError)
 def test_severities_validation_wording_has_max_length():
-    json = {'wording': 'a'*251}
+    json = {'wordings': [{'key': 'foo', 'value': 't'*251}]}
     validate(json, formats.severity_input_format)
 
 @raises(ValidationError)
@@ -42,27 +42,27 @@ def test_severities_validation_wording_is_required():
     validate(json, formats.severity_input_format)
 
 def test_severities_validation_effect_can_be_null_or_blocking():
-    json = {'wording': 'aa', 'effect': None}
+    json = {'wordings': [{'key': 'foo', 'value': 'test'}], 'effect': 'no_service'}
     validate(json, formats.severity_input_format)
 
-    json = {'wording': 'aa', 'effect': 'blocking'}
+    json = {'wordings': [{'key': 'foo', 'value': 'test'}], 'effect': 'no_service'}
     validate(json, formats.severity_input_format)
 
 @raises(ValidationError)
 def test_severities_validation_value_of_effect_is_limited():
-    json = {'wording': 'aa', 'effect': 'nonblocking'}
+    json = {'wordings': [{'key': 'foo', 'value': 'test'}], 'effect': 'nonblocking'}
     validate(json, formats.severity_input_format)
 
 def test_severities_validation_priority_is_int_or_null():
-    json = {'wording': 'aa', 'priority': None}
+    json = {'wordings': [{'key': 'foo', 'value': 'test'}], 'priority': None}
     validate(json, formats.severity_input_format)
 
-    json = {'wording': 'aa', 'priority': 1}
+    json = {'wordings': [{'key': 'foo', 'value': 'test'}], 'priority': 1}
     validate(json, formats.severity_input_format)
 
 @raises(ValidationError)
 def test_severities_validation_is_int_or_null_2():
-    json = {'wording': 'aa', 'priority': '1'}
+    json = {'wordings': [{'key': 'foo', 'value': 'test'}], 'priority': '1'}
     validate(json, formats.severity_input_format)
 
 
@@ -288,3 +288,44 @@ def test_impact_with_line_section_with_route_and_duplicate_via_validation():
 def test_impact_with_line_section_with_route_and_via_invalid():
     json = {'id': 'line:AME:3', 'type': 'line_section', "line_section": {"line":{"id":"line:AME:3","type":"line"}, "start_point":{"id":"stop_area:MTD:SA:154", "type":"stop_area"},	"end_point":{"id":"stop_area:JDR:SA:CHVIN", "type":"stop_area"}, "sens":0, "routes":[{"id":"route:MTD:9", "type":"route"}], "via":[{"id":"stop_area:JDR:SA:CHVIN", "type":"stop_point"}]}}
     validate(json, formats.object_input_format)
+
+def test_time_slot_input_format_valid():
+    json = {"begin": "07:45", "end": "09:30"}
+    validate(json, formats.time_slot_input_format)
+
+@raises(ValidationError)
+def test_time_slot_input_format_invalid():
+    json = {"begin": "07:45:00", "end": "09:30"}
+    validate(json, formats.time_slot_input_format)
+
+def test_pattern_input_format_valid():
+    json = {"start_date":"2015-02-01T16:52:00Z","end_date":"2015-02-06T16:52:00Z","weekly_pattern":"1111100","time_slots":[{"begin": "07:45", "end": "09:30"}, {"begin": "17:30", "end": "20:30"}]}
+    validate(json, formats.pattern_input_format)
+
+@raises(ValidationError)
+def test_pattern_input_format_without_time_slot_invalid():
+    json = {"start_date":"2015-02-01T16:52:00Z","end_date":"2015-02-06T16:52:00Z","weekly_pattern":"1111100"}
+    validate(json, formats.pattern_input_format)
+
+@raises(ValidationError)
+def test_pattern_input_format_without_time_slot_content_invalid():
+    json = {"start_date":"2015-02-01T16:52:00Z","end_date":"2015-02-06T16:52:00Z","weekly_pattern":"1111100", "time_slots":[]}
+    validate(json, formats.pattern_input_format)
+
+@raises(ValidationError)
+def test_pattern_input_format_invalid():
+    json = {"start_date":"2015-02-01T16:52:00Z","end_date":"2015-02-06T16:52:00Z","weekly_pattern":"1111100111","time_slots":[{"begin": "07:45", "end": "09:30"}, {"begin": "17:30", "end": "20:30"}]}
+    validate(json, formats.pattern_input_format)
+
+def test_impact_with_application_period_patterns_valid():
+    json = {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"application_period_patterns":[{"start_date":"2015-02-01T16:52:00Z","end_date":"2015-02-06T16:52:00Z","weekly_pattern":"1111100","time_slots":[{"begin": "07:45", "end": "09:30"}, {"begin": "17:30", "end": "20:30"}]}]}
+    validate(json, formats.impact_input_format)
+
+def test_impact_with_application_period_patterns_invalid():
+    json = {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"application_period_patterns":[{"start_date":"2015-02-01T16:52:00Z","end_date":"2015-02-06T16:52:00Z","weekly_pattern":"1111100","time_slots":[{"begin": "07:45", "end": "09:30"}, {"begin": "17:30", "end": "20:30"}]}]}
+    validate(json, formats.impact_input_format)
+
+def test_impact_with_route():
+    json = {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},
+            "objects": [{"id": "route:RTP:LI:378","type": "route"}]}
+    validate(json, formats.impact_input_format)

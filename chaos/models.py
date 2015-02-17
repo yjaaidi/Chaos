@@ -32,7 +32,7 @@
 import uuid
 from chaos import db, utils
 from utils import paginate, get_current_time
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.dialects.postgresql import UUID, BIT
 from datetime import datetime
 from formats import publication_status_values
 from sqlalchemy import or_, and_, not_
@@ -55,7 +55,7 @@ class TimestampMixin(object):
     updated_at = db.Column(db.DateTime(), default=None, onupdate=datetime.utcnow)
 
 DisruptionStatus = db.Enum('published', 'archived', name='disruption_status')
-SeverityEffect = db.Enum('blocking', name='severity_effect')
+SeverityEffect = db.Enum('no_service', 'reduced_service', 'significant_delays', 'detour', 'additional_service', 'modified_service', 'other_effect', 'unknown_effect', 'stop_moved', name='severity_effect')
 ImpactStatus = db.Enum('published', 'archived', name='impact_status')
 PtObjectType = db.Enum('network', 'stop_area', 'line', 'line_section', 'route', name='pt_object_type')
 
@@ -100,6 +100,15 @@ class Contributor(TimestampMixin, db.Model):
         return contributor
 
 
+associate_wording_severity = db.Table('associate_wording_severity',
+                                    db.metadata,
+                                    db.Column('wording_id', UUID, db.ForeignKey('wording.id')),
+                                    db.Column('severity_id', UUID, db.ForeignKey('severity.id')),
+                                    db.PrimaryKeyConstraint('wording_id', 'severity_id', name='wording_severity_pk')
+)
+
+
+
 class Severity(TimestampMixin, db.Model):
     """
     represent the severity of an impact
@@ -112,9 +121,19 @@ class Severity(TimestampMixin, db.Model):
     effect = db.Column(SeverityEffect, nullable=True)
     client_id = db.Column(UUID, db.ForeignKey(Client.id), nullable=False)
     client = db.relationship('Client', backref='severity', lazy='joined')
+    wordings = db.relationship("Wording", secondary=associate_wording_severity, backref="severities")
+
+    def delete_wordings(self):
+        index = len(self.wordings) - 1
+        while index >= 0:
+            wording = self.wordings[index]
+            self.wordings.remove(wording)
+            db.session.delete(wording)
+            index -= 1
 
     def __init__(self):
         self.id = str(uuid.uuid1())
+        self.effect = 'unknown_effect'
 
     def __repr__(self):
         return '<Severity %r>' % self.id
@@ -149,7 +168,7 @@ class Category(TimestampMixin, db.Model):
 
     @classmethod
     def all(cls, client_id):
-        return cls.query.filter_by(client_id=client_id,is_visible=True).all()
+        return cls.query.filter_by(client_id=client_id,is_visible=True).order_by(cls.name).all()
 
     @classmethod
     def get(cls, id, client_id):
@@ -180,7 +199,6 @@ associate_wording_cause = db.Table('associate_wording_cause',
                                     db.Column('cause_id', UUID, db.ForeignKey('cause.id')),
                                     db.PrimaryKeyConstraint('wording_id', 'cause_id', name='wording_cause_pk')
 )
-
 
 class Cause(TimestampMixin, db.Model):
     """
@@ -402,7 +420,8 @@ class Impact(TimestampMixin, db.Model):
     messages = db.relationship('Message', backref='impact', lazy='joined')
     application_periods = db.relationship('ApplicationPeriods', backref='impact', lazy='joined')
     severity = db.relationship('Severity', backref='impacts', lazy='joined')
-    objects = db.relationship("PTobject", secondary=associate_impact_pt_object, lazy='joined')
+    objects = db.relationship("PTobject", secondary=associate_impact_pt_object, lazy='joined', order_by="PTobject.type, PTobject.uri")
+    patterns = db.relationship('Pattern', backref='impact', lazy='joined')
 
     def __repr__(self):
         return '<Impact %r>' % self.id
@@ -422,6 +441,7 @@ class Impact(TimestampMixin, db.Model):
         d['application_periods'] = self.application_periods
         d['severity'] = self.severity
         d['messages'] = self.messages
+        d['application_period_patterns'] = self.patterns
         return d
 
     def __init__(self, objects=None):
@@ -474,6 +494,20 @@ class Impact(TimestampMixin, db.Model):
         """
         self.application_periods.append(application_period)
         db.session.add(application_period)
+
+    def delete_patterns(self):
+        for i in range(len(self.patterns), 0, -1):
+            pattern = self.patterns[i - 1]
+            pattern.delete_time_slots()
+            self.patterns.remove(pattern)
+            db.session.delete(pattern)
+
+    def insert_pattern(self, pattern):
+        """
+        Adds a pattern of ApplicationPeriods in a impact.
+        """
+        self.patterns.append(pattern)
+        db.session.add(pattern)
 
     @classmethod
     def get(cls, id, contributor_id):
@@ -698,3 +732,53 @@ class LineSection(TimestampMixin, db.Model):
     @classmethod
     def get_by_object_id(cls, object_id):
         return cls.query.filter_by(object_id=object_id).first()
+
+
+class Pattern(TimestampMixin, db.Model):
+    """
+    represents the patterns of application periods of an impact
+    """
+    __tablename__ = 'pattern'
+    id = db.Column(UUID, primary_key=True)
+    start_date = db.Column(db.DateTime(), nullable=True)
+    end_date = db.Column(db.DateTime(), nullable=True)
+    weekly_pattern = db.Column(BIT(7), unique=False, nullable=False)
+    impact_id = db.Column(UUID, db.ForeignKey(Impact.id), index=True)
+    time_slots = db.relationship('TimeSlot', backref='pattern', lazy='joined')
+
+    def __init__(self, impact_id=None):
+        self.id = str(uuid.uuid1())
+        self.impact_id = impact_id
+
+    def __repr__(self):
+        return '<Pattern %r>' % self.id
+
+    def delete_time_slots(self):
+        for time_slot in self.time_slots:
+            db.session.delete(time_slot)
+
+    def insert_time_slot(self, time_slot):
+        """
+        Adds a time slot in the pattern
+        """
+        self.time_slots.append(time_slot)
+        db.session.add(time_slot)
+
+
+class TimeSlot(TimestampMixin, db.Model):
+    """
+    represents the time slots of a pattern
+    """
+    __tablename__ = 'time_slot'
+    id = db.Column(UUID, primary_key=True)
+    begin = db.Column(db.Time(), nullable=True)
+    end = db.Column(db.Time(), nullable=True)
+    pattern_id = db.Column(UUID, db.ForeignKey(Pattern.id), index=True)
+
+    def __init__(self, pattern_id=None):
+        self.id = str(uuid.uuid1())
+        self.pattern_id = pattern_id
+
+    def __repr__(self):
+        return '<TimeSlot %r>' % self.id
+

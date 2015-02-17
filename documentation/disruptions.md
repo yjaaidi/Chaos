@@ -512,7 +512,12 @@ Retrieve one existing disruption:
                 "publication_period" : {
                     "begin": "2014-04-31T17:00:00Z",
                     "end": null
-                }
+                },
+                "impacts":[{ "severity": {"id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657ea"},
+                             "application_periods": [{"begin": "2014-04-31T16:52:00Z","end": "2014-05-22T02:15:00Z"}]
+                          },{ "id":"7ffab230-3d48-4eea-aa2c-22f8680230b6", "severity": {"id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657ea"},
+                             "application_periods": [{"begin": "2014-04-31T16:52:00Z","end": "2014-05-22T02:15:00Z"}]
+                          }]
             }
 
 
@@ -574,13 +579,13 @@ Retrieve one existing disruption:
                     },
                     "impacts": {
                         "pagination": {
-                            "start_index": 0,
+                            "start_page": 1,
                             "items_per_page": 20,
-                            "total_results": 0,
+                            "total_results": 2,
                             "prev": null,
                             "next": null,
-                            "first": null,
-                            "last": null
+                            "first": {"href": "https://ogv2ws.apiary-mock.com/disruptions/1/impacts?start_page=1&item_per_page=20"},
+                            "last": {"href": "https://ogv2ws.apiary-mock.com/disruptions/1/impacts?start_page=1&item_per_page=20"}
                         }
                     }
                 },
@@ -657,6 +662,7 @@ Return all impacts by ptobject.
 					"id": "RER:A",
 					"impacts": [
 						{
+							"application_period_patterns": [],
 							"application_periods": [
 									{
 										"begin": "2014-03-29T16:52:00Z",
@@ -720,7 +726,7 @@ Return all impacts by ptobject.
 								"effect": "none",
 								"id": "3d1f42b2-e8df-11e3-8c3e-0008ca86c7ea",
 								"updated_at": "2014-04-31T16:55:18Z",
-								"wording": "Bonne nouvelle"
+								"wordings" : [{"key": "msg", "value": "Bonne nouvelle"}]
 							},
 							"updated_at": "2014-04-31T16:55:18Z"
 							}
@@ -759,13 +765,14 @@ Return all impacts of a impact.
 				"updated_at": "2014-04-31T16:55:18Z",
 				"severity": {
 					"id": "3d1f42b2-e8df-11e3-8c3e-0008ca86c7ea",
-					"wording": "Bonne nouvelle",
+					"wordings" : [{"key": "msg", "value": "Bonne nouvelle"}],
 					"created_at": "2014-04-31T16:52:18Z",
 					"updated_at": "2014-04-31T16:55:18Z",
 					"color": "#123456",
 					"priority": null,
 					"effect": null
 				},
+				"application_period_patterns": [],
 				"application_periods": [
 					{
 						"begin": "2014-04-31T16:52:00Z",
@@ -952,13 +959,14 @@ Create a new impact.
                     "updated_at": "2014-04-31T16:55:18Z",
                     "severity": {
                         "id": "3d1f42b2-e8df-11e3-8c3e-0008ca861aea",
-                        "wording": "Bonne nouvelle",
+                        "wordings" : [{"key": "msg", "value": "Bonne nouvelle"}],
                         "created_at": "2014-04-31T16:52:18Z",
                         "updated_at": "2014-04-31T16:55:18Z",
                         "color": "#123456",
                         "priority": 1,
                         "effect": null
                     },
+                    "application_period_patterns": []
                     "application_periods": [
                         {
                             "begin": "2014-04-31T16:52:00Z",
@@ -1085,7 +1093,7 @@ Create a new impact.
                     "updated_at": "2014-04-31T16:55:18Z",
                     "severity": {
                         "id": "3d1f42b2-e8df-11e3-8c3e-0008ca861aea",
-                        "wording": "Bonne nouvelle",
+                        "wordings" : [{"key": "msg", "value": "Bonne nouvelle"}],
                         "created_at": "2014-04-31T16:52:18Z",
                         "updated_at": "2014-04-31T16:55:18Z",
                         "color": "#123456",
@@ -1122,10 +1130,21 @@ Create a new impact.
                                 "updated_at": "2014-04-31T16:55:18Z"
                             }
                     ],
-                    "application_periods": [
+                    "application_period_patterns": [
                         {
-                            "begin": "2014-04-31T16:52:00Z",
-                            "end": "2014-05-22T02:15:00Z"
+                            "end_date": "2015-02-06T16:52:00Z",
+                            "start_date": "2015-02-01T16:52:00Z",
+                            "time_slots": [
+                                {
+                                    "begin": "07:45",
+                                    "end": "09:30"
+                                },
+                                {
+                                    "begin": "17:30",
+                                    "end": "20:30"
+                                }
+                                ],
+                            "weekly_pattern": "1111100"
                         }
                     ],
                     "objects": [
@@ -1200,7 +1219,7 @@ Create a new impact.
                     "updated_at": "2014-04-31T16:55:18Z",
                     "severity": {
                         "id": "3d1f42b2-e8df-11e3-8c3e-0008ca861aea",
-                        "wording": "Bonne nouvelle",
+                        "wordings" : [{"key": "msg", "value": "Bonne nouvelle"}],
                         "created_at": "2014-04-31T16:52:18Z",
                         "updated_at": "2014-04-31T16:55:18Z",
                         "color": "#123456",
@@ -1237,10 +1256,55 @@ Create a new impact.
                                 "updated_at": "2014-04-31T16:55:18Z"
                             }
                     ],
+                    "application_period_patterns": [
+                        {
+                            "end_date": "2015-02-06T16:52:00Z",
+                            "start_date": "2015-02-01T16:52:00Z",
+                            "time_slots": [
+                                {
+                                    "begin": "07:45",
+                                    "end": "09:30"
+                                },
+                                {
+                                    "begin": "17:30",
+                                    "end": "20:30"
+                                }
+                                ],
+                            "weekly_pattern": "1111100"
+                        }
+                    ],
                     "application_periods": [
                         {
-                            "begin": "2014-04-31T16:52:00Z",
-                            "end": "2014-05-22T02:15:00Z"
+                            "begin": "2015-02-05T17:30:00Z",
+                            "end": "2015-02-05T20:30:00Z"
+                        },
+                        {
+                            "begin": "2015-02-05T07:45:00Z",
+                            "end": "2015-02-05T09:30:00Z"
+                        },
+                        {
+                            "begin": "2015-02-04T17:30:00Z",
+                            "end": "2015-02-04T20:30:00Z"
+                        },
+                        {
+                            "begin": "2015-02-04T07:45:00Z",
+                            "end": "2015-02-04T09:30:00Z"
+                        },
+                        {
+                            "begin": "2015-02-03T17:30:00Z",
+                            "end": "2015-02-03T20:30:00Z"
+                        },
+                        {
+                            "begin": "2015-02-03T07:45:00Z",
+                            "end": "2015-02-03T09:30:00Z"
+                        },
+                        {
+                            "begin": "2015-02-02T17:30:00Z",
+                            "end": "2015-02-02T20:30:00Z"
+                        },
+                        {
+                            "begin": "2015-02-02T07:45:00Z",
+                            "end": "2015-02-02T09:30:00Z"
                         }
                     ],
                     "objects": [
@@ -1345,13 +1409,14 @@ Archive one impact.
                     "updated_at": "2014-04-31T16:55:18Z",
                     "severity": {
                         "id": "3d1f42b2-e8df-11e3-8c3e-0008ca861aea",
-                        "wording": "Bonne nouvelle",
+                        "wordings" : [{"key": "msg", "value": "Bonne nouvelle"}],
                         "created_at": "2014-04-31T16:52:18Z",
                         "updated_at": "2014-04-31T16:55:18Z",
                         "color": "#123456",
                         "priority": 1,
                         "effect": null
                     },
+                    "application_period_patterns": [],
                     "application_periods": [
                         {
                             "begin": "2014-04-31T16:52:00Z",
@@ -1441,7 +1506,7 @@ Return all the severities ordered by priority.
                 "severities": [
                     {
                         "id": "3d1f42b3-e8df-11e3-8c3e-0008ca8617ea",
-                        "wording": "normal",
+                        "wordings" : [{"key": "msg", "value": "Normal"}],
                         "effect": null,
                         "priority": 1,
                         "color": "#123456",
@@ -1450,7 +1515,7 @@ Return all the severities ordered by priority.
                     },
                     {
                         "id": "3d1f42b4-e8df-11e3-8c3e-0008ca8617ea",
-                        "wording": "majeur",
+                        "wordings" : [{"key": "msg", "value": "Majeur"}],
                         "effect": null,
                         "priority": 2,
                         "color": "#123456",
@@ -1459,8 +1524,8 @@ Return all the severities ordered by priority.
                     },
                     {
                         "id": "3d1f42b5-e8df-11e3-8c3e-0008ca8617ea",
-                        "wording": "bloquant",
-                        "effect": "blocking",
+                        "wordings" : [{"key": "msg", "value": "Bloquant"}],
+                        "effect": "no_service",
                         "priority": 3,
                         "color": "#123456",
                         "created_at": "2014-04-31T16:52:18Z",
@@ -1480,7 +1545,7 @@ Return all the severities ordered by priority.
     * Body
 
                 {
-                    "wording": "normal",
+                    "wordings" : [{"key": "msg", "value": "Normal"}],
                     "color": "#123456",
                     "priority": 1,
                     "effect": null
@@ -1493,7 +1558,7 @@ Return all the severities ordered by priority.
             {
                 "severity": {
                     "id": "3d1f42b3-e8df-11e3-8c3e-0008ca8617ea",
-                    "wording": "normal",
+                    "wordings" : [{"key": "msg", "value": "Normal"}],
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": null,
                     "color": "#123456",
@@ -1821,7 +1886,7 @@ Retrieve one existing severity:
             {
                 "severity": {
                     "id": "3d1f42b3-e8df-11e3-8c3e-0008ca8617ea",
-                    "wording": "normal",
+                    "wordings" : [{"key": "msg", "value": "Normal"}],
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": null,
                     "color": "#123456",
@@ -1856,7 +1921,7 @@ Retrieve one existing severity:
     * Body
 
             {
-                "wording": "Bonne nouvelle",
+                "wordings" : [{"key": "msg", "value": "Bonne nouvelle"}],
                 "color": "#123456",
                 "effect": null
             }
@@ -1869,7 +1934,7 @@ Retrieve one existing severity:
             {
                 "severity": {
                     "id": "3d1f42b3-e8df-11e3-8c3e-0008ca8617ea",
-                    "wording": "Bonne nouvelle",
+                    "wordings" : [{"key": "msg", "value": "Bonne nouvelle"}],
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": "2014-04-31T16:55:18Z",
                     "color": "#123456",

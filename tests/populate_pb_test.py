@@ -40,6 +40,7 @@ def get_disruption(with_via=True, with_routes=True):
     impact.severity = chaos.models.Severity()
     impact.severity.wording = "SeverityTest"
     impact.severity.color = "#FFFF00"
+    impact.severity.effect = "no_service"
 
     # ApplicationPeriods
     application_period = chaos.models.ApplicationPeriods()
@@ -100,6 +101,11 @@ def get_disruption(with_via=True, with_routes=True):
 
     impact.objects.append(ptobject)
 
+    ptobject = chaos.models.PTobject()
+    ptobject.uri = "route:123"
+    ptobject.type = "route"
+    impact.objects.append(ptobject)
+
     # Messages
     message = chaos.models.Message()
     message.text = "Meassage1 test"
@@ -151,9 +157,10 @@ def test_disruption():
     eq_(len(disruption_pb.impacts),  1)
     eq_(disruption_pb.impacts[0].severity.wording,  "SeverityTest")
     eq_(disruption_pb.impacts[0].severity.color,  "#FFFF00")
+    eq_(disruption_pb.impacts[0].severity.effect, chaos.gtfs_realtime_pb2.Alert.NO_SERVICE)
 
     eq_(len(disruption_pb.impacts[0].application_periods),  1)
-    eq_(len(disruption_pb.impacts[0].informed_entities), 3)
+    eq_(len(disruption_pb.impacts[0].informed_entities), 4)
 
     eq_(disruption_pb.impacts[0].informed_entities[0].uri, disruption.impacts[0].objects[0].uri)
     eq_(disruption_pb.impacts[0].informed_entities[0].pt_object_type,
@@ -166,6 +173,10 @@ def test_disruption():
     eq_(disruption_pb.impacts[0].informed_entities[2].uri, disruption.impacts[0].objects[2].uri)
     eq_(disruption_pb.impacts[0].informed_entities[2].pt_object_type,
     get_pt_object_type(disruption.impacts[0].objects[2].type))
+
+    eq_(disruption_pb.impacts[0].informed_entities[3].uri, disruption.impacts[0].objects[3].uri)
+    eq_(disruption_pb.impacts[0].informed_entities[3].pt_object_type,
+    get_pt_object_type(disruption.impacts[0].objects[3].type))
 
     eq_(disruption_pb.impacts[0].informed_entities[2].pt_line_section.line.uri,
     disruption.impacts[0].objects[2].line_section.line.uri)
@@ -218,7 +229,7 @@ def test_disruption_without_via():
     eq_(disruption_pb.impacts[0].severity.color, "#FFFF00")
 
     eq_(len(disruption_pb.impacts[0].application_periods), 1)
-    eq_(len(disruption_pb.impacts[0].informed_entities), 3)
+    eq_(len(disruption_pb.impacts[0].informed_entities), 4)
 
     eq_(disruption_pb.impacts[0].informed_entities[0].uri, disruption.impacts[0].objects[0].uri)
     eq_(disruption_pb.impacts[0].informed_entities[0].pt_object_type,
@@ -231,6 +242,7 @@ def test_disruption_without_via():
     eq_(disruption_pb.impacts[0].informed_entities[2].uri, disruption.impacts[0].objects[2].uri)
     eq_(disruption_pb.impacts[0].informed_entities[2].pt_object_type,
     get_pt_object_type(disruption.impacts[0].objects[2].type))
+
 
     eq_(disruption_pb.impacts[0].informed_entities[2].pt_line_section.line.uri,
     disruption.impacts[0].objects[2].line_section.line.uri)
@@ -249,6 +261,10 @@ def test_disruption_without_via():
 
     eq_(len(disruption_pb.impacts[0].informed_entities[2].pt_line_section.routes), 2)
     eq_(len(disruption_pb.impacts[0].informed_entities[2].pt_line_section.via), 0)
+
+    eq_(disruption_pb.impacts[0].informed_entities[3].uri, disruption.impacts[0].objects[3].uri)
+    eq_(disruption_pb.impacts[0].informed_entities[3].pt_object_type,
+    get_pt_object_type(disruption.impacts[0].objects[3].type))
 
     eq_(disruption_pb.impacts[0].messages[0].text, disruption.impacts[0].messages[0].text)
     eq_(disruption_pb.impacts[0].messages[0].channel.name, disruption.impacts[0].messages[0].channel.name)
@@ -348,7 +364,7 @@ def test_disruption_without_routes():
     eq_(disruption_pb.impacts[0].severity.color, "#FFFF00")
 
     eq_(len(disruption_pb.impacts[0].application_periods), 1)
-    eq_(len(disruption_pb.impacts[0].informed_entities), 3)
+    eq_(len(disruption_pb.impacts[0].informed_entities), 4)
     eq_(disruption_pb.impacts[0].informed_entities[0].uri, disruption.impacts[0].objects[0].uri)
     eq_(disruption_pb.impacts[0].informed_entities[0].pt_object_type,
     get_pt_object_type(disruption.impacts[0].objects[0].type))
@@ -374,6 +390,10 @@ def test_disruption_without_routes():
     disruption.impacts[0].objects[2].line_section.end_point.uri)
     eq_(disruption_pb.impacts[0].informed_entities[2].pt_line_section.end_point.pt_object_type,
     get_pt_object_type(disruption.impacts[0].objects[2].line_section.end_point.type))
+
+    eq_(disruption_pb.impacts[0].informed_entities[3].uri, disruption.impacts[0].objects[3].uri)
+    eq_(disruption_pb.impacts[0].informed_entities[3].pt_object_type,
+    get_pt_object_type(disruption.impacts[0].objects[3].type))
 
     eq_(len(disruption_pb.impacts[0].informed_entities[2].pt_line_section.routes), 0)
     eq_(len(disruption_pb.impacts[0].informed_entities[2].pt_line_section.via), 0)

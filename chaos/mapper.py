@@ -27,7 +27,7 @@
 # https://groups.google.com/d/forum/navitia
 # www.navitia.io
 
-from aniso8601 import parse_datetime
+from aniso8601 import parse_datetime, parse_time
 from collections import Mapping, Sequence
 
 
@@ -42,15 +42,23 @@ class Datetime(object):
             setattr(item, self.attribute, None)
 
 
-class AliasText(object):
+class Time(object):
     def __init__(self, attribute):
         self.attribute = attribute
 
     def __call__(self, item, field, value):
         if value:
-            setattr(item, self.attribute, value)
+            setattr(item, self.attribute, parse_time(value).replace(tzinfo=None))
         else:
             setattr(item, self.attribute, None)
+
+
+class AliasText(object):
+    def __init__(self, attribute):
+        self.attribute = attribute
+
+    def __call__(self, item, field, value):
+        setattr(item, self.attribute, value)
 
 
 def fill_from_json(item, json, fields):
@@ -69,3 +77,71 @@ def fill_from_json(item, json, fields):
             setattr(item, field, json[field])
         elif formater:
             formater(item, field, json[field])
+
+
+disruption_mapping = {
+    'reference': None,
+    'note': None,
+    'publication_period': {
+        'begin': Datetime(attribute='start_publication_date'),
+        'end': Datetime(attribute='end_publication_date')
+    },
+    'cause': {'id': AliasText(attribute='cause_id')}
+}
+
+severity_mapping = {
+    'color': None,
+    'priority': None,
+    'effect': None,
+}
+
+cause_mapping = {
+    'category': {'id': AliasText(attribute='category_id')},
+}
+
+tag_mapping = {
+    'name': None
+}
+
+category_mapping = {
+    'name': None
+}
+
+object_mapping = {
+    "id": AliasText(attribute='uri'),
+    "type": None
+}
+
+message_mapping = {
+    "text": None,
+    'channel': {'id': AliasText(attribute='channel_id')}
+}
+
+application_period_mapping = {
+    'begin': Datetime(attribute='start_date'),
+    'end': Datetime(attribute='end_date')
+}
+
+channel_mapping = {
+    'name': None,
+    'max_size': None,
+    'content_type': None
+}
+
+line_section_mapping = {
+    'line': None,
+    'start_point': None,
+    'end_point': None,
+    'sens': None
+}
+
+pattern_mapping = {
+    'start_date': Datetime(attribute='start_date'),
+    'end_date': Datetime(attribute='end_date'),
+    'weekly_pattern': None
+}
+
+time_slot_mapping = {
+    'begin': Time(attribute='begin'),
+    'end': Time(attribute='end')
+}

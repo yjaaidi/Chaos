@@ -35,9 +35,11 @@ import re
 datetime_pattern = '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$'
 id_format_text = '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
 id_format = re.compile(id_format_text)
-pt_object_type_values = ["network", "stop_area", "line", "line_section"]
+pt_object_type_values = ["network", "stop_area", "line", "line_section", "route"]
 #Here Order of values is strict and is used to create query filters.
 publication_status_values = ["past", "ongoing", "coming"]
+time_pattern = '^\d{2}:\d{2}$'
+week_pattern = '^[0-1]{7,7}$'
 
 
 def get_object_format(object_type):
@@ -117,55 +119,32 @@ category_input_format = {
     'required': ['name']
 }
 
-disruptions_input_format = {
-    'type': 'object',
-    'properties': {'reference': {'type': 'string', 'maxLength': 250},
-                   'note': {'type': 'string'},
-                   'publication_period': date_period_format,
-                   'contributor': {'type': 'string'},
-                   'cause': {
-                       'type': 'object',
-                       'properties': {
-                           'id': {'type': 'string', 'pattern': id_format_text}
-                       },
-                       'required': ['id']
-                   },
-                   'localization': {'type': 'array',
-                                    'items': localization_object_input_format,
-                                    "uniqueItems": True
-                   },
-                   'tags': {
-                       'type': 'array',
-                       'items': {
-                           'type': 'object',
-                           'properties': {
-                               'id': {'type': 'string', 'pattern': id_format_text}
-                           },
-                           'required': ['id']
-                       },
-                       "uniqueItems": True
-                   }
-    },
-    'required': ['reference', 'cause', 'contributor']
-}
-
-severity_input_format = {
-    'type': 'object',
-    'properties': {'wording': {'type': 'string', 'maxLength': 250},
-                   'color': {'type': ['string', 'null'], 'maxLength': 20},
-                   'priority': {'type': ['integer', 'null']},
-                   'effect': {'enum': ['blocking', None]},
-                   },
-    'required': ['wording']
-}
 
 key_value_input_format = {
     'type': 'object',
-    'properties': {'key': {'type': 'string', 'maxLength': 250},
+    'properties': {'key': {'type': 'string', 'maxLength': 250, 'minLength': 1},
                    'value': {'type': 'string', 'maxLength': 250}
                    },
     'required': ['key', 'value']
 }
+
+severity_input_format = {
+    'type': 'object',
+    'properties': {
+        'wordings': {
+            'type': 'array',
+            'items': key_value_input_format,
+            "uniqueItems": True,
+            "minItems": 1
+        },
+        'color': {'type': ['string', 'null'], 'maxLength': 20},
+        'priority': {'type': ['integer', 'null']},
+        'effect': {'enum': ['no_service', 'reduced_service', 'significant_delays', 'detour', 'additional_service', 'modified_service', 'other_effect', 'unknown_effect', 'stop_moved', None]},
+        },
+    'required': ['wordings']
+}
+
+
 
 cause_input_format = {
     'type': 'object',
@@ -211,9 +190,34 @@ message_input_format = {
     'required': ['text', 'channel']
 }
 
+time_slot_input_format = {
+    'type': 'object',
+    'properties': {
+        'begin': {'type': ['string'], 'pattern': time_pattern},
+        'end': {'type': ['string'], 'pattern': time_pattern},
+        },
+    'required': ['begin', 'end']
+}
+
+pattern_input_format = {
+    'type': 'object',
+    'properties': {
+        'start_date': {'type': ['string'], 'pattern': datetime_pattern},
+        'end_date': {'type': ['string'], 'pattern': datetime_pattern},
+        'weekly_pattern': {'type': ['string'], 'pattern': week_pattern},
+        'time_slots': {'type': 'array',
+                      'items': time_slot_input_format,
+                      "uniqueItems": True,
+                      "minItems": 1
+        }
+    },
+    'required': ['start_date', 'end_date', 'weekly_pattern', 'time_slots']
+}
+
 impact_input_format = {
     'type': 'object',
     'properties': {
+        'id': {'type': 'string', 'pattern': id_format_text},
         'severity': {'type': 'object',
                      'properties': {'id': {'type': 'string', 'pattern': id_format_text}},
                      'required': ['id']
@@ -229,7 +233,48 @@ impact_input_format = {
         'messages': {'type': 'array',
                      'items': message_input_format,
                      "uniqueItems": True
+        },
+        'application_period_patterns': {'type': 'array',
+                                        'items': pattern_input_format,
+                                        'uniqueItems': True
         }
     },
     'required': ['severity']
+}
+
+
+disruptions_input_format = {
+    'type': 'object',
+    'properties': {'reference': {'type': 'string', 'maxLength': 250},
+                   'note': {'type': 'string'},
+                   'publication_period': date_period_format,
+                   'contributor': {'type': 'string'},
+                   'cause': {
+                       'type': 'object',
+                       'properties': {
+                           'id': {'type': 'string', 'pattern': id_format_text}
+                       },
+                       'required': ['id']
+                   },
+                   'localization': {'type': 'array',
+                                    'items': localization_object_input_format,
+                                    "uniqueItems": True
+                   },
+                   'tags': {
+                       'type': 'array',
+                       'items': {
+                           'type': 'object',
+                           'properties': {
+                               'id': {'type': 'string', 'pattern': id_format_text}
+                           },
+                           'required': ['id']
+                       },
+                       "uniqueItems": True
+                   },
+                   'impacts': {'type': 'array',
+                                    'items': impact_input_format,
+                                    "uniqueItems": True
+                   }
+    },
+    'required': ['reference', 'cause', 'contributor']
 }
