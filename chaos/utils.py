@@ -319,7 +319,7 @@ def get_application_periods_by_pattern(start_date, end_date, weekly_pattern, tim
     result = []
     if time_slots:
         temp_date = start_date
-        while temp_date < end_date:
+        while temp_date <= end_date:
             week_day = datetime.weekday(temp_date)
             if (len(weekly_pattern) > week_day) and (weekly_pattern[week_day] == '1'):
                 for time_slot in time_slots:
