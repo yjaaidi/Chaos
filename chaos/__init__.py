@@ -27,7 +27,7 @@
 # https://groups.google.com/d/forum/navitia
 # www.navitia.io
 
-VERSION = '0.12.0'
+VERSION = '0.13.1'
 
 #remplace blocking method by a non blocking equivalent
 #this enable us to use gevent for launching background task
