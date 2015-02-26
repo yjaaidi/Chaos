@@ -41,7 +41,7 @@ Return all visible disruptions.
 
 | Name                 | description                                                                    | required | default                 |
 | -------------------- | ------------------------------------------------------------------------------ | -------- | ----------------------- |
-| start_index          | index of the first element returned (start at 1)                               | false    | 1                       |
+| start_page          | index of the first element returned (start at 1)                               | false    | 1                       |
 | items_per_page       | number of items per page                                                       | false    | 20                      |
 | publication_status[] | filter by publication_status, possible value are: past, ongoing, coming        | false    | [past, ongoing, coming] |
 | current_time         | parameter for settings the use by this request, mostly for debugging purpose   | false    | NOW                     |
@@ -110,13 +110,13 @@ Return all visible disruptions.
                         },
                         "impacts": {
                             "pagination": {
-                                "start_index": 0,
+                                "start_page": 0,
                                 "items_per_page": 20,
                                 "total_results": 3,
                                 "prev": null,
-                                "next": {"href": "https://chaos.apiary-mock.com/disruptions/d30502d2-e8de-11e3-8c3e-0008ca8657ea/impacts?start_index=1&item_per_page=20"},
-                                "first": {"href": "https://chaos.apiary-mock.com/disruptions/d30502d2-e8de-11e3-8c3e-0008ca8657ea/impacts?start_index=1&item_per_page=20"},
-                                "last": {"href": "https://chaos.apiary-mock.com/disruptions/d30502d2-e8de-11e3-8c3e-0008ca8657ea/impacts?start_index=1&item_per_page=20"}
+                                "next": {"href": "https://chaos.apiary-mock.com/disruptions/d30502d2-e8de-11e3-8c3e-0008ca8657ea/impacts?start_page=1&item_per_page=20"},
+                                "first": {"href": "https://chaos.apiary-mock.com/disruptions/d30502d2-e8de-11e3-8c3e-0008ca8657ea/impacts?start_page=1&item_per_page=20"},
+                                "last": {"href": "https://chaos.apiary-mock.com/disruptions/d30502d2-e8de-11e3-8c3e-0008ca8657ea/impacts?start_page=1&item_per_page=20"}
                             }
                         }
                     },
@@ -153,13 +153,13 @@ Return all visible disruptions.
                         },
                         "impacts": {
                             "pagination": {
-                                "start_index": 0,
+                                "start_page": 0,
                                 "items_per_page": 20,
                                 "total_results": 5,
                                 "prev": null,
-                                "next": {"href": "https://chaos.apiary-mock.com/disruptions/d30502d2-e8de-11e3-8c3e-0008ca8657eb/impacts?start_index=1&item_per_page=20"},
-                                "first": {"href": "https://chaos.apiary-mock.com/disruptions/d30502d2-e8de-11e3-8c3e-0008ca8657eb/impacts?start_index=1&item_per_page=20"},
-                                "last": {"href": "https://chaos.apiary-mock.com/disruptions/d30502d2-e8de-11e3-8c3e-0008ca8657eb/impacts?start_index=1&item_per_page=20"}
+                                "next": {"href": "https://chaos.apiary-mock.com/disruptions/d30502d2-e8de-11e3-8c3e-0008ca8657eb/impacts?start_page=1&item_per_page=20"},
+                                "first": {"href": "https://chaos.apiary-mock.com/disruptions/d30502d2-e8de-11e3-8c3e-0008ca8657eb/impacts?start_page=1&item_per_page=20"},
+                                "last": {"href": "https://chaos.apiary-mock.com/disruptions/d30502d2-e8de-11e3-8c3e-0008ca8657eb/impacts?start_page=1&item_per_page=20"}
                             }
                         }
                     },
@@ -206,13 +206,13 @@ Return all visible disruptions.
                         },
                         "impacts": {
                             "pagination": {
-                                "start_index": 0,
+                                "start_page": 0,
                                 "items_per_page": 20,
                                 "total_results": 25,
                                 "prev": null,
-                                "next": {"href": "https://chaos.apiary-mock.com/disruptions/d30502d2-e8de-11e3-8c3e-0008ca8657ec/impacts?start_index=1&item_per_page=20"},
-                                "first": {"href": "https://chaos.apiary-mock.com/disruptions/d30502d2-e8de-11e3-8c3e-0008ca8657ec/impacts?start_index=1&item_per_page=20"},
-                                "last": {"href": "https://chaos.apiary-mock.com/disruptions/d30502d2-e8de-11e3-8c3e-0008ca8657ec/impacts?start_index=21&item_per_page=20"}
+                                "next": {"href": "https://chaos.apiary-mock.com/disruptions/d30502d2-e8de-11e3-8c3e-0008ca8657ec/impacts?start_page=1&item_per_page=20"},
+                                "first": {"href": "https://chaos.apiary-mock.com/disruptions/d30502d2-e8de-11e3-8c3e-0008ca8657ec/impacts?start_page=1&item_per_page=20"},
+                                "last": {"href": "https://chaos.apiary-mock.com/disruptions/d30502d2-e8de-11e3-8c3e-0008ca8657ec/impacts?start_page=21&item_per_page=20"}
                             }
                         }
                     }
@@ -220,13 +220,13 @@ Return all visible disruptions.
                 ],
                 "meta": {
                     "pagination": {
-                        "start_index": 1,
+                        "start_page": 1,
                         "items_per_page": 3,
                         "total_results": 6,
                         "prev": null,
-                        "next": {"href": "https://chaos.apiary-mock.com/disruptions/?start_index=4&item_per_page=3"},
-                        "first": {"href": "https://chaos.apiary-mock.com/disruptions/?start_index=1&item_per_page=3"},
-                        "last": {"href": "https://chaos.apiary-mock.com/disruptions/?start_index=4&item_per_page=3"}
+                        "next": {"href": "https://chaos.apiary-mock.com/disruptions/?start_page=4&item_per_page=3"},
+                        "first": {"href": "https://chaos.apiary-mock.com/disruptions/?start_page=1&item_per_page=3"},
+                        "last": {"href": "https://chaos.apiary-mock.com/disruptions/?start_page=4&item_per_page=3"}
                     }
                 }
 
@@ -370,12 +370,12 @@ Create one valid disruption with impacts
                     },
                     "impacts": {
                         "pagination": {
-                            "start_index": 0,
+                            "start_page": 0,
                             "items_per_page": 20,
                             "total_results": 1,
                             "prev": null,
                             "next": null,
-                            "first": {"href": "https://chaos.apiary-mock.com/disruptions/1/impacts?start_index=1&item_per_page=20"},
+                            "first": {"href": "https://chaos.apiary-mock.com/disruptions/1/impacts?start_page=1&item_per_page=20"},
                             "last": null
                         }
                     }
@@ -449,13 +449,13 @@ Retrieve one existing disruption:
                     },
                     "impacts": {
                         "pagination": {
-                            "start_index": 1,
+                            "start_page": 1,
                             "items_per_page": 20,
                             "total_results": 3,
                             "prev": null,
-                            "next": {"href": "https://chaos.apiary-mock.com/disruptions/3d1f32b2-e8df-11e3-8c3e-0008ca8657ea/impacts?start_index=1&item_per_page=20"},
-                            "first": {"href": "https://chaos.apiary-mock.com/disruptions/3d1f32b2-e8df-11e3-8c3e-0008ca8657ea/impacts?start_index=1&item_per_page=20"},
-                            "last": {"href": "https://chaos.apiary-mock.com/disruptions/3d1f32b2-e8df-11e3-8c3e-0008ca8657ea/impacts?start_index=1&item_per_page=20"}
+                            "next": {"href": "https://chaos.apiary-mock.com/disruptions/3d1f32b2-e8df-11e3-8c3e-0008ca8657ea/impacts?start_page=1&item_per_page=20"},
+                            "first": {"href": "https://chaos.apiary-mock.com/disruptions/3d1f32b2-e8df-11e3-8c3e-0008ca8657ea/impacts?start_page=1&item_per_page=20"},
+                            "last": {"href": "https://chaos.apiary-mock.com/disruptions/3d1f32b2-e8df-11e3-8c3e-0008ca8657ea/impacts?start_page=1&item_per_page=20"}
                         }
                     }
                 },
@@ -746,7 +746,7 @@ Return all impacts of a impact.
 
 | Name           | description                                      | required | default |
 | -------------- | ------------------------------------------------ | -------- | ------- |
-| start_index    | index of the first element returned (start at 1) | false    | 1       |
+| start_page    | index of the first element returned (start at 1) | false    | 1       |
 | items_per_page | number of items per page                         | false    | 20      |
 
 @TODO: search and sort
@@ -839,13 +839,13 @@ Return all impacts of a impact.
 			],
 			"meta": {
 				"pagination": {
-				"start_index": 1,
+				"start_page": 1,
 				"items_per_page": 3,
 				"total_results": 6,
 				"prev": null,
-				"next": {"href": "https://chaos.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-823e-0008ca8657ea/impacts?start_index=4&items_per_page=3"},
-				"first": {"href": "https://chaos.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-823e-0008ca8657ea/impacts?start_index=1&items_per_page=3"},
-				"last": {"href": "https://chaos.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-823e-0008ca8657ea/impacts?start_index=4&items_per_page=3"}
+				"next": {"href": "https://chaos.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-823e-0008ca8657ea/impacts?start_page=4&items_per_page=3"},
+				"first": {"href": "https://chaos.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-823e-0008ca8657ea/impacts?start_page=1&items_per_page=3"},
+				"last": {"href": "https://chaos.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-823e-0008ca8657ea/impacts?start_page=4&items_per_page=3"}
 				}
 			}
 		}
