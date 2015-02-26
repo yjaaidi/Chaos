@@ -534,23 +534,7 @@ class Impact(TimestampMixin, db.Model):
         query = query.join(ApplicationPeriods)
         query = query.join(pt_object_alias, cls.objects)
         query = query.filter(Disruption.contributor_id == contributor_id)
-
-        query = query.filter(
-            and_(
-                or_(
-                    not_(
-                        or_(
-                            ApplicationPeriods.start_date > end_date,
-                            ApplicationPeriods.end_date < start_date
-                        )
-                    ),
-                    and_(
-                        ApplicationPeriods.start_date <= end_date,
-                        ApplicationPeriods.end_date == None
-                    )
-                )
-            )
-        )
+        query = query.filter(and_(ApplicationPeriods.start_date <= end_date, ApplicationPeriods.end_date >= start_date))
 
         if pt_object_type or uris:
             alias_line = aliased(PTobject)
@@ -585,8 +569,9 @@ class Impact(TimestampMixin, db.Model):
             query_line_section = query_line_section.filter(or_(*uri_filters))
             query = query.filter(pt_object_alias.uri.in_(uris))
 
-        query = query.union_all(query_line_section).order_by("application_periods_1.start_date")
-
+        start_filter = "application_periods_1.start_date <= '{end_date}'".format(end_date=end_date)
+        end_filter = "application_periods_1.end_date >= '{start_date}'".format(start_date=start_date)
+        query = query.union_all(query_line_section).filter(and_(start_filter, end_filter)).order_by("application_periods_1.start_date")
         return query.all()
 
 associate_line_section_route_object = db.Table('associate_line_section_route_object',
