@@ -271,9 +271,10 @@ def create_or_update_impact(disruption, json_impact, navitia, impact_id=None):
 
 
 def manage_impacts(disruption, json, navitia):
-    impacts_db = dict((impact.id, impact) for impact in disruption.impacts)
-    impacts_json = dict()
-    if 'impacts' in json:
+    if 'impacts' in json and json['impacts']:
+        impacts_db = dict((impact.id, impact) for impact in disruption.impacts)
+        impacts_json = dict()
+
         for json_impact in json['impacts']:
             if 'id' in json_impact:
                 impact_id = json_impact['id']
@@ -282,6 +283,6 @@ def manage_impacts(disruption, json, navitia):
             impact_bd = create_or_update_impact(disruption, json_impact, navitia, impact_id)
             impacts_json[impact_bd.id] = impact_bd
 
-    difference = set(impacts_db) - set(impacts_json)
-    for diff in difference:
-        impacts_db[diff].archive()
+        difference = set(impacts_db) - set(impacts_json)
+        for diff in difference:
+            impacts_db[diff].archive()
