@@ -246,7 +246,7 @@ impact_input_format = {
 disruptions_input_format = {
     'type': 'object',
     'properties': {'reference': {'type': 'string', 'maxLength': 250},
-                   'note': {'type': 'string'},
+                   'note': {'type': ['string', 'null']},
                    'publication_period': date_period_format,
                    'contributor': {'type': 'string'},
                    'cause': {

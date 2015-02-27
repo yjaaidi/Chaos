@@ -342,7 +342,7 @@ def get_application_periods_by_periods(json_application_periods):
 
 def get_application_periods(json):
     result = []
-    if 'application_period_patterns' in json:
+    if 'application_period_patterns' in json and json['application_period_patterns']:
         for json_one_pattern in json['application_period_patterns']:
             start_date = parse_datetime(json_one_pattern['start_date']).replace(tzinfo=None)
             end_date = parse_datetime(json_one_pattern['end_date']).replace(tzinfo=None)
