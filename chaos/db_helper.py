@@ -271,7 +271,7 @@ def create_or_update_impact(disruption, json_impact, navitia, impact_id=None):
 
 
 def manage_impacts(disruption, json, navitia):
-    if 'impacts' in json and json['impacts']:
+    if 'impacts' in json:
         impacts_db = dict((impact.id, impact) for impact in disruption.impacts)
         impacts_json = dict()
 
