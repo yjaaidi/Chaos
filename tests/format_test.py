@@ -329,3 +329,11 @@ def test_impact_with_route():
     json = {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},
             "objects": [{"id": "route:RTP:LI:378","type": "route"}]}
     validate(json, formats.impact_input_format)
+
+def test_disruption_with_note_string_vide_validation():
+    json = {"reference": "foo", "contributor": "contrib1", "note": "", "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}}
+    validate(json, formats.disruptions_input_format)
+
+def test_disruption_with_note_null_validation():
+    json = {"reference": "foo", "contributor": "contrib1", "note": None, "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}}
+    validate(json, formats.disruptions_input_format)

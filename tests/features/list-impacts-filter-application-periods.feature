@@ -626,7 +626,7 @@ Feature: list impacts by application periods
         When I get "/impacts?pt_object_type=network&start_date=2013-12-02T23:52:12Z&end_date=2014-01-12T23:52:12Z"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
-        And the field "objects" should have a size of 2
+        And the field "objects" should have a size of 1
 
 #
 #               |                                                                20-01-2014                  30-01-2014

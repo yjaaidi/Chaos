@@ -115,9 +115,9 @@ Feature: disruption can be deleted
 
 
         Given I have the following applicationperiods in my database:
-            | created_at          | updated_at          |id                                   | impact_id                            |start_date                           |end_date    |
-            | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab232-3d47-4eea-aa2c-22f8680230b1 | 7ffab232-3d47-4eea-aa2c-22f8680230b6 |2014-01-01 16:52:00                  |None        |
-            | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab234-3d49-4eea-aa2c-22f8680230b2 | 7ffab234-3d49-4eea-aa2c-22f8680230b6 |2014-01-02 16:52:00                  |None        |
+            | created_at          | updated_at          |id                                   | impact_id                            |start_date                           |end_date                   |
+            | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab232-3d47-4eea-aa2c-22f8680230b1 | 7ffab232-3d47-4eea-aa2c-22f8680230b6 |2014-01-01 16:52:00                  |2014-01-01 22:52:00        |
+            | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab234-3d49-4eea-aa2c-22f8680230b2 | 7ffab234-3d49-4eea-aa2c-22f8680230b6 |2014-01-02 16:52:00                  |2014-01-02 22:52:00        |
 
 
         Given I have the following ptobject in my database:
@@ -136,7 +136,7 @@ Feature: disruption can be deleted
 
         I fill in header "X-Coverage" with "jdr"
         I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
-        When I get "/impacts?pt_object_type=network&start_date=2014-01-10T23:52:12Z&end_date=2014-02-20T23:52:12Z"
+        When I get "/impacts?pt_object_type=network&start_date=2014-01-01T15:52:12Z&end_date=2014-02-20T23:52:12Z"
 
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
