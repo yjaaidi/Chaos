@@ -47,11 +47,8 @@ def fill_and_get_pt_object(navitia, all_objects, json, add_to_db=True):
         all_objects[json["id"]] = pt_object
         return pt_object
 
-    try:
-        if not navitia.get_pt_object(json['id'], json['type']):
-            raise exceptions.ObjectUnknown()
-    except exceptions.NavitiaError:
-        raise
+    if not navitia.get_pt_object(json['id'], json['type']):
+        raise exceptions.ObjectUnknown()
 
     pt_object = models.PTobject()
     mapper.fill_from_json(pt_object, json, mapper.object_mapping)
@@ -82,8 +79,6 @@ def manage_pt_object_without_line_section(navitia, db_objects, json_attribute, j
                 ptobject = fill_and_get_pt_object(navitia, pt_object_dict, pt_object_json, False)
             except exceptions.ObjectUnknown:
                 raise exceptions.ObjectUnknown('ptobject {} doesn\'t exist'.format(pt_object_json['id']))
-            except exceptions.NavitiaError:
-                raise
 
             if ptobject.uri not in pt_object_db:
                 db_objects.append(ptobject)
@@ -141,8 +136,6 @@ def fill_and_add_line_section(navitia, impact_id, all_objects, pt_object_json):
         line_object = fill_and_get_pt_object(navitia, all_objects, line_section_json['line'])
     except exceptions.ObjectUnknown:
         raise exceptions.ObjectUnknown('{} {} doesn\'t exist'.format(line_section_json['line']['type'], line_section_json['line']['id']))
-    except exceptions.NavitiaError:
-        raise
 
     line_section.line = line_object
 
@@ -150,16 +143,12 @@ def fill_and_add_line_section(navitia, impact_id, all_objects, pt_object_json):
         start_object = fill_and_get_pt_object(navitia, all_objects, line_section_json['start_point'])
     except exceptions.ObjectUnknown:
         raise exceptions.ObjectUnknown('{} {} doesn\'t exist'.format(line_section_json['line']['type'], line_section_json['line']['id']))
-    except exceptions.NavitiaError:
-        raise
     line_section.start_point = start_object
 
     try:
         end_object = fill_and_get_pt_object(navitia, all_objects, line_section_json['end_point'])
     except exceptions.ObjectUnknown:
         raise exceptions.ObjectUnknown('{} {} doesn\'t exist'.format(line_section_json['line']['type'], line_section_json['line']['id']))
-    except exceptions.NavitiaError:
-        raise
     line_section.end_point = end_object
 
     #Here we manage routes in line_section
@@ -171,8 +160,6 @@ def fill_and_add_line_section(navitia, impact_id, all_objects, pt_object_json):
                 line_section.routes.append(route_object)
             except exceptions.ObjectUnknown:
                 raise exceptions.ObjectUnknown('{} {} doesn\'t exist'.format(route['type'], route['id']))
-            except exceptions.NavitiaError:
-                raise
 
     #Here we manage via in line_section
     #"via":[{"id":"stop_area:MTD:9", "type": "stop_area"}, {"id":"stop_area:MTD:Nav23", "type": "stop_area"}]
@@ -183,8 +170,6 @@ def fill_and_add_line_section(navitia, impact_id, all_objects, pt_object_json):
                 line_section.via.append(via_object)
             except exceptions.ObjectUnknown:
                 raise exceptions.ObjectUnknown('{} {} doesn\'t exist'.format(via['type'], via['id']))
-            except exceptions.NavitiaError:
-                raise
 
     #Fill sens from json
     if 'sens' in line_section_json:
@@ -258,8 +243,6 @@ def create_or_update_impact(disruption, json_impact, navitia, impact_id=None):
         manage_pt_object_without_line_section(navitia, impact_bd.objects, 'objects', json_impact)
     except exceptions.ObjectUnknown:
         raise
-    except exceptions.NavitiaError:
-        raise
     all_objects = dict()
     if 'objects' in json_impact:
         for pt_object_json in json_impact['objects']:
@@ -269,8 +252,6 @@ def create_or_update_impact(disruption, json_impact, navitia, impact_id=None):
                 try:
                     ptobject = fill_and_add_line_section(navitia, impact_bd.id, all_objects, pt_object_json)
                 except exceptions.ObjectUnknown:
-                    raise
-                except exceptions.NavitiaError:
                     raise
                 impact_bd.objects.append(ptobject)
      # Severity
