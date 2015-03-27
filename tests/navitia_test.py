@@ -50,7 +50,7 @@ def test_navitia_request_error():
 
 
 @raises(exceptions.ObjectTypeUnknown)
-def test_navitia_unknown():
+def test_navitia_unknown_object_type():
     n = Navitia('http://api.navitia.io', 'jdr')
     with HTTMock(navitia_mock_unknown_object_type):
         n.get_pt_object('network:foo','aaaaaaaa')
