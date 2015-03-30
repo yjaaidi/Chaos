@@ -221,7 +221,7 @@ class Disruptions(flask_restful.Resource):
         except exceptions.ObjectUnknown, e:
             return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 404
         except exceptions.NavitiaError, e:
-            return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 410
+            return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 503
 
         #Add all tags present in Json
         db_helper.manage_tags(disruption, json)
