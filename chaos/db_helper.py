@@ -136,6 +136,7 @@ def fill_and_add_line_section(navitia, impact_id, all_objects, pt_object_json):
         line_object = fill_and_get_pt_object(navitia, all_objects, line_section_json['line'])
     except exceptions.ObjectUnknown:
         raise exceptions.ObjectUnknown('{} {} doesn\'t exist'.format(line_section_json['line']['type'], line_section_json['line']['id']))
+
     line_section.line = line_object
 
     try:

@@ -220,7 +220,9 @@ class Disruptions(flask_restful.Resource):
             db_helper.manage_pt_object_without_line_section(self.navitia, disruption.localizations, 'localization', json)
         except exceptions.ObjectUnknown, e:
             return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 404
-      
+        except exceptions.NavitiaError, e:
+            return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 503
+
         #Add all tags present in Json
         db_helper.manage_tags(disruption, json)
         #Add all impacts present in Json
@@ -228,6 +230,8 @@ class Disruptions(flask_restful.Resource):
             db_helper.manage_impacts(disruption, json, self.navitia)
         except exceptions.ObjectUnknown, e:
             return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 404
+        except exceptions.NavitiaError, e:
+            return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 503
 
         db.session.add(disruption)
         db.session.commit()
@@ -265,6 +269,8 @@ class Disruptions(flask_restful.Resource):
             db_helper.manage_pt_object_without_line_section(self.navitia, disruption.localizations, 'localization', json)
         except exceptions.ObjectUnknown, e:
             return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 404
+        except exceptions.NavitiaError, e:
+            return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 503
 
         #Add/delete tags present/ not present in Json
         db_helper.manage_tags(disruption, json)
@@ -274,6 +280,8 @@ class Disruptions(flask_restful.Resource):
             db_helper.manage_impacts(disruption, json, self.navitia)
         except exceptions.ObjectUnknown, e:
             return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 404
+        except exceptions.NavitiaError, e:
+            return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 503
 
         disruption.upgrade_version()
         db.session.commit()
@@ -640,6 +648,8 @@ class Impacts(flask_restful.Resource):
         except exceptions.ObjectUnknown, e:
             return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 404
+        except exceptions.NavitiaError, e:
+            return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 503
 
         disruption.upgrade_version()
         db.session.commit()
@@ -671,6 +681,8 @@ class Impacts(flask_restful.Resource):
         except exceptions.ObjectUnknown, e:
             return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 404
+        except exceptions.NavitiaError, e:
+            return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 503
         disruption = models.Disruption.get(disruption_id, contributor.id)
         disruption.upgrade_version()
         db.session.commit()

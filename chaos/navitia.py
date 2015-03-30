@@ -61,7 +61,7 @@ class Navitia(object):
         except (requests.exceptions.RequestException):
             logging.getLogger(__name__).exception('call to navitia failed')
             #currently we reraise the previous exceptions
-            raise
+            raise exceptions.NavitiaError('call to navitia failed, data : {}'.format(query))
 
         if response:
             json = response.json()
