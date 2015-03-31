@@ -88,3 +88,13 @@ class validate_navitia(object):
             nav = Navitia(current_app.config['NAVITIA_URL'], coverage, token)
             return func(*args, navitia=nav, **kwargs)
         return wrapper
+
+class manage_navitia_error(object):
+    def __call__(self, func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            try:
+                return func(*args, **kwargs)
+            except exceptions.NavitiaError, e:
+                return marshal({'error': {'message': '{}'.format(e.message)}}, fields.error_fields), 503
+        return wrapper
