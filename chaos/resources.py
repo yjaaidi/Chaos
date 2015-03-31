@@ -171,8 +171,11 @@ class Disruptions(flask_restful.Resource):
             if not id_format.match(id):
                 return marshal({'error': {'message': "id invalid"}},
                                error_fields), 400
-            return marshal({'disruption': models.Disruption.get(id, contributor.id)},
-                           one_disruption_fields)
+            try:
+                return marshal({'disruption': models.Disruption.get(id, contributor.id)},
+                               one_disruption_fields)
+            except exceptions.NavitiaError, e:
+                return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 503
         else:
             args = self.parsers['get'].parse_args()
             page_index = args['start_page']
@@ -186,13 +189,16 @@ class Disruptions(flask_restful.Resource):
             uri = args['uri']
 
             g.current_time = args['current_time']
-            result = models.Disruption.all_with_filter(page_index=page_index,
-                                                       items_per_page=items_per_page,
-                                                       contributor_id=contributor.id,
-                                                       publication_status=publication_status,
-                                                       tags=tags, uri=uri)
-            response = {'disruptions': result.items, 'meta': make_pager(result, 'disruption')}
-            return marshal(response, disruptions_fields)
+            try:
+                result = models.Disruption.all_with_filter(page_index=page_index,
+                                                           items_per_page=items_per_page,
+                                                           contributor_id=contributor.id,
+                                                           publication_status=publication_status,
+                                                           tags=tags, uri=uri)
+                response = {'disruptions': result.items, 'meta': make_pager(result, 'disruption')}
+                return marshal(response, disruptions_fields)
+            except exceptions.NavitiaError, e:
+                return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 503
 
     @validate_navitia()
     @validate_client(True)
@@ -576,9 +582,12 @@ class ImpactsByObject(flask_restful.Resource):
         if not pt_object_type and not uris:
                 return marshal({'error': {'message': "object type or uri object invalid"}},
                                error_fields), 400
-        impacts = models.Impact.all_with_filter(start_date, end_date, pt_object_type, uris, contributor.id)
-        result = utils.group_impacts_by_pt_object(impacts, pt_object_type, uris, self.navitia.get_pt_object)
-        return marshal({'objects': result}, impacts_by_object_fields)
+        try:
+            impacts = models.Impact.all_with_filter(start_date, end_date, pt_object_type, uris, contributor.id)
+            result = utils.group_impacts_by_pt_object(impacts, pt_object_type, uris, self.navitia.get_pt_object)
+            return marshal({'objects': result}, impacts_by_object_fields)
+        except exceptions.NavitiaError, e:
+                return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 503
 
 
 class Impacts(flask_restful.Resource):
@@ -600,9 +609,11 @@ class Impacts(flask_restful.Resource):
             if not id_format.match(id):
                 return marshal({'error': {'message': "id invalid"}},
                            error_fields), 400
-            response = models.Impact.get(id, contributor.id)
-            return marshal({'impact': response},
-                           one_impact_fields)
+            try:
+                response = models.Impact.get(id, contributor.id)
+                return marshal({'impact': response},one_impact_fields)
+            except exceptions.NavitiaError, e:
+                return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 503
         else:
             if not id_format.match(disruption_id):
                 return marshal({'error': {'message': "disruption_id invalid"}},
@@ -615,12 +626,15 @@ class Impacts(flask_restful.Resource):
             if items_per_page == 0:
                 abort(400, message="items_per_page argument value is not valid")
 
-            result = models.Impact.all(page_index=page_index,
-                                       items_per_page=items_per_page,
-                                       disruption_id=disruption_id,
-                                       contributor_id=contributor.id)
-            response = {'impacts': result.items, 'meta': make_pager(result, 'impact', disruption_id=disruption_id)}
-            return marshal(response, impacts_fields)
+            try:
+                result = models.Impact.all(page_index=page_index,
+                                           items_per_page=items_per_page,
+                                           disruption_id=disruption_id,
+                                           contributor_id=contributor.id)
+                response = {'impacts': result.items, 'meta': make_pager(result, 'impact', disruption_id=disruption_id)}
+                return marshal(response, impacts_fields)
+            except exceptions.NavitiaError, e:
+                return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 503
 
     @validate_client()
     @validate_contributor()

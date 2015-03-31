@@ -76,13 +76,10 @@ class FieldObjectName(fields.Raw):
             current_app.config['NAVITIA_URL'],
             get_coverage(request),
             get_token(request))
-        try:
-            response = navitia.get_pt_object(obj.uri, obj.type)
-            if response and 'name' in response:
-                return response['name']
-            return 'Unable to find object'
-        except exceptions.NavitiaError:
-            return 'Navitia not available'
+        response = navitia.get_pt_object(obj.uri, obj.type)
+        if response and 'name' in response:
+            return response['name']
+        return 'Unable to find object'
 
 
 class FieldLocalization(fields.Raw):
@@ -92,30 +89,21 @@ class FieldLocalization(fields.Raw):
                           get_coverage(request),
                           get_token(request))
         for localization in obj.localizations:
-            try:
-                response = navitia.get_pt_object(
+            response = navitia.get_pt_object(
                 localization.uri,
                 localization.type)
 
-                if response and 'name' in response:
-                    response["type"] = localization.type
-                    to_return.append(response)
-                else:
-                    to_return.append(
-                        {
-                            "id": localization.uri,
-                            "name": "Unable to find object",
-                            "type": localization.type
-                        }
-                    )
-            except exceptions.NavitiaError:
+            if response and 'name' in response:
+                response["type"] = localization.type
+                to_return.append(response)
+            else:
                 to_return.append(
-                        {
-                            "id": localization.uri,
-                            "name": "Navitia not available",
-                            "type": localization.type
-                        }
-                    )
+                    {
+                        "id": localization.uri,
+                        "name": "Unable to find object",
+                        "type": localization.type
+                    }
+                )
         return to_return
 
 
