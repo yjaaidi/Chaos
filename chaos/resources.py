@@ -42,7 +42,7 @@ import chaos
 from sqlalchemy.exc import IntegrityError
 import logging
 from utils import make_pager, option_value
-from chaos.validate_params import validate_client, validate_contributor, validate_navitia
+from chaos.validate_params import validate_client, validate_contributor, validate_navitia, manage_navitia_error
 
 __all__ = ['Disruptions', 'Index', 'Severity', 'Cause']
 
@@ -165,6 +165,7 @@ class Disruptions(flask_restful.Resource):
 
     @validate_navitia()
     @validate_contributor()
+    @manage_navitia_error()
     def get(self, contributor, navitia, id=None):
         self.navitia = navitia
         if id:
@@ -196,6 +197,7 @@ class Disruptions(flask_restful.Resource):
 
     @validate_navitia()
     @validate_client(True)
+    @manage_navitia_error()
     def post(self, client, navitia):
         self.navitia = navitia
         json = request.get_json()
@@ -220,8 +222,6 @@ class Disruptions(flask_restful.Resource):
             db_helper.manage_pt_object_without_line_section(self.navitia, disruption.localizations, 'localization', json)
         except exceptions.ObjectUnknown, e:
             return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 404
-        except exceptions.NavitiaError, e:
-            return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 503
 
         #Add all tags present in Json
         db_helper.manage_tags(disruption, json)
@@ -230,8 +230,6 @@ class Disruptions(flask_restful.Resource):
             db_helper.manage_impacts(disruption, json, self.navitia)
         except exceptions.ObjectUnknown, e:
             return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 404
-        except exceptions.NavitiaError, e:
-            return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 503
 
         db.session.add(disruption)
         db.session.commit()
@@ -241,6 +239,7 @@ class Disruptions(flask_restful.Resource):
     @validate_navitia()
     @validate_client()
     @validate_contributor()
+    @manage_navitia_error()
     def put(self, client, contributor,navitia, id):
         self.navitia = navitia
         if not id_format.match(id):
@@ -269,8 +268,6 @@ class Disruptions(flask_restful.Resource):
             db_helper.manage_pt_object_without_line_section(self.navitia, disruption.localizations, 'localization', json)
         except exceptions.ObjectUnknown, e:
             return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 404
-        except exceptions.NavitiaError, e:
-            return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 503
 
         #Add/delete tags present/ not present in Json
         db_helper.manage_tags(disruption, json)
@@ -280,8 +277,6 @@ class Disruptions(flask_restful.Resource):
             db_helper.manage_impacts(disruption, json, self.navitia)
         except exceptions.ObjectUnknown, e:
             return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 404
-        except exceptions.NavitiaError, e:
-            return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 503
 
         disruption.upgrade_version()
         db.session.commit()
@@ -565,6 +560,7 @@ class ImpactsByObject(flask_restful.Resource):
 
     @validate_contributor()
     @validate_navitia()
+    @manage_navitia_error()
     def get(self, contributor, navitia):
         self.navitia = navitia
         args = self.parsers['get'].parse_args()
@@ -580,7 +576,6 @@ class ImpactsByObject(flask_restful.Resource):
         result = utils.group_impacts_by_pt_object(impacts, pt_object_type, uris, self.navitia.get_pt_object)
         return marshal({'objects': result}, impacts_by_object_fields)
 
-
 class Impacts(flask_restful.Resource):
     def __init__(self):
         self.navitia = None
@@ -594,6 +589,7 @@ class Impacts(flask_restful.Resource):
     
     @validate_contributor()
     @validate_navitia()
+    @manage_navitia_error()
     def get(self, contributor, disruption_id, navitia, id=None):
         self.navitia = navitia
         if id:
@@ -601,8 +597,7 @@ class Impacts(flask_restful.Resource):
                 return marshal({'error': {'message': "id invalid"}},
                            error_fields), 400
             response = models.Impact.get(id, contributor.id)
-            return marshal({'impact': response},
-                           one_impact_fields)
+            return marshal({'impact': response},one_impact_fields)
         else:
             if not id_format.match(disruption_id):
                 return marshal({'error': {'message': "disruption_id invalid"}},
@@ -625,6 +620,7 @@ class Impacts(flask_restful.Resource):
     @validate_client()
     @validate_contributor()
     @validate_navitia()
+    @manage_navitia_error()
     def post(self, client, contributor, navitia, disruption_id):
         self.navitia = navitia
         if not id_format.match(disruption_id):
@@ -648,8 +644,6 @@ class Impacts(flask_restful.Resource):
         except exceptions.ObjectUnknown, e:
             return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 404
-        except exceptions.NavitiaError, e:
-            return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 503
 
         disruption.upgrade_version()
         db.session.commit()
@@ -659,6 +653,7 @@ class Impacts(flask_restful.Resource):
     @validate_client()
     @validate_contributor()
     @validate_navitia()
+    @manage_navitia_error()
     def put(self, client, contributor, navitia, disruption_id, id):
         self.navitia = navitia
         if not id_format.match(id):
@@ -681,8 +676,6 @@ class Impacts(flask_restful.Resource):
         except exceptions.ObjectUnknown, e:
             return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 404
-        except exceptions.NavitiaError, e:
-            return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 503
         disruption = models.Disruption.get(disruption_id, contributor.id)
         disruption.upgrade_version()
         db.session.commit()

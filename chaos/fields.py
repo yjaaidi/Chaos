@@ -31,6 +31,7 @@ from flask_restful import fields, url_for
 from flask import current_app, request
 from utils import make_pager, get_coverage, get_token
 from chaos.navitia import Navitia
+from chaos import exceptions
 
 
 class FieldDateTime(fields.Raw):
@@ -75,7 +76,6 @@ class FieldObjectName(fields.Raw):
             current_app.config['NAVITIA_URL'],
             get_coverage(request),
             get_token(request))
-
         response = navitia.get_pt_object(obj.uri, obj.type)
         if response and 'name' in response:
             return response['name']
@@ -92,6 +92,7 @@ class FieldLocalization(fields.Raw):
             response = navitia.get_pt_object(
                 localization.uri,
                 localization.type)
+
             if response and 'name' in response:
                 response["type"] = localization.type
                 to_return.append(response)
