@@ -32,9 +32,29 @@ Feature: list channel
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
         And the field "channels" should have a size of 2
-        And the field "channels.0.name" should be "short"
-        And the field "channels.0.max_size" should be 140
+        And the field "channels.0.name" should be "email"
+        And the field "channels.0.max_size" should be 520
         And the field "channels.0.content_type" should be "text/plain"
+
+    Scenario: list of four channels sorted by name
+        Given I have the following clients in my database:
+            | client_code   | created_at          | updated_at          | id                                   |
+            | 5             | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
+        Given I have the following channels in my database:
+            | name                  | max_size   | created_at          | updated_at          | content_type| id                                   |client_id                            |
+            | Message SMS (OV1)     | 140        | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | text/plain  | 7ffab230-3d48-4eea-aa2c-22f8680230b7 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
+            | Message Email (OV1)   | 520        | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | text/plain  | 7ffab232-3d48-4eea-aa2c-22f8680230b8 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
+            | short                 | 140        | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | text/plain  | 7ffab230-3d48-4eea-aa2c-22f8680230b9 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
+            | long                  | 140        | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | text/plain  | 7ffab230-3d48-4eea-aa2c-22f8680230b5 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
+        I fill in header "X-Customer-Id" with "5"
+        When I get "/channels"
+        Then the status code should be "200"
+        And the header "Content-Type" should be "application/json"
+        And the field "channels" should have a size of 4
+        And the field "channels.0.name" should be "long"
+        And the field "channels.1.name" should be "Message Email (OV1)"
+        And the field "channels.2.name" should be "Message SMS (OV1)"
+        And the field "channels.3.name" should be "short"
 
     Scenario: I have a 400 if the id doesn't have the correct format
         Given I have the following clients in my database:
