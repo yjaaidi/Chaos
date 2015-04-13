@@ -966,7 +966,8 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient l'impact cr�
                                 "end": "20:30"
                             }
                         ],
-                        "weekly_pattern": "1111100"
+                        "weekly_pattern": "1111100",
+                        "time_zone": "Europe/Paris"
                     }
                 ],
                 "objects": [
@@ -1420,7 +1421,8 @@ Lors d'un succés une réponse 200 est retourné, celle ci contient l'impact mod
                                     "end": "20:30"
                                 }
                                 ],
-                            "weekly_pattern": "1111100"
+                            "weekly_pattern": "1111100",
+                            "time_zone": "Europe/Paris"
                         }
                     ],
                     "objects": [
