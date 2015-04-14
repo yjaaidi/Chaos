@@ -166,10 +166,10 @@ Feature: Manipulate impacts in a Disruption
         And the field "impact.application_periods" should have a size of 10
         And the field "impact.application_periods.0.begin" should be "2015-02-02T06:45:00Z"
         And the field "impact.application_periods.0.end" should be "2015-02-02T08:30:00Z"
-        And the field "impact.application_periods.1.begin" should be "2015-02-02T16:30:00Z"
-        And the field "impact.application_periods.1.end" should be "2015-02-02T18:30:00Z"
-        And the field "impact.application_periods.8.begin" should be "2015-02-06T06:45:00Z"
-        And the field "impact.application_periods.8.end" should be "2015-02-06T08:30:00Z"
+        And the field "impact.application_periods.5.begin" should be "2015-02-02T16:30:00Z"
+        And the field "impact.application_periods.5.end" should be "2015-02-02T18:30:00Z"
+        And the field "impact.application_periods.4.begin" should be "2015-02-06T06:45:00Z"
+        And the field "impact.application_periods.4.end" should be "2015-02-06T08:30:00Z"
         And the field "impact.application_periods.9.begin" should be "2015-02-06T16:30:00Z"
         And the field "impact.application_periods.9.end" should be "2015-02-06T18:30:00Z"
 
@@ -335,10 +335,10 @@ Feature: Manipulate impacts in a Disruption
         And the field "impact.application_periods" should have a size of 10
         And the field "impact.application_periods.0.begin" should be "2015-02-02T06:45:00Z"
         And the field "impact.application_periods.0.end" should be "2015-02-02T08:30:00Z"
-        And the field "impact.application_periods.1.begin" should be "2015-02-02T16:30:00Z"
-        And the field "impact.application_periods.1.end" should be "2015-02-02T18:30:00Z"
-        And the field "impact.application_periods.8.begin" should be "2015-02-06T06:45:00Z"
-        And the field "impact.application_periods.8.end" should be "2015-02-06T08:30:00Z"
+        And the field "impact.application_periods.5.begin" should be "2015-02-02T16:30:00Z"
+        And the field "impact.application_periods.5.end" should be "2015-02-02T18:30:00Z"
+        And the field "impact.application_periods.4.begin" should be "2015-02-06T06:45:00Z"
+        And the field "impact.application_periods.4.end" should be "2015-02-06T08:30:00Z"
         And the field "impact.application_periods.9.begin" should be "2015-02-06T16:30:00Z"
         And the field "impact.application_periods.9.end" should be "2015-02-06T18:30:00Z"
 
@@ -380,3 +380,106 @@ Feature: Manipulate impacts in a Disruption
         And the field "impact.application_period_patterns" should have a size of 1
         And the field "impact.application_period_patterns.0.time_slots" should have a size of 1
         And the field "impact.application_periods" should have a size of 3
+
+    Scenario: TR-109 Add an impact with a application_period pattern having DST Transition of Mar
+
+        Given I have the following clients in my database:
+            | client_code   | created_at          | updated_at          | id                                   |
+            | 5             | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
+
+        Given I have the following causes in my database:
+            | wording   | created_at          | updated_at          | is_visible | id                                   |client_id                             |
+            | weather   | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | True       | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
+
+        Given I have the following severities in my database:
+                | wording   | color   | created_at          | updated_at          | is_visible | id                                   |client_id                            |
+                | good news | #654321 | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | True       | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
+
+        Given I have the following contributors in my database:
+            | contributor_code   | created_at          | updated_at          | id                                   |
+            | contrib1           | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
+
+        Given I have the following disruptions in my database:
+            | reference | note  | created_at          | updated_at          | status    | id                                   | start_publication_date | end_publication_date     | cause_id                             | client_id                            | contributor_id                       |
+            | bar       | bye   | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | published | a750994c-01fe-11e4-b4fb-080027079ff3 | 2014-04-15T23:52:12    | 2014-04-19T23:55:12      | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
+            | toto      |       | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | published | 6a826e64-028f-11e4-92d0-090027079ff3 | 2014-04-20T23:52:12    | 2014-04-30T23:55:12      | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
+
+        I fill in header "X-Customer-Id" with "5"
+        I fill in header "X-Contributors" with "contrib1"
+        I fill in header "X-Coverage" with "jdr"
+        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        When I post to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/impacts" with:
+        """
+        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "application_period_patterns":[{"start_date":"2015-03-27T00:00:00Z","end_date":"2015-04-01T23:59:59Z","weekly_pattern":"1111111","time_zone":"Europe/Paris","time_slots":[{"begin": "07:45", "end": "09:30"}]}]}
+        """
+        Then the status code should be "201"
+        And the header "Content-Type" should be "application/json"
+        And the field "impact.application_periods" should exist
+        And the field "impact.severity.wording" should be "good news"
+        And the field "impact.application_period_patterns" should have a size of 1
+        And the field "impact.application_period_patterns.0.time_slots" should have a size of 1
+        And the field "impact.application_periods" should have a size of 6
+        And the field "impact.application_periods.0.begin" should be "2015-03-27T06:45:00Z"
+        And the field "impact.application_periods.0.end" should be "2015-03-27T08:30:00Z"
+        And the field "impact.application_periods.1.begin" should be "2015-03-28T06:45:00Z"
+        And the field "impact.application_periods.1.end" should be "2015-03-28T08:30:00Z"
+        #DST began on Sun 29-Mar-2015 at 02:00:00 A.M. when local clocks were set forward 1 hour
+        And the field "impact.application_periods.2.begin" should be "2015-03-29T05:45:00Z"
+        And the field "impact.application_periods.2.end" should be "2015-03-29T07:30:00Z"
+        And the field "impact.application_periods.3.begin" should be "2015-03-30T05:45:00Z"
+        And the field "impact.application_periods.3.end" should be "2015-03-30T07:30:00Z"
+        And the field "impact.application_periods.4.begin" should be "2015-03-31T05:45:00Z"
+        And the field "impact.application_periods.4.end" should be "2015-03-31T07:30:00Z"
+        And the field "impact.application_periods.5.begin" should be "2015-04-01T05:45:00Z"
+        And the field "impact.application_periods.5.end" should be "2015-04-01T07:30:00Z"
+
+
+    Scenario: TR-109 Add an impact with a application_period pattern having DST Transition of Oct
+
+        Given I have the following clients in my database:
+            | client_code   | created_at          | updated_at          | id                                   |
+            | 5             | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
+
+        Given I have the following causes in my database:
+            | wording   | created_at          | updated_at          | is_visible | id                                   |client_id                             |
+            | weather   | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | True       | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
+
+        Given I have the following severities in my database:
+                | wording   | color   | created_at          | updated_at          | is_visible | id                                   |client_id                            |
+                | good news | #654321 | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | True       | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
+
+        Given I have the following contributors in my database:
+            | contributor_code   | created_at          | updated_at          | id                                   |
+            | contrib1           | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
+
+        Given I have the following disruptions in my database:
+            | reference | note  | created_at          | updated_at          | status    | id                                   | start_publication_date | end_publication_date     | cause_id                             | client_id                            | contributor_id                       |
+            | bar       | bye   | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | published | a750994c-01fe-11e4-b4fb-080027079ff3 | 2014-04-15T23:52:12    | 2014-04-19T23:55:12      | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
+            | toto      |       | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | published | 6a826e64-028f-11e4-92d0-090027079ff3 | 2014-04-20T23:52:12    | 2014-04-30T23:55:12      | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
+
+        I fill in header "X-Customer-Id" with "5"
+        I fill in header "X-Contributors" with "contrib1"
+        I fill in header "X-Coverage" with "jdr"
+        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        When I post to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/impacts" with:
+        """
+        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "application_period_patterns":[{"start_date":"2015-10-23T00:00:00Z","end_date":"2015-10-27T23:59:59Z","weekly_pattern":"1111111","time_zone":"Europe/Paris","time_slots":[{"begin": "07:45", "end": "09:30"}]}]}
+        """
+        Then the status code should be "201"
+        And the header "Content-Type" should be "application/json"
+        And the field "impact.application_periods" should exist
+        And the field "impact.severity.wording" should be "good news"
+        And the field "impact.application_period_patterns" should have a size of 1
+        And the field "impact.application_period_patterns.0.time_slots" should have a size of 1
+        And the field "impact.application_periods" should have a size of 5
+        And the field "impact.application_periods.0.begin" should be "2015-10-23T05:45:00Z"
+        And the field "impact.application_periods.0.end" should be "2015-10-23T07:30:00Z"
+        And the field "impact.application_periods.1.begin" should be "2015-10-24T05:45:00Z"
+        And the field "impact.application_periods.1.end" should be "2015-10-24T07:30:00Z"
+        #DST will end on Sun 25-Oct-2015 at 03:00:00 A.M. when local clocks are set backward 1 hour
+        And the field "impact.application_periods.2.begin" should be "2015-10-25T06:45:00Z"
+        And the field "impact.application_periods.2.end" should be "2015-10-25T08:30:00Z"
+        And the field "impact.application_periods.3.begin" should be "2015-10-26T06:45:00Z"
+        And the field "impact.application_periods.3.end" should be "2015-10-26T08:30:00Z"
+        And the field "impact.application_periods.4.begin" should be "2015-10-27T06:45:00Z"
+        And the field "impact.application_periods.4.end" should be "2015-10-27T08:30:00Z"
