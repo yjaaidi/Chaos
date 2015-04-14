@@ -1144,7 +1144,8 @@ Create a new impact.
                                     "end": "20:30"
                                 }
                                 ],
-                            "weekly_pattern": "1111100"
+                            "weekly_pattern": "1111100",
+                            "time_zone": "Europe/Paris"
                         }
                     ],
                     "objects": [

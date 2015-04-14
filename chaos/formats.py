@@ -30,6 +30,7 @@
 __all__ = ['disruptions_input_format', 'publication_status_values',
            'severity_input_format', 'id_format', 'cause_input_format']
 import re
+import pytz
 #see http://json-schema.org/
 
 datetime_pattern = '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$'
@@ -209,9 +210,10 @@ pattern_input_format = {
                       'items': time_slot_input_format,
                       "uniqueItems": True,
                       "minItems": 1
-        }
+        },
+        'time_zone': {'type': ['string'], 'enum': pytz.all_timezones}
     },
-    'required': ['start_date', 'end_date', 'weekly_pattern', 'time_slots']
+    'required': ['start_date', 'end_date', 'weekly_pattern', 'time_slots', 'time_zone']
 }
 
 impact_input_format = {
