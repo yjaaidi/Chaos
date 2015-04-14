@@ -332,18 +332,17 @@ def get_coverage(request):
 
 def get_application_periods_by_pattern(start_date, end_date, weekly_pattern, time_slots, time_zone):
     result = []
-    if time_slots:
+    for time_slot in time_slots:
+        begin_time = parse_time(time_slot['begin']).replace(tzinfo=None)
+        end_time = parse_time(time_slot['end']).replace(tzinfo=None)
         temp_date = start_date
         while temp_date <= end_date:
             week_day = datetime.weekday(temp_date)
             if (len(weekly_pattern) > week_day) and (weekly_pattern[week_day] == '1'):
-                for time_slot in time_slots:
-                    begin_time = parse_time(time_slot['begin']).replace(tzinfo=None)
-                    end_time = parse_time(time_slot['end']).replace(tzinfo=None)
-                    begin_datetime = get_utc_datetime_by_zone(datetime.combine(temp_date.date(), begin_time), time_zone)
-                    end_datetime = get_utc_datetime_by_zone(datetime.combine(temp_date.date(), end_time), time_zone)
-                    period = (begin_datetime, end_datetime)
-                    result.append(period)
+                begin_datetime = get_utc_datetime_by_zone(datetime.combine(temp_date.date(), begin_time), time_zone)
+                end_datetime = get_utc_datetime_by_zone(datetime.combine(temp_date.date(), end_time), time_zone)
+                period = (begin_datetime, end_datetime)
+                result.append(period)
             temp_date += timedelta(days=1)
     return result
 
