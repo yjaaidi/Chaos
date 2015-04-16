@@ -138,7 +138,8 @@ line_section_mapping = {
 pattern_mapping = {
     'start_date': Datetime(attribute='start_date'),
     'end_date': Datetime(attribute='end_date'),
-    'weekly_pattern': None
+    'weekly_pattern': None,
+    'time_zone': None
 }
 
 time_slot_mapping = {

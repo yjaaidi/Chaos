@@ -38,6 +38,7 @@ from jsonschema import ValidationError
 from chaos.populate_pb import populate_pb
 from chaos.exceptions import HeaderAbsent
 import chaos
+import pytz
 
 
 def make_pager(resultset, endpoint, **kwargs):
@@ -110,6 +111,20 @@ def get_datetime(value, name):
     except:
         raise ValueError("The {} argument value is not valid, you gave: {}"
                          .format(name, value))
+
+def get_utc_datetime_by_zone(value, time_zone):
+    """
+        Convert datetime naive to UTC for a time zone. for example 'Europe/Paris'
+        :param value: DateTime
+        :param time_zone: time zone, exmple 'Europe/Paris'
+        :return: DateTime in UTC
+    """
+    try:
+        tz = pytz.timezone(time_zone)
+        return (tz.localize(value, is_dst=None)).astimezone(pytz.utc)
+    except:
+        raise ValueError("The {} argument value is not valid, you gave: {}"
+                         .format(value, time_zone))
 
 
 def get_current_time():
@@ -315,19 +330,19 @@ def get_coverage(request):
     raise HeaderAbsent("The parameter X-Coverage does not exist in the header")
 
 
-def get_application_periods_by_pattern(start_date, end_date, weekly_pattern, time_slots):
+def get_application_periods_by_pattern(start_date, end_date, weekly_pattern, time_slots, time_zone):
     result = []
-    if time_slots:
+    for time_slot in time_slots:
+        begin_time = parse_time(time_slot['begin']).replace(tzinfo=None)
+        end_time = parse_time(time_slot['end']).replace(tzinfo=None)
         temp_date = start_date
         while temp_date <= end_date:
             week_day = datetime.weekday(temp_date)
             if (len(weekly_pattern) > week_day) and (weekly_pattern[week_day] == '1'):
-                for time_slot in time_slots:
-
-                    begin = parse_time(time_slot['begin']).replace(tzinfo=None)
-                    end = parse_time(time_slot['end']).replace(tzinfo=None)
-                    period = (datetime.combine(temp_date.date(), begin), datetime.combine(temp_date.date(), end))
-                    result.append(period)
+                begin_datetime = get_utc_datetime_by_zone(datetime.combine(temp_date.date(), begin_time), time_zone)
+                end_datetime = get_utc_datetime_by_zone(datetime.combine(temp_date.date(), end_time), time_zone)
+                period = (begin_datetime, end_datetime)
+                result.append(period)
             temp_date += timedelta(days=1)
     return result
 
@@ -348,7 +363,8 @@ def get_application_periods(json):
             end_date = parse_datetime(json_one_pattern['end_date']).replace(tzinfo=None)
             weekly_pattern = json_one_pattern['weekly_pattern']
             time_slots = json_one_pattern['time_slots']
-            result += get_application_periods_by_pattern(start_date, end_date, weekly_pattern, time_slots)
+            time_zone = json_one_pattern['time_zone']
+            result += get_application_periods_by_pattern(start_date, end_date, weekly_pattern, time_slots, time_zone)
     else:
         if 'application_periods' in  json:
             result = get_application_periods_by_periods(json['application_periods'])

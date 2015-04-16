@@ -299,7 +299,7 @@ def test_time_slot_input_format_invalid():
     validate(json, formats.time_slot_input_format)
 
 def test_pattern_input_format_valid():
-    json = {"start_date":"2015-02-01T16:52:00Z","end_date":"2015-02-06T16:52:00Z","weekly_pattern":"1111100","time_slots":[{"begin": "07:45", "end": "09:30"}, {"begin": "17:30", "end": "20:30"}]}
+    json = {"start_date":"2015-02-01T16:52:00Z","end_date":"2015-02-06T16:52:00Z","weekly_pattern":"1111100","time_zone":"Europe/Paris","time_slots":[{"begin": "07:45", "end": "09:30"}, {"begin": "17:30", "end": "20:30"}]}
     validate(json, formats.pattern_input_format)
 
 @raises(ValidationError)
@@ -314,15 +314,15 @@ def test_pattern_input_format_without_time_slot_content_invalid():
 
 @raises(ValidationError)
 def test_pattern_input_format_invalid():
-    json = {"start_date":"2015-02-01T16:52:00Z","end_date":"2015-02-06T16:52:00Z","weekly_pattern":"1111100111","time_slots":[{"begin": "07:45", "end": "09:30"}, {"begin": "17:30", "end": "20:30"}]}
+    json = {"start_date":"2015-02-01T16:52:00Z","end_date":"2015-02-06T16:52:00Z","weekly_pattern":"1111100111","time_zone":"Europe/Paris","time_slots":[{"begin": "07:45", "end": "09:30"}, {"begin": "17:30", "end": "20:30"}]}
     validate(json, formats.pattern_input_format)
 
 def test_impact_with_application_period_patterns_valid():
-    json = {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"application_period_patterns":[{"start_date":"2015-02-01T16:52:00Z","end_date":"2015-02-06T16:52:00Z","weekly_pattern":"1111100","time_slots":[{"begin": "07:45", "end": "09:30"}, {"begin": "17:30", "end": "20:30"}]}]}
+    json = {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"application_period_patterns":[{"start_date":"2015-02-01T16:52:00Z","end_date":"2015-02-06T16:52:00Z","weekly_pattern":"1111100","time_zone":"Europe/Paris","time_slots":[{"begin": "07:45", "end": "09:30"}, {"begin": "17:30", "end": "20:30"}]}]}
     validate(json, formats.impact_input_format)
 
 def test_impact_with_application_period_patterns_invalid():
-    json = {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"application_period_patterns":[{"start_date":"2015-02-01T16:52:00Z","end_date":"2015-02-06T16:52:00Z","weekly_pattern":"1111100","time_slots":[{"begin": "07:45", "end": "09:30"}, {"begin": "17:30", "end": "20:30"}]}]}
+    json = {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"application_period_patterns":[{"start_date":"2015-02-01T16:52:00Z","end_date":"2015-02-06T16:52:00Z","weekly_pattern":"1111100","time_zone":"Europe/Paris","time_slots":[{"begin": "07:45", "end": "09:30"}, {"begin": "17:30", "end": "20:30"}]}]}
     validate(json, formats.impact_input_format)
 
 def test_impact_with_route():
@@ -337,3 +337,13 @@ def test_disruption_with_note_string_vide_validation():
 def test_disruption_with_note_null_validation():
     json = {"reference": "foo", "contributor": "contrib1", "note": None, "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}}
     validate(json, formats.disruptions_input_format)
+
+@raises(ValidationError)
+def test_pattern_input_format_without_time_zone_invalid():
+    json = {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"application_period_patterns":[{"start_date":"2015-02-01T16:52:00Z","end_date":"2015-02-06T16:52:00Z","weekly_pattern":"1111100","time_slots":[{"begin": "07:45", "end": "09:30"}, {"begin": "17:30", "end": "20:30"}]}]}
+    validate(json, formats.pattern_input_format)
+
+@raises(ValidationError)
+def test_pattern_input_format_with_time_zone_invalid():
+    json = {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"application_period_patterns":[{"start_date":"2015-02-01T16:52:00Z","end_date":"2015-02-06T16:52:00Z","weekly_pattern":"1111100","time_zone":"europe/paris","time_slots":[{"begin": "07:45", "end": "09:30"}, {"begin": "17:30", "end": "20:30"}]}]}
+    validate(json, formats.pattern_input_format)
