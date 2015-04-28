@@ -725,8 +725,8 @@ class Pattern(TimestampMixin, db.Model):
     """
     __tablename__ = 'pattern'
     id = db.Column(UUID, primary_key=True)
-    start_date = db.Column(db.DateTime(), nullable=True)
-    end_date = db.Column(db.DateTime(), nullable=True)
+    start_date = db.Column(db.Date(), nullable=True)
+    end_date = db.Column(db.Date(), nullable=True)
     weekly_pattern = db.Column(BIT(7), unique=False, nullable=False)
     impact_id = db.Column(UUID, db.ForeignKey(Impact.id), index=True)
     time_slots = db.relationship('TimeSlot', backref='pattern', lazy='joined')
