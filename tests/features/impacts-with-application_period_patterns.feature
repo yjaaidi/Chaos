@@ -533,8 +533,3 @@ Feature: Manipulate impacts in a Disruption
         And the field "impact.application_periods.5.end" should be "2015-02-07T15:30:00Z"
         And the field "impact.application_periods.6.begin" should be "2015-02-08T09:45:00Z"
         And the field "impact.application_periods.6.end" should be "2015-02-08T15:30:00Z"
-        And the field "impact.application_period_patterns.0.start_date" should be "2015-02-04"
-        And the field "impact.application_period_patterns.0.end_date" should be "2015-02-10"
-        And the field "impact.application_period_patterns.1.start_date" should be "2015-02-01"
-        And the field "impact.application_period_patterns.1.end_date" should be "2015-02-06"
-
