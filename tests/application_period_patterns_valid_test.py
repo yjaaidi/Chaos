@@ -63,7 +63,7 @@ def test_pattern_with_weekly_pattern_all_on_multi_time_slots():
     eq_(len(app_periods), 2)
 
 def test_pattern_with_multi_patterns():
-    json_impact = {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"application_period_patterns":[{"start_date":"2015-02-01T08:52:00Z","end_date":"2015-02-03T16:52:00Z","weekly_pattern":"1111111","time_zone":"Europe/Paris","time_slots":[{"begin": "08:45", "end": "09:30"}]},{"start_date":"2015-02-05T16:52:00Z","end_date":"2015-02-06T16:52:00Z","weekly_pattern":"1111111","time_zone":"Europe/Paris","time_slots":[{"begin": "17:45", "end": "19:30"}]}]}
+    json_impact = {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"application_period_patterns":[{"start_date":"2015-02-01","end_date":"2015-02-03","weekly_pattern":"1111111","time_zone":"Europe/Paris","time_slots":[{"begin": "08:45", "end": "09:30"}]},{"start_date":"2015-02-05","end_date":"2015-02-06","weekly_pattern":"1111111","time_zone":"Europe/Paris","time_slots":[{"begin": "17:45", "end": "19:30"}]}]}
     validate(json_impact, formats.impact_input_format)
     app_periods = get_application_periods(json_impact)
     eq_(len(app_periods), 5)

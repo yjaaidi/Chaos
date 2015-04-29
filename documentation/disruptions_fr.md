@@ -954,8 +954,8 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient l'impact cr�
                 },
                 "application_period_patterns": [
                     {
-                        "end_date": "2015-02-06T16:52:00Z",
-                        "start_date": "2015-02-01T16:52:00Z",
+                        "end_date": "2015-02-06",
+                        "start_date": "2015-02-01",
                         "time_slots": [
                             {
                                 "begin": "07:45",
@@ -1085,8 +1085,8 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient l'impact cr�
                     ],
                     "application_period_patterns": [
                         {
-                            "end_date": "2015-02-06T16:52:00Z",
-                            "start_date": "2015-02-01T16:52:00Z",
+                            "end_date": "2015-02-06",
+                            "start_date": "2015-02-01",
                             "time_slots": [
                                 {
                                     "begin": "07:45",
@@ -1409,8 +1409,8 @@ Lors d'un succés une réponse 200 est retourné, celle ci contient l'impact mod
                     ],
                     "application_period_patterns": [
                         {
-                            "end_date": "2015-02-06T16:52:00Z",
-                            "start_date": "2015-02-01T16:52:00Z",
+                            "end_date": "2015-02-06",
+                            "start_date": "2015-02-01",
                             "time_slots": [
                                 {
                                     "begin": "07:45",
@@ -1540,8 +1540,8 @@ Lors d'un succés une réponse 200 est retourné, celle ci contient l'impact mod
                     ],
                     "application_period_patterns": [
                         {
-                            "end_date": "2015-02-06T16:52:00Z",
-                            "start_date": "2015-02-01T16:52:00Z",
+                            "end_date": "2015-02-06",
+                            "start_date": "2015-02-01",
                             "time_slots": [
                                 {
                                     "begin": "07:45",

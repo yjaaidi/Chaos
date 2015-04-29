@@ -30,7 +30,7 @@
 from flask import url_for, g
 from functools import wraps
 from datetime import datetime, timedelta
-from aniso8601 import parse_datetime, parse_time
+from aniso8601 import parse_datetime, parse_time, parse_date
 import uuid
 import flask
 from chaos.formats import id_format
@@ -339,8 +339,8 @@ def get_application_periods_by_pattern(start_date, end_date, weekly_pattern, tim
         while temp_date <= end_date:
             week_day = datetime.weekday(temp_date)
             if (len(weekly_pattern) > week_day) and (weekly_pattern[week_day] == '1'):
-                begin_datetime = get_utc_datetime_by_zone(datetime.combine(temp_date.date(), begin_time), time_zone)
-                end_datetime = get_utc_datetime_by_zone(datetime.combine(temp_date.date(), end_time), time_zone)
+                begin_datetime = get_utc_datetime_by_zone(datetime.combine(temp_date, begin_time), time_zone)
+                end_datetime = get_utc_datetime_by_zone(datetime.combine(temp_date, end_time), time_zone)
                 period = (begin_datetime, end_datetime)
                 result.append(period)
             temp_date += timedelta(days=1)
@@ -359,8 +359,8 @@ def get_application_periods(json):
     result = []
     if 'application_period_patterns' in json and json['application_period_patterns']:
         for json_one_pattern in json['application_period_patterns']:
-            start_date = parse_datetime(json_one_pattern['start_date']).replace(tzinfo=None)
-            end_date = parse_datetime(json_one_pattern['end_date']).replace(tzinfo=None)
+            start_date = parse_date(json_one_pattern['start_date'])
+            end_date = parse_date(json_one_pattern['end_date'])
             weekly_pattern = json_one_pattern['weekly_pattern']
             time_slots = json_one_pattern['time_slots']
             time_zone = json_one_pattern['time_zone']

@@ -34,6 +34,7 @@ import pytz
 #see http://json-schema.org/
 
 datetime_pattern = '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$'
+date_pattern = '^\d{4}-\d{2}-\d{2}$'
 id_format_text = '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
 id_format = re.compile(id_format_text)
 pt_object_type_values = ["network", "stop_area", "line", "line_section", "route"]
@@ -203,8 +204,8 @@ time_slot_input_format = {
 pattern_input_format = {
     'type': 'object',
     'properties': {
-        'start_date': {'type': ['string'], 'pattern': datetime_pattern},
-        'end_date': {'type': ['string'], 'pattern': datetime_pattern},
+        'start_date': {'type': ['string'], 'pattern': date_pattern},
+        'end_date': {'type': ['string'], 'pattern': date_pattern},
         'weekly_pattern': {'type': ['string'], 'pattern': week_pattern},
         'time_slots': {'type': 'array',
                       'items': time_slot_input_format,
