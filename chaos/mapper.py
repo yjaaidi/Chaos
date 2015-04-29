@@ -27,7 +27,7 @@
 # https://groups.google.com/d/forum/navitia
 # www.navitia.io
 
-from aniso8601 import parse_datetime, parse_time
+from aniso8601 import parse_datetime, parse_time, parse_date
 from collections import Mapping, Sequence
 
 
@@ -49,6 +49,17 @@ class Time(object):
     def __call__(self, item, field, value):
         if value:
             setattr(item, self.attribute, parse_time(value).replace(tzinfo=None))
+        else:
+            setattr(item, self.attribute, None)
+
+
+class Date(object):
+    def __init__(self, attribute):
+        self.attribute = attribute
+
+    def __call__(self, item, field, value):
+        if value:
+            setattr(item, self.attribute, parse_date(value))
         else:
             setattr(item, self.attribute, None)
 
@@ -136,8 +147,8 @@ line_section_mapping = {
 }
 
 pattern_mapping = {
-    'start_date': Datetime(attribute='start_date'),
-    'end_date': Datetime(attribute='end_date'),
+    'start_date': Date(attribute='start_date'),
+    'end_date': Date(attribute='end_date'),
     'weekly_pattern': None,
     'time_zone': None
 }

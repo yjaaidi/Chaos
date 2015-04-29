@@ -48,6 +48,12 @@ class FieldTime(fields.Raw):
         else:
             return None
 
+class FieldDate(fields.Raw):
+    def format(self, value):
+        if value:
+            return value.strftime('%Y-%m-%d')
+        else:
+            return None
 
 class FieldPaginateImpacts(fields.Raw):
     '''
@@ -317,8 +323,8 @@ time_slot_fields = {
 }
 
 application_period_pattern_fields = {
-    'start_date': FieldDateTime,
-    'end_date': FieldDateTime,
+    'start_date': FieldDate,
+    'end_date': FieldDate,
     'weekly_pattern': fields.Raw,
     'time_slots': fields.List(fields.Nested(time_slot_fields, display_null=False), attribute='time_slots')
 }
