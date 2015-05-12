@@ -106,6 +106,11 @@ def get_disruption(with_via=True, with_routes=True):
     ptobject.type = "route"
     impact.objects.append(ptobject)
 
+    ptobject = chaos.models.PTobject()
+    ptobject.uri = "stop_point:AA"
+    ptobject.type = "stop_point"
+    impact.objects.append(ptobject)
+
     # Messages
     message = chaos.models.Message()
     message.text = "Meassage1 test"
@@ -160,7 +165,7 @@ def test_disruption():
     eq_(disruption_pb.impacts[0].severity.effect, chaos.gtfs_realtime_pb2.Alert.NO_SERVICE)
 
     eq_(len(disruption_pb.impacts[0].application_periods),  1)
-    eq_(len(disruption_pb.impacts[0].informed_entities), 4)
+    eq_(len(disruption_pb.impacts[0].informed_entities), 5)
 
     eq_(disruption_pb.impacts[0].informed_entities[0].uri, disruption.impacts[0].objects[0].uri)
     eq_(disruption_pb.impacts[0].informed_entities[0].pt_object_type,
@@ -177,6 +182,10 @@ def test_disruption():
     eq_(disruption_pb.impacts[0].informed_entities[3].uri, disruption.impacts[0].objects[3].uri)
     eq_(disruption_pb.impacts[0].informed_entities[3].pt_object_type,
     get_pt_object_type(disruption.impacts[0].objects[3].type))
+
+    eq_(disruption_pb.impacts[0].informed_entities[4].uri, disruption.impacts[0].objects[4].uri)
+    eq_(disruption_pb.impacts[0].informed_entities[4].pt_object_type,
+    get_pt_object_type(disruption.impacts[0].objects[4].type))
 
     eq_(disruption_pb.impacts[0].informed_entities[2].pt_line_section.line.uri,
     disruption.impacts[0].objects[2].line_section.line.uri)
@@ -229,7 +238,7 @@ def test_disruption_without_via():
     eq_(disruption_pb.impacts[0].severity.color, "#FFFF00")
 
     eq_(len(disruption_pb.impacts[0].application_periods), 1)
-    eq_(len(disruption_pb.impacts[0].informed_entities), 4)
+    eq_(len(disruption_pb.impacts[0].informed_entities), 5)
 
     eq_(disruption_pb.impacts[0].informed_entities[0].uri, disruption.impacts[0].objects[0].uri)
     eq_(disruption_pb.impacts[0].informed_entities[0].pt_object_type,
@@ -364,7 +373,7 @@ def test_disruption_without_routes():
     eq_(disruption_pb.impacts[0].severity.color, "#FFFF00")
 
     eq_(len(disruption_pb.impacts[0].application_periods), 1)
-    eq_(len(disruption_pb.impacts[0].informed_entities), 4)
+    eq_(len(disruption_pb.impacts[0].informed_entities), 5)
     eq_(disruption_pb.impacts[0].informed_entities[0].uri, disruption.impacts[0].objects[0].uri)
     eq_(disruption_pb.impacts[0].informed_entities[0].pt_object_type,
     get_pt_object_type(disruption.impacts[0].objects[0].type))

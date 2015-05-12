@@ -119,13 +119,16 @@ def test_type_object_is_required_in_impcat():
     except ValidationError, e:
         eq_(parse_error(e), "'type' is a required property", True)
 
+def test_pt_object_stop_point_in_impcat():
+    validate({"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "stop_point:JDR:2", "type": "stop_point"}]}, impact_input_format)
+
 
 def test_not_pt_object_in_impcat():
     try:
-        validate({"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "stop_point:JDR:2", "type": "stop_point"}]}, impact_input_format)
+        validate({"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "route_point:JDR:2", "type": "route_point"}]}, impact_input_format)
         assert False
     except ValidationError, e:
-        eq_(parse_error(e), "'stop_point' is not one of {}".format(pt_object_type_values), True)
+        eq_(parse_error(e), "'route_point' is not one of {}".format(pt_object_type_values), True)
 
 
 def test_text_is_required_in_message():
