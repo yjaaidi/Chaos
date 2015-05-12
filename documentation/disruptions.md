@@ -625,12 +625,12 @@ Archive one disruption.
 Return all impacts by ptobject.
 ##Parameters
 
-| Name                 | description                                                                    | required | default                     |
-| -------------------- | ------------------------------------------------------------------------------ | -------- | --------------------------- |
-| pt_object_type       | filter by ptobject, possible value are: network, stoparea, line, line_section  | false    |                             |
-| uri[]                | filtre by ptobject.uri                                                         | false    |                             |
-| start_date           | filtre by application period :star date                                        | false    | Now():00:00:00Z             |
-| end_date             | filtre by application period :end date                                         | false    | Now():23:59:59Z             |
+| Name                 | description                                                                                | required | default                     |
+| -------------------- | ------------------------------------------------------------------------------------------ | -------- | --------------------------- |
+| pt_object_type       | filter by ptobject, possible value are: network, stoparea, line, line_section, stop_point  | false    |                             |
+| uri[]                | filtre by ptobject.uri                                                                     | false    |                             |
+| start_date           | filtre by application period :star date                                                    | false    | Now():00:00:00Z             |
+| end_date             | filtre by application period :end date                                                     | false    | Now():23:59:59Z             |
 
 - response 200 (application/json)
     * Body
