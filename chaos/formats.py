@@ -37,7 +37,7 @@ datetime_pattern = '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$'
 date_pattern = '^\d{4}-\d{2}-\d{2}$'
 id_format_text = '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
 id_format = re.compile(id_format_text)
-pt_object_type_values = ["network", "stop_area", "line", "line_section", "route"]
+pt_object_type_values = ["network", "stop_area", "line", "line_section", "route", "stop_point"]
 #Here Order of values is strict and is used to create query filters.
 publication_status_values = ["past", "ongoing", "coming"]
 time_pattern = '^\d{2}:\d{2}$'

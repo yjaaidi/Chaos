@@ -43,7 +43,8 @@ def get_pt_object_type(type):
         "stop_area": chaos_pb2.PtObject.stop_area,
         "line": chaos_pb2.PtObject.line,
         "line_section": chaos_pb2.PtObject.line_section,
-        "route": chaos_pb2.PtObject.route
+        "route": chaos_pb2.PtObject.route,
+        "stop_point": chaos_pb2.PtObject.stop_point
     }
     if type in collection:
         return collection[type]
