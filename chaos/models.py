@@ -57,7 +57,7 @@ class TimestampMixin(object):
 DisruptionStatus = db.Enum('published', 'archived', name='disruption_status')
 SeverityEffect = db.Enum('no_service', 'reduced_service', 'significant_delays', 'detour', 'additional_service', 'modified_service', 'other_effect', 'unknown_effect', 'stop_moved', name='severity_effect')
 ImpactStatus = db.Enum('published', 'archived', name='impact_status')
-PtObjectType = db.Enum('network', 'stop_area', 'line', 'line_section', 'route', name='pt_object_type')
+PtObjectType = db.Enum('network', 'stop_area', 'line', 'line_section', 'route', 'stop_point', name='pt_object_type')
 
 class Client(TimestampMixin, db.Model):
     __tablename__ = 'client'

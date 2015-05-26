@@ -698,12 +698,12 @@ Une réponse de type 204 est retournée en cas de succés.
 Cette fonction donne la liste des impacts par type d'objet.
 ##Parameters
 
-| Name                 | description                                                                                  | required | default                 |
-| -------------------- | -------------------------------------------------------------------------------------------- | -------- | ----------------------- |
-| pt_object_type       | Filtre par type d'objet,  les valeurs possibles sont : network, stoparea, line, line_section | false    |                         |
-| uri[]                | filtre par uri de l'objet TC                                                                 | false    |                         |
-| start_date           | filtre sur la période d'application :date de début                                           | false    | Now():00:00:00Z         |
-| end_date             | filtre sur la période d'application :date de fin                                             | false    | Now():23:59:59Z         |
+| Name                 | description                                                                                                | required | default                 |
+| -------------------- | ---------------------------------------------------------------------------------------------------------- | -------- | ----------------------- |
+| pt_object_type       | Filtre par type d'objet,  les valeurs possibles sont : network, stoparea, line, line_section, stop_point   | false    |                         |
+| uri[]                | filtre par uri de l'objet TC                                                                               | false    |                         |
+| start_date           | filtre sur la période d'application :date de début                                                         | false    | Now():00:00:00Z         |
+| end_date             | filtre sur la période d'application :date de fin                                                           | false    | Now():23:59:59Z         |
 
 
 
