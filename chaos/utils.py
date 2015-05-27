@@ -121,7 +121,7 @@ def get_utc_datetime_by_zone(value, time_zone):
     """
     try:
         tz = pytz.timezone(time_zone)
-        return (tz.localize(value, is_dst=None)).astimezone(pytz.utc)
+        return ((tz.localize(value, is_dst=None)).astimezone(pytz.utc)).replace(tzinfo=None)
     except:
         raise ValueError("The {} argument value is not valid, you gave: {}"
                          .format(value, time_zone))
@@ -341,7 +341,7 @@ def get_application_periods_by_pattern(start_date, end_date, weekly_pattern, tim
             if (len(weekly_pattern) > week_day) and (weekly_pattern[week_day] == '1'):
                 begin_datetime = get_utc_datetime_by_zone(datetime.combine(temp_date, begin_time), time_zone)
                 end_datetime = get_utc_datetime_by_zone(datetime.combine(temp_date, end_time), time_zone)
-                period = (begin_datetime.replace(tzinfo=None), end_datetime.replace(tzinfo=None))
+                period = (begin_datetime, end_datetime)
                 result.append(period)
             temp_date += timedelta(days=1)
     return result
