@@ -341,7 +341,7 @@ def get_application_periods_by_pattern(start_date, end_date, weekly_pattern, tim
             if (len(weekly_pattern) > week_day) and (weekly_pattern[week_day] == '1'):
                 begin_datetime = get_utc_datetime_by_zone(datetime.combine(temp_date, begin_time), time_zone)
                 end_datetime = get_utc_datetime_by_zone(datetime.combine(temp_date, end_time), time_zone)
-                period = (begin_datetime, end_datetime)
+                period = (begin_datetime.replace(tzinfo=None), end_datetime.replace(tzinfo=None))
                 result.append(period)
             temp_date += timedelta(days=1)
     return result
