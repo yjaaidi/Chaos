@@ -43,10 +43,10 @@ class FieldDateTime(fields.Raw):
 
 class FieldTime(fields.Raw):
     def format(self, value):
-        if value:
+        try:
             return value.strftime('%H:%M')
-        else:
-            return '00:00'
+        except:
+            return None
 
 class FieldDate(fields.Raw):
     def format(self, value):
