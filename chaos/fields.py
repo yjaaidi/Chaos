@@ -46,7 +46,7 @@ class FieldTime(fields.Raw):
         if value:
             return value.strftime('%H:%M')
         else:
-            return None
+            return '00:00'
 
 class FieldDate(fields.Raw):
     def format(self, value):

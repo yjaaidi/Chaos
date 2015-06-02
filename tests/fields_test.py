@@ -32,7 +32,7 @@ def test_name_disruption():
 
 def test_none_field_time():
     class_time = fields.FieldTime(Obj())
-    eq_(class_time.format(None), None)
+    eq_(class_time.format(None), '00:00')
 
 @raises(AttributeError)
 def test_field_time_invalid():
