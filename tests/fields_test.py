@@ -34,7 +34,6 @@ def test_none_field_time():
     class_time = fields.FieldTime(Obj())
     eq_(class_time.format(None), None)
 
-@raises(AttributeError)
 def test_field_time_invalid():
     class_time = fields.FieldTime(Obj())
     eq_(class_time.format('12:46'), None)
