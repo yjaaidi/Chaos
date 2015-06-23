@@ -58,6 +58,7 @@ DisruptionStatus = db.Enum('published', 'archived', name='disruption_status')
 SeverityEffect = db.Enum('no_service', 'reduced_service', 'significant_delays', 'detour', 'additional_service', 'modified_service', 'other_effect', 'unknown_effect', 'stop_moved', name='severity_effect')
 ImpactStatus = db.Enum('published', 'archived', name='impact_status')
 PtObjectType = db.Enum('network', 'stop_area', 'line', 'line_section', 'route', 'stop_point', name='pt_object_type')
+ChannelTypeEnum = db.Enum('web', 'sms', 'email', 'mobile', 'notification', 'twitter', 'facebook')
 
 class Client(TimestampMixin, db.Model):
     __tablename__ = 'client'
@@ -649,12 +650,31 @@ class Channel(TimestampMixin, db.Model):
     is_visible = db.Column(db.Boolean, unique=False, nullable=False, default=True)
     client_id = db.Column(UUID, db.ForeignKey(Client.id), nullable=False)
     client = db.relationship('Client', backref='channels', lazy='joined')
+    channel_types = db.relationship('ChannelType', backref='channel', lazy='joined')
 
     def __init__(self):
         self.id = str(uuid.uuid1())
 
     def __repr__(self):
         return '<Channel %r>' % self.id
+
+    def delete_channel_types(self):
+        """
+        Deletes a channel_type in the channel
+        """
+        index = len(self.channel_types) - 1
+        while index >= 0:
+            type = self.channel_types[index]
+            self.channel_types.remove(type)
+            db.session.delete(type)
+            index -= 1
+
+    def insert_channel_type(self, channel_type):
+        """
+        Adds a channel_type in the channel
+        """
+        self.channel_types.append(channel_type)
+        db.session.add(channel_type)
 
     @classmethod
     def all(cls, client_id):
@@ -767,3 +787,18 @@ class TimeSlot(TimestampMixin, db.Model):
     def __repr__(self):
         return '<TimeSlot %r>' % self.id
 
+class ChannelType(TimestampMixin, db.Model):
+    """
+    represents the types of a channel
+    """
+    __tablename__ = 'channel_type'
+    id = db.Column(UUID, primary_key=True)
+    channel_id = db.Column(UUID, db.ForeignKey(Channel.id), index=True)
+    name = db.Column(ChannelTypeEnum, nullable=False, default='web')
+
+    def __init__(self, channel_id=None):
+        self.id = str(uuid.uuid1())
+        self.channel_id = channel_id
+
+    def __repr__(self):
+        return '<ChannelType %r>' % self.id
