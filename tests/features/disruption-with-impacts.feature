@@ -401,6 +401,11 @@ Feature: Manipulate impacts in a Disruption
             | name   | max_size   | created_at          | updated_at          | content_type| id                                   |client_id                             |
             | short  | 140        | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | text/plain  | 4ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
 
+        Given I have the following channel_type in my database:
+            | name   | created_at          | updated_at          | id                                   | channel_id                           |
+            | web    | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 4ffbb230-3d48-4eea-aa2c-21f8680230b6 | 4ffab230-3d48-4eea-aa2c-22f8680230b6 |
+            | mobile | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 4ffbb230-3d48-4eea-aa2c-21f8680230b7 | 4ffab230-3d48-4eea-aa2c-22f8680230b6 |
+
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
@@ -414,7 +419,7 @@ Feature: Manipulate impacts in a Disruption
         And the field "impact" should exist
         And the field "impact.messages" should exist
         And the field "impact.messages.0.text" should be "message 2"
-
+        And the field "impact.messages.0.channel.types" should have a size of 2
 
     Scenario: Add an impact in a disruption on a route
 
