@@ -35,7 +35,7 @@ from flask.ext.restful import abort
 from fields import *
 from formats import *
 from formats import impact_input_format, channel_input_format, pt_object_type_values,\
-    tag_input_format, category_input_format
+    tag_input_format, category_input_format, channel_type_values
 from chaos import mapper, exceptions
 from chaos import utils, db_helper
 import chaos
@@ -62,6 +62,7 @@ class Index(flask_restful.Resource):
             "impactsbyobject": {"href": url_for('impactsbyobject', _external=True)},
             "tags": {"href": url_for('tag', _external=True)},
             "categories": {"href": url_for('category', _external=True)},
+            "channeltypes": {"href": url_for('channeltype', _external=True)},
             "status": {"href": url_for('status', _external=True)}
 
 
@@ -724,6 +725,11 @@ class Channel(flask_restful.Resource):
         channel = models.Channel()
         mapper.fill_from_json(channel, json, mapper.channel_mapping)
         channel.client = client
+        try:
+            db_helper.manage_channel_types(channel, json["types"])
+        except exceptions.InvalidJson, e:
+            return marshal({'error': {'message': utils.parse_error(e)}},
+                           error_fields), 400
         db.session.add(channel)
         db.session.commit()
         return marshal({'channel': channel}, one_channel_fields), 201
@@ -746,6 +752,11 @@ class Channel(flask_restful.Resource):
                            error_fields), 400
 
         mapper.fill_from_json(channel, json, mapper.channel_mapping)
+        try:
+            db_helper.manage_channel_types(channel, json["types"])
+        except exceptions.InvalidJson, e:
+            return marshal({'error': {'message': utils.parse_error(e)}},
+                           error_fields), 400
         db.session.commit()
         return marshal({'channel': channel}, one_channel_fields), 200
 
@@ -759,6 +770,10 @@ class Channel(flask_restful.Resource):
         db.session.commit()
         return None, 204
 
+class ChannelType(flask_restful.Resource):
+    def get(self):
+        return {'channel_types': [type for type in channel_type_values]}, 200
+
 
 class Status(flask_restful.Resource):
     def get(self):
@@ -766,4 +781,4 @@ class Status(flask_restful.Resource):
                 'db_pool_status': db.engine.pool.status(),
                 'db_version': db.engine.scalar('select version_num from alembic_version;'),
                 'navitia_url': current_app.config['NAVITIA_URL'],
-                'rabbitmq_info': publisher.info()}
+                'rabbitmq_info': publisher.info()}, 200

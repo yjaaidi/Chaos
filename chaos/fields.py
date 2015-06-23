@@ -119,6 +119,11 @@ class FieldContributor(fields.Raw):
             return obj.contributor.contributor_code
         return None
 
+class FieldChannelTypes(fields.Raw):
+    def output(self, key, obj):
+        if hasattr(obj, 'channel_types'):
+            return [ch.name for ch in obj.channel_types]
+        return None
 
 href_field = {
     "href": fields.String
@@ -232,6 +237,9 @@ error_fields = {
     'error': fields.Nested({'message': fields.String})
 }
 
+channel_type_list_fields = {
+    'channeltypes': fields.Nested({fields.String})
+}
 
 severity_fields = {
     'id': fields.Raw,
@@ -285,6 +293,10 @@ objectTC_fields = {
         allow_null=True)
 }
 
+channel_type_fields = {
+    'name': fields.Raw
+}
+
 channel_fields = {
     'id': fields.Raw,
     'name': fields.Raw,
@@ -292,6 +304,7 @@ channel_fields = {
     'content_type': fields.Raw,
     'created_at': FieldDateTime,
     'updated_at': FieldDateTime,
+    'types': FieldChannelTypes(), #fields.List(fields.Nested(channel_type_fields), attribute='channel_types'),
     'self': {'href': fields.Url('channel', absolute=True)}
 }
 
