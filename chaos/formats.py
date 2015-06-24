@@ -190,21 +190,7 @@ channel_input_format = {
     },
     'required': ['name', 'max_size', 'content_type', 'types']
 }
-'''
-channel_input_format = {
-    'type': 'object',
-    'properties': {'name': {'type': 'string', 'maxLength': 250},
-                   'max_size': {'type': ['integer', 'null']},
-                   'content_type': {'type': 'string', 'maxLength': 250},
-                   'types': {'type': 'array',
-                             'items': channel_type_input_format,
-                             "uniqueItems": True,
-                             "minItems": 1
-                   }
-    },
-    'required': ['name', 'max_size', 'content_type', 'types']
-}
-'''
+
 message_input_format = {
     'type': 'object',
     'properties': {'text': {'type': 'string'},
