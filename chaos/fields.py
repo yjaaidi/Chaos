@@ -237,10 +237,6 @@ error_fields = {
     'error': fields.Nested({'message': fields.String})
 }
 
-channel_type_list_fields = {
-    'channeltypes': fields.Nested({fields.String})
-}
-
 severity_fields = {
     'id': fields.Raw,
     'wording': fields.Raw,
@@ -304,7 +300,7 @@ channel_fields = {
     'content_type': fields.Raw,
     'created_at': FieldDateTime,
     'updated_at': FieldDateTime,
-    'types': FieldChannelTypes(), #fields.List(fields.Nested(channel_type_fields), attribute='channel_types'),
+    'types': FieldChannelTypes(),
     'self': {'href': fields.Url('channel', absolute=True)}
 }
 
