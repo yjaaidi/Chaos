@@ -14,6 +14,7 @@ Les entités manipulées par le web service sont:
    - les causes, ou motif (causes), qui représentent les origine de la perturbation (obstacle sur les voies, accident de voyageur, ...)
    - les tags (tags), qui permettent de tager des perturbations (rer, meteo, probleme, ...)
    - les canaux de diffusion (channels), qui représentent les medias vers lesquels les informations seront transmises.
+   - les types de canal de diffusion (channel_types), qui représentent les modes de communications destinés.
 
 Pour chacune des entités présentées, les web services proposent les fonctions de création, suppression, édition, liste, et recherche unitaire. Sauf mention contraire, seules les fonctions de liste et de recherche sont proposées à l'implémentation.
 
@@ -55,7 +56,8 @@ Enfin, en cas de paramétre non valide, y compris un json ne respestant pas les 
                 "causes": {"href": "https://ogv2ws.apiary-mock.com/causes"},
                 "channels": {"href": "https://ogv2ws.apiary-mock.com/channels"},
                 "tags": {"href": "https://ogv2ws.apiary-mock.com/tags"},
-                "categories": {"href": "https://chaos.apiary-mock.com/categories"}
+                "categories": {"href": "https://chaos.apiary-mock.com/categories"},
+                "channeltypes": {"href": "http://127.0.0.1:5000/channel_types"}
             }
 
 
@@ -754,7 +756,8 @@ Cette fonction donne la liste des impacts par type d'objet.
                                         "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657da",
                                         "max_size": 140,
                                         "name": "message court",
-                                        "updated_at": "2014-04-31T16:55:18Z"
+                                        "updated_at": "2014-04-31T16:55:18Z",
+                                        "types": ["web", "mobile"]
                                         },
                                         "created_at": "2014-04-31T16:52:18Z",
                                         "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657ca",
@@ -772,7 +775,8 @@ Cette fonction donne la liste des impacts par type d'objet.
                                             "id": "3d1f42b2-e8df-11e3-8c3e-0008cb8657ea",
                                             "max_size": null,
                                             "name": "message long",
-                                            "updated_at": "2014-04-31T16:55:18Z"
+                                            "updated_at": "2014-04-31T16:55:18Z",
+                                            "types": ["web", "mobile"]
                                         },
                                         "created_at": "2014-04-31T16:52:18Z",
                                         "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8257ea",
@@ -858,7 +862,8 @@ Aucun filtre actuellement sur la récupération de liste des impacts: l'interrog
                                     "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657da",
                                     "max_size": 140,
                                     "name": "message court",
-                                    "updated_at": "2014-04-31T16:55:18Z"
+                                    "updated_at": "2014-04-31T16:55:18Z",
+                                    "types": ["sms", "notification"]
                                     },
                                     "created_at": "2014-04-31T16:52:18Z",
                                     "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657ca",
@@ -876,7 +881,8 @@ Aucun filtre actuellement sur la récupération de liste des impacts: l'interrog
                                         "id": "3d1f42b2-e8df-11e3-8c3e-0008cb8657ea",
                                         "max_size": null,
                                         "name": "message long",
-                                        "updated_at": "2014-04-31T16:55:18Z"
+                                        "updated_at": "2014-04-31T16:55:18Z",
+                                        "types": ["web", "mobile"]
                                     },
                                     "created_at": "2014-04-31T16:52:18Z",
                                     "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8257ea",
@@ -1061,7 +1067,8 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient l'impact cr�
                                 "id": "3d1f42b2-e8df-11e3-8c3e-0002ca8657ea",
                                 "max_size": 140,
                                 "name": "message court",
-                                "updated_at": "2014-04-31T16:55:18Z"
+                                "updated_at": "2014-04-31T16:55:18Z",
+                                "types": ["sms", "notification"]
                                 },
                                 "created_at": "2014-04-31T16:52:18Z",
                                 "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657ca",
@@ -1075,7 +1082,8 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient l'impact cr�
                                     "id": "3d1f42b2-e8df-11e3-8c3e-0008ca86c7ea",
                                     "max_size": null,
                                     "name": "message long",
-                                    "updated_at": "2014-04-31T16:55:18Z"
+                                    "updated_at": "2014-04-31T16:55:18Z",
+                                    "types": ["web", "mobile"]
                                 },
                                 "created_at": "2014-04-31T16:52:18Z",
                                 "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8257ea",
@@ -1235,7 +1243,8 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient l'impact cr�
                                 "id": "3d1f42b2-e8df-11e3-8c3e-0002ca8657ea",
                                 "max_size": 140,
                                 "name": "message court",
-                                "updated_at": "2014-04-31T16:55:18Z"
+                                "updated_at": "2014-04-31T16:55:18Z",
+                                "types": ["sms", "notification"]
                                 },
                                 "created_at": "2014-04-31T16:52:18Z",
                                 "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657ca",
@@ -1249,7 +1258,8 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient l'impact cr�
                                     "id": "3d1f42b2-e8df-11e3-8c3e-0008ca86c7ea",
                                     "max_size": null,
                                     "name": "message long",
-                                    "updated_at": "2014-04-31T16:55:18Z"
+                                    "updated_at": "2014-04-31T16:55:18Z",
+                                    "types": ["web", "mobile"]
                                 },
                                 "created_at": "2014-04-31T16:52:18Z",
                                 "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8257ea",
@@ -1385,7 +1395,8 @@ Lors d'un succés une réponse 200 est retourné, celle ci contient l'impact mod
                                 "id": "3d1f42b2-e8df-11e3-8c3e-0002ca8657ea",
                                 "max_size": 140,
                                 "name": "message court",
-                                "updated_at": "2014-04-31T16:55:18Z"
+                                "updated_at": "2014-04-31T16:55:18Z",
+                                "types": ["sms", "notification"]
                                 },
                                 "created_at": "2014-04-31T16:52:18Z",
                                 "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657ca",
@@ -1399,7 +1410,8 @@ Lors d'un succés une réponse 200 est retourné, celle ci contient l'impact mod
                                     "id": "3d1f42b2-e8df-11e3-8c3e-0008ca86c7ea",
                                     "max_size": null,
                                     "name": "message long",
-                                    "updated_at": "2014-04-31T16:55:18Z"
+                                    "updated_at": "2014-04-31T16:55:18Z",
+                                    "types": ["web", "mobile"]
                                 },
                                 "created_at": "2014-04-31T16:52:18Z",
                                 "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8257ea",
@@ -1516,7 +1528,8 @@ Lors d'un succés une réponse 200 est retourné, celle ci contient l'impact mod
                                 "id": "3d1f42b2-e8df-11e3-8c3e-0002ca8657ea",
                                 "max_size": 140,
                                 "name": "message court",
-                                "updated_at": "2014-04-31T16:55:18Z"
+                                "updated_at": "2014-04-31T16:55:18Z",
+                                "types": ["sms", "notification"]
                                 },
                                 "created_at": "2014-04-31T16:52:18Z",
                                 "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657ca",
@@ -1530,7 +1543,8 @@ Lors d'un succés une réponse 200 est retourné, celle ci contient l'impact mod
                                     "id": "3d1f42b2-e8df-11e3-8c3e-0008ca86c7ea",
                                     "max_size": null,
                                     "name": "message long",
-                                    "updated_at": "2014-04-31T16:55:18Z"
+                                    "updated_at": "2014-04-31T16:55:18Z",
+                                    "types": ["web", "mobile"]
                                 },
                                 "created_at": "2014-04-31T16:52:18Z",
                                 "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8257ea",
@@ -2370,6 +2384,19 @@ Archive un tag.
             }
 
 
+#Lists des types du canal de diffusions [/channel_types]
+
+##Retourne la liste de tous les types de canal de diffusion [GET]
+
+- response 200 (application/json)
+
+    * Body
+
+            {
+                "channel_types": ["web", "sms", "email", "mobile", "notification", "twitter", "facebook"]
+            }
+
+
 #Liste des canaux de diffusions [/channels]
 
 ##Retourne la liste de tous les canaux de diffusion [GET]
@@ -2389,7 +2416,8 @@ Archive un tag.
                         "max_size": 140,
                         "content_type": "text/plain",
                         "created_at": "2014-04-31T16:52:18Z",
-                        "updated_at": "2014-04-31T16:55:18Z"
+                        "updated_at": "2014-04-31T16:55:18Z",
+                        "types": ["sms", "notification"]
                     },
                     {
                         "id": "3d1a42b7-e8df-11e4-8c3e-0008ca8617ea",
@@ -2400,7 +2428,8 @@ Archive un tag.
                         "max_size": 512,
                         "content_type": "text/plain",
                         "created_at": "2014-04-31T16:52:18Z",
-                        "updated_at": "2014-04-31T16:55:18Z"
+                        "updated_at": "2014-04-31T16:55:18Z",
+                        "types": ["email"]
                     },
                     {
                         "id": "3d1f42b2-e8df-11e4-8c3e-0008ca8617ea",
@@ -2411,7 +2440,8 @@ Archive un tag.
                         "max_size": null,
                         "content_type": "text/markdown",
                         "created_at": "2014-04-31T16:52:18Z",
-                        "updated_at": "2014-04-31T16:55:18Z"
+                        "updated_at": "2014-04-31T16:55:18Z",
+                        "types": ["web", "mobile"]
                     }
                 ],
                 "meta": {}
@@ -2442,7 +2472,8 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient la canal cr�
                 {
                     "name": "court",
                     "max_size": 140,
-                    "content_type": "text/plain"
+                    "content_type": "text/plain",
+                    "types": ["sms", "notification"]
                 }
 
 - response 200 (application/json)
@@ -2459,7 +2490,8 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient la canal cr�
                     "max_size": 140,
                     "content_type": "text/plain",
                     "created_at": "2014-04-31T16:52:18Z",
-                    "updated_at": "2014-04-31T16:55:18Z"
+                    "updated_at": "2014-04-31T16:55:18Z",
+                    "types": ["sms", "notification"]
                 },
                 "meta": {}
             }
