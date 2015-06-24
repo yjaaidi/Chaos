@@ -35,10 +35,9 @@ def upgrade():
 
     result = connection.execute('select id from channel')
     for row in result:
-        op.execute("INSERT INTO channel_type (created_at, id, channel_id, name) VALUES ('{}','{}', '{}','{}')".
-                   format(datetime.utcnow(), str(uuid.uuid1()), row['id'], 'web'))
-        op.execute("INSERT INTO channel_type (created_at, id, channel_id, name) VALUES ('{}','{}', '{}','{}')".
-                   format(datetime.utcnow(), str(uuid.uuid1()), row['id'], 'mobile'))
+        for type in channel_type_enum.enums:
+            op.execute("INSERT INTO channel_type (created_at, id, channel_id, name) VALUES ('{}','{}', '{}','{}')".
+                       format(datetime.utcnow(), str(uuid.uuid1()), row['id'], type))
     ### end Alembic commands ###
 
 
