@@ -1883,7 +1883,8 @@ Archive a tag.
                 {
                     "name": "court",
                     "max_size": 140,
-                    "content_type": "text/plain"
+                    "content_type": "text/plain",
+                    "types": ["sms", "notification"]
                 }
 
 - response 200 (application/json)
@@ -1898,7 +1899,7 @@ Archive a tag.
                     "content_type": "text/plain",
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": "2014-04-31T16:55:18Z",
-                    "types": ["web", "mobile"]
+                    "types": ["sms", "notification"]
                 },
                 "meta": {}
             }

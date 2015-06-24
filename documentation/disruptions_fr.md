@@ -2472,7 +2472,8 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient la canal cr�
                 {
                     "name": "court",
                     "max_size": 140,
-                    "content_type": "text/plain"
+                    "content_type": "text/plain",
+                    "types": ["sms", "notification"]
                 }
 
 - response 200 (application/json)
