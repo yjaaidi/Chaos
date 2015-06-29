@@ -51,6 +51,21 @@ def get_pt_object_type(type):
     return chaos_pb2.PtObject.unkown_type
 
 
+def get_channel_type(type):
+    collection = {
+        "web": chaos_pb2.Channel.web,
+        "sms": chaos_pb2.Channel.sms,
+        "email": chaos_pb2.Channel.email,
+        "mobile": chaos_pb2.Channel.mobile,
+        "notification": chaos_pb2.Channel.notification,
+        "twitter": chaos_pb2.Channel.twitter,
+        "facebook": chaos_pb2.Channel.facebook
+    }
+    if type in collection:
+        return collection[type]
+    return chaos_pb2.Channel.unkown_type
+
+
 def created_upated_at(src, dest):
     dest.created_at = get_pos_time(src.created_at)
     if src.updated_at:
@@ -97,12 +112,19 @@ def populate_application_periods(impact, impact_pb):
             application_period_pb.end = get_pos_time(application_period.end_date)
 
 
+def populate_channel_type(channel, channel_pb):
+    if channel.channel_types:
+        for type in channel.channel_types:
+            channel_pb.types.append(get_channel_type(type.name))
+
+
 def populate_channel(channel_pb, channel):
     channel_pb.id = channel.id
     channel_pb.name = channel.name
     channel_pb.content_type = channel.content_type
     channel_pb.max_size = long(channel.max_size)
     created_upated_at(channel, channel_pb)
+    populate_channel_type(channel, channel_pb)
 
 
 def populate_messages(impact, impact_pb):
