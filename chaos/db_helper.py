@@ -287,3 +287,11 @@ def manage_impacts(disruption, json, navitia):
         difference = set(impacts_db) - set(impacts_json)
         for diff in difference:
             impacts_db[diff].archive()
+
+
+def manage_channel_types(db_object, json_types):
+    db_object.delete_channel_types()
+    for json_type in json_types:
+        db_channel_type = models.ChannelType()
+        db_channel_type.name = json_type
+        db_object.insert_channel_type(db_channel_type)

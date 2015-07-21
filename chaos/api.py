@@ -79,6 +79,9 @@ api.add_resource(resources.Channel,
                  '/channels/<string:id>',
                  endpoint='channel')
 
+api.add_resource(resources.ChannelType,
+                 '/channel_types')
+
 api.add_resource(resources.Status,
                  '/status')
 

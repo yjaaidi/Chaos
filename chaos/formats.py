@@ -42,6 +42,7 @@ pt_object_type_values = ["network", "stop_area", "line", "line_section", "route"
 publication_status_values = ["past", "ongoing", "coming"]
 time_pattern = '^\d{2}:\d{2}$'
 week_pattern = '^[0-1]{7,7}$'
+channel_type_values = ["web", "sms", "email", "mobile", "notification", "twitter", "facebook"]
 
 
 def get_object_format(object_type):
@@ -166,15 +167,28 @@ cause_input_format = {
     },
     'required': ['wordings']
 }
-
+'''
+channel_type_input_format = {
+    'type': 'object',
+    'properties': {
+        'name': {'enum': channel_type_values}
+        },
+    'required': ['name']
+}'''
+channel_type_input_format = {'enum': channel_type_values}
 
 channel_input_format = {
     'type': 'object',
     'properties': {'name': {'type': 'string', 'maxLength': 250},
                    'max_size': {'type': ['integer', 'null']},
-                   'content_type': {'type': 'string', 'maxLength': 250}
+                   'content_type': {'type': 'string', 'maxLength': 250},
+                   'types': {'type': 'array',
+                             'items':   channel_type_input_format,
+                             "uniqueItems": True,
+                             "minItems": 1
+                   }
     },
-    'required': ['name', 'max_size', 'content_type']
+    'required': ['name', 'max_size', 'content_type', 'types']
 }
 
 message_input_format = {

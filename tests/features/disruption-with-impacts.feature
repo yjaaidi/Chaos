@@ -29,7 +29,7 @@ Feature: Manipulate impacts in a Disruption
         I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
         When I post to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/impacts" with:
         """
-        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "network:JDR:2","type": "network"},{"id": "network:JDR:1","type": "network"}]}
+        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "network:2","type": "network"},{"id": "network:1","type": "network"}]}
         """
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
@@ -63,7 +63,7 @@ Feature: Manipulate impacts in a Disruption
         I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
         When I post to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/impacts" with:
         """
-        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "network:JDR:2","type": "network"},{"id": "network:JDR:1","type": "network"}]}
+        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "network:2","type": "network"},{"id": "network:1","type": "network"}]}
         """
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
@@ -99,7 +99,7 @@ Feature: Manipulate impacts in a Disruption
         I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
         When I post to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/impacts" with:
         """
-        {"severity": {"id": "7ffab211-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "network:JDR:2","type": "network"},{"id": "network:JDR:1","type": "network"}]}
+        {"severity": {"id": "7ffab211-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "network:2","type": "network"},{"id": "network:1","type": "network"}]}
         """
         Then the status code should be "404"
         And the header "Content-Type" should be "application/json"
@@ -134,7 +134,7 @@ Feature: Manipulate impacts in a Disruption
         I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
         When I post to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/impacts" with:
         """
-        {"severity": {"id": "7ffab211-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "network:JDR:2","type": "network"},{"id": "network:JDR:1","type": "network"}]}
+        {"severity": {"id": "7ffab211-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "network:2","type": "network"},{"id": "network:1","type": "network"}]}
         """
         Then the status code should be "404"
         And the header "Content-Type" should be "application/json"
@@ -169,12 +169,12 @@ Feature: Manipulate impacts in a Disruption
         I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
         When I post to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/impacts" with:
         """
-        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "network:JDR:2","type": "network"},{"id": "network:JDR:1","type": "network"}]}
+        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "network:1","type": "network"}]}
         """
         Then the status code should be "201"
         And the header "Content-Type" should be "application/json"
         And the field "impact.objects" should exist
-        And the field "impact.objects.0.id" should be "network:JDR:1"
+        And the field "impact.objects.0.id" should be "network:1"
         And the field "impact.objects.0.type" should be "network"
         And the field "impact.severity.id" should exist
         And the field "impact.severity.wording" should be "good news"
@@ -210,11 +210,11 @@ Feature: Manipulate impacts in a Disruption
         I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
         Given I post to "/disruptions/7ffab232-3d48-4eea-aa2c-22f8680230b6/impacts" with:
         """
-        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "network:JDR:2","type": "network"},{"id": "network:JDR:1","type": "network"}]}
+        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "network:1","type": "network"}]}
         """
         Given I post to "/disruptions/7ffab232-3d48-4eea-aa2c-22f8680230b6/impacts" with:
         """
-        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "network:JDR:2","type": "network"},{"id": "network:JDR:1","type": "network"}]}
+        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "network:1","type": "network"}]}
         """
         When I get "/disruptions/7ffab232-3d48-4eea-aa2c-22f8680230b6/impacts"
         Then the status code should be "200"
@@ -325,7 +325,7 @@ Feature: Manipulate impacts in a Disruption
         I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
         When I post to "/disruptions/AA-VV/impacts" with:
         """
-        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "network:JDR:2","type": "network"},{"id": "network:JDR:1","type": "network"}]}
+        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "network:2","type": "network"},{"id": "network:1","type": "network"}]}
         """
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
@@ -361,7 +361,7 @@ Feature: Manipulate impacts in a Disruption
         I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
         When I post to "/disruptions/7ffab230-3d48-4eea-aa2c-22f8680230b6/impacts" with:
         """
-        {"objects": [{"id": "network:JDR:2","type": "network"},{"id": "network:JDR:1","type": "network"}]}
+        {"objects": [{"id": "network:2","type": "network"},{"id": "network:1","type": "network"}]}
         """
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
@@ -401,20 +401,25 @@ Feature: Manipulate impacts in a Disruption
             | name   | max_size   | created_at          | updated_at          | content_type| id                                   |client_id                             |
             | short  | 140        | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | text/plain  | 4ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
 
+        Given I have the following channel_type in my database:
+            | name   | created_at          | updated_at          | id                                   | channel_id                           |
+            | web    | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 4ffbb230-3d48-4eea-aa2c-21f8680230b6 | 4ffab230-3d48-4eea-aa2c-22f8680230b6 |
+            | mobile | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 4ffbb230-3d48-4eea-aa2c-21f8680230b7 | 4ffab230-3d48-4eea-aa2c-22f8680230b6 |
+
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
         I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
         When I post to "/disruptions/7ffab232-3d48-4eea-aa2c-22f8680230b6/impacts" with:
         """
-        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "messages": [{"text": "message 2","channel": {"id": "4ffab230-3d48-4eea-aa2c-22f8680230b6"}}], "objects": [{"id": "network:JDR:2","type": "network"},{"id": "network:JDR:1","type": "network"}]}
+        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "messages": [{"text": "message 2","channel": {"id": "4ffab230-3d48-4eea-aa2c-22f8680230b6"}}], "objects": [{"id": "network:1","type": "network"}]}
         """
         Then the status code should be "201"
         And the header "Content-Type" should be "application/json"
         And the field "impact" should exist
         And the field "impact.messages" should exist
         And the field "impact.messages.0.text" should be "message 2"
-
+        And the field "impact.messages.0.channel.types" should have a size of 2
 
     Scenario: Add an impact in a disruption on a route
 
@@ -446,12 +451,12 @@ Feature: Manipulate impacts in a Disruption
         I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
         When I post to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/impacts" with:
         """
-        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "route:TAD:1_JDR_TAD-Zonal_20140313_R","type": "route"}]}
+        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "route:M1-1","type": "route"}]}
         """
         Then the status code should be "201"
         And the header "Content-Type" should be "application/json"
         And the field "impact.objects" should exist
-        And the field "impact.objects.0.id" should be "route:TAD:1_JDR_TAD-Zonal_20140313_R"
+        And the field "impact.objects.0.id" should be "route:M1-1"
         And the field "impact.objects.0.type" should be "route"
         And the field "impact.severity.id" should exist
         And the field "impact.severity.wording" should be "good news"

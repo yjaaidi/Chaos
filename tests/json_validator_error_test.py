@@ -3,7 +3,7 @@ from chaos.utils import parse_error
 from jsonschema import validate, ValidationError
 from chaos.formats import impact_input_format, channel_input_format, severity_input_format,\
     cause_input_format, disruptions_input_format, tag_input_format, pt_object_type_values,\
-    pattern_input_format
+    pattern_input_format, channel_type_input_format, channel_type_values
 
 
 def test_wording_is_required_in_severity():
@@ -70,6 +70,30 @@ def test_content_type_is_required_in_channel():
         eq_(parse_error(e), "'content_type' is a required property", True)
 
 
+def test_channel_types_is_required_in_channel():
+    try:
+        validate({"name": "sms", "max_size": 500, "content_type": "text/type"}, channel_input_format)
+        assert False
+    except ValidationError, e:
+        eq_(parse_error(e), "'types' is a required property", True)
+
+
+def test_channel_types_name_is_required_in_channel():
+    try:
+        validate({"name": "sms", "max_size": 500, "content_type": "text/type", "types": []}, channel_input_format)
+        assert False
+    except ValidationError, e:
+        eq_(parse_error(e), "[] is too short", True)
+
+
+def test_name_required_in_channel_types():
+    try:
+        validate({"name": "sms", "max_size": 500, "content_type": "text/type", "types": []}, channel_input_format)
+        assert False
+    except ValidationError, e:
+        eq_(parse_error(e), "[] is too short", True)
+
+
 def test_reference_is_required_in_disruption():
     try:
         validate({"note": "hello", "contributor": "contrib1", "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}}, disruptions_input_format)
@@ -92,8 +116,6 @@ def test_severity_is_required_in_impcat():
         assert False
     except ValidationError, e:
         eq_(parse_error(e), "'severity' is a required property", True)
-
-
 
 
 def test_begin_date_is_required_in_impcat():

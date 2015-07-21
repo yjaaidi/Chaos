@@ -89,10 +89,10 @@ def test_validate_channel_format():
     Draft4Validator.check_schema(formats.channel_input_format)
 
 def test_channels_validation():
-    json = {'name': 'short', 'max_size': 200, 'content_type': 'text/plain'}
+    json = {'name': 'short', 'max_size': 200, 'content_type': 'text/plain', 'types': ['web']}
     validate(json, formats.channel_input_format)
 
-    json = {'name': 'short', 'max_size': 200, 'content_type': ''}
+    json = {'name': 'short', 'max_size': 200, 'content_type': '', 'types': ['web']}
     validate(json, formats.channel_input_format)
 
 @raises(ValidationError)
@@ -100,11 +100,16 @@ def test_channel_validation_attributs_mandatory():
     json = {'name': 'short', 'max_size': 200}
     validate(json, formats.channel_input_format)
 
-
 @raises(ValidationError)
 def test_channel_validation_name_has_max_length():
     json = {'name': 's'*251, 'max_size': 200, 'content_type': 'text/plain'}
     validate(json, formats.channel_input_format)
+
+@raises(ValidationError)
+def test_channel_types_validation_mandatory():
+    json = {'name': 'short', 'max_size': 200, 'content_type': '', 'types': []}
+    validate(json, formats.channel_input_format)
+
 
 def test_validate_object_format():
     Draft4Validator.check_schema(formats.object_input_format)
