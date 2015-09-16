@@ -162,7 +162,6 @@ def populate_pt_objects(impact, impact_pb):
                     populate_informed_entitie(via, via_pb)
 
 
-
 def populate_impact(disruption, disruption_pb):
     for impact in disruption.impacts:
         if impact.status == "published":
