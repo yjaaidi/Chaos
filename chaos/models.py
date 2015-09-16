@@ -423,7 +423,6 @@ class Impact(TimestampMixin, db.Model):
     severity = db.relationship('Severity', backref='impacts', lazy='joined')
     objects = db.relationship("PTobject", secondary=associate_impact_pt_object, lazy='joined', order_by="PTobject.type, PTobject.uri")
     patterns = db.relationship('Pattern', backref='impact', lazy='joined')
-    send_notifications = False
 
     def __repr__(self):
         return '<Impact %r>' % self.id
@@ -444,11 +443,11 @@ class Impact(TimestampMixin, db.Model):
         d['severity'] = self.severity
         d['messages'] = self.messages
         d['application_period_patterns'] = self.patterns
-        d['send_notifications'] = self.send_notifications
         return d
 
     def __init__(self, objects=None):
         self.id = str(uuid.uuid1())
+        self.send_notifications = False
 
     def archive(self):
         """

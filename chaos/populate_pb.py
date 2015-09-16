@@ -168,7 +168,7 @@ def populate_impact(disruption, disruption_pb):
         if impact.status == "published":
             impact_pb = disruption_pb.impacts.add()
             impact_pb.id = impact.id
-            if impact.send_notifications == True:
+            if hasattr(impact, 'send_notifications') and impact.send_notifications == True:
                 impact_pb.send_notifications = impact.send_notifications
             created_upated_at(impact, impact_pb)
             populate_severity(impact_pb, impact.severity)
