@@ -11,6 +11,8 @@ def get_disruption(with_via=True, with_routes=True):
     disruption = chaos.models.Disruption()
     disruption.cause = chaos.models.Cause()
     disruption.cause.wording = "CauseTest"
+    disruption.cause.category = chaos.models.Category()
+    disruption.cause.category.name = "CategoryTest"
     disruption.reference = "DisruptionTest"
     localization = chaos.models.PTobject()
     localization.uri = "stop_area:123"
@@ -211,6 +213,7 @@ def test_disruption():
     eq_(disruption_pb.reference,  disruption.reference)
     eq_(disruption_pb.cause.wording,  disruption.cause.wording)
     eq_(len(disruption_pb.cause.wordings), 2)
+    eq_(disruption_pb.cause.category.name, disruption.cause.category.name)
     eq_(len(disruption_pb.localization),  1)
     eq_(disruption_pb.localization[0].uri,  disruption.localizations[0].uri)
     eq_(len(disruption_pb.tags),  2)

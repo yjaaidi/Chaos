@@ -192,6 +192,11 @@ def populate_tag(disruption, disruption_pb):
             created_upated_at(tag, tag_pb)
 
 
+def populate_category(category, category_pb):
+    category_pb.id = category.id
+    category_pb.name = category.name
+
+
 def populate_cause(cause, cause_pb):
     cause_pb.id = cause.id
     cause_pb.wording = cause.wording
@@ -199,6 +204,7 @@ def populate_cause(cause, cause_pb):
         wording_pb = cause_pb.wordings.add()
         wording_pb.key = wording.key
         wording_pb.value = wording.value
+    populate_category(cause.category, cause_pb.category)
 
 
 def populate_disruption(disruption, disruption_pb):
