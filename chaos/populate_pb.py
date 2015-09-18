@@ -204,7 +204,8 @@ def populate_cause(cause, cause_pb):
         wording_pb = cause_pb.wordings.add()
         wording_pb.key = wording.key
         wording_pb.value = wording.value
-    populate_category(cause.category, cause_pb.category)
+    if cause.category:
+        populate_category(cause.category, cause_pb.category)
 
 
 def populate_disruption(disruption, disruption_pb):
