@@ -419,7 +419,7 @@ Feature: update disruption
         I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
         When I put to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3" with:
         """
-        {"reference":"foobarz", "contributor": "contrib1", "cause":{"id":"7ffab230-3d48-4eea-aa2c-22f8680230b6"}, "localization":[{"id": "stop_area:PTVIN", "type": "stop_area"}]}
+        {"reference":"foobarz", "contributor": "contrib1", "cause":{"id":"7ffab230-3d48-4eea-aa2c-22f8680230b6"}, "localization":[{"id": "stop_area:JDR:SA:PTVIN", "type": "stop_area"}]}
         """
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
@@ -449,7 +449,7 @@ Feature: update disruption
         I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
         When I put to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3" with:
         """
-        {"reference":"foobarz", "contributor": "contrib1", "cause":{"id":"7ffab230-3d48-4eea-aa2c-22f8680230b6"}, "localization":[{"id": "stop_area:PTVIN", "type": "stop_area"}, {"id": "stop_area:BERAU", "type": "stop_area"}]}
+        {"reference":"foobarz", "contributor": "contrib1", "cause":{"id":"7ffab230-3d48-4eea-aa2c-22f8680230b6"}, "localization":[{"id": "stop_area:JDR:SA:PTVIN", "type": "stop_area"}, {"id": "stop_area:JDR:SA:ABBES", "type": "stop_area"}]}
         """
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
@@ -475,8 +475,8 @@ Feature: update disruption
 
         Given I have the following ptobject in my database:
             | type         | uri                                              | created_at          | id                                         |
-            | stop_area    | stop_area:BERAU                                  | 2014-04-04T23:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b6       |
-            | stop_area    | stop_area:CHVIN                                  | 2014-04-04T23:52:12 | 2ffab232-3d48-4eea-aa2c-22f8680230b6       |
+            | stop_area    | stop_area:JDR:SA:ABBES                           | 2014-04-04T23:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b6       |
+            | stop_area    | stop_area:JDR:SA:PTVIN                           | 2014-04-04T23:52:12 | 2ffab232-3d48-4eea-aa2c-22f8680230b6       |
 
         Given I have the relation associate_disruption_pt_object in my database:
             | pt_object_id                                  | disruption_id                        |
@@ -489,7 +489,7 @@ Feature: update disruption
         I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
         When I put to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3" with:
         """
-        {"reference":"foobarz", "contributor": "contrib1", "cause":{"id":"7ffab230-3d48-4eea-aa2c-22f8680230b6"}, "localization":[{"id": "stop_area:PTVIN", "type": "stop_area"}, {"id": "stop_area:BERAU", "type": "stop_area"}]}
+        {"reference":"foobarz", "contributor": "contrib1", "cause":{"id":"7ffab230-3d48-4eea-aa2c-22f8680230b6"}, "localization":[{"id": "stop_area:JDR:SA:PTVIN", "type": "stop_area"}, {"id": "stop_area:JDR:SA:ABBES", "type": "stop_area"}]}
         """
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
@@ -515,8 +515,8 @@ Feature: update disruption
 
         Given I have the following ptobject in my database:
             | type         | uri                                              | created_at          | id                                         |
-            | stop_area    | stop_area:BERAU                                  | 2014-04-04T23:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b6       |
-            | stop_area    | stop_area:CHVIN                                  | 2014-04-04T23:52:12 | 2ffab232-3d48-4eea-aa2c-22f8680230b6       |
+            | stop_area    | stop_area:JDR:SA:ABBES                           | 2014-04-04T23:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b6       |
+            | stop_area    | stop_area:JDR:SA:PTVIN                           | 2014-04-04T23:52:12 | 2ffab232-3d48-4eea-aa2c-22f8680230b6       |
 
         Given I have the relation associate_disruption_pt_object in my database:
             | pt_object_id                                  | disruption_id                        |
@@ -529,12 +529,12 @@ Feature: update disruption
         I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
         When I put to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3" with:
         """
-        {"reference":"foobarz", "contributor": "contrib1", "cause":{"id":"7ffab230-3d48-4eea-aa2c-22f8680230b6"}, "localization":[{"id": "stop_area:BERAU", "type": "stop_area"}]}
+        {"reference":"foobarz", "contributor": "contrib1", "cause":{"id":"7ffab230-3d48-4eea-aa2c-22f8680230b6"}, "localization":[{"id": "stop_area:JDR:SA:ABBES", "type": "stop_area"}]}
         """
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
         And the field "disruption.localization" should have a size of 1
-        And the field "disruption.localization.0.id" should be "stop_area:BERAU"
+        And the field "disruption.localization.0.id" should be "stop_area:JDR:SA:ABBES"
 
    Scenario: I can update with add 0 localization and associate_disruption_tag is not empty (2 element)
 
@@ -556,8 +556,8 @@ Feature: update disruption
 
         Given I have the following ptobject in my database:
             | type         | uri                                              | created_at          | id                                         |
-            | stop_area    | stop_area:BERAU                                  | 2014-04-04T23:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b6       |
-            | stop_area    | stop_area:CHVIN                                  | 2014-04-04T23:52:12 | 2ffab232-3d48-4eea-aa2c-22f8680230b6       |
+            | stop_area    | stop_area:JDR:SA:ABBES                           | 2014-04-04T23:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b6       |
+            | stop_area    | stop_area:JDR:SA:PTVIN                           | 2014-04-04T23:52:12 | 2ffab232-3d48-4eea-aa2c-22f8680230b6       |
 
         Given I have the relation associate_disruption_pt_object in my database:
             | pt_object_id                                  | disruption_id                        |
@@ -596,7 +596,7 @@ Feature: update disruption
 
         Given I have the following ptobject in my database:
             | type         | uri                                              | created_at          | id                                         |
-            | stop_area    | stop_area:CHVIN                                  | 2014-04-04T23:52:12 | 2ffab232-3d48-4eea-aa2c-22f8680230b6       |
+            | stop_area    | stop_area:JDR:SA:PTVIN                           | 2014-04-04T23:52:12 | 2ffab232-3d48-4eea-aa2c-22f8680230b6       |
 
         Given I have the relation associate_disruption_pt_object in my database:
             | pt_object_id                                  | disruption_id                        |
@@ -608,7 +608,7 @@ Feature: update disruption
         I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
         When I put to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3" with:
         """
-        {"reference":"foobarz", "contributor": "contrib1", "cause":{"id":"7ffab230-3d48-4eea-aa2c-22f8680230b6"}, "localization":[{"id": "stop_area:CHVIN", "type": "stop_area"}, {"id": "stop_area:BERAU", "type": "stop_area"}]}
+        {"reference":"foobarz", "contributor": "contrib1", "cause":{"id":"7ffab230-3d48-4eea-aa2c-22f8680230b6"}, "localization":[{"id": "stop_area:JDR:SA:PTVIN", "type": "stop_area"}, {"id": "stop_area:JDR:SA:ABBES", "type": "stop_area"}]}
         """
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"

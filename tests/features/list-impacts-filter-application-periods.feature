@@ -471,8 +471,8 @@ Feature: list impacts by application periods
 
         Given I have the following ptobject in my database:
             | type      | uri                    | created_at          | updated_at          | id                                         |
-            | stop_area | stop_area:AGNET        | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b6       |
-            | stop_area | stop_area:BARBE        | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 2ffab232-3d48-4eea-aa2c-22f8680230b6       |
+            | stop_area | stop_area:JDR:SA:AGNET | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b6       |
+            | stop_area | stop_area:JDR:SA:BARBE | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 2ffab232-3d48-4eea-aa2c-22f8680230b6       |
 
         Given I have the relation associate_impact_pt_object in my database:
             | pt_object_id                               | impact_id                            |
@@ -486,9 +486,9 @@ Feature: list impacts by application periods
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
         And the field "objects" should have a size of 2
-        And the field "objects.0.id" should be "stop_area:BARBE"
+        And the field "objects.0.id" should be "stop_area:JDR:SA:BARBE"
         And the field "objects.0.impacts" should have a size of 1
-        And the field "objects.1.id" should be "stop_area:AGNET"
+        And the field "objects.1.id" should be "stop_area:JDR:SA:AGNET"
         And the field "objects.1.impacts" should have a size of 1
 
 
@@ -544,8 +544,8 @@ Feature: list impacts by application periods
 
         Given I have the following ptobject in my database:
             | type      | uri                    | created_at          | updated_at          | id                                         |
-            | stop_area | stop_area:AGNET        | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b6       |
-            | stop_area | stop_area:BARBE        | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 2ffab232-3d48-4eea-aa2c-22f8680230b6       |
+            | stop_area | stop_area:JDR:SA:AGNET | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b6       |
+            | stop_area | stop_area:JDR:SA:BARBE | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 2ffab232-3d48-4eea-aa2c-22f8680230b6       |
 
         Given I have the relation associate_impact_pt_object in my database:
             | pt_object_id                               | impact_id                            |
@@ -559,9 +559,9 @@ Feature: list impacts by application periods
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
         And the field "objects" should have a size of 2
-        And the field "objects.0.id" should be "stop_area:BARBE"
+        And the field "objects.0.id" should be "stop_area:JDR:SA:BARBE"
         And the field "objects.0.impacts" should have a size of 1
-        And the field "objects.1.id" should be "stop_area:AGNET"
+        And the field "objects.1.id" should be "stop_area:JDR:SA:AGNET"
         And the field "objects.1.impacts" should have a size of 1
 
 #
