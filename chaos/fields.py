@@ -350,7 +350,8 @@ impact_fields = {
     'disruption': FieldUrlDisruption(),
     'messages': fields.List(fields.Nested(message_fields)),
     'application_period_patterns':
-        fields.List(fields.Nested(application_period_pattern_fields), attribute='patterns')
+        fields.List(fields.Nested(application_period_pattern_fields), attribute='patterns'),
+    'send_notifications': fields.Raw
 }
 
 one_impact_fields = {
