@@ -547,7 +547,6 @@ Feature: Manipulate impacts in a Disruption
         And the field "impact.self.href" should exist
         And the field "impact.send_notifications" should be "False"
 
-    @send
     Scenario: Add an impact in a disruption without send_notifications
 
         Given I have the following clients in my database:
@@ -588,4 +587,4 @@ Feature: Manipulate impacts in a Disruption
         And the field "impact.severity.wording" should be "good news"
         And the field "impact.disruption.href" should exist
         And the field "impact.self.href" should exist
-        And the field "impact.send_notifications" should be "False"
+        And the field "impact.send_notifications" should be "True"
