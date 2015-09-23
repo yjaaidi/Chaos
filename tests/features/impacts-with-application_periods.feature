@@ -36,7 +36,7 @@ Feature: Manipulate impacts in a Disruption
         And the field "impact.application_periods" should exist
         And the field "impact.severity.wording" should be "good news"
         And the field "impact.application_periods" should have a size of 2
-        
+
     Scenario: Add an impact in a disruption with two PTobjects and two application_periods
 
         Given I have the following clients in my database:
