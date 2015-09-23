@@ -307,6 +307,7 @@ Create one valid disruption with impacts
                                 "type": "line"
                             }
                         ]
+                        "send_notifications": true,
                     }
                 ]
             }
@@ -517,7 +518,8 @@ Retrieve one existing disruption:
                 "impacts":[{ "severity": {"id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657ea"},
                              "application_periods": [{"begin": "2014-04-31T16:52:00Z","end": "2014-05-22T02:15:00Z"}]
                           },{ "id":"7ffab230-3d48-4eea-aa2c-22f8680230b6", "severity": {"id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657ea"},
-                             "application_periods": [{"begin": "2014-04-31T16:52:00Z","end": "2014-05-22T02:15:00Z"}]
+                             "application_periods": [{"begin": "2014-04-31T16:52:00Z","end": "2014-05-22T02:15:00Z"}],
+                             "send_notifications": true
                           }]
             }
 
@@ -670,6 +672,7 @@ Return all impacts by ptobject.
 										"end": "2014-05-22T02:15:00Z"
 									}
 							],
+							"send_notifications": true,
 							"created_at": "2014-04-31T16:52:18Z",
 							"id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657ea",
 							"messages": [
@@ -766,6 +769,7 @@ Return all impacts of a impact.
 				"self": {"href": "https://chaos.apiary-mock.com/disruptions/3d1f32b2-e8df-11e3-8c3e-0008ca8657ea/impacts/3d1f42b2-e8df-11e3-8c3e-0008ca8657ea"},
 				"created_at": "2014-04-31T16:52:18Z",
 				"updated_at": "2014-04-31T16:55:18Z",
+				"send_notifications": true,
 				"severity": {
 					"id": "3d1f42b2-e8df-11e3-8c3e-0008ca86c7ea",
 					"wordings" : [{"key": "msg", "value": "Bonne nouvelle"}],
@@ -949,7 +953,8 @@ Create a new impact.
                             ]
                         }
                     }
-                ]
+                ],
+                "send_notifications": true
             }
 
 - response 200 (application/json)
@@ -962,6 +967,7 @@ Create a new impact.
                     "self": {"href": "https://chaos.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-8c3e-0008ca8647ea/impacts/3d1f42b2-e8df-11e3-8c3e-0008ca8617ea"},
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": "2014-04-31T16:55:18Z",
+                    "send_notifications": true,
                     "severity": {
                         "id": "3d1f42b2-e8df-11e3-8c3e-0008ca861aea",
                         "wordings" : [{"key": "msg", "value": "Bonne nouvelle"}],
@@ -1098,6 +1104,7 @@ Create a new impact.
                     "self": {"href": "https://ogv2ws.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-8c3e-0008ca8647ea/impacts/3d1f42b2-e8df-11e3-8c3e-0008ca8617ea"},
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": "2014-04-31T16:55:18Z",
+                    "send_notifications": true,
                     "severity": {
                         "id": "3d1f42b2-e8df-11e3-8c3e-0008ca861aea",
                         "wordings" : [{"key": "msg", "value": "Bonne nouvelle"}],
@@ -1227,6 +1234,7 @@ Create a new impact.
                     "self": {"href": "https://ogv2ws.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-8c3e-0008ca8647ea/impacts/3d1f42b2-e8df-11e3-8c3e-0008ca8617ea"},
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": "2014-04-31T16:55:18Z",
+                    "send_notifications": true,
                     "severity": {
                         "id": "3d1f42b2-e8df-11e3-8c3e-0008ca861aea",
                         "wordings" : [{"key": "msg", "value": "Bonne nouvelle"}],
@@ -1419,6 +1427,7 @@ Archive one impact.
                     "self": {"href": "https://chaos.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-8c3e-0008ca8647ea/impacts/3d1f42b2-e8df-11e3-8c3e-0008ca8617ea"},
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": "2014-04-31T16:55:18Z",
+                    "send_notifications": true,
                     "severity": {
                         "id": "3d1f42b2-e8df-11e3-8c3e-0008ca861aea",
                         "wordings" : [{"key": "msg", "value": "Bonne nouvelle"}],
