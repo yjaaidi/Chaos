@@ -158,7 +158,6 @@ class Category(TimestampMixin, db.Model):
     is_visible = db.Column(db.Boolean, unique=False, nullable=False, default=True)
     client_id = db.Column(UUID, db.ForeignKey(Client.id), nullable=False)
     client = db.relationship('Client', backref='categories', lazy='joined')
-    causes = db.relationship('Cause', backref='category', lazy='joined')
     __table_args__ = (db.UniqueConstraint('name', 'client_id', name='category_name_client_id_key'),)
 
     def __init__(self):
@@ -212,6 +211,7 @@ class Cause(TimestampMixin, db.Model):
     client_id = db.Column(UUID, db.ForeignKey(Client.id), nullable=False)
     client = db.relationship('Client', backref='causes', lazy='joined')
     category_id = db.Column(UUID, db.ForeignKey(Category.id), nullable=True)
+    category = db.relationship('Category', backref='causes', lazy='joined')
     wordings = db.relationship("Wording", secondary=associate_wording_cause, backref="causes")
 
     def __init__(self):
