@@ -225,12 +225,12 @@ Feature: Create disruption
         I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
         When I post to "/disruptions" with:
         """
-        {"reference": "foo", "contributor": "contrib1", "publication_period": {"begin": "2014-06-24T10:35:00Z", "end": null}, "localization":[{"id":"stop_area:CHVIN", "type": "stop_area"}], "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}}
+        {"reference": "foo", "contributor": "contrib1", "publication_period": {"begin": "2014-06-24T10:35:00Z", "end": null}, "localization":[{"id":"stop_area:JDR:SA:CHVIN", "type": "stop_area"}], "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}}
         """
         Then the status code should be "201"
         And the header "Content-Type" should be "application/json"
         And the field "disruption.localization" should exist
-        And the field "disruption.localization.0.id" should be "stop_area:CHVIN"
+        And the field "disruption.localization.0.id" should be "stop_area:JDR:SA:CHVIN"
         And the field "disruption.localization.0.type" should be "stop_area"
         And the field "disruption.version" should be "1"
 

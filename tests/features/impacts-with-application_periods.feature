@@ -66,14 +66,14 @@ Feature: Manipulate impacts in a Disruption
         I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
         When I post to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/impacts" with:
         """
-        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "network:1","type": "network"}, {"id": "line:M1","type": "line"}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"},{"begin": "2014-04-29T16:52:00Z","end": "2014-05-22T02:15:00Z"}]}
+        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "network:JDR:1","type": "network"}, {"id": "line:JDR:M1","type": "line"}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"},{"begin": "2014-04-29T16:52:00Z","end": "2014-05-22T02:15:00Z"}]}
         """
         Then the status code should be "201"
         And the header "Content-Type" should be "application/json"
         And the field "impact.objects" should exist
-        And the field "impact.objects.0.id" should be "network:1"
+        And the field "impact.objects.0.id" should be "network:JDR:1"
         And the field "impact.objects.0.type" should be "network"
-        And the field "impact.objects.1.id" should be "line:M1"
+        And the field "impact.objects.1.id" should be "line:JDR:M1"
         And the field "impact.objects.1.type" should be "line"
 
     Scenario: Add an impact in a disruption with two application_periods without PTobject
