@@ -136,6 +136,7 @@ def fill_and_add_line_section(navitia, impact_id, all_objects, pt_object_json):
         line_object = fill_and_get_pt_object(navitia, all_objects, line_section_json['line'])
     except exceptions.ObjectUnknown:
         raise exceptions.ObjectUnknown('{} {} doesn\'t exist'.format(line_section_json['line']['type'], line_section_json['line']['id']))
+
     line_section.line = line_object
 
     try:
@@ -234,6 +235,9 @@ def create_or_update_impact(disruption, json_impact, navitia, impact_id=None):
         impact_bd = models.Impact()
         impact_bd.severity = models.Severity.get(json_impact['severity']['id'], disruption.client.id)
     impact_bd.disruption_id = disruption.id
+    if 'send_notifications' in json_impact:
+        impact_bd.send_notifications = json_impact['send_notifications']
+
     db.session.add(impact_bd)
     #The ptobject is not added in the database before commit. If we have duplicate ptobject
     #in the json we have to handle it by using a dictionary. Each time we add a ptobject, we also
@@ -286,3 +290,11 @@ def manage_impacts(disruption, json, navitia):
         difference = set(impacts_db) - set(impacts_json)
         for diff in difference:
             impacts_db[diff].archive()
+
+
+def manage_channel_types(db_object, json_types):
+    db_object.delete_channel_types()
+    for json_type in json_types:
+        db_channel_type = models.ChannelType()
+        db_channel_type.name = json_type
+        db_object.insert_channel_type(db_channel_type)

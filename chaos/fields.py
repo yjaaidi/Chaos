@@ -31,6 +31,7 @@ from flask_restful import fields, url_for
 from flask import current_app, request
 from utils import make_pager, get_coverage, get_token
 from chaos.navitia import Navitia
+from chaos import exceptions
 
 
 class FieldDateTime(fields.Raw):
@@ -42,11 +43,17 @@ class FieldDateTime(fields.Raw):
 
 class FieldTime(fields.Raw):
     def format(self, value):
-        if value:
+        try:
             return value.strftime('%H:%M')
-        else:
+        except:
             return None
 
+class FieldDate(fields.Raw):
+    def format(self, value):
+        if value:
+            return value.strftime('%Y-%m-%d')
+        else:
+            return None
 
 class FieldPaginateImpacts(fields.Raw):
     '''
@@ -75,7 +82,6 @@ class FieldObjectName(fields.Raw):
             current_app.config['NAVITIA_URL'],
             get_coverage(request),
             get_token(request))
-
         response = navitia.get_pt_object(obj.uri, obj.type)
         if response and 'name' in response:
             return response['name']
@@ -92,6 +98,7 @@ class FieldLocalization(fields.Raw):
             response = navitia.get_pt_object(
                 localization.uri,
                 localization.type)
+
             if response and 'name' in response:
                 response["type"] = localization.type
                 to_return.append(response)
@@ -112,6 +119,11 @@ class FieldContributor(fields.Raw):
             return obj.contributor.contributor_code
         return None
 
+class FieldChannelTypes(fields.Raw):
+    def output(self, key, obj):
+        if hasattr(obj, 'channel_types'):
+            return [ch.name for ch in obj.channel_types]
+        return None
 
 href_field = {
     "href": fields.String
@@ -225,7 +237,6 @@ error_fields = {
     'error': fields.Nested({'message': fields.String})
 }
 
-
 severity_fields = {
     'id': fields.Raw,
     'wording': fields.Raw,
@@ -278,6 +289,10 @@ objectTC_fields = {
         allow_null=True)
 }
 
+channel_type_fields = {
+    'name': fields.Raw
+}
+
 channel_fields = {
     'id': fields.Raw,
     'name': fields.Raw,
@@ -285,6 +300,7 @@ channel_fields = {
     'content_type': fields.Raw,
     'created_at': FieldDateTime,
     'updated_at': FieldDateTime,
+    'types': FieldChannelTypes(),
     'self': {'href': fields.Url('channel', absolute=True)}
 }
 
@@ -316,8 +332,8 @@ time_slot_fields = {
 }
 
 application_period_pattern_fields = {
-    'start_date': FieldDateTime,
-    'end_date': FieldDateTime,
+    'start_date': FieldDate,
+    'end_date': FieldDate,
     'weekly_pattern': fields.Raw,
     'time_slots': fields.List(fields.Nested(time_slot_fields, display_null=False), attribute='time_slots')
 }
@@ -334,7 +350,8 @@ impact_fields = {
     'disruption': FieldUrlDisruption(),
     'messages': fields.List(fields.Nested(message_fields)),
     'application_period_patterns':
-        fields.List(fields.Nested(application_period_pattern_fields), attribute='patterns')
+        fields.List(fields.Nested(application_period_pattern_fields), attribute='patterns'),
+    'send_notifications': fields.Raw
 }
 
 one_impact_fields = {

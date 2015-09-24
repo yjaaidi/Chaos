@@ -471,8 +471,8 @@ Feature: list impacts by application periods
 
         Given I have the following ptobject in my database:
             | type      | uri                    | created_at          | updated_at          | id                                         |
-            | network   | network:JDR:1          | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b6       |
-            | network   | network:JDR:2          | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 2ffab232-3d48-4eea-aa2c-22f8680230b6       |
+            | stop_area | stop_area:JDR:SA:AGNET | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b6       |
+            | stop_area | stop_area:JDR:SA:BARBE | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 2ffab232-3d48-4eea-aa2c-22f8680230b6       |
 
         Given I have the relation associate_impact_pt_object in my database:
             | pt_object_id                               | impact_id                            |
@@ -482,13 +482,13 @@ Feature: list impacts by application periods
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
         I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
-        When I get "/impacts?pt_object_type=network&start_date=2014-01-02T23:52:12Z&end_date=2014-01-21T23:52:12Z"
+        When I get "/impacts?pt_object_type=stop_area&start_date=2014-01-02T23:52:12Z&end_date=2014-01-21T23:52:12Z"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
         And the field "objects" should have a size of 2
-        And the field "objects.0.id" should be "network:JDR:1"
+        And the field "objects.0.id" should be "stop_area:JDR:SA:BARBE"
         And the field "objects.0.impacts" should have a size of 1
-        And the field "objects.1.id" should be "network:JDR:2"
+        And the field "objects.1.id" should be "stop_area:JDR:SA:AGNET"
         And the field "objects.1.impacts" should have a size of 1
 
 
@@ -544,8 +544,8 @@ Feature: list impacts by application periods
 
         Given I have the following ptobject in my database:
             | type      | uri                    | created_at          | updated_at          | id                                         |
-            | network   | network:JDR:1          | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b6       |
-            | network   | network:JDR:2          | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 2ffab232-3d48-4eea-aa2c-22f8680230b6       |
+            | stop_area | stop_area:JDR:SA:AGNET | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b6       |
+            | stop_area | stop_area:JDR:SA:BARBE | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 2ffab232-3d48-4eea-aa2c-22f8680230b6       |
 
         Given I have the relation associate_impact_pt_object in my database:
             | pt_object_id                               | impact_id                            |
@@ -555,13 +555,13 @@ Feature: list impacts by application periods
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
         I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
-        When I get "/impacts?pt_object_type=network&start_date=2013-12-02T23:52:12Z&end_date=2014-05-21T23:52:12Z"
+        When I get "/impacts?pt_object_type=stop_area&start_date=2013-12-02T23:52:12Z&end_date=2014-05-21T23:52:12Z"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
         And the field "objects" should have a size of 2
-        And the field "objects.0.id" should be "network:JDR:1"
+        And the field "objects.0.id" should be "stop_area:JDR:SA:BARBE"
         And the field "objects.0.impacts" should have a size of 1
-        And the field "objects.1.id" should be "network:JDR:2"
+        And the field "objects.1.id" should be "stop_area:JDR:SA:AGNET"
         And the field "objects.1.impacts" should have a size of 1
 
 #

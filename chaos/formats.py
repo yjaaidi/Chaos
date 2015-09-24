@@ -30,16 +30,19 @@
 __all__ = ['disruptions_input_format', 'publication_status_values',
            'severity_input_format', 'id_format', 'cause_input_format']
 import re
+import pytz
 #see http://json-schema.org/
 
 datetime_pattern = '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$'
+date_pattern = '^\d{4}-\d{2}-\d{2}$'
 id_format_text = '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
 id_format = re.compile(id_format_text)
-pt_object_type_values = ["network", "stop_area", "line", "line_section", "route"]
+pt_object_type_values = ["network", "stop_area", "line", "line_section", "route", "stop_point"]
 #Here Order of values is strict and is used to create query filters.
 publication_status_values = ["past", "ongoing", "coming"]
 time_pattern = '^\d{2}:\d{2}$'
 week_pattern = '^[0-1]{7,7}$'
+channel_type_values = ["web", "sms", "email", "mobile", "notification", "twitter", "facebook"]
 
 
 def get_object_format(object_type):
@@ -164,15 +167,28 @@ cause_input_format = {
     },
     'required': ['wordings']
 }
-
+'''
+channel_type_input_format = {
+    'type': 'object',
+    'properties': {
+        'name': {'enum': channel_type_values}
+        },
+    'required': ['name']
+}'''
+channel_type_input_format = {'enum': channel_type_values}
 
 channel_input_format = {
     'type': 'object',
     'properties': {'name': {'type': 'string', 'maxLength': 250},
                    'max_size': {'type': ['integer', 'null']},
-                   'content_type': {'type': 'string', 'maxLength': 250}
+                   'content_type': {'type': 'string', 'maxLength': 250},
+                   'types': {'type': 'array',
+                             'items':   channel_type_input_format,
+                             "uniqueItems": True,
+                             "minItems": 1
+                   }
     },
-    'required': ['name', 'max_size', 'content_type']
+    'required': ['name', 'max_size', 'content_type', 'types']
 }
 
 message_input_format = {
@@ -202,16 +218,17 @@ time_slot_input_format = {
 pattern_input_format = {
     'type': 'object',
     'properties': {
-        'start_date': {'type': ['string'], 'pattern': datetime_pattern},
-        'end_date': {'type': ['string'], 'pattern': datetime_pattern},
+        'start_date': {'type': ['string'], 'pattern': date_pattern},
+        'end_date': {'type': ['string'], 'pattern': date_pattern},
         'weekly_pattern': {'type': ['string'], 'pattern': week_pattern},
         'time_slots': {'type': 'array',
                       'items': time_slot_input_format,
                       "uniqueItems": True,
                       "minItems": 1
-        }
+        },
+        'time_zone': {'type': ['string'], 'enum': pytz.all_timezones}
     },
-    'required': ['start_date', 'end_date', 'weekly_pattern', 'time_slots']
+    'required': ['start_date', 'end_date', 'weekly_pattern', 'time_slots', 'time_zone']
 }
 
 impact_input_format = {
@@ -237,7 +254,8 @@ impact_input_format = {
         'application_period_patterns': {'type': 'array',
                                         'items': pattern_input_format,
                                         'uniqueItems': True
-        }
+        },
+        'send_notifications': {'type': 'boolean'}
     },
     'required': ['severity']
 }

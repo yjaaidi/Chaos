@@ -1,6 +1,6 @@
 from nose.tools import *
 import chaos
-from chaos.populate_pb import populate_pb, get_pt_object_type, get_pos_time
+from chaos.populate_pb import populate_pb, get_pt_object_type, get_pos_time, get_channel_type
 from aniso8601 import parse_datetime
 import datetime
 
@@ -11,6 +11,8 @@ def get_disruption(with_via=True, with_routes=True):
     disruption = chaos.models.Disruption()
     disruption.cause = chaos.models.Cause()
     disruption.cause.wording = "CauseTest"
+    disruption.cause.category = chaos.models.Category()
+    disruption.cause.category.name = "CategoryTest"
     disruption.reference = "DisruptionTest"
     localization = chaos.models.PTobject()
     localization.uri = "stop_area:123"
@@ -41,6 +43,7 @@ def get_disruption(with_via=True, with_routes=True):
     impact.severity.wording = "SeverityTest"
     impact.severity.color = "#FFFF00"
     impact.severity.effect = "no_service"
+    impact.status = "published"
 
     # ApplicationPeriods
     application_period = chaos.models.ApplicationPeriods()
@@ -106,6 +109,11 @@ def get_disruption(with_via=True, with_routes=True):
     ptobject.type = "route"
     impact.objects.append(ptobject)
 
+    ptobject = chaos.models.PTobject()
+    ptobject.uri = "stop_point:AA"
+    ptobject.type = "stop_point"
+    impact.objects.append(ptobject)
+
     # Messages
     message = chaos.models.Message()
     message.text = "Meassage1 test"
@@ -113,6 +121,12 @@ def get_disruption(with_via=True, with_routes=True):
     message.channel.name = "sms"
     message.channel.max_size = 60
     message.channel.content_type = "text"
+    channel_type = chaos.models.ChannelType()
+    channel_type.name = 'web'
+    message.channel.channel_types.append(channel_type)
+    channel_type = chaos.models.ChannelType()
+    channel_type.name = 'sms'
+    message.channel.channel_types.append(channel_type)
     impact.messages.append(message)
 
     message = chaos.models.Message()
@@ -121,8 +135,60 @@ def get_disruption(with_via=True, with_routes=True):
     message.channel.name = "email"
     message.channel.max_size = 250
     message.channel.content_type = "html"
-    impact.status = "published"
+    channel_type = chaos.models.ChannelType()
+    channel_type.name = 'web'
+    message.channel.channel_types.append(channel_type)
+    channel_type = chaos.models.ChannelType()
+    channel_type.name = 'email'
+    message.channel.channel_types.append(channel_type)
+
     impact.messages.append(message)
+
+    disruption.impacts.append(impact)
+
+    # Impacts with send_notifications
+    impact = chaos.models.Impact()
+    impact.severity = chaos.models.Severity()
+    impact.severity.wording = "SeverityTest"
+    impact.severity.color = "#FFFF00"
+    impact.severity.effect = "no_service"
+    impact.status = "published"
+    impact.send_notifications = True
+
+    # ApplicationPeriods
+    application_period = chaos.models.ApplicationPeriods()
+    application_period.start_date = parse_datetime("2014-04-12T16:52:00").replace(tzinfo=None)
+    application_period.end_date = parse_datetime("2015-04-12T16:52:00").replace(tzinfo=None)
+    impact.application_periods.append(application_period)
+
+    # PTobject
+    ptobject = chaos.models.PTobject()
+    ptobject.uri = "stop_area:125"
+    ptobject.type = "stop_area"
+    impact.objects.append(ptobject)
+
+    disruption.impacts.append(impact)
+
+    # Impacts with send_notifications false
+    impact = chaos.models.Impact()
+    impact.severity = chaos.models.Severity()
+    impact.severity.wording = "SeverityTest"
+    impact.severity.color = "#FFFF00"
+    impact.severity.effect = "no_service"
+    impact.status = "published"
+    impact.send_notifications = False
+
+    # ApplicationPeriods
+    application_period = chaos.models.ApplicationPeriods()
+    application_period.start_date = parse_datetime("2014-04-12T16:52:00").replace(tzinfo=None)
+    application_period.end_date = parse_datetime("2015-04-12T16:52:00").replace(tzinfo=None)
+    impact.application_periods.append(application_period)
+
+    # PTobject
+    ptobject = chaos.models.PTobject()
+    ptobject.uri = "stop_area:124"
+    ptobject.type = "stop_area"
+    impact.objects.append(ptobject)
 
     disruption.impacts.append(impact)
 
@@ -147,6 +213,7 @@ def test_disruption():
     eq_(disruption_pb.reference,  disruption.reference)
     eq_(disruption_pb.cause.wording,  disruption.cause.wording)
     eq_(len(disruption_pb.cause.wordings), 2)
+    eq_(disruption_pb.cause.category.name, disruption.cause.category.name)
     eq_(len(disruption_pb.localization),  1)
     eq_(disruption_pb.localization[0].uri,  disruption.localizations[0].uri)
     eq_(len(disruption_pb.tags),  2)
@@ -154,13 +221,13 @@ def test_disruption():
     eq_(disruption_pb.tags[1].name,  disruption.tags[1].name)
 
 
-    eq_(len(disruption_pb.impacts),  1)
+    eq_(len(disruption_pb.impacts),  3)
     eq_(disruption_pb.impacts[0].severity.wording,  "SeverityTest")
     eq_(disruption_pb.impacts[0].severity.color,  "#FFFF00")
     eq_(disruption_pb.impacts[0].severity.effect, chaos.gtfs_realtime_pb2.Alert.NO_SERVICE)
 
     eq_(len(disruption_pb.impacts[0].application_periods),  1)
-    eq_(len(disruption_pb.impacts[0].informed_entities), 4)
+    eq_(len(disruption_pb.impacts[0].informed_entities), 5)
 
     eq_(disruption_pb.impacts[0].informed_entities[0].uri, disruption.impacts[0].objects[0].uri)
     eq_(disruption_pb.impacts[0].informed_entities[0].pt_object_type,
@@ -177,6 +244,10 @@ def test_disruption():
     eq_(disruption_pb.impacts[0].informed_entities[3].uri, disruption.impacts[0].objects[3].uri)
     eq_(disruption_pb.impacts[0].informed_entities[3].pt_object_type,
     get_pt_object_type(disruption.impacts[0].objects[3].type))
+
+    eq_(disruption_pb.impacts[0].informed_entities[4].uri, disruption.impacts[0].objects[4].uri)
+    eq_(disruption_pb.impacts[0].informed_entities[4].pt_object_type,
+    get_pt_object_type(disruption.impacts[0].objects[4].type))
 
     eq_(disruption_pb.impacts[0].informed_entities[2].pt_line_section.line.uri,
     disruption.impacts[0].objects[2].line_section.line.uri)
@@ -201,12 +272,22 @@ def test_disruption():
     eq_(disruption_pb.impacts[0].messages[0].channel.max_size, disruption.impacts[0].messages[0].channel.max_size)
     eq_(disruption_pb.impacts[0].messages[0].channel.content_type,
     disruption.impacts[0].messages[0].channel.content_type)
+    eq_(disruption_pb.impacts[0].messages[0].channel.types[0], get_channel_type(disruption.impacts[0].messages[0].channel.channel_types[0].name))
+    eq_(disruption_pb.impacts[0].messages[0].channel.types[1], get_channel_type(disruption.impacts[0].messages[0].channel.channel_types[1].name))
 
     eq_(disruption_pb.impacts[0].messages[1].text, disruption.impacts[0].messages[1].text)
     eq_(disruption_pb.impacts[0].messages[1].channel.name, disruption.impacts[0].messages[1].channel.name)
     eq_(disruption_pb.impacts[0].messages[1].channel.max_size, disruption.impacts[0].messages[1].channel.max_size)
     eq_(disruption_pb.impacts[0].messages[1].channel.content_type,
     disruption.impacts[0].messages[1].channel.content_type)
+    eq_(disruption_pb.impacts[0].messages[1].channel.types[0], get_channel_type(disruption.impacts[0].messages[1].channel.channel_types[0].name))
+    eq_(disruption_pb.impacts[0].messages[1].channel.types[1], get_channel_type(disruption.impacts[0].messages[1].channel.channel_types[1].name))
+
+    eq_(disruption_pb.impacts[0].HasField('send_notifications'), False)
+    eq_(disruption_pb.impacts[1].HasField('send_notifications'), True)
+    eq_(disruption_pb.impacts[1].send_notifications, True)
+    eq_(disruption_pb.impacts[2].HasField('send_notifications'), False)
+
 
 
 def test_disruption_without_via():
@@ -224,12 +305,12 @@ def test_disruption_without_via():
     eq_(disruption_pb.tags[1].name, disruption.tags[1].name)
 
 
-    eq_(len(disruption_pb.impacts), 1)
+    eq_(len(disruption_pb.impacts), 3)
     eq_(disruption_pb.impacts[0].severity.wording, "SeverityTest")
     eq_(disruption_pb.impacts[0].severity.color, "#FFFF00")
 
     eq_(len(disruption_pb.impacts[0].application_periods), 1)
-    eq_(len(disruption_pb.impacts[0].informed_entities), 4)
+    eq_(len(disruption_pb.impacts[0].informed_entities), 5)
 
     eq_(disruption_pb.impacts[0].informed_entities[0].uri, disruption.impacts[0].objects[0].uri)
     eq_(disruption_pb.impacts[0].informed_entities[0].pt_object_type,
@@ -271,13 +352,22 @@ def test_disruption_without_via():
     eq_(disruption_pb.impacts[0].messages[0].channel.max_size, disruption.impacts[0].messages[0].channel.max_size)
     eq_(disruption_pb.impacts[0].messages[0].channel.content_type,
     disruption.impacts[0].messages[0].channel.content_type)
+    eq_(disruption_pb.impacts[0].messages[0].channel.types[0], get_channel_type(disruption.impacts[0].messages[0].channel.channel_types[0].name))
+    eq_(disruption_pb.impacts[0].messages[0].channel.types[1], get_channel_type(disruption.impacts[0].messages[0].channel.channel_types[1].name))
+
 
     eq_(disruption_pb.impacts[0].messages[1].text, disruption.impacts[0].messages[1].text)
     eq_(disruption_pb.impacts[0].messages[1].channel.name, disruption.impacts[0].messages[1].channel.name)
     eq_(disruption_pb.impacts[0].messages[1].channel.max_size, disruption.impacts[0].messages[1].channel.max_size)
     eq_(disruption_pb.impacts[0].messages[1].channel.content_type,
     disruption.impacts[0].messages[1].channel.content_type)
+    eq_(disruption_pb.impacts[0].messages[1].channel.types[0], get_channel_type(disruption.impacts[0].messages[1].channel.channel_types[0].name))
+    eq_(disruption_pb.impacts[0].messages[1].channel.types[1], get_channel_type(disruption.impacts[0].messages[1].channel.channel_types[1].name))
 
+    eq_(disruption_pb.impacts[0].HasField('send_notifications'), False)
+    eq_(disruption_pb.impacts[1].HasField('send_notifications'), True)
+    eq_(disruption_pb.impacts[1].send_notifications, True)
+    eq_(disruption_pb.impacts[2].HasField('send_notifications'), False)
 
 def test_disruption_without_routes():
     disruption = get_disruption(True, False)
@@ -336,13 +426,22 @@ def test_disruption_without_routes():
     eq_(disruption_pb.impacts[0].messages[0].channel.max_size, disruption.impacts[0].messages[0].channel.max_size)
     eq_(disruption_pb.impacts[0].messages[0].channel.content_type,
     disruption.impacts[0].messages[0].channel.content_type)
+    eq_(disruption_pb.impacts[0].messages[0].channel.types[0], get_channel_type(disruption.impacts[0].messages[0].channel.channel_types[0].name))
+    eq_(disruption_pb.impacts[0].messages[0].channel.types[1], get_channel_type(disruption.impacts[0].messages[0].channel.channel_types[1].name))
+
 
     eq_(disruption_pb.impacts[0].messages[1].text, disruption.impacts[0].messages[1].text)
     eq_(disruption_pb.impacts[0].messages[1].channel.name, disruption.impacts[0].messages[1].channel.name)
     eq_(disruption_pb.impacts[0].messages[1].channel.max_size, disruption.impacts[0].messages[1].channel.max_size)
     eq_(disruption_pb.impacts[0].messages[1].channel.content_type,
     disruption.impacts[0].messages[1].channel.content_type)
+    eq_(disruption_pb.impacts[0].messages[1].channel.types[0], get_channel_type(disruption.impacts[0].messages[1].channel.channel_types[0].name))
+    eq_(disruption_pb.impacts[0].messages[1].channel.types[1], get_channel_type(disruption.impacts[0].messages[1].channel.channel_types[1].name))
 
+    eq_(disruption_pb.impacts[0].HasField('send_notifications'), False)
+    eq_(disruption_pb.impacts[1].HasField('send_notifications'), True)
+    eq_(disruption_pb.impacts[1].send_notifications, True)
+    eq_(disruption_pb.impacts[2].HasField('send_notifications'), False)
 
 def test_disruption_without_routes():
     disruption = get_disruption(False, False)
@@ -359,12 +458,12 @@ def test_disruption_without_routes():
     eq_(disruption_pb.tags[1].name, disruption.tags[1].name)
 
 
-    eq_(len(disruption_pb.impacts), 1)
+    eq_(len(disruption_pb.impacts), 3)
     eq_(disruption_pb.impacts[0].severity.wording, "SeverityTest")
     eq_(disruption_pb.impacts[0].severity.color, "#FFFF00")
 
     eq_(len(disruption_pb.impacts[0].application_periods), 1)
-    eq_(len(disruption_pb.impacts[0].informed_entities), 4)
+    eq_(len(disruption_pb.impacts[0].informed_entities), 5)
     eq_(disruption_pb.impacts[0].informed_entities[0].uri, disruption.impacts[0].objects[0].uri)
     eq_(disruption_pb.impacts[0].informed_entities[0].pt_object_type,
     get_pt_object_type(disruption.impacts[0].objects[0].type))
@@ -402,11 +501,21 @@ def test_disruption_without_routes():
     eq_(disruption_pb.impacts[0].messages[0].channel.max_size, disruption.impacts[0].messages[0].channel.max_size)
     eq_(disruption_pb.impacts[0].messages[0].channel.content_type,
     disruption.impacts[0].messages[0].channel.content_type)
+    eq_(disruption_pb.impacts[0].messages[0].channel.types[0], get_channel_type(disruption.impacts[0].messages[0].channel.channel_types[0].name))
+    eq_(disruption_pb.impacts[0].messages[0].channel.types[1], get_channel_type(disruption.impacts[0].messages[0].channel.channel_types[1].name))
+
     eq_(disruption_pb.impacts[0].messages[1].text, disruption.impacts[0].messages[1].text)
     eq_(disruption_pb.impacts[0].messages[1].channel.name, disruption.impacts[0].messages[1].channel.name)
     eq_(disruption_pb.impacts[0].messages[1].channel.max_size, disruption.impacts[0].messages[1].channel.max_size)
     eq_(disruption_pb.impacts[0].messages[1].channel.content_type,
     disruption.impacts[0].messages[1].channel.content_type)
+    eq_(disruption_pb.impacts[0].messages[1].channel.types[0], get_channel_type(disruption.impacts[0].messages[1].channel.channel_types[0].name))
+    eq_(disruption_pb.impacts[0].messages[1].channel.types[1], get_channel_type(disruption.impacts[0].messages[1].channel.channel_types[1].name))
+
+    eq_(disruption_pb.impacts[0].HasField('send_notifications'), False)
+    eq_(disruption_pb.impacts[1].HasField('send_notifications'), True)
+    eq_(disruption_pb.impacts[1].send_notifications, True)
+    eq_(disruption_pb.impacts[2].HasField('send_notifications'), False)
 
 def test_disruption_is_deleted():
     disruption = get_disruption()

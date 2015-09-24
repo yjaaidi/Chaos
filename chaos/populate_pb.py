@@ -43,11 +43,27 @@ def get_pt_object_type(type):
         "stop_area": chaos_pb2.PtObject.stop_area,
         "line": chaos_pb2.PtObject.line,
         "line_section": chaos_pb2.PtObject.line_section,
-        "route": chaos_pb2.PtObject.route
+        "route": chaos_pb2.PtObject.route,
+        "stop_point": chaos_pb2.PtObject.stop_point
     }
     if type in collection:
         return collection[type]
     return chaos_pb2.PtObject.unkown_type
+
+
+def get_channel_type(type):
+    collection = {
+        "web": chaos_pb2.Channel.web,
+        "sms": chaos_pb2.Channel.sms,
+        "email": chaos_pb2.Channel.email,
+        "mobile": chaos_pb2.Channel.mobile,
+        "notification": chaos_pb2.Channel.notification,
+        "twitter": chaos_pb2.Channel.twitter,
+        "facebook": chaos_pb2.Channel.facebook
+    }
+    if type in collection:
+        return collection[type]
+    return chaos_pb2.Channel.unkown_type
 
 
 def created_upated_at(src, dest):
@@ -96,12 +112,19 @@ def populate_application_periods(impact, impact_pb):
             application_period_pb.end = get_pos_time(application_period.end_date)
 
 
+def populate_channel_type(channel, channel_pb):
+    if channel.channel_types:
+        for type in channel.channel_types:
+            channel_pb.types.append(get_channel_type(type.name))
+
+
 def populate_channel(channel_pb, channel):
     channel_pb.id = channel.id
     channel_pb.name = channel.name
     channel_pb.content_type = channel.content_type
     channel_pb.max_size = long(channel.max_size)
     created_upated_at(channel, channel_pb)
+    populate_channel_type(channel, channel_pb)
 
 
 def populate_messages(impact, impact_pb):
@@ -139,12 +162,13 @@ def populate_pt_objects(impact, impact_pb):
                     populate_informed_entitie(via, via_pb)
 
 
-
 def populate_impact(disruption, disruption_pb):
     for impact in disruption.impacts:
         if impact.status == "published":
             impact_pb = disruption_pb.impacts.add()
             impact_pb.id = impact.id
+            if hasattr(impact, 'send_notifications') and impact.send_notifications == True:
+                impact_pb.send_notifications = impact.send_notifications
             created_upated_at(impact, impact_pb)
             populate_severity(impact_pb, impact.severity)
             populate_application_periods(impact, impact_pb)
@@ -168,6 +192,11 @@ def populate_tag(disruption, disruption_pb):
             created_upated_at(tag, tag_pb)
 
 
+def populate_category(category, category_pb):
+    category_pb.id = category.id
+    category_pb.name = category.name
+
+
 def populate_cause(cause, cause_pb):
     cause_pb.id = cause.id
     cause_pb.wording = cause.wording
@@ -175,6 +204,8 @@ def populate_cause(cause, cause_pb):
         wording_pb = cause_pb.wordings.add()
         wording_pb.key = wording.key
         wording_pb.value = wording.value
+    if cause.category:
+        populate_category(cause.category, cause_pb.category)
 
 
 def populate_disruption(disruption, disruption_pb):

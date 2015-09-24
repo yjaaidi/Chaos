@@ -57,7 +57,8 @@ class TimestampMixin(object):
 DisruptionStatus = db.Enum('published', 'archived', name='disruption_status')
 SeverityEffect = db.Enum('no_service', 'reduced_service', 'significant_delays', 'detour', 'additional_service', 'modified_service', 'other_effect', 'unknown_effect', 'stop_moved', name='severity_effect')
 ImpactStatus = db.Enum('published', 'archived', name='impact_status')
-PtObjectType = db.Enum('network', 'stop_area', 'line', 'line_section', 'route', name='pt_object_type')
+PtObjectType = db.Enum('network', 'stop_area', 'line', 'line_section', 'route', 'stop_point', name='pt_object_type')
+ChannelTypeEnum = db.Enum('web', 'sms', 'email', 'mobile', 'notification', 'twitter', 'facebook')
 
 class Client(TimestampMixin, db.Model):
     __tablename__ = 'client'
@@ -157,7 +158,6 @@ class Category(TimestampMixin, db.Model):
     is_visible = db.Column(db.Boolean, unique=False, nullable=False, default=True)
     client_id = db.Column(UUID, db.ForeignKey(Client.id), nullable=False)
     client = db.relationship('Client', backref='categories', lazy='joined')
-    causes = db.relationship('Cause', backref='category', lazy='joined')
     __table_args__ = (db.UniqueConstraint('name', 'client_id', name='category_name_client_id_key'),)
 
     def __init__(self):
@@ -211,6 +211,7 @@ class Cause(TimestampMixin, db.Model):
     client_id = db.Column(UUID, db.ForeignKey(Client.id), nullable=False)
     client = db.relationship('Client', backref='causes', lazy='joined')
     category_id = db.Column(UUID, db.ForeignKey(Category.id), nullable=True)
+    category = db.relationship('Category', backref='causes', lazy='joined')
     wordings = db.relationship("Wording", secondary=associate_wording_cause, backref="causes")
 
     def __init__(self):
@@ -422,6 +423,7 @@ class Impact(TimestampMixin, db.Model):
     severity = db.relationship('Severity', backref='impacts', lazy='joined')
     objects = db.relationship("PTobject", secondary=associate_impact_pt_object, lazy='joined', order_by="PTobject.type, PTobject.uri")
     patterns = db.relationship('Pattern', backref='impact', lazy='joined')
+    send_notifications = db.Column(db.Boolean, unique=False, nullable=False, default=True)
 
     def __repr__(self):
         return '<Impact %r>' % self.id
@@ -442,6 +444,7 @@ class Impact(TimestampMixin, db.Model):
         d['severity'] = self.severity
         d['messages'] = self.messages
         d['application_period_patterns'] = self.patterns
+        d['send_notifications'] = self.send_notifications
         return d
 
     def __init__(self, objects=None):
@@ -649,6 +652,7 @@ class Channel(TimestampMixin, db.Model):
     is_visible = db.Column(db.Boolean, unique=False, nullable=False, default=True)
     client_id = db.Column(UUID, db.ForeignKey(Client.id), nullable=False)
     client = db.relationship('Client', backref='channels', lazy='joined')
+    channel_types = db.relationship('ChannelType', backref='channel', lazy='joined')
 
     def __init__(self):
         self.id = str(uuid.uuid1())
@@ -656,9 +660,27 @@ class Channel(TimestampMixin, db.Model):
     def __repr__(self):
         return '<Channel %r>' % self.id
 
+    def delete_channel_types(self):
+        """
+        Deletes a channel_type in the channel
+        """
+        index = len(self.channel_types) - 1
+        while index >= 0:
+            type = self.channel_types[index]
+            self.channel_types.remove(type)
+            db.session.delete(type)
+            index -= 1
+
+    def insert_channel_type(self, channel_type):
+        """
+        Adds a channel_type in the channel
+        """
+        self.channel_types.append(channel_type)
+        db.session.add(channel_type)
+
     @classmethod
     def all(cls, client_id):
-        return cls.query.filter_by(client_id=client_id, is_visible=True).all()
+        return cls.query.filter_by(client_id=client_id, is_visible=True).order_by(cls.name). all()
 
     @classmethod
     def get(cls, id, client_id):
@@ -725,8 +747,8 @@ class Pattern(TimestampMixin, db.Model):
     """
     __tablename__ = 'pattern'
     id = db.Column(UUID, primary_key=True)
-    start_date = db.Column(db.DateTime(), nullable=True)
-    end_date = db.Column(db.DateTime(), nullable=True)
+    start_date = db.Column(db.Date(), nullable=True)
+    end_date = db.Column(db.Date(), nullable=True)
     weekly_pattern = db.Column(BIT(7), unique=False, nullable=False)
     impact_id = db.Column(UUID, db.ForeignKey(Impact.id), index=True)
     time_slots = db.relationship('TimeSlot', backref='pattern', lazy='joined')
@@ -767,3 +789,18 @@ class TimeSlot(TimestampMixin, db.Model):
     def __repr__(self):
         return '<TimeSlot %r>' % self.id
 
+class ChannelType(TimestampMixin, db.Model):
+    """
+    represents the types of a channel
+    """
+    __tablename__ = 'channel_type'
+    id = db.Column(UUID, primary_key=True)
+    channel_id = db.Column(UUID, db.ForeignKey(Channel.id), index=True)
+    name = db.Column(ChannelTypeEnum, nullable=False, default='web')
+
+    def __init__(self, channel_id=None):
+        self.id = str(uuid.uuid1())
+        self.channel_id = channel_id
+
+    def __repr__(self):
+        return '<ChannelType %r>' % self.id

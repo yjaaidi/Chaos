@@ -19,7 +19,8 @@ It's an api for blabla
                 "channels": {"href": "https://chaos.apiary-mock.com/channels"},
                 "impactsbyobject": {"href": "https://chaos.apiary-mock.com/impactsbyobject"},
                 "tags": {"href": "https://chaos.apiary-mock.com/tags"},
-                "categories": {"href": "https://chaos.apiary-mock.com/categories"}
+                "categories": {"href": "https://chaos.apiary-mock.com/categories"},
+                "channeltypes": {"href": "http://127.0.0.1:5000/channel_types"}
             }
 
 
@@ -306,6 +307,7 @@ Create one valid disruption with impacts
                                 "type": "line"
                             }
                         ]
+                        "send_notifications": true,
                     }
                 ]
             }
@@ -516,7 +518,8 @@ Retrieve one existing disruption:
                 "impacts":[{ "severity": {"id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657ea"},
                              "application_periods": [{"begin": "2014-04-31T16:52:00Z","end": "2014-05-22T02:15:00Z"}]
                           },{ "id":"7ffab230-3d48-4eea-aa2c-22f8680230b6", "severity": {"id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657ea"},
-                             "application_periods": [{"begin": "2014-04-31T16:52:00Z","end": "2014-05-22T02:15:00Z"}]
+                             "application_periods": [{"begin": "2014-04-31T16:52:00Z","end": "2014-05-22T02:15:00Z"}],
+                             "send_notifications": true
                           }]
             }
 
@@ -625,12 +628,12 @@ Archive one disruption.
 Return all impacts by ptobject.
 ##Parameters
 
-| Name                 | description                                                                    | required | default                     |
-| -------------------- | ------------------------------------------------------------------------------ | -------- | --------------------------- |
-| pt_object_type       | filter by ptobject, possible value are: network, stoparea, line, line_section  | false    |                             |
-| uri[]                | filtre by ptobject.uri                                                         | false    |                             |
-| start_date           | filtre by application period :star date                                        | false    | Now():00:00:00Z             |
-| end_date             | filtre by application period :end date                                         | false    | Now():23:59:59Z             |
+| Name                 | description                                                                                | required | default                     |
+| -------------------- | ------------------------------------------------------------------------------------------ | -------- | --------------------------- |
+| pt_object_type       | filter by ptobject, possible value are: network, stoparea, line, line_section, stop_point  | false    |                             |
+| uri[]                | filtre by ptobject.uri                                                                     | false    |                             |
+| start_date           | filtre by application period :star date                                                    | false    | Now():00:00:00Z             |
+| end_date             | filtre by application period :end date                                                     | false    | Now():23:59:59Z             |
 
 - response 200 (application/json)
     * Body
@@ -669,6 +672,7 @@ Return all impacts by ptobject.
 										"end": "2014-05-22T02:15:00Z"
 									}
 							],
+							"send_notifications": true,
 							"created_at": "2014-04-31T16:52:18Z",
 							"id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657ea",
 							"messages": [
@@ -679,7 +683,8 @@ Return all impacts by ptobject.
 										"id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657da",
 										"max_size": 140,
 										"name": "message court",
-										"updated_at": "2014-04-31T16:55:18Z"
+										"updated_at": "2014-04-31T16:55:18Z",
+										"types": ["web", "mobile"]
 										},
 										"created_at": "2014-04-31T16:52:18Z",
 										"id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657ca",
@@ -697,7 +702,8 @@ Return all impacts by ptobject.
 											"id": "3d1f42b2-e8df-11e3-8c3e-0008cb8657ea",
 											"max_size": null,
 											"name": "message long",
-											"updated_at": "2014-04-31T16:55:18Z"
+											"updated_at": "2014-04-31T16:55:18Z",
+										    "types": ["sms", "notification"]
 										},
 										"created_at": "2014-04-31T16:52:18Z",
 										"id": "3d1f42b2-e8df-11e3-8c3e-0008ca8257ea",
@@ -763,6 +769,7 @@ Return all impacts of a impact.
 				"self": {"href": "https://chaos.apiary-mock.com/disruptions/3d1f32b2-e8df-11e3-8c3e-0008ca8657ea/impacts/3d1f42b2-e8df-11e3-8c3e-0008ca8657ea"},
 				"created_at": "2014-04-31T16:52:18Z",
 				"updated_at": "2014-04-31T16:55:18Z",
+				"send_notifications": true,
 				"severity": {
 					"id": "3d1f42b2-e8df-11e3-8c3e-0008ca86c7ea",
 					"wordings" : [{"key": "msg", "value": "Bonne nouvelle"}],
@@ -793,7 +800,8 @@ Return all impacts of a impact.
 							"content_type": "text/plain",
 							"created_at": "2014-04-31T16:52:18Z",
 							"updated_at": "2014-04-31T16:55:18Z",
-							"max_size": 140
+							"max_size": 140,
+							"types": ["web", "mobile"]
 						}
 					},
 					{
@@ -812,7 +820,8 @@ Return all impacts of a impact.
 							"content_type": "text/markdown",
 							"created_at": "2014-04-31T16:52:18Z",
 							"updated_at": "2014-04-31T16:55:18Z",
-							"max_size": null
+							"max_size": null,
+							"types": ["web", "mobile"]
 						}
 					}
 				],
@@ -944,7 +953,8 @@ Create a new impact.
                             ]
                         }
                     }
-                ]
+                ],
+                "send_notifications": true
             }
 
 - response 200 (application/json)
@@ -957,6 +967,7 @@ Create a new impact.
                     "self": {"href": "https://chaos.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-8c3e-0008ca8647ea/impacts/3d1f42b2-e8df-11e3-8c3e-0008ca8617ea"},
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": "2014-04-31T16:55:18Z",
+                    "send_notifications": true,
                     "severity": {
                         "id": "3d1f42b2-e8df-11e3-8c3e-0008ca861aea",
                         "wordings" : [{"key": "msg", "value": "Bonne nouvelle"}],
@@ -987,7 +998,8 @@ Create a new impact.
                                 "content_type": "text/plain",
                                 "created_at": "2014-04-31T16:52:18Z",
                                 "updated_at": "2014-04-31T16:55:18Z",
-                                "max_size": 140
+                                "max_size": 140,
+                                "types": ["web", "mobile"]
                             }
                         },
                         {
@@ -1006,7 +1018,8 @@ Create a new impact.
                                 "content_type": "text/markdown",
                                 "created_at": "2014-04-31T16:52:18Z",
                                 "updated_at": "2014-04-31T16:55:18Z",
-                                "max_size": null
+                                "max_size": null,
+                                "types": ["web", "mobile"]
                             }
                         }
                     ],
@@ -1091,6 +1104,7 @@ Create a new impact.
                     "self": {"href": "https://ogv2ws.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-8c3e-0008ca8647ea/impacts/3d1f42b2-e8df-11e3-8c3e-0008ca8617ea"},
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": "2014-04-31T16:55:18Z",
+                    "send_notifications": true,
                     "severity": {
                         "id": "3d1f42b2-e8df-11e3-8c3e-0008ca861aea",
                         "wordings" : [{"key": "msg", "value": "Bonne nouvelle"}],
@@ -1108,7 +1122,8 @@ Create a new impact.
                                 "id": "3d1f42b2-e8df-11e3-8c3e-0002ca8657ea",
                                 "max_size": 140,
                                 "name": "message court",
-                                "updated_at": "2014-04-31T16:55:18Z"
+                                "updated_at": "2014-04-31T16:55:18Z",
+                                "types": ["web", "mobile"]
                                 },
                                 "created_at": "2014-04-31T16:52:18Z",
                                 "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657ca",
@@ -1122,7 +1137,8 @@ Create a new impact.
                                     "id": "3d1f42b2-e8df-11e3-8c3e-0008ca86c7ea",
                                     "max_size": null,
                                     "name": "message long",
-                                    "updated_at": "2014-04-31T16:55:18Z"
+                                    "updated_at": "2014-04-31T16:55:18Z",
+                                    "types": ["web", "mobile"]
                                 },
                                 "created_at": "2014-04-31T16:52:18Z",
                                 "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8257ea",
@@ -1132,8 +1148,8 @@ Create a new impact.
                     ],
                     "application_period_patterns": [
                         {
-                            "end_date": "2015-02-06T16:52:00Z",
-                            "start_date": "2015-02-01T16:52:00Z",
+                            "end_date": "2015-02-06",
+                            "start_date": "2015-02-01",
                             "time_slots": [
                                 {
                                     "begin": "07:45",
@@ -1144,7 +1160,8 @@ Create a new impact.
                                     "end": "20:30"
                                 }
                                 ],
-                            "weekly_pattern": "1111100"
+                            "weekly_pattern": "1111100",
+                            "time_zone": "Europe/Paris"
                         }
                     ],
                     "objects": [
@@ -1217,6 +1234,7 @@ Create a new impact.
                     "self": {"href": "https://ogv2ws.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-8c3e-0008ca8647ea/impacts/3d1f42b2-e8df-11e3-8c3e-0008ca8617ea"},
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": "2014-04-31T16:55:18Z",
+                    "send_notifications": true,
                     "severity": {
                         "id": "3d1f42b2-e8df-11e3-8c3e-0008ca861aea",
                         "wordings" : [{"key": "msg", "value": "Bonne nouvelle"}],
@@ -1234,7 +1252,8 @@ Create a new impact.
                                 "id": "3d1f42b2-e8df-11e3-8c3e-0002ca8657ea",
                                 "max_size": 140,
                                 "name": "message court",
-                                "updated_at": "2014-04-31T16:55:18Z"
+                                "updated_at": "2014-04-31T16:55:18Z",
+                                "types": ["web", "mobile"]
                                 },
                                 "created_at": "2014-04-31T16:52:18Z",
                                 "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657ca",
@@ -1248,7 +1267,8 @@ Create a new impact.
                                     "id": "3d1f42b2-e8df-11e3-8c3e-0008ca86c7ea",
                                     "max_size": null,
                                     "name": "message long",
-                                    "updated_at": "2014-04-31T16:55:18Z"
+                                    "updated_at": "2014-04-31T16:55:18Z",
+                                    "types": ["web", "mobile"]
                                 },
                                 "created_at": "2014-04-31T16:52:18Z",
                                 "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8257ea",
@@ -1258,8 +1278,8 @@ Create a new impact.
                     ],
                     "application_period_patterns": [
                         {
-                            "end_date": "2015-02-06T16:52:00Z",
-                            "start_date": "2015-02-01T16:52:00Z",
+                            "end_date": "2015-02-06",
+                            "start_date": "2015-02-01",
                             "time_slots": [
                                 {
                                     "begin": "07:45",
@@ -1407,6 +1427,7 @@ Archive one impact.
                     "self": {"href": "https://chaos.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-8c3e-0008ca8647ea/impacts/3d1f42b2-e8df-11e3-8c3e-0008ca8617ea"},
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": "2014-04-31T16:55:18Z",
+                    "send_notifications": true,
                     "severity": {
                         "id": "3d1f42b2-e8df-11e3-8c3e-0008ca861aea",
                         "wordings" : [{"key": "msg", "value": "Bonne nouvelle"}],
@@ -1437,7 +1458,8 @@ Archive one impact.
                                 "content_type": "text/plain",
                                 "created_at": "2014-04-31T16:52:18Z",
                                 "updated_at": "2014-04-31T16:55:18Z",
-                                "max_size": 140
+                                "max_size": 140,
+                                "types": ["web", "mobile"]
                             }
                         },
                         {
@@ -1456,7 +1478,8 @@ Archive one impact.
                                 "content_type": "text/markdown",
                                 "created_at": "2014-04-31T16:52:18Z",
                                 "updated_at": "2014-04-31T16:55:18Z",
-                                "max_size": null
+                                "max_size": null,
+                                "types": ["web", "mobile"]
                             }
                         }
                     ],
@@ -1803,6 +1826,19 @@ Archive a tag.
             }
 
 
+#List of channel types [/channel_types]
+
+##Retrieve the list of all channel types [GET]
+
+- response 200 (application/json)
+
+    * Body
+
+            {
+                "channel_types": ["web", "sms", "email", "mobile", "notification", "twitter", "facebook"]
+            }
+
+
 #List of channels [/channels]
 
 ##Retrieve the list of all channels [GET]
@@ -1819,7 +1855,8 @@ Archive a tag.
                         "max_size": 140,
                         "content_type": "text/plain",
                         "created_at": "2014-04-31T16:52:18Z",
-                        "updated_at": "2014-04-31T16:55:18Z"
+                        "updated_at": "2014-04-31T16:55:18Z",
+                        "types": ["sms", "notification"]
                     },
                     {
                         "id": "3d1a42b7-e8df-11e4-8c3e-0008ca8617ea",
@@ -1827,7 +1864,8 @@ Archive a tag.
                         "max_size": 512,
                         "content_type": "text/plain",
                         "created_at": "2014-04-31T16:52:18Z",
-                        "updated_at": "2014-04-31T16:55:18Z"
+                        "updated_at": "2014-04-31T16:55:18Z",
+                        "types": ["mobile"]
                     },
                     {
                         "id": "3d1f42b2-e8df-11e4-8c3e-0008ca8617ea",
@@ -1835,7 +1873,8 @@ Archive a tag.
                         "max_size": null,
                         "content_type": "text/markdown",
                         "created_at": "2014-04-31T16:52:18Z",
-                        "updated_at": "2014-04-31T16:55:18Z"
+                        "updated_at": "2014-04-31T16:55:18Z",
+                        "types": ["web"]
                     }
                 ],
                 "meta": {}
@@ -1853,7 +1892,8 @@ Archive a tag.
                 {
                     "name": "court",
                     "max_size": 140,
-                    "content_type": "text/plain"
+                    "content_type": "text/plain",
+                    "types": ["sms", "notification"]
                 }
 
 - response 200 (application/json)
@@ -1867,7 +1907,8 @@ Archive a tag.
                     "max_size": 140,
                     "content_type": "text/plain",
                     "created_at": "2014-04-31T16:52:18Z",
-                    "updated_at": "2014-04-31T16:55:18Z"
+                    "updated_at": "2014-04-31T16:55:18Z",
+                    "types": ["sms", "notification"]
                 },
                 "meta": {}
             }

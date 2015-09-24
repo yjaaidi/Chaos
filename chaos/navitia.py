@@ -43,7 +43,8 @@ class Navitia(object):
             "network": "networks",
             "stop_area": "stop_areas",
             "line": "lines",
-            "route": "routes"
+            "route": "routes",
+            "stop_point": "stop_points"
         }
 
     def get_pt_object(self, uri, object_type):
@@ -61,7 +62,7 @@ class Navitia(object):
         except (requests.exceptions.RequestException):
             logging.getLogger(__name__).exception('call to navitia failed')
             #currently we reraise the previous exceptions
-            raise
+            raise exceptions.NavitiaError('call to navitia failed, data : {}'.format(query))
 
         if response:
             json = response.json()

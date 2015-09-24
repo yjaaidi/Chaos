@@ -20,8 +20,8 @@ class NavitiaMock(object):
 
 
 @all_requests
-def navitia_mock_timeout(url, request):
-    raise requests.exceptions.Timeout()
+def navitia_mock_navitia_error(url, request):
+    raise exceptions.NavitiaError
 
 @all_requests
 def navitia_mock_unknown_object_type(url, request):
@@ -42,15 +42,15 @@ def test_get_pt_object():
     with HTTMock(mock):
         eq_(n.get_pt_object('network:foo', 'network'), None)
 
-@raises(requests.exceptions.Timeout)
-def test_navitia_timeout():
+@raises(exceptions.NavitiaError)
+def test_navitia_request_error():
     n = Navitia('http://api.navitia.io', 'jdr')
-    with HTTMock(navitia_mock_timeout):
+    with HTTMock(navitia_mock_navitia_error):
         n.get_pt_object('network:foo','network')
 
 
 @raises(exceptions.ObjectTypeUnknown)
-def test_navitia_timeout():
+def test_navitia_unknown_object_type():
     n = Navitia('http://api.navitia.io', 'jdr')
     with HTTMock(navitia_mock_unknown_object_type):
         n.get_pt_object('network:foo','aaaaaaaa')
