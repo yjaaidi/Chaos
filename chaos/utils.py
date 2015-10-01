@@ -330,6 +330,18 @@ def get_coverage(request):
     raise HeaderAbsent("The parameter X-Coverage does not exist in the header")
 
 
+def get_one_period(date, weekly_pattern, begin_time, end_time, time_zone):
+    week_day = datetime.weekday(date)
+    if (len(weekly_pattern) > week_day) and (weekly_pattern[week_day] == '1'):
+        begin_datetime = get_utc_datetime_by_zone(datetime.combine(date, begin_time), time_zone)
+        if end_time < begin_time:
+            date += timedelta(days=1)
+        end_datetime = get_utc_datetime_by_zone(datetime.combine(date, end_time), time_zone)
+        period = (begin_datetime, end_datetime)
+        return period
+    return None
+
+
 def get_application_periods_by_pattern(start_date, end_date, weekly_pattern, time_slots, time_zone):
     result = []
     for time_slot in time_slots:
@@ -337,11 +349,8 @@ def get_application_periods_by_pattern(start_date, end_date, weekly_pattern, tim
         end_time = parse_time(time_slot['end']).replace(tzinfo=None)
         temp_date = start_date
         while temp_date <= end_date:
-            week_day = datetime.weekday(temp_date)
-            if (len(weekly_pattern) > week_day) and (weekly_pattern[week_day] == '1'):
-                begin_datetime = get_utc_datetime_by_zone(datetime.combine(temp_date, begin_time), time_zone)
-                end_datetime = get_utc_datetime_by_zone(datetime.combine(temp_date, end_time), time_zone)
-                period = (begin_datetime, end_datetime)
+            period = get_one_period(temp_date, weekly_pattern, begin_time, end_time, time_zone)
+            if period:
                 result.append(period)
             temp_date += timedelta(days=1)
     return result
