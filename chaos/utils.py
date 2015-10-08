@@ -121,7 +121,8 @@ def get_utc_datetime_by_zone(value, time_zone):
     """
     try:
         tz = pytz.timezone(time_zone)
-        return ((tz.localize(value, is_dst=None)).astimezone(pytz.utc)).replace(tzinfo=None)
+
+        return tz.localize(value).astimezone(pytz.utc).replace(tzinfo=None)
     except:
         raise ValueError("The {} argument value is not valid, you gave: {}"
                          .format(value, time_zone))

@@ -159,3 +159,53 @@ def test_pattern_midnight_change_several_days_with_last_day_valid_():
     eq_(app_periods[0][1].strftime(date_format), "2015-09-23T01:00:00Z")
     eq_(app_periods[1][0].strftime(date_format), "2015-09-23T16:00:00Z")
     eq_(app_periods[1][1].strftime(date_format), "2015-09-24T01:00:00Z")
+
+
+def test_pattern_midnight_change_to_winter_2_oclock():
+    date_format = "%Y-%m-%dT%H:%M:%SZ"
+    start_date = parse_datetime("2015-10-24T00:00:00Z").replace(tzinfo=None)
+    end_date = parse_datetime("2015-10-24T00:00:00Z").replace(tzinfo=None)
+    weekly_pattern = "1111111"
+    time_slots = [{"begin": "22:00", "end": "02:00"}]
+    app_periods = get_application_periods_by_pattern(start_date, end_date, weekly_pattern, time_slots, 'Europe/Paris')
+    eq_(len(app_periods), 1)
+    #Difference of one hour for begin and two hours for end between UTC and Europe/Paris
+    eq_(app_periods[0][0].strftime(date_format), "2015-10-24T20:00:00Z")
+    eq_(app_periods[0][1].strftime(date_format), "2015-10-25T01:00:00Z")
+
+
+def test_pattern_midnight_change_to_winter():
+    date_format = "%Y-%m-%dT%H:%M:%SZ"
+    start_date = parse_datetime("2015-10-23T00:00:00Z").replace(tzinfo=None)
+    end_date = parse_datetime("2015-10-25T00:00:00Z").replace(tzinfo=None)
+    weekly_pattern = "1111111"
+    time_slots = [{"begin": "22:00", "end": "02:00"}]
+    app_periods = get_application_periods_by_pattern(start_date, end_date, weekly_pattern, time_slots, 'Europe/Paris')
+    eq_(len(app_periods), 3)
+    #Difference of two hours between UTC and Europe/Paris
+    eq_(app_periods[0][0].strftime(date_format), "2015-10-23T20:00:00Z")
+    eq_(app_periods[0][1].strftime(date_format), "2015-10-24T00:00:00Z")
+
+    #Difference of one hour for begin and two hours for end between UTC and Europe/Paris
+    eq_(app_periods[1][0].strftime(date_format), "2015-10-24T20:00:00Z")
+    eq_(app_periods[1][1].strftime(date_format), "2015-10-25T01:00:00Z")
+
+    #Difference of one hour between UTC and Europe/Paris
+    eq_(app_periods[2][0].strftime(date_format), "2015-10-25T21:00:00Z")
+    eq_(app_periods[2][1].strftime(date_format), "2015-10-26T01:00:00Z")
+
+
+def test_pattern_midnight_change_to_summer():
+    date_format = "%Y-%m-%dT%H:%M:%SZ"
+    start_date = parse_datetime("2016-03-26T00:00:00Z").replace(tzinfo=None)
+    end_date = parse_datetime("2016-03-27T00:00:00Z").replace(tzinfo=None)
+    weekly_pattern = "1111111"
+    time_slots = [{"begin": "22:00", "end": "02:00"}]
+    app_periods = get_application_periods_by_pattern(start_date, end_date, weekly_pattern, time_slots, 'Europe/Paris')
+    eq_(len(app_periods), 2)
+    #Difference of two hours between UTC and Europe/Paris
+    eq_(app_periods[0][0].strftime(date_format), "2016-03-26T21:00:00Z")
+    eq_(app_periods[0][1].strftime(date_format), "2016-03-27T01:00:00Z")
+    #Difference of one hour between UTC and Europe/Paris
+    eq_(app_periods[1][0].strftime(date_format), "2016-03-27T20:00:00Z")
+    eq_(app_periods[1][1].strftime(date_format), "2016-03-28T00:00:00Z")
