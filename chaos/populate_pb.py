@@ -211,6 +211,9 @@ def populate_cause(cause, cause_pb):
 def populate_disruption(disruption, disruption_pb):
     disruption_pb.id = disruption.id
     disruption_pb.reference = disruption.reference
+    if disruption.contributor and disruption.contributor.contributor_code:
+        disruption_pb.contributor = disruption.contributor.contributor_code
+
     if disruption.note:
         disruption_pb.note = disruption.note
     created_upated_at(disruption, disruption_pb)
