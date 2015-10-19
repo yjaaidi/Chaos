@@ -126,10 +126,12 @@ def fill_and_add_line_section(navitia, impact_id, all_objects, pt_object_json):
     """
     ptobject = models.PTobject()
     mapper.fill_from_json(ptobject, pt_object_json, mapper.object_mapping)
-    ptobject.uri = ":".join((ptobject.uri, impact_id))
 
     #Here we treat all the objects in line_section like line, start_point, end_point
     line_section_json = pt_object_json['line_section']
+
+    ptobject.uri = ":".join((line_section_json['line']['id'], ptobject.id))
+
     line_section = models.LineSection(ptobject.id)
 
     try:
