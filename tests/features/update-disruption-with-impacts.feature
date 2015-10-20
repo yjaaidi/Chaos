@@ -223,7 +223,7 @@ Feature: Update Disruption and impacts
         And in the database for the impact "7ffab232-3d47-4eea-aa2c-22f8680230b6" the field "status" should be "published"
         And in the database for the impact "1ffab232-3d47-4eea-aa2c-22f8680230b6" the field "status" should be "published"
 
-    Scenario: update of disruption with 2 impact in database with attrubut "impacts" but empty in json
+    Scenario: update of disruption with 2 impact in database with attribute "impacts" but empty in json
 
         Given I have the following clients in my database:
             | client_code   | created_at          | updated_at          | id                                   |
