@@ -5,11 +5,16 @@ from aniso8601 import parse_datetime
 import datetime
 
 
-def get_disruption(with_via=True, with_routes=True):
+def get_disruption(contributor_code, with_via=True, with_routes=True):
 
     # Disruption
     disruption = chaos.models.Disruption()
     disruption.cause = chaos.models.Cause()
+    if contributor_code:
+        disruption.contributor = chaos.models.Contributor()
+        disruption.contributor_id = disruption.contributor.id
+        disruption.contributor.contributor_code = contributor_code
+
     disruption.cause.wording = "CauseTest"
     disruption.cause.category = chaos.models.Category()
     disruption.cause.category.name = "CategoryTest"
@@ -205,11 +210,11 @@ def test_get_pos_time():
 
 
 def test_disruption():
-    disruption = get_disruption()
+    disruption = get_disruption(None)
     feed_entity = populate_pb(disruption).entity[0]
     eq_(feed_entity.is_deleted, False)
     disruption_pb = feed_entity.Extensions[chaos.chaos_pb2.disruption]
-
+    eq_(disruption_pb.HasField('contributor'),  False)
     eq_(disruption_pb.reference,  disruption.reference)
     eq_(disruption_pb.cause.wording,  disruption.cause.wording)
     eq_(len(disruption_pb.cause.wordings), 2)
@@ -291,11 +296,12 @@ def test_disruption():
 
 
 def test_disruption_without_via():
-    disruption = get_disruption(False)
+    disruption = get_disruption('KISIO-DIGITAL', False)
     feed_entity = populate_pb(disruption).entity[0]
     eq_(feed_entity.is_deleted, False)
     disruption_pb = feed_entity.Extensions[chaos.chaos_pb2.disruption]
 
+    eq_(disruption_pb.contributor,  disruption.contributor.contributor_code)
     eq_(disruption_pb.reference, disruption.reference)
     eq_(disruption_pb.cause.wording, disruption.cause.wording)
     eq_(len(disruption_pb.localization), 1)
@@ -370,7 +376,7 @@ def test_disruption_without_via():
     eq_(disruption_pb.impacts[2].HasField('send_notifications'), False)
 
 def test_disruption_without_routes():
-    disruption = get_disruption(True, False)
+    disruption = get_disruption('KISIO-DIGITAL', True, False)
     feed_entity = populate_pb(disruption).entity[0]
     eq_(feed_entity.is_deleted, False)
     disruption_pb = feed_entity.Extensions[chaos.chaos_pb2.disruption]
@@ -444,7 +450,7 @@ def test_disruption_without_routes():
     eq_(disruption_pb.impacts[2].HasField('send_notifications'), False)
 
 def test_disruption_without_routes():
-    disruption = get_disruption(False, False)
+    disruption = get_disruption('KISIO-DIGITAL', False, False)
     feed_entity = populate_pb(disruption).entity[0]
     eq_(feed_entity.is_deleted, False)
     disruption_pb = feed_entity.Extensions[chaos.chaos_pb2.disruption]
@@ -518,7 +524,7 @@ def test_disruption_without_routes():
     eq_(disruption_pb.impacts[2].HasField('send_notifications'), False)
 
 def test_disruption_is_deleted():
-    disruption = get_disruption()
+    disruption = get_disruption('KISIO-DIGITAL')
     disruption.status = 'archived'
     feed_entity = populate_pb(disruption).entity[0]
 
@@ -526,14 +532,14 @@ def test_disruption_is_deleted():
 
 @raises(AttributeError)
 def test_disruption_with_impact_without_severity():
-    disruption = get_disruption()
+    disruption = get_disruption('KISIO-DIGITAL')
     del disruption.impacts[0].severity
     feed_entity = populate_pb(disruption)
 
 
 @raises(AttributeError)
 def test_disruption_without_cause():
-    disruption = get_disruption()
+    disruption = get_disruption('KISIO-DIGITAL')
     del disruption.cause
     feed_entity = populate_pb(disruption)
 
