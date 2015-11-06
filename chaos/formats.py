@@ -54,6 +54,14 @@ def get_object_format(object_type):
         'required': ['id', 'type']
     }
 
+key_value_input_format = {
+    'type': 'object',
+    'properties': {'key': {'type': 'string', 'maxLength': 250, 'minLength': 1},
+                   'value': {'type': 'string', 'maxLength': 250}
+                   },
+    'required': ['key', 'value']
+}
+
 date_period_format = {
     'type': 'object',
     'properties': {
@@ -86,6 +94,12 @@ line_section_format = {
                        'type': 'array',
                        'items': get_object_format('stop_area'),
                        "uniqueItems": True
+                   },
+                   'metas': {
+                        'type': 'array',
+                        'items': key_value_input_format,
+                        "uniqueItems": True,
+                        "minItems": 1
                    }
     },
     'required': ['line', 'start_point', 'end_point']
@@ -122,14 +136,6 @@ category_input_format = {
     'required': ['name']
 }
 
-
-key_value_input_format = {
-    'type': 'object',
-    'properties': {'key': {'type': 'string', 'maxLength': 250, 'minLength': 1},
-                   'value': {'type': 'string', 'maxLength': 250}
-                   },
-    'required': ['key', 'value']
-}
 
 severity_input_format = {
     'type': 'object',

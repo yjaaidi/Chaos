@@ -232,6 +232,9 @@ class Disruptions(flask_restful.Resource):
         except exceptions.ObjectUnknown, e:
             return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 404
 
+        except exceptions.InvalidJson, e:
+            return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 404
+
         db.session.add(disruption)
         db.session.commit()
         chaos.utils.send_disruption_to_navitia(disruption)
@@ -277,6 +280,9 @@ class Disruptions(flask_restful.Resource):
         try:
             db_helper.manage_impacts(disruption, json, self.navitia)
         except exceptions.ObjectUnknown, e:
+            return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 404
+
+        except exceptions.InvalidJson, e:
             return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 404
 
         disruption.upgrade_version()
@@ -598,7 +604,7 @@ class Impacts(flask_restful.Resource):
                 return marshal({'error': {'message': "id invalid"}},
                            error_fields), 400
             response = models.Impact.get(id, contributor.id)
-            return marshal({'impact': response},one_impact_fields)
+            return marshal({'impact': response}, one_impact_fields)
         else:
             if not id_format.match(disruption_id):
                 return marshal({'error': {'message': "disruption_id invalid"}},
@@ -645,6 +651,8 @@ class Impacts(flask_restful.Resource):
         except exceptions.ObjectUnknown, e:
             return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 404
+        except exceptions.InvalidJson, e:
+            return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 404
 
         disruption.upgrade_version()
         db.session.commit()
@@ -677,6 +685,8 @@ class Impacts(flask_restful.Resource):
         except exceptions.ObjectUnknown, e:
             return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 404
+        except exceptions.InvalidJson, e:
+            return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 404
         disruption = models.Disruption.get(disruption_id, contributor.id)
         disruption.upgrade_version()
         db.session.commit()
