@@ -33,6 +33,7 @@ from utils import get_client_code, get_contributor_code, get_token, get_coverage
 from chaos import exceptions, models, utils, fields
 from flask_restful import marshal
 from flask import request, current_app
+from formats import id_format
 
 
 class validate_client(object):
@@ -97,4 +98,25 @@ class manage_navitia_error(object):
                 return func(*args, **kwargs)
             except exceptions.NavitiaError, e:
                 return marshal({'error': {'message': '{}'.format(e.message)}}, fields.error_fields), 503
+        return wrapper
+
+
+class validate_id(object):
+    def __init__(self, required=False):
+        self.required = required
+
+    def __call__(self, func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            resp = marshal({'error': {'message': "id invalid"}},
+                                   fields.error_fields), 400
+
+            if self.required and ('id' not in kwargs):
+                return resp
+
+            if 'id' in kwargs:
+                if not id_format.match(kwargs['id']):
+                    return resp
+
+            return func(*args, **kwargs)
         return wrapper
