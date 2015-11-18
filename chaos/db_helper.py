@@ -177,6 +177,14 @@ def fill_and_add_line_section(navitia, impact_id, all_objects, pt_object_json):
     if 'sens' in line_section_json:
         line_section.sens = line_section_json["sens"]
 
+    #Fill wordings from json
+    #"meta":[{"key":"direction", "value": "1234"}, {"key":"direction", "value": "5678"}]
+    if 'metas' in line_section_json:
+        try:
+            manage_wordings(line_section, line_section_json['metas'])
+        except exceptions.InvalidJson:
+            raise
+
     ptobject.insert_line_section(line_section)
     return ptobject
 
@@ -256,7 +264,7 @@ def create_or_update_impact(disruption, json_impact, navitia, impact_id=None):
             if pt_object_json["type"] == 'line_section':
                 try:
                     ptobject = fill_and_add_line_section(navitia, impact_bd.id, all_objects, pt_object_json)
-                except exceptions.ObjectUnknown:
+                except exceptions.ObjectUnknown, exceptions.InvalidJson:
                     raise
                 impact_bd.objects.append(ptobject)
      # Severity

@@ -276,8 +276,12 @@ line_section_fields = {
         fields.Nested(
             one_objectTC_fields,
             display_null=False),
-        display_empty=False)
+        display_empty=False),
+    'metas': fields.List(fields.Nested(wording_fields),
+                         attribute='wordings',
+                         display_empty=False),
 }
+
 
 objectTC_fields = {
     'id': fields.Raw(attribute='uri'),
