@@ -233,7 +233,7 @@ class Disruptions(flask_restful.Resource):
             return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 404
 
         except exceptions.InvalidJson, e:
-            return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 404
+            return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 400
 
         db.session.add(disruption)
         db.session.commit()
@@ -283,7 +283,7 @@ class Disruptions(flask_restful.Resource):
             return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 404
 
         except exceptions.InvalidJson, e:
-            return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 404
+            return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 400
 
         disruption.upgrade_version()
         db.session.commit()
@@ -652,7 +652,7 @@ class Impacts(flask_restful.Resource):
             return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 404
         except exceptions.InvalidJson, e:
-            return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 404
+            return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 400
 
         disruption.upgrade_version()
         db.session.commit()
@@ -686,7 +686,7 @@ class Impacts(flask_restful.Resource):
             return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 404
         except exceptions.InvalidJson, e:
-            return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 404
+            return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 400
         disruption = models.Disruption.get(disruption_id, contributor.id)
         disruption.upgrade_version()
         db.session.commit()
