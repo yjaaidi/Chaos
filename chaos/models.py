@@ -200,6 +200,7 @@ associate_wording_cause = db.Table('associate_wording_cause',
                                     db.PrimaryKeyConstraint('wording_id', 'cause_id', name='wording_cause_pk')
 )
 
+
 class Cause(TimestampMixin, db.Model):
     """
     represent the cause of a disruption
@@ -711,6 +712,15 @@ class Message(TimestampMixin, db.Model):
     def get(cls, id):
         return cls.query.filter_by(id=id).first_or_404()
 
+associate_wording_line_section = db.Table('associate_wording_line_section',
+                                    db.metadata,
+                                    db.Column('wording_id', UUID, db.ForeignKey('wording.id')),
+                                    db.Column('line_section_id', UUID, db.ForeignKey('line_section.id')),
+                                    db.PrimaryKeyConstraint('wording_id', 'line_section_id',
+                                                            name='wording_line_section_pk')
+)
+
+
 class LineSection(TimestampMixin, db.Model):
     __tablename__ = 'line_section'
     id = db.Column(UUID, primary_key=True)
@@ -724,6 +734,15 @@ class LineSection(TimestampMixin, db.Model):
     end_point = db.relationship('PTobject', foreign_keys=end_object_id)
     routes = db.relationship("PTobject", secondary=associate_line_section_route_object, lazy='joined')
     via = db.relationship("PTobject", secondary=associate_line_section_via_object, lazy='joined')
+    wordings = db.relationship("Wording", secondary=associate_wording_line_section, backref="linesections")
+
+    def delete_wordings(self):
+        index = len(self.wordings) - 1
+        while index >= 0:
+            wording = self.wordings[index]
+            self.wordings.remove(wording)
+            db.session.delete(wording)
+            index -= 1
 
     def __repr__(self):
         return '<LineSection %r>' % self.id
