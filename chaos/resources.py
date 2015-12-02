@@ -756,8 +756,10 @@ class Status(flask_restful.Resource):
 
 
 class TrafficReport(flask_restful.Resource):
-
-    def get(self):
+    @validate_contributor()
+    @validate_navitia()
+    @manage_navitia_error()
+    def get(self, contributor, navitia):
         return {
                    "disruptions": [
                        {
