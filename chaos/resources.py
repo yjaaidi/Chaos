@@ -1,3 +1,4 @@
+
 # Copyright (c) 2001-2014, Canal TP and/or its affiliates. All rights reserved.
 #
 # This file is part of Navitia,
@@ -62,7 +63,8 @@ class Index(flask_restful.Resource):
             "tags": {"href": url_for('tag', _external=True)},
             "categories": {"href": url_for('category', _external=True)},
             "channeltypes": {"href": url_for('channeltype', _external=True)},
-            "status": {"href": url_for('status', _external=True)}
+            "status": {"href": url_for('status', _external=True)},
+            "traffic_reports": {"href": url_for('trafficreport', _external=True)}
 
 
         }
@@ -738,6 +740,7 @@ class Channel(flask_restful.Resource):
         db.session.commit()
         return None, 204
 
+
 class ChannelType(flask_restful.Resource):
     def get(self):
         return {'channel_types': [type for type in channel_type_values]}, 200
@@ -750,3 +753,84 @@ class Status(flask_restful.Resource):
                 'db_version': db.engine.scalar('select version_num from alembic_version;'),
                 'navitia_url': current_app.config['NAVITIA_URL'],
                 'rabbitmq_info': publisher.info()}, 200
+
+
+class TrafficReport(flask_restful.Resource):
+
+    def get(self):
+        return {
+                   "disruptions": [
+                       {
+                           "status": "future",
+                           "disruption_id": "8760d5fe-98eb-11e5-a1b2-9cebe815b0eb",
+                           "severity": {
+                               "color": "#FF4455",
+                               "priority": 0,
+                               "name": "test A",
+                               "effect": "NO_SERVICE"
+                           },
+                           "impact_id": "876138d2-98eb-11e5-a1b2-9cebe815b0eb",
+                           "application_periods": [
+                               {
+                                   "begin": "20151202T175200",
+                                   "end": "20160630T041459"
+                               }
+                           ],
+                           "messages": [
+                               {
+                                   "text": "Message Web (OV1)",
+                                   "channel": {
+                                       "content_type": "text/plain",
+                                       "id": "ad29ee1a-7d84-11e5-9022-9cebe815b0eb",
+                                       "types": [
+                                           "web"
+                                       ],
+                                       "name": "Message WEB (OV1)"
+                                   }
+                               }
+                           ],
+                           "updated_at": "19700101T010000",
+                           "uri": "876138d2-98eb-11e5-a1b2-9cebe815b0eb",
+                           "disruption_uri": "8760d5fe-98eb-11e5-a1b2-9cebe815b0eb",
+                           "contributor": "shortterm.tr_transilien",
+                           "cause": "test communication",
+                           "id": "876138d2-98eb-11e5-a1b2-9cebe815b0eb"
+                       }
+                   ],
+                   "pagination": {
+                       "start_page": 0,
+                       "items_on_page": 3,
+                       "items_per_page": 10,
+                       "total_result": 1
+                   },
+                   "traffic_reports": [
+                       {
+                           "network": {
+                               "name": "Ailebleue - CG36",
+                               "links": [],
+                               "id": "network:Ailebleue"
+                           },
+                           "stop_areas": [
+                               {
+                                   "name": "AIGURANDE MONUMENT AUX MORTS AB",
+                                   "links": [
+                                       {
+                                           "internal": True,
+                                           "type": "disruption",
+                                           "id": "876138d2-98eb-11e5-a1b2-9cebe815b0eb",
+                                           "rel": "disruptions",
+                                           "templated": False
+                                       }
+                                   ],
+                                   "coord": {
+                                       "lat": "46.434145",
+                                       "lon": "1.829116"
+                                   },
+                                   "label": "AIGURANDE MONUMENT AUX MORTS AB",
+                                   "timezone": "Europe/Paris",
+                                   "id": "stop_area:G36:SA:12944"
+                               }
+                           ]
+                       }
+                   ]
+               }, 200
