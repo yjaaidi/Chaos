@@ -69,3 +69,8 @@ def test_query_formater_line_section():
 def test_query_formater_all():
     n = Navitia('http://api.navitia.io', 'jdr')
     eq_(n.query_formater('uri', 'network', 'networks'), 'http://api.navitia.io/v1/coverage/jdr/networks/uri/networks')
+
+@raises(exceptions.ObjectTypeUnknown)
+def test_query_formater_all_objects_invalid():
+    n = Navitia('http://api.navitia.io', 'jdr')
+    eq_(n.query_formater('uri', 'network', 'stop_areas'), 'http://api.navitia.io/v1/coverage/jdr/networks/uri/networks')
