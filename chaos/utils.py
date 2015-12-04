@@ -376,9 +376,16 @@ def get_application_periods(json):
             time_zone = json_one_pattern['time_zone']
             result += get_application_periods_by_pattern(start_date, end_date, weekly_pattern, time_slots, time_zone)
     else:
-        if 'application_periods' in  json:
+        if 'application_periods' in json:
             result = get_application_periods_by_periods(json['application_periods'])
     return result
+
+
+def pt_object_in_list(pt_object, list_objects):
+    for object in list_objects:
+        if pt_object.uri == object['id']:
+            return True
+    return False
 
 
 def get_traffic_report_objects(impacts, navitia):
@@ -400,6 +407,7 @@ def get_traffic_report_objects(impacts, navitia):
         "line": "lines",
         "stop_point": "stop_points"
     }
+
     to_return = dict()
     for impact in impacts:
         for pt_object in impact.objects:
@@ -410,12 +418,15 @@ def get_traffic_report_objects(impacts, navitia):
                     to_return[pt_object.uri]['network'] = navitia_network
             else:
                 navitia_networks = navitia.get_pt_object(pt_object.uri, pt_object.type, 'networks')
-                navitia_object = navitia.get_pt_object(pt_object.uri, pt_object.type)
-                if navitia_networks and navitia_object and pt_object.type in collections:
+                if navitia_networks and pt_object.type in collections:
                     for network in navitia_networks:
                         if 'id' in network and network['id'] not in to_return:
                             to_return[network['id']] = dict()
                             to_return[network['id']]['network'] = network
                             to_return[network['id']][collections[pt_object.type]] = []
-                        to_return[network['id']][collections[pt_object.type]].append(navitia_object)
+                        list_objects = to_return[network['id']][collections[pt_object.type]]
+                        if not pt_object_in_list(pt_object, list_objects):
+                            navitia_object = navitia.get_pt_object(pt_object.uri, pt_object.type)
+                            if navitia_object:
+                                list_objects.append(navitia_object)
     return to_return
