@@ -62,7 +62,7 @@ class Navitia(object):
             url=self.url, coverage=self.coverage, collection=self.collections[object_type], uri=uri)
         if pt_objects:
             query = '{q}/{objects}'.format(q=query, objects=pt_objects)
-        return query
+        return query + '?depth=0'
 
     def navitia_caller(self, query):
 
