@@ -78,6 +78,9 @@ class Navitia(object):
             query = self.query_formater(uri, object_type, pt_objects)
         except exceptions.ObjectTypeUnknown:
             raise
+        
+        if not query:
+            return None
 
         try:
             response = self.navitia_caller(query)
