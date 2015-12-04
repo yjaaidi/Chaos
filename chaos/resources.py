@@ -1,4 +1,3 @@
-
 # Copyright (c) 2001-2014, Canal TP and/or its affiliates. All rights reserved.
 #
 # This file is part of Navitia,
@@ -756,83 +755,20 @@ class Status(flask_restful.Resource):
 
 
 class TrafficReport(flask_restful.Resource):
+    def __init__(self):
+        self.parsers = {}
+        self.parsers["get"] = reqparse.RequestParser()
+        parser_get = self.parsers["get"]
+        parser_get.add_argument("current_time", type=utils.get_datetime)
+        self.navitia = None
+
     @validate_contributor()
     @validate_navitia()
     @manage_navitia_error()
     def get(self, contributor, navitia):
-        return {
-                   "disruptions": [
-                       {
-                           "status": "future",
-                           "disruption_id": "8760d5fe-98eb-11e5-a1b2-9cebe815b0eb",
-                           "severity": {
-                               "color": "#FF4455",
-                               "priority": 0,
-                               "name": "test A",
-                               "effect": "NO_SERVICE"
-                           },
-                           "impact_id": "876138d2-98eb-11e5-a1b2-9cebe815b0eb",
-                           "application_periods": [
-                               {
-                                   "begin": "20151202T175200",
-                                   "end": "20160630T041459"
-                               }
-                           ],
-                           "messages": [
-                               {
-                                   "text": "Message Web (OV1)",
-                                   "channel": {
-                                       "content_type": "text/plain",
-                                       "id": "ad29ee1a-7d84-11e5-9022-9cebe815b0eb",
-                                       "types": [
-                                           "web"
-                                       ],
-                                       "name": "Message WEB (OV1)"
-                                   }
-                               }
-                           ],
-                           "updated_at": "19700101T010000",
-                           "uri": "876138d2-98eb-11e5-a1b2-9cebe815b0eb",
-                           "disruption_uri": "8760d5fe-98eb-11e5-a1b2-9cebe815b0eb",
-                           "contributor": "shortterm.tr_transilien",
-                           "cause": "test communication",
-                           "id": "876138d2-98eb-11e5-a1b2-9cebe815b0eb"
-                       }
-                   ],
-                   "pagination": {
-                       "start_page": 0,
-                       "items_on_page": 3,
-                       "items_per_page": 10,
-                       "total_result": 1
-                   },
-                   "traffic_reports": [
-                       {
-                           "network": {
-                               "name": "Ailebleue - CG36",
-                               "links": [],
-                               "id": "network:Ailebleue"
-                           },
-                           "stop_areas": [
-                               {
-                                   "name": "AIGURANDE MONUMENT AUX MORTS AB",
-                                   "links": [
-                                       {
-                                           "internal": True,
-                                           "type": "disruption",
-                                           "id": "876138d2-98eb-11e5-a1b2-9cebe815b0eb",
-                                           "rel": "disruptions",
-                                           "templated": False
-                                       }
-                                   ],
-                                   "coord": {
-                                       "lat": "46.434145",
-                                       "lon": "1.829116"
-                                   },
-                                   "label": "AIGURANDE MONUMENT AUX MORTS AB",
-                                   "timezone": "Europe/Paris",
-                                   "id": "stop_area:G36:SA:12944"
-                               }
-                           ]
-                       }
-                   ]
-               }, 200
+        self.navitia = navitia
+        args = self.parsers['get'].parse_args()
+        g.current_time = args['current_time']
+        impacts = models.Impact.traffic_report_filter(contributor.id)
+        result = utils.get_traffic_report_objects(impacts, self.navitia)
+        return {"Ok": "test"}, 200

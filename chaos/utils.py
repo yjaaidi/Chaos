@@ -379,3 +379,43 @@ def get_application_periods(json):
         if 'application_periods' in  json:
             result = get_application_periods_by_periods(json['application_periods'])
     return result
+
+
+def get_traffic_report_objects(impacts, navitia):
+    '''
+    :param impacts: Sequence of impact (Database object)
+    :return: dict
+            {
+        "network1": {"network": {"id": "network1", "name": "Network 1"},
+                    "lines":[{"id": "id1", "name": "line 1"}, {"id": "id2", "name": "line 2"}],
+                    "stop_areas":[{"id": "id1", "name": "stop area 1"}, {"id": "id2", "name": "stop area 2"}],
+                    "stop_points":[{"id": "id1", "name": "stop point 1"}, {"id": "id2", "name": "stop point 2"}]
+                    },
+                    ....
+        }
+
+    '''
+    collections = {
+        "stop_area": "stop_areas",
+        "line": "lines",
+        "stop_point": "stop_points"
+    }
+    to_return = dict()
+    for impact in impacts:
+        for pt_object in impact.objects:
+            if pt_object.type == 'network' and pt_object.uri not in to_return:
+                navitia_network = navitia.get_pt_object(pt_object.uri, pt_object.type)
+                if navitia_network:
+                    to_return[pt_object.uri] = dict()
+                    to_return[pt_object.uri]['network'] = navitia_network
+            else:
+                navitia_networks = navitia.get_pt_object(pt_object.uri, pt_object.type, 'networks')
+                navitia_object = navitia.get_pt_object(pt_object.uri, pt_object.type)
+                if navitia_networks and navitia_object and pt_object.type in collections:
+                    for network in navitia_networks:
+                        if 'id' in network and network['id'] not in to_return:
+                            to_return[network['id']] = dict()
+                            to_return[network['id']]['network'] = network
+                            to_return[network['id']][collections[pt_object.type]] = []
+                        to_return[network['id']][collections[pt_object.type]].append(navitia_object)
+    return to_return
