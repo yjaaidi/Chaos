@@ -53,7 +53,8 @@ def test_get_traffic_report_with_network():
         "uri1": {
             "network": {
                 "id": "uri1",
-                "name": "network name"
+                "name": "network name",
+                "impacts": [impact]
             }
         }
     }
@@ -115,14 +116,14 @@ def test_get_traffic_report_with_impact_on_lines():
                 "id": "network:uri1",
                 "name": "network 1 name"
             },
-            "lines": [{'id': 'line:uri1', 'name': 'line 1 name'}]
+            "lines": [{'id': 'line:uri1', 'name': 'line 1 name', "impacts": [impact]}]
         },
         "network:uri2": {
             "network": {
                 "id": "network:uri2",
                 "name": "network 2 name"
             },
-            "lines": [{'id': 'line:uri2', 'name': 'line 2 name'}]
+            "lines": [{'id': 'line:uri2', 'name': 'line 2 name', "impacts": [impact]}]
         }
     }
     dd = get_traffic_report_objects([impact], navitia)
@@ -148,17 +149,20 @@ def test_get_traffic_report_with_impact_on_networks():
         "network:uri1": {
             "network": {
                 "id": "network:uri1",
-                "name": "network 1 name"
+                "name": "network 1 name",
+                "impacts": [impact]
             }
         },
         "network:uri2": {
             "network": {
                 "id": "network:uri2",
-                "name": "network 2 name"
+                "name": "network 2 name",
+                "impacts": [impact]
             }
         }
     }
     dd = get_traffic_report_objects([impact], navitia)
+
     eq_(cmp(dd, result), 0)
 
 
@@ -178,7 +182,7 @@ def test_get_traffic_report_with_impact_on_stop_areas_one_network():
                 "id": "network:uri3",
                 "name": "network 3 name"
             },
-            "stop_areas": [{'id': 'stop_area:uri1', 'name': 'stop area 1 name'}]
+            "stop_areas": [{'id': 'stop_area:uri1', 'name': 'stop area 1 name', "impacts": [impact]}]
         }
     }
     dd = get_traffic_report_objects([impact], navitia)
@@ -201,14 +205,14 @@ def test_get_traffic_report_with_impact_on_stop_areas_2_networks():
                 "id": "network:uri4",
                 "name": "network 4 name"
             },
-            "stop_areas": [{'id': 'stop_area:uri2', 'name': 'stop area 2 name'}]
+            "stop_areas": [{'id': 'stop_area:uri2', 'name': 'stop area 2 name', "impacts": [impact]}]
         },
         "network:uri5": {
             "network": {
                 "id": "network:uri5",
                 "name": "network 5 name"
             },
-            "stop_areas": [{'id': 'stop_area:uri2', 'name': 'stop area 2 name'}]
+            "stop_areas": [{'id': 'stop_area:uri2', 'name': 'stop area 2 name', "impacts": [impact]}]
         }
     }
     dd = get_traffic_report_objects([impact], navitia)
@@ -219,14 +223,14 @@ def test_get_traffic_report_with_2_impact_on_stop_area():
     navitia = chaos.navitia.Navitia('http://api.navitia.io', 'jdr')
     navitia.get_pt_object = get_pt_object
     impacts = []
-    impact = chaos.models.Impact()
 
+    impact = chaos.models.Impact()
     line = chaos.models.PTobject()
     line.type = 'stop_area'
     line.uri = 'stop_area:uri1'
     impact.objects.append(line)
-    impacts.append(impact)
 
+    impacts.append(impact)
     impact = chaos.models.Impact()
     line = chaos.models.PTobject()
     line.type = 'stop_area'
@@ -240,7 +244,7 @@ def test_get_traffic_report_with_2_impact_on_stop_area():
                 "id": "network:uri3",
                 "name": "network 3 name"
             },
-            "stop_areas": [{'id': 'stop_area:uri1', 'name': 'stop area 1 name'}]
+            "stop_areas": [{'id': 'stop_area:uri1', 'name': 'stop area 1 name', "impacts": impacts}]
         }
     }
     dd = get_traffic_report_objects(impacts, navitia)
