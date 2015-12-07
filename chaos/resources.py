@@ -771,4 +771,5 @@ class TrafficReport(flask_restful.Resource):
         g.current_time = args['current_time']
         impacts = models.Impact.traffic_report_filter(contributor.id)
         result = utils.get_traffic_report_objects(impacts, self.navitia)
-        return {"Ok": "test"}, 200
+        return marshal({'traffic_reports': [value for key, value in result.items()],
+                        "disruptions": impacts}, traffic_reports_marshaler), 200

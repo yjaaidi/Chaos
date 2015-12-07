@@ -393,10 +393,13 @@ def get_traffic_report_objects(impacts, navitia):
     :param impacts: Sequence of impact (Database object)
     :return: dict
             {
-        "network1": {"network": {"id": "network1", "name": "Network 1"},
-                    "lines":[{"id": "id1", "name": "line 1"}, {"id": "id2", "name": "line 2"}],
-                    "stop_areas":[{"id": "id1", "name": "stop area 1"}, {"id": "id2", "name": "stop area 2"}],
-                    "stop_points":[{"id": "id1", "name": "stop point 1"}, {"id": "id2", "name": "stop point 2"}]
+        "network1": {"network": {"id": "network1", "name": "Network 1", "impacts": []},
+                    "lines":[{"id": "id1", "name": "line 1", "impacts": []},
+                            {"id": "id2", "name": "line 2", "impacts": []}],
+                    "stop_areas":[{"id": "id1", "name": "stop area 1", "impacts": []},
+                            {"id": "id2", "name": "stop area 2", "impacts": []}],
+                    "stop_points":[{"id": "id1", "name": "stop point 1", "impacts": []},
+                            {"id": "id2", "name": "stop point 2, "impacts": []"}]
                     },
                     ....
         }
@@ -408,25 +411,34 @@ def get_traffic_report_objects(impacts, navitia):
         "stop_point": "stop_points"
     }
 
-    to_return = dict()
+    result = dict()
     for impact in impacts:
         for pt_object in impact.objects:
-            if pt_object.type == 'network' and pt_object.uri not in to_return:
+            if pt_object.type == 'network' and pt_object.uri not in result:
                 navitia_network = navitia.get_pt_object(pt_object.uri, pt_object.type)
                 if navitia_network:
-                    to_return[pt_object.uri] = dict()
-                    to_return[pt_object.uri]['network'] = navitia_network
+                    result[pt_object.uri] = dict()
+                    navitia_network["impacts"] = []
+                    navitia_network["impacts"].append(impact)
+                    result[pt_object.uri]['network'] = navitia_network
             else:
-                navitia_networks = navitia.get_pt_object(pt_object.uri, pt_object.type, 'networks')
-                if navitia_networks and pt_object.type in collections:
-                    for network in navitia_networks:
-                        if 'id' in network and network['id'] not in to_return:
-                            to_return[network['id']] = dict()
-                            to_return[network['id']]['network'] = network
-                            to_return[network['id']][collections[pt_object.type]] = []
-                        list_objects = to_return[network['id']][collections[pt_object.type]]
-                        if not pt_object_in_list(pt_object, list_objects):
-                            navitia_object = navitia.get_pt_object(pt_object.uri, pt_object.type)
-                            if navitia_object:
-                                list_objects.append(navitia_object)
-    return to_return
+                if pt_object.type == 'network' and pt_object.uri in result:
+                    navitia_network["impacts"].append(impact)
+                else:
+                    navitia_networks = navitia.get_pt_object(pt_object.uri, pt_object.type, 'networks')
+                    if navitia_networks and pt_object.type in collections:
+                        for network in navitia_networks:
+                            if 'id' in network and network['id'] not in result:
+                                result[network['id']] = dict()
+                                result[network['id']]['network'] = network
+                                result[network['id']][collections[pt_object.type]] = []
+                            list_objects = result[network['id']][collections[pt_object.type]]
+                            if not pt_object_in_list(pt_object, list_objects):
+                                navitia_object = navitia.get_pt_object(pt_object.uri, pt_object.type)
+                                if navitia_object:
+                                    navitia_object["impacts"] = []
+                                    navitia_object["impacts"].append(impact)
+                                    list_objects.append(navitia_object)
+                            else:
+                                navitia_object["impacts"].append(impact)
+    return result

@@ -32,6 +32,7 @@ from flask import current_app, request
 from utils import make_pager, get_coverage, get_token
 from chaos.navitia import Navitia
 from chaos import exceptions
+from copy import deepcopy
 
 
 class FieldDateTime(fields.Raw):
@@ -119,10 +120,31 @@ class FieldContributor(fields.Raw):
             return obj.contributor.contributor_code
         return None
 
+
 class FieldChannelTypes(fields.Raw):
     def output(self, key, obj):
         if hasattr(obj, 'channel_types'):
             return [ch.name for ch in obj.channel_types]
+        return None
+
+
+class FieldLinks(fields.Raw):
+    def output(self, key, obj):
+        if "impacts" in obj:
+            return [{"internal": True,
+                     "type": "disruption",
+                     "id": impact.id,
+                     "rel": "disruptions",
+                     "template": False} for impact in obj["impacts"]]
+        return None
+
+
+class FieldCause(fields.Raw):
+    def output(self, key, obj):
+        disruption = obj.disruption
+        for wording in disruption.cause.wordings:
+            if wording.key == 'external_medium':
+                return wording.value
         return None
 
 href_field = {
@@ -237,17 +259,21 @@ error_fields = {
     'error': fields.Nested({'message': fields.String})
 }
 
-severity_fields = {
+
+base_severity_fields = {
     'id': fields.Raw,
     'wording': fields.Raw,
     'color': fields.Raw,
-    'created_at': FieldDateTime,
-    'updated_at': FieldDateTime,
-    'self': {'href': fields.Url('severity', absolute=True)},
     'priority': fields.Integer(default=None),
-    'effect': fields.Raw(),
-    'wordings': fields.List(fields.Nested(wording_fields)),
+    'effect': fields.Raw()
 }
+
+severity_fields = deepcopy(base_severity_fields)
+severity_fields['created_at'] = FieldDateTime
+severity_fields['updated_at'] = FieldDateTime
+severity_fields['self'] = {'href': fields.Url('severity', absolute=True)}
+severity_fields['wordings'] = fields.List(fields.Nested(wording_fields))
+
 
 severities_fields = {
     'severities': fields.List(fields.Nested(severity_fields)),
@@ -297,16 +323,17 @@ channel_type_fields = {
     'name': fields.Raw
 }
 
-channel_fields = {
+base_channel_fields = {
     'id': fields.Raw,
     'name': fields.Raw,
     'max_size': fields.Integer(default=None),
     'content_type': fields.Raw,
-    'created_at': FieldDateTime,
-    'updated_at': FieldDateTime,
-    'types': FieldChannelTypes(),
-    'self': {'href': fields.Url('channel', absolute=True)}
+    'types': FieldChannelTypes()
 }
+channel_fields = deepcopy(base_channel_fields)
+channel_fields['created_at'] = FieldDateTime
+channel_fields['updated_at'] = FieldDateTime
+channel_fields['self'] = {'href': fields.Url('channel', absolute=True)}
 
 channels_fields = {
     'channels': fields.List(fields.Nested(channel_fields)),
@@ -318,12 +345,16 @@ one_channel_fields = {
     'channel': fields.Nested(channel_fields)
 }
 
-message_fields = {
+base_message_fields = {
     'text': fields.Raw,
-    'created_at': FieldDateTime,
-    'updated_at': FieldDateTime,
-    'channel': fields.Nested(channel_fields)
+    'channel': fields.Nested(base_channel_fields)
 }
+
+message_fields = deepcopy(base_message_fields)
+
+message_fields["created_at"] = FieldDateTime
+message_fields["updated_at"] = FieldDateTime
+message_fields["channel"] = fields.Nested(channel_fields)
 
 application_period_fields = {
     'begin': FieldDateTime(attribute='start_date'),
@@ -376,4 +407,34 @@ impact_by_object_fields = {
 
 impacts_by_object_fields = {
     'objects': fields.List(fields.Nested(impact_by_object_fields))
+}
+
+
+generic_type = {
+    "name": fields.String(),
+    "id": fields.String(),
+    "links": FieldLinks()
+}
+
+traffic_report_fields = {
+    "network": fields.Nested(generic_type, display_null=False),
+    "lines": fields.List(fields.Nested(generic_type, display_null=False)),
+    "stop_areas": fields.List(fields.Nested(generic_type, display_null=False)),
+    "stop_points": fields.List(fields.Nested(generic_type, display_null=False))
+}
+
+traffic_report_impact_field = {
+    "disruption_id": fields.String(),
+    "id": fields.String(attribute="id"),
+    "severity": fields.Nested(base_severity_fields, display_null=False),
+    "application_periods": fields.List(fields.Nested(application_period_fields)),
+    "messages": fields.List(fields.Nested(base_message_fields)),
+    "cause": FieldCause()
+
+
+}
+
+traffic_reports_marshaler = {
+    'traffic_reports': fields.List(fields.Nested(traffic_report_fields, display_null=False)),
+    'disruptions': fields.List(fields.Nested(traffic_report_impact_field, display_null=False))
 }

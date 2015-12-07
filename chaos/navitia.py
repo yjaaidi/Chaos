@@ -89,9 +89,10 @@ class Navitia(object):
 
         if response:
             json = response.json()
+            if pt_objects and json[pt_objects]:
+                return json[pt_objects]
+
             if self.collections[object_type] in json and json[self.collections[object_type]]:
-                if pt_objects:
-                    return json[self.collections[object_type]]
                 return json[self.collections[object_type]][0]
 
         return None
