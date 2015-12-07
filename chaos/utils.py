@@ -383,7 +383,7 @@ def get_application_periods(json):
 
 def pt_object_in_list(pt_object, list_objects):
     if not list_objects:
-        return None
+        return False
     for object in list_objects:
         if pt_object.uri == object['id']:
             return True
@@ -444,6 +444,9 @@ def get_traffic_report_objects(impacts, navitia):
                                 if navitia_object:
                                     navitia_object["impacts"] = []
                                     navitia_object["impacts"].append(impact)
+                                    if collections[pt_object.type] not in result[network['id']]:
+                                        result[network['id']][collections[pt_object.type]] = []
+                                    result[network['id']][collections[pt_object.type]].append(navitia_object)
                             else:
                                 navitia_object["impacts"].append(impact)
     return result
