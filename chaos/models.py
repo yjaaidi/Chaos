@@ -35,7 +35,7 @@ from utils import paginate, get_current_time
 from sqlalchemy.dialects.postgresql import UUID, BIT
 from datetime import datetime
 from formats import publication_status_values
-from sqlalchemy import or_, and_, not_
+from sqlalchemy import or_, and_, between
 from sqlalchemy.orm import aliased
 
 
@@ -583,8 +583,7 @@ class Impact(TimestampMixin, db.Model):
         query = cls.query.filter(cls.status == 'published')
         query = query.join(Disruption)
         query = query.filter(Disruption.contributor_id == contributor_id)
-        current_time = get_current_time()
-        query = query.filter(and_(ApplicationPeriods.start_date <= current_time, ApplicationPeriods.end_date >= current_time))
+        query = query.filter(between(get_current_time(), Disruption.start_publication_date, Disruption.end_publication_date))
         return query.all()
 
 
