@@ -271,13 +271,15 @@ base_severity_fields = {
     'priority': fields.Integer(default=None),
     'effect': fields.Raw()
 }
-base_severity_fields['name'] = fields.Raw(attribute='wording')
+
 severity_fields = deepcopy(base_severity_fields)
 severity_fields['wording'] = fields.Raw
 severity_fields['created_at'] = FieldDateTime
 severity_fields['updated_at'] = FieldDateTime
 severity_fields['self'] = {'href': fields.Url('severity', absolute=True)}
 severity_fields['wordings'] = fields.List(fields.Nested(wording_fields))
+
+base_severity_fields['name'] = fields.Raw(attribute='wording')
 
 
 severities_fields = {
