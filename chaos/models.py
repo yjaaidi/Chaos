@@ -578,6 +578,16 @@ class Impact(TimestampMixin, db.Model):
         query = query.union_all(query_line_section).filter(and_(start_filter, end_filter)).order_by("application_periods_1.start_date")
         return query.all()
 
+    @classmethod
+    def traffic_report_filter(cls, contributor_id):
+        query = cls.query.filter(cls.status == 'published')
+        query = query.join(Disruption)
+        query = query.filter(Disruption.contributor_id == contributor_id)
+        current_time = get_current_time()
+        query = query.filter(and_(ApplicationPeriods.start_date <= current_time, ApplicationPeriods.end_date >= current_time))
+        return query.all()
+
+
 associate_line_section_route_object = db.Table('associate_line_section_route_object',
                                       db.metadata,
                                       db.Column('line_section_id', UUID, db.ForeignKey('line_section.id')),
@@ -591,6 +601,7 @@ associate_line_section_via_object = db.Table('associate_line_section_via_object'
                                       db.Column('stop_area_object_id', UUID, db.ForeignKey('pt_object.id')),
                                       db.PrimaryKeyConstraint('line_section_id', 'stop_area_object_id', name='line_section_stop_area_object_pk')
 )
+
 
 class PTobject(TimestampMixin, db.Model):
     __tablename__ = 'pt_object'

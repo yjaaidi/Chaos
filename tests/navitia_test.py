@@ -30,7 +30,7 @@ def navitia_mock_unknown_object_type(url, request):
 def test_get_pt_object():
     n = Navitia('http://api.navitia.io', 'jdr')
     mock = NavitiaMock(200, {'networks': [{'id': 'network:foo', 'name': 'reseau foo'}]},
-            assert_url='http://api.navitia.io/v1/coverage/jdr/networks/network:foo')
+            assert_url='http://api.navitia.io/v1/coverage/jdr/networks/network:foo?depth=0')
     with HTTMock(mock):
         eq_(n.get_pt_object('network:foo', 'network'), {'id': 'network:foo', 'name': 'reseau foo'})
 
@@ -53,12 +53,12 @@ def test_navitia_request_error():
 def test_navitia_unknown_object_type():
     n = Navitia('http://api.navitia.io', 'jdr')
     with HTTMock(navitia_mock_unknown_object_type):
-        n.get_pt_object('network:foo','aaaaaaaa')
+        n.get_pt_object('network:foo', 'aaaaaaaa')
 
 
 def test_query_formater():
     n = Navitia('http://api.navitia.io', 'jdr')
-    eq_(n.query_formater('uri', 'network'), 'http://api.navitia.io/v1/coverage/jdr/networks/uri')
+    eq_(n.query_formater('uri', 'network'), 'http://api.navitia.io/v1/coverage/jdr/networks/uri?depth=0')
 
 
 def test_query_formater_line_section():
@@ -68,9 +68,9 @@ def test_query_formater_line_section():
 
 def test_query_formater_all():
     n = Navitia('http://api.navitia.io', 'jdr')
-    eq_(n.query_formater('uri', 'network', 'networks'), 'http://api.navitia.io/v1/coverage/jdr/networks/uri/networks')
+    eq_(n.query_formater('uri', 'network', 'networks'), 'http://api.navitia.io/v1/coverage/jdr/networks/uri/networks?depth=0')
 
 @raises(exceptions.ObjectTypeUnknown)
 def test_query_formater_all_objects_invalid():
     n = Navitia('http://api.navitia.io', 'jdr')
-    eq_(n.query_formater('uri', 'network', 'stop_areas'), 'http://api.navitia.io/v1/coverage/jdr/networks/uri/networks')
+    eq_(n.query_formater('uri', 'network', 'stop_areas'), 'http://api.navitia.io/v1/coverage/jdr/networks/uri/networks?depth=0')

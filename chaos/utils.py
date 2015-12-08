@@ -376,6 +376,77 @@ def get_application_periods(json):
             time_zone = json_one_pattern['time_zone']
             result += get_application_periods_by_pattern(start_date, end_date, weekly_pattern, time_slots, time_zone)
     else:
-        if 'application_periods' in  json:
+        if 'application_periods' in json:
             result = get_application_periods_by_periods(json['application_periods'])
+    return result
+
+
+def pt_object_in_list(pt_object, list_objects):
+    if not list_objects:
+        return False
+    for object in list_objects:
+        if pt_object.uri == object['id']:
+            return True
+    return False
+
+
+def get_traffic_report_objects(impacts, navitia):
+    '''
+    :param impacts: Sequence of impact (Database object)
+    :return: dict
+            {
+        "network1": {"network": {"id": "network1", "name": "Network 1", "impacts": []},
+                    "lines":[{"id": "id1", "name": "line 1", "impacts": []},
+                            {"id": "id2", "name": "line 2", "impacts": []}],
+                    "stop_areas":[{"id": "id1", "name": "stop area 1", "impacts": []},
+                            {"id": "id2", "name": "stop area 2", "impacts": []}],
+                    "stop_points":[{"id": "id1", "name": "stop point 1", "impacts": []},
+                            {"id": "id2", "name": "stop point 2, "impacts": []"}]
+                    },
+                    ....
+        }
+
+    '''
+    collections = {
+        "stop_area": "stop_areas",
+        "line": "lines",
+        "stop_point": "stop_points"
+    }
+
+    result = dict()
+    for impact in impacts:
+        for pt_object in impact.objects:
+            if pt_object.type == 'network' and pt_object.uri not in result:
+                navitia_network = navitia.get_pt_object(pt_object.uri, pt_object.type)
+                if navitia_network:
+                    result[pt_object.uri] = dict()
+                    navitia_network["impacts"] = []
+                    navitia_network["impacts"].append(impact)
+                    result[pt_object.uri]['network'] = navitia_network
+            else:
+                if pt_object.type == 'network' and pt_object.uri in result:
+                    navitia_network["impacts"].append(impact)
+                else:
+                    navitia_networks = navitia.get_pt_object(pt_object.uri, pt_object.type, 'networks')
+                    if navitia_networks and pt_object.type in collections:
+                        for network in navitia_networks:
+                            if 'id' in network and network['id'] not in result:
+                                result[network['id']] = dict()
+                                result[network['id']]['network'] = network
+                                result[network['id']][collections[pt_object.type]] = []
+
+                            if collections[pt_object.type] in result[network['id']]:
+                                list_objects = result[network['id']][collections[pt_object.type]]
+                            else:
+                                list_objects = None
+                            if not pt_object_in_list(pt_object, list_objects):
+                                navitia_object = navitia.get_pt_object(pt_object.uri, pt_object.type)
+                                if navitia_object:
+                                    navitia_object["impacts"] = []
+                                    navitia_object["impacts"].append(impact)
+                                    if collections[pt_object.type] not in result[network['id']]:
+                                        result[network['id']][collections[pt_object.type]] = []
+                                    result[network['id']][collections[pt_object.type]].append(navitia_object)
+                            else:
+                                navitia_object["impacts"].append(impact)
     return result
