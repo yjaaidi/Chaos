@@ -141,7 +141,17 @@ class FieldLinks(fields.Raw):
 
 class ComputeDisruptionStatus(fields.Raw):
     def output(self, key, obj):
-        return 'active'
+        current_datetime = get_current_time()
+        is_future = False
+        for application_period in obj.application_periods:
+            if current_datetime >= application_period.start_date and current_datetime <= application_period.end_date:
+                return 'active'
+            if current_datetime <= application_period.start_date:
+                is_future = True
+        if is_future:
+            return 'future'
+        return 'past'
+
 
 class FieldCause(fields.Raw):
     def output(self, key, obj):
