@@ -759,7 +759,7 @@ class TrafficReport(flask_restful.Resource):
         self.parsers = {}
         self.parsers["get"] = reqparse.RequestParser()
         parser_get = self.parsers["get"]
-        parser_get.add_argument("current_time", type=utils.get_datetime)
+        parser_get.add_argument("current_time", type=utils.get_datetime, default=utils.get_current_time())
         self.navitia = None
 
     @validate_contributor()
