@@ -29,7 +29,7 @@
 
 from flask_restful import fields, url_for
 from flask import current_app, request
-from utils import make_pager, get_coverage, get_token
+from utils import make_pager, get_coverage, get_token, get_current_time
 from chaos.navitia import Navitia
 from chaos import exceptions
 from copy import deepcopy
@@ -267,13 +267,13 @@ error_fields = {
 
 base_severity_fields = {
     'id': fields.Raw,
-    'wording': fields.Raw,
     'color': fields.Raw,
     'priority': fields.Integer(default=None),
     'effect': fields.Raw()
 }
-
+base_severity_fields['name'] = fields.Raw(attribute='wording')
 severity_fields = deepcopy(base_severity_fields)
+severity_fields['wording'] = fields.Raw
 severity_fields['created_at'] = FieldDateTime
 severity_fields['updated_at'] = FieldDateTime
 severity_fields['self'] = {'href': fields.Url('severity', absolute=True)}
@@ -421,9 +421,12 @@ generic_type = {
     "links": FieldLinks()
 }
 
+line_fileds = deepcopy(generic_type)
+line_fileds['code'] = fields.String()
+
 traffic_report_fields = {
     "network": fields.Nested(generic_type, display_null=False),
-    "lines": fields.List(fields.Nested(generic_type, display_null=False)),
+    "lines": fields.List(fields.Nested(line_fileds, display_null=False)),
     "stop_areas": fields.List(fields.Nested(generic_type, display_null=False)),
     "stop_points": fields.List(fields.Nested(generic_type, display_null=False))
 }
