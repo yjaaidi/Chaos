@@ -139,12 +139,17 @@ class FieldLinks(fields.Raw):
         return None
 
 
+class ComputeDisruptionStatus(fields.Raw):
+    def output(self, key, obj):
+        return 'active'
+
 class FieldCause(fields.Raw):
     def output(self, key, obj):
         disruption = obj.disruption
-        for wording in disruption.cause.wordings:
-            if wording.key == 'external_medium':
-                return wording.value
+        if hasattr(obj.disruption, 'cause') and hasattr(obj.disruption.cause, 'wordings'):
+            for wording in disruption.cause.wordings:
+                if wording.key == 'external_medium':
+                    return wording.value
         return None
 
 href_field = {
@@ -429,9 +434,8 @@ traffic_report_impact_field = {
     "severity": fields.Nested(base_severity_fields, display_null=False),
     "application_periods": fields.List(fields.Nested(application_period_fields)),
     "messages": fields.List(fields.Nested(base_message_fields)),
-    "cause": FieldCause()
-
-
+    "cause": FieldCause(),
+    "status": ComputeDisruptionStatus()
 }
 
 traffic_reports_marshaler = {
