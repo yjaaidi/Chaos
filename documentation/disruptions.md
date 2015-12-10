@@ -2269,3 +2269,28 @@ Archive a category.
                 },
                 "meta": {}
             }
+
+
+
+#Traffic reports [/traffic_reports]
+
+This service provides the state of public transport traffic.
+
+- request
+    * Headers
+
+            Content-Type: application/json
+            Authorization: [navitia token]
+            X-Customer-Id: [customer id]
+            X-Contributors: [contributor id]
+            X-Coverage: [navitia coverage]
+
+
+- response 200 (application/json)
+
+    * Body
+
+            {
+                
+            }
+
