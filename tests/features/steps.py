@@ -54,10 +54,20 @@ def pythonify(value):
     return value
 
 def find_field(json, fields):
-    seppareted_fields = map(pythonify, fields.split('.'))
+    separated_fields = map(pythonify, fields.split('.'))
     current_node = json
-    for field in seppareted_fields:
-        current_node = current_node[field]
+
+    field_found = True
+    for field in separated_fields:
+        try:
+            current_node = current_node[field]
+        except KeyError:
+            field_found = False
+            pass
+
+    if not field_found:
+        return False
+
     return current_node
 
 @step(u'I (\w+) (?:to\s)?"([^"]+)"(?:\swith:)?')
@@ -113,6 +123,10 @@ def and_the_field_should_have_a_size_of_n(step, fields, size):
 @step(u'And the field "([^"]*)" should exist')
 def and_the_field_should_exist(step, fields):
     assert_not_equals(len(find_field(world.response_json, fields)), 0)
+
+@step(u'And the field "([^"]*)" should not exist')
+def and_the_field_should_not_exist(step, fields):
+    assert_equals(find_field(world.response_json, fields), False)
 
 @step(u'And the field "([^"]*)" should be (\d+)')
 def and_in_the_json_the_field_is_set_to(step, fields, value):

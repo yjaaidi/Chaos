@@ -10,13 +10,13 @@ class Obj(object):
 
 def test_get_traffic_report_objects():
     dd = get_traffic_report_objects([], Obj())
-    eq_(len(dd.items()), 0)
+    eq_(len(dd["traffic_report"].items()), 0)
 
 
 def test_get_traffic_report_without_objects():
     impact = chaos.models.Impact()
     dd = get_traffic_report_objects([impact], Obj())
-    eq_(len(dd.items()), 0)
+    eq_(len(dd["traffic_report"].items()), 0)
 
 
 def test_pt_object_in_list_false():
@@ -59,7 +59,7 @@ def test_get_traffic_report_with_network():
         }
     }
     dd = get_traffic_report_objects([impact], navitia)
-    eq_(cmp(dd, result), 0)
+    eq_(cmp(dd["traffic_report"], result), 0)
 
 
 def get_pt_object(uri, object_type, pt_objects=None):
@@ -127,7 +127,7 @@ def test_get_traffic_report_with_impact_on_lines():
         }
     }
     dd = get_traffic_report_objects([impact], navitia)
-    eq_(cmp(dd, result), 0)
+    eq_(cmp(dd["traffic_report"], result), 0)
 
 
 def test_get_traffic_report_with_impact_on_networks():
@@ -163,7 +163,7 @@ def test_get_traffic_report_with_impact_on_networks():
     }
     dd = get_traffic_report_objects([impact], navitia)
 
-    eq_(cmp(dd, result), 0)
+    eq_(cmp(dd["traffic_report"], result), 0)
 
 
 def test_get_traffic_report_with_impact_on_stop_areas_one_network():
@@ -186,7 +186,7 @@ def test_get_traffic_report_with_impact_on_stop_areas_one_network():
         }
     }
     dd = get_traffic_report_objects([impact], navitia)
-    eq_(cmp(dd, result), 0)
+    eq_(cmp(dd["traffic_report"], result), 0)
 
 
 def test_get_traffic_report_with_impact_on_stop_areas_2_networks():
@@ -216,7 +216,7 @@ def test_get_traffic_report_with_impact_on_stop_areas_2_networks():
         }
     }
     dd = get_traffic_report_objects([impact], navitia)
-    eq_(cmp(dd, result), 0)
+    eq_(cmp(dd["traffic_report"], result), 0)
 
 
 def test_get_traffic_report_with_2_impact_on_stop_area():
@@ -248,4 +248,4 @@ def test_get_traffic_report_with_2_impact_on_stop_area():
         }
     }
     dd = get_traffic_report_objects(impacts, navitia)
-    eq_(cmp(dd, result), 0)
+    eq_(cmp(dd["traffic_report"], result), 0)

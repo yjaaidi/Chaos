@@ -433,12 +433,12 @@ generic_type = {
     "links": FieldLinks()
 }
 
-line_fileds = deepcopy(generic_type)
-line_fileds['code'] = fields.String()
+line_fields = deepcopy(generic_type)
+line_fields['code'] = fields.String()
 
 traffic_report_fields = {
     "network": fields.Nested(generic_type, display_null=False),
-    "lines": fields.List(fields.Nested(line_fileds, display_null=False)),
+    "lines": fields.List(fields.Nested(line_fields, display_null=False)),
     "stop_areas": fields.List(fields.Nested(generic_type, display_null=False)),
     "stop_points": fields.List(fields.Nested(generic_type, display_null=False))
 }

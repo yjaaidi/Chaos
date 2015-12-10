@@ -413,30 +413,32 @@ def get_traffic_report_objects(impacts, navitia):
         "stop_point": "stop_points"
     }
 
-    result = dict()
+    result = {'traffic_report': {}, 'impacts_used': []}
     for impact in impacts:
         for pt_object in impact.objects:
-            if pt_object.type == 'network' and pt_object.uri not in result:
+            if pt_object.type == 'network' and pt_object.uri not in result["traffic_report"]:
                 navitia_network = navitia.get_pt_object(pt_object.uri, pt_object.type)
                 if navitia_network:
-                    result[pt_object.uri] = dict()
+                    result["traffic_report"][pt_object.uri] = dict()
                     navitia_network["impacts"] = []
                     navitia_network["impacts"].append(impact)
-                    result[pt_object.uri]['network'] = navitia_network
+                    result["impacts_used"].append(impact)
+                    result["traffic_report"][pt_object.uri]['network'] = navitia_network
             else:
-                if pt_object.type == 'network' and pt_object.uri in result:
+                if pt_object.type == 'network' and pt_object.uri in result["traffic_report"]:
                     navitia_network["impacts"].append(impact)
+                    result["impacts_used"].append(impact)
                 else:
                     navitia_networks = navitia.get_pt_object(pt_object.uri, pt_object.type, 'networks')
                     if navitia_networks and pt_object.type in collections:
                         for network in navitia_networks:
-                            if 'id' in network and network['id'] not in result:
-                                result[network['id']] = dict()
-                                result[network['id']]['network'] = network
-                                result[network['id']][collections[pt_object.type]] = []
+                            if 'id' in network and network['id'] not in result["traffic_report"]:
+                                result["traffic_report"][network['id']] = dict()
+                                result["traffic_report"][network['id']]['network'] = network
+                                result["traffic_report"][network['id']][collections[pt_object.type]] = []
 
-                            if collections[pt_object.type] in result[network['id']]:
-                                list_objects = result[network['id']][collections[pt_object.type]]
+                            if collections[pt_object.type] in result["traffic_report"][network['id']]:
+                                list_objects = result["traffic_report"][network['id']][collections[pt_object.type]]
                             else:
                                 list_objects = None
                             if not pt_object_in_list(pt_object, list_objects):
@@ -444,9 +446,11 @@ def get_traffic_report_objects(impacts, navitia):
                                 if navitia_object:
                                     navitia_object["impacts"] = []
                                     navitia_object["impacts"].append(impact)
-                                    if collections[pt_object.type] not in result[network['id']]:
-                                        result[network['id']][collections[pt_object.type]] = []
-                                    result[network['id']][collections[pt_object.type]].append(navitia_object)
+                                    result["impacts_used"].append(impact)
+                                    if collections[pt_object.type] not in result["traffic_report"][network['id']]:
+                                        result["traffic_report"][network['id']][collections[pt_object.type]] = []
+                                    result["traffic_report"][network['id']][collections[pt_object.type]].append(navitia_object)
                             else:
                                 navitia_object["impacts"].append(impact)
+                                result["impacts_used"].append(impact)
     return result
