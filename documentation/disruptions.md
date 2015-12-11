@@ -2276,6 +2276,32 @@ Archive a category.
 
 This service provides the state of public transport traffic.
 
+##Objects
+
+Disruptions is an array of some impact object.
+
+Traffic_reports is an array of some traffic_report object. One traffic_report object is a complex object, made of a network, an array of lines and an array of stop_areas.
+
+A typical traffic_report object will contain:
+
+- 1 **network** which is the grouping object
+
+    it can contain links to its disruptions. These disruptions are globals and might not be applied on lines or stop_areas.
+
+- 0..n **lines**
+	each line contains at least a link to its disruptions
+
+- 0..n **stop_areas**
+	each stop_area contains at least a link to its disruptions
+
+It means that if a stop_area is used by many networks, it will appear many times.
+
+##Parameters
+
+| Name                 | description                                                                    | required | default                 |
+| -------------------- | ------------------------------------------------------------------------------ | -------- | ----------------------- |
+| current_time         | parameter for settings the use by this request, mostly for debugging purpose   | false    | NOW                     |
+
 - request
     * Headers
 
@@ -2294,18 +2320,18 @@ This service provides the state of public transport traffic.
                     {
                         "application_periods": [
                             {
-                                "begin": "2015-12-08T00:00:00Z", 
+                                "begin": "2015-12-08T00:00:00Z",
                                 "end": "2015-12-11T22:00:00Z"
                             }
-                        ], 
-                        "cause": "Travaux", 
-                        "disruption_id": "8cc6a5ec-9d90-11e5-b08a-ecf4bb4460c7", 
-                        "id": "a3ca6a6e-9dca-11e5-b08a-ecf4bb4460c7", 
+                        ],
+                        "cause": "Travaux",
+                        "disruption_id": "8cc6a5ec-9d90-11e5-b08a-ecf4bb4460c7",
+                        "id": "a3ca6a6e-9dca-11e5-b08a-ecf4bb4460c7",
                         "messages": [
                             {
                                 "channel": {
-                                    "content_type": "text/html", 
-                                    "id": "ffe4308f-7e4b-f211-8e74-4ed3e055a969", 
+                                    "content_type": "text/html",
+                                    "id": "ffe4308f-7e4b-f211-8e74-4ed3e055a969",
                                     "max_size": 1000,
                                     "name": "email",
                                     "types": [
@@ -2316,171 +2342,171 @@ This service provides the state of public transport traffic.
                             },
                             {
                                 "channel": {
-                                    "content_type": "text/plain", 
-                                    "id": "7a831bc8-8c5f-11e5-b2c5-ecf4bb4460c7", 
-                                    "max_size": 255, 
-                                    "name": "Titre (OV1)", 
+                                    "content_type": "text/plain",
+                                    "id": "7a831bc8-8c5f-11e5-b2c5-ecf4bb4460c7",
+                                    "max_size": 255,
+                                    "name": "Titre (OV1)",
                                     "types": [
                                         "web"
                                     ]
-                                }, 
+                                },
                                 "text": "Je suis pour toi OV1 "
-                            }, 
+                            },
                             {
                                 "channel": {
-                                    "content_type": "text/plain", 
-                                    "id": "90b61dbd-d5a0-3df4-c426-79f8893bbc60", 
-                                    "max_size": 160, 
-                                    "name": "sms", 
+                                    "content_type": "text/plain",
+                                    "id": "90b61dbd-d5a0-3df4-c426-79f8893bbc60",
+                                    "max_size": 160,
+                                    "name": "sms",
                                     "types": [
                                         "sms"
                                     ]
-                                }, 
+                                },
                                 "text": "T'as de beaux yeux tu sais"
                             }
-                        ], 
+                        ],
                         "severity": {
-                            "color": "#FF4455", 
-                            "effect": "no_service", 
-                            "id": "69fb2a67-4e61-ff72-7ed6-65529f2502fc", 
-                            "name": "Blocking", 
+                            "color": "#FF4455",
+                            "effect": "no_service",
+                            "id": "69fb2a67-4e61-ff72-7ed6-65529f2502fc",
+                            "name": "Blocking",
                             "priority": 0
-                        }, 
+                        },
                         "status": "active"
-                    }, 
+                    },
                     {
                         "application_periods": [
                             {
-                                "begin": "2015-12-08T00:00:00Z", 
+                                "begin": "2015-12-08T00:00:00Z",
                                 "end": "2015-12-10T02:00:00Z"
                             }
-                        ], 
-                        "cause": "Travaux", 
-                        "disruption_id": "8cc6a5ec-9d90-11e5-b08a-ecf4bb4460c7", 
-                        "id": "8cc97e3e-9d90-11e5-b08a-ecf4bb4460c7", 
+                        ],
+                        "cause": "Travaux",
+                        "disruption_id": "8cc6a5ec-9d90-11e5-b08a-ecf4bb4460c7",
+                        "id": "8cc97e3e-9d90-11e5-b08a-ecf4bb4460c7",
                         "messages": [
                             {
                                 "channel": {
-                                    "content_type": "text/plain", 
-                                    "id": "7a831bc8-8c5f-11e5-b2c5-ecf4bb4460c7", 
-                                    "max_size": 255, 
-                                    "name": "Titre (OV1)", 
+                                    "content_type": "text/plain",
+                                    "id": "7a831bc8-8c5f-11e5-b2c5-ecf4bb4460c7",
+                                    "max_size": 255,
+                                    "name": "Titre (OV1)",
                                     "types": [
                                         "web"
                                     ]
-                                }, 
+                                },
                                 "text": "That's a message OV1"
-                            }, 
+                            },
                             {
                                 "channel": {
-                                    "content_type": "text/plain", 
-                                    "id": "90b61dbd-d5a0-3df4-c426-79f8893bbc60", 
-                                    "max_size": 160, 
-                                    "name": "sms", 
+                                    "content_type": "text/plain",
+                                    "id": "90b61dbd-d5a0-3df4-c426-79f8893bbc60",
+                                    "max_size": 160,
+                                    "name": "sms",
                                     "types": [
                                         "sms"
                                     ]
-                                }, 
+                                },
                                 "text": "That's a message SMS"
-                            }, 
+                            },
                             {
                                 "channel": {
-                                    "content_type": "text/html", 
-                                    "id": "ffe4308f-7e4b-f211-8e74-4ed3e055a969", 
-                                    "max_size": 1000, 
-                                    "name": "email", 
+                                    "content_type": "text/html",
+                                    "id": "ffe4308f-7e4b-f211-8e74-4ed3e055a969",
+                                    "max_size": 1000,
+                                    "name": "email",
                                     "types": [
                                         "email"
                                     ]
-                                }, 
+                                },
                                 "text": "That's a message mail"
                             }
-                        ], 
+                        ],
                         "severity": {
-                            "color": "#FF4455", 
-                            "effect": "no_service", 
-                            "id": "69fb2a67-4e61-ff72-7ed6-65529f2502fc", 
-                            "name": "Blocking", 
+                            "color": "#FF4455",
+                            "effect": "no_service",
+                            "id": "69fb2a67-4e61-ff72-7ed6-65529f2502fc",
+                            "name": "Blocking",
                             "priority": 0
-                        }, 
+                        },
                         "status": "past"
-                    }, 
+                    },
                     {
                         "application_periods": [
                             {
-                                "begin": "2015-09-28T23:30:00Z", 
+                                "begin": "2015-09-28T23:30:00Z",
                                 "end": "2016-01-01T02:00:00Z"
                             }
-                        ], 
-                        "cause": "Trafic", 
-                        "disruption_id": "0614bf52-8c60-11e5-b2c5-ecf4bb4460c7", 
-                        "id": "0615615a-8c60-11e5-b2c5-ecf4bb4460c7", 
+                        ],
+                        "cause": "Trafic",
+                        "disruption_id": "0614bf52-8c60-11e5-b2c5-ecf4bb4460c7",
+                        "id": "0615615a-8c60-11e5-b2c5-ecf4bb4460c7",
                         "messages": [
                             {
                                 "channel": {
-                                    "content_type": "text/plain", 
-                                    "id": "7a831bc8-8c5f-11e5-b2c5-ecf4bb4460c7", 
-                                    "max_size": 255, 
-                                    "name": "Titre (OV1)", 
+                                    "content_type": "text/plain",
+                                    "id": "7a831bc8-8c5f-11e5-b2c5-ecf4bb4460c7",
+                                    "max_size": 255,
+                                    "name": "Titre (OV1)",
                                     "types": [
                                         "web"
                                     ]
-                                }, 
+                                },
                                 "text": "Des travaux sur les voies interrompent la circulation. <a href=\"http://navitia.io\">Pour navitia, cliquez ici</a>    Pendant les travaux, covoiturez !"
                             }
-                        ], 
+                        ],
                         "severity": {
-                            "color": "#FF4455", 
-                            "effect": "no_service", 
-                            "id": "69fb2a67-4e61-ff72-7ed6-65529f2502fc", 
-                            "name": "Blocking", 
+                            "color": "#FF4455",
+                            "effect": "no_service",
+                            "id": "69fb2a67-4e61-ff72-7ed6-65529f2502fc",
+                            "name": "Blocking",
                             "priority": 0
-                        }, 
+                        },
                         "status": "active"
                     }
-                ], 
+                ],
                 "traffic_reports": [
                     {
                         "lines": [
                             {
-                                "code": "D", 
-                                "id": "line:DUA:123456789", 
+                                "code": "D",
+                                "id": "line:DUA:123456789",
                                 "links": [
                                     {
-                                        "id": "0615615a-8c60-11e5-b2c5-ecf4bb4460c7", 
-                                        "internal": true, 
-                                        "rel": "disruptions", 
-                                        "template": false, 
+                                        "id": "0615615a-8c60-11e5-b2c5-ecf4bb4460c7",
+                                        "internal": true,
+                                        "rel": "disruptions",
+                                        "template": false,
                                         "type": "disruption"
                                     }
-                                ], 
+                                ],
                                 "name": "Creil - Saturne / Mars / Pluton"
                             }
-                        ], 
+                        ],
                         "network": {
-                            "id": "network:DUA804", 
-                            "name": "LIGNE D"
+                            "id": "network:DUA777",
+                            "name": "RESEAU D"
                         }
-                    }, 
+                    },
                     {
                         "network": {
-                            "id": "network:DUA999", 
+                            "id": "network:DUA999",
                             "links": [
                                 {
-                                    "id": "a3ca6a6e-9dca-11e5-b08a-ecf4bb4460c7", 
-                                    "internal": true, 
-                                    "rel": "disruptions", 
-                                    "template": false, 
+                                    "id": "a3ca6a6e-9dca-11e5-b08a-ecf4bb4460c7",
+                                    "internal": true,
+                                    "rel": "disruptions",
+                                    "template": false,
                                     "type": "disruption"
-                                }, 
+                                },
                                 {
-                                    "id": "8cc97e3e-9d90-11e5-b08a-ecf4bb4460c7", 
-                                    "internal": true, 
-                                    "rel": "disruptions", 
-                                    "template": false, 
+                                    "id": "8cc97e3e-9d90-11e5-b08a-ecf4bb4460c7",
+                                    "internal": true,
+                                    "rel": "disruptions",
+                                    "template": false,
                                     "type": "disruption"
                                 }
-                            ], 
+                            ],
                             "name": "RESEAU A"
                         }
                     }
