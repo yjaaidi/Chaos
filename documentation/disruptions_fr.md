@@ -2720,3 +2720,246 @@ Archive une category.
                 "meta": {}
             }
 
+#Traffic reports [/traffic_reports]
+
+Ce service donne l'état du traffic de transport public.
+
+##Objects
+
+Disruptions est un tableau d'objets impact.
+
+Traffic_reports est un tableau d'objets traffic_report. Un traffic_report object est un objet complexe, composé de network, un tableau de lines est un tableau de stop_areas.
+
+Un objet traffic_report typique contient:
+
+- 1 **network** qui est l'objet groupant
+
+    il peut contenir des links vers ses disruptions. Ces disruptions sont globales et ne sont peut-être pas appliquées sur des lines ou stop_areas
+
+- 0..n **lines**
+	chaque line contient au moins un link vers ses disruptions
+
+- 0..n **stop_areas**
+	chaque stop_area contient au moins un link vers ses disruptions
+
+- 0..n **stop_points**
+	chaque stop_point contient au moins un link vers ses disruptions
+
+Cela signifie qu'un stop_area utilisé par plusieurs networks va apparaître plusieurs fois.
+
+##Parameters
+
+| Nom                 | description                                                                    | requis | defaut                 |
+| -------------------- | ------------------------------------------------------------------------------ | -------- | ----------------------- |
+| current_time         | Permet de changer la date et heure d'appel, sert surtout pour le debug | false    | NOW                     |
+
+- request
+    * Headers
+
+            Content-Type: application/json
+            Authorization: [navitia token]
+            X-Contributors: [contributor id]
+            X-Coverage: [navitia coverage]
+
+
+- response 200 (application/json)
+
+    * Body
+
+            {
+                "disruptions": [
+                    {
+                        "application_periods": [
+                            {
+                                "begin": "2015-12-08T00:00:00Z",
+                                "end": "2015-12-11T22:00:00Z"
+                            }
+                        ],
+                        "cause": "Travaux",
+                        "disruption_id": "8cc6a5ec-9d90-11e5-b08a-ecf4bb4460c7",
+                        "id": "a3ca6a6e-9dca-11e5-b08a-ecf4bb4460c7",
+                        "messages": [
+                            {
+                                "channel": {
+                                    "content_type": "text/html",
+                                    "id": "ffe4308f-7e4b-f211-8e74-4ed3e055a969",
+                                    "max_size": 1000,
+                                    "name": "email",
+                                    "types": [
+                                        "email"
+                                    ]
+                                },
+                                "text": "<p>C'est entièrement gainé de plomb il n'y a plus rien à craindre.</p> <a href=\"http://navitia.io\">Pour navitia, cliquez ici</a>"
+                            },
+                            {
+                                "channel": {
+                                    "content_type": "text/plain",
+                                    "id": "7a831bc8-8c5f-11e5-b2c5-ecf4bb4460c7",
+                                    "max_size": 255,
+                                    "name": "Titre (OV1)",
+                                    "types": [
+                                        "web"
+                                    ]
+                                },
+                                "text": "Je suis pour toi OV1 "
+                            },
+                            {
+                                "channel": {
+                                    "content_type": "text/plain",
+                                    "id": "90b61dbd-d5a0-3df4-c426-79f8893bbc60",
+                                    "max_size": 160,
+                                    "name": "sms",
+                                    "types": [
+                                        "sms"
+                                    ]
+                                },
+                                "text": "T'as de beaux yeux tu sais"
+                            }
+                        ],
+                        "severity": {
+                            "color": "#FF4455",
+                            "effect": "no_service",
+                            "id": "69fb2a67-4e61-ff72-7ed6-65529f2502fc",
+                            "name": "Blocking",
+                            "priority": 0
+                        },
+                        "status": "active"
+                    },
+                    {
+                        "application_periods": [
+                            {
+                                "begin": "2015-12-08T00:00:00Z",
+                                "end": "2015-12-10T02:00:00Z"
+                            }
+                        ],
+                        "cause": "Travaux",
+                        "disruption_id": "8cc6a5ec-9d90-11e5-b08a-ecf4bb4460c7",
+                        "id": "8cc97e3e-9d90-11e5-b08a-ecf4bb4460c7",
+                        "messages": [
+                            {
+                                "channel": {
+                                    "content_type": "text/plain",
+                                    "id": "7a831bc8-8c5f-11e5-b2c5-ecf4bb4460c7",
+                                    "max_size": 255,
+                                    "name": "Titre (OV1)",
+                                    "types": [
+                                        "web"
+                                    ]
+                                },
+                                "text": "That's a message OV1"
+                            },
+                            {
+                                "channel": {
+                                    "content_type": "text/plain",
+                                    "id": "90b61dbd-d5a0-3df4-c426-79f8893bbc60",
+                                    "max_size": 160,
+                                    "name": "sms",
+                                    "types": [
+                                        "sms"
+                                    ]
+                                },
+                                "text": "That's a message SMS"
+                            },
+                            {
+                                "channel": {
+                                    "content_type": "text/html",
+                                    "id": "ffe4308f-7e4b-f211-8e74-4ed3e055a969",
+                                    "max_size": 1000,
+                                    "name": "email",
+                                    "types": [
+                                        "email"
+                                    ]
+                                },
+                                "text": "That's a message mail"
+                            }
+                        ],
+                        "severity": {
+                            "color": "#FF4455",
+                            "effect": "no_service",
+                            "id": "69fb2a67-4e61-ff72-7ed6-65529f2502fc",
+                            "name": "Blocking",
+                            "priority": 0
+                        },
+                        "status": "past"
+                    },
+                    {
+                        "application_periods": [
+                            {
+                                "begin": "2015-09-28T23:30:00Z",
+                                "end": "2016-01-01T02:00:00Z"
+                            }
+                        ],
+                        "cause": "Trafic",
+                        "disruption_id": "0614bf52-8c60-11e5-b2c5-ecf4bb4460c7",
+                        "id": "0615615a-8c60-11e5-b2c5-ecf4bb4460c7",
+                        "messages": [
+                            {
+                                "channel": {
+                                    "content_type": "text/plain",
+                                    "id": "7a831bc8-8c5f-11e5-b2c5-ecf4bb4460c7",
+                                    "max_size": 255,
+                                    "name": "Titre (OV1)",
+                                    "types": [
+                                        "web"
+                                    ]
+                                },
+                                "text": "Des travaux sur les voies interrompent la circulation. <a href=\"http://navitia.io\">Pour navitia, cliquez ici</a>    Pendant les travaux, covoiturez !"
+                            }
+                        ],
+                        "severity": {
+                            "color": "#FF4455",
+                            "effect": "no_service",
+                            "id": "69fb2a67-4e61-ff72-7ed6-65529f2502fc",
+                            "name": "Blocking",
+                            "priority": 0
+                        },
+                        "status": "active"
+                    }
+                ],
+                "traffic_reports": [
+                    {
+                        "lines": [
+                            {
+                                "code": "D",
+                                "id": "line:DUA:123456789",
+                                "links": [
+                                    {
+                                        "id": "0615615a-8c60-11e5-b2c5-ecf4bb4460c7",
+                                        "internal": true,
+                                        "rel": "disruptions",
+                                        "template": false,
+                                        "type": "disruption"
+                                    }
+                                ],
+                                "name": "Creil - Saturne / Mars / Pluton"
+                            }
+                        ],
+                        "network": {
+                            "id": "network:DUA777",
+                            "name": "RESEAU D"
+                        }
+                    },
+                    {
+                        "network": {
+                            "id": "network:DUA999",
+                            "links": [
+                                {
+                                    "id": "a3ca6a6e-9dca-11e5-b08a-ecf4bb4460c7",
+                                    "internal": true,
+                                    "rel": "disruptions",
+                                    "template": false,
+                                    "type": "disruption"
+                                },
+                                {
+                                    "id": "8cc97e3e-9d90-11e5-b08a-ecf4bb4460c7",
+                                    "internal": true,
+                                    "rel": "disruptions",
+                                    "template": false,
+                                    "type": "disruption"
+                                }
+                            ],
+                            "name": "RESEAU A"
+                        }
+                    }
+                ]
+            }

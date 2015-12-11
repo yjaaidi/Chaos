@@ -85,6 +85,11 @@ api.add_resource(resources.ChannelType,
 api.add_resource(resources.Status,
                  '/status')
 
+
+api.add_resource(resources.TrafficReport,
+                 '/traffic_reports')
+
+
 @app.errorhandler(Exception)
 def error_handler(exception):
     """

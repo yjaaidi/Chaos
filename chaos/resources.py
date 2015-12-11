@@ -62,7 +62,8 @@ class Index(flask_restful.Resource):
             "tags": {"href": url_for('tag', _external=True)},
             "categories": {"href": url_for('category', _external=True)},
             "channeltypes": {"href": url_for('channeltype', _external=True)},
-            "status": {"href": url_for('status', _external=True)}
+            "status": {"href": url_for('status', _external=True)},
+            "traffic_reports": {"href": url_for('trafficreport', _external=True)}
 
 
         }
@@ -738,6 +739,7 @@ class Channel(flask_restful.Resource):
         db.session.commit()
         return None, 204
 
+
 class ChannelType(flask_restful.Resource):
     def get(self):
         return {'channel_types': [type for type in channel_type_values]}, 200
@@ -750,3 +752,24 @@ class Status(flask_restful.Resource):
                 'db_version': db.engine.scalar('select version_num from alembic_version;'),
                 'navitia_url': current_app.config['NAVITIA_URL'],
                 'rabbitmq_info': publisher.info()}, 200
+
+
+class TrafficReport(flask_restful.Resource):
+    def __init__(self):
+        self.parsers = {}
+        self.parsers["get"] = reqparse.RequestParser()
+        parser_get = self.parsers["get"]
+        parser_get.add_argument("current_time", type=utils.get_datetime, default=utils.get_current_time())
+        self.navitia = None
+
+    @validate_contributor()
+    @validate_navitia()
+    @manage_navitia_error()
+    def get(self, contributor, navitia):
+        self.navitia = navitia
+        args = self.parsers['get'].parse_args()
+        g.current_time = args['current_time']
+        impacts = models.Impact.traffic_report_filter(contributor.id)
+        result = utils.get_traffic_report_objects(impacts, self.navitia)
+        return marshal({'traffic_reports': [value for key, value in result["traffic_report"].items()],
+                        "disruptions": result["impacts_used"]}, traffic_reports_marshaler), 200
