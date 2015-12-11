@@ -2278,9 +2278,9 @@ This service provides the state of public transport traffic.
 
 ##Objects
 
-Disruptions is an array of some impact object.
+Disruptions is an array of some impact objects.
 
-Traffic_reports is an array of some traffic_report object. One traffic_report object is a complex object, made of a network, an array of lines and an array of stop_areas.
+Traffic_reports is an array of some traffic_report objects. One traffic_report object is a complex object, made of a network, an array of lines and an array of stop_areas.
 
 A typical traffic_report object will contain:
 
@@ -2293,6 +2293,9 @@ A typical traffic_report object will contain:
 
 - 0..n **stop_areas**
 	each stop_area contains at least a link to its disruptions
+	
+- 0..n **stop_points**
+	each stop_point contains at least a link to its disruptions
 
 It means that if a stop_area is used by many networks, it will appear many times.
 

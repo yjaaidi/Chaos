@@ -2728,7 +2728,7 @@ Ce service donne l'état du traffic de transport public.
 
 Disruptions est un tableau d'objets impact.
 
-Traffic_reports est un tableau d'objet traffic_report. Un traffic_report object est un objet complexe, composé de network, un tableau de lines est un tableau de stop_areas.
+Traffic_reports est un tableau d'objets traffic_report. Un traffic_report object est un objet complexe, composé de network, un tableau de lines est un tableau de stop_areas.
 
 Un objet traffic_report typique contient:
 
@@ -2741,6 +2741,9 @@ Un objet traffic_report typique contient:
 
 - 0..n **stop_areas**
 	chaque stop_area contient au moins un link vers ses disruptions
+
+- 0..n **stop_points**
+	chaque stop_point contient au moins un link vers ses disruptions
 
 Cela signifie qu'un stop_area utilisé par plusieurs networks va apparaître plusieurs fois.
 
