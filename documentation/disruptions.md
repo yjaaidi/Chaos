@@ -2281,7 +2281,6 @@ This service provides the state of public transport traffic.
 
             Content-Type: application/json
             Authorization: [navitia token]
-            X-Customer-Id: [customer id]
             X-Contributors: [contributor id]
             X-Coverage: [navitia coverage]
 
