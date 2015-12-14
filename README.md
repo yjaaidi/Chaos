@@ -4,6 +4,10 @@ Chaos is the web service which implements the real-time aspect of Navitia
 
 ## Installation
 
+Installation instructions can be followed from [http://confluence.canaltp.fr/display/SPEED/Installation+et+utilisation+de+Chaos+en+local](http://confluence.canaltp.fr/display/SPEED/Installation+et+utilisation+de+Chaos+en+local)
+
+### Python & Protobuf
+
 Install [`pip`](https://pip.pypa.io/en/latest/installing/) and [`virtualenv`](http://virtualenv.readthedocs.org/en/latest/installation.html)
 
 Install Python dependencies
@@ -21,3 +25,7 @@ You need to compile `protobuf` files before using chaos:
 # before executing the following command
 ./setup.py build_pbf
 ```
+
+## Provisioning
+
+Provisioning instructions can be followed from [provisioning/PROVISIONING.md](provisioning/PROVISIONING.md)

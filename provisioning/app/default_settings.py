@@ -1,7 +1,7 @@
 #URI for postgresql
 # postgresql://<user>:<password>@<host>:<port>/<dbname>
 #http://docs.sqlalchemy.org/en/rel_0_9/dialects/postgresql.html#psycopg2
-SQLALCHEMY_DATABASE_URI = 'postgresql://navitia:navitia@localhost/chaos'
+SQLALCHEMY_DATABASE_URI = 'postgresql://navitia:AGPXSnTFHmXknK@_ip_address_/chaos'
 
 DEBUG = True
 
@@ -13,7 +13,7 @@ RABBITMQ_CONNECTION_STRING='pyamqp://guest:guest@localhost:5672//?heartbeat=60'
 #amqp exhange used for sending disruptions
 EXCHANGE='navitia'
 
-ENABLE_RABBITMQ=True
+ENABLE_RABBITMQ=False
 
 #Log Level available
 # - DEBUG
