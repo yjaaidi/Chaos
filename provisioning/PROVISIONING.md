@@ -1,50 +1,55 @@
 # Provisioning
 
-Install docker by following instructions from [http://docs.docker.com/engine/installation/](http://docs.docker.com/engine/installation/)
+Install Docker by following instructions from [http://docs.docker.com/engine/installation/](http://docs.docker.com/engine/installation/)
 
-## PostgreSQL
+Install Docker Compose by following instructions from [https://docs.docker.com/compose/install/](https://docs.docker.com/compose/install/)
 
-Build PostgreSQL image
-
-```
-(cd  provisioning/postgresql && sudo docker build -t postgresql .)
-```
-
-Run PostgresSQL container in background
-
-```
-export POSTGRES_PASSWORD="%~\`4cj,|@snhg!''f@ay~"
-sudo docker run \
---name chaos_postgresql \
--v `pwd`/provisioning/postgresql/logs:/var/log/postgresql \
--v `pwd`/provisioning/postgresql/data:/var/lib/postgresql \
--e PGPASSWORD=$POSTGRES_PASSWORD \
--e POSTGRES_PASS=$POSTGRES_PASSWORD \
--d -p 5432:5432 postgresql
-```
-
-## Application
-
-Initalize git submodules
+Initialize git submodules
 
 ```
 source provisioning/app/initialize-submodules.sh
 ```
 
-Build application image
+Build the required images
 
 ```
-(cd provisioning/app && sudo docker build -t chaos .)
+(cd provisioning && sudo docker-compose build)
 ```
 
+Run PostgreSQL and application containers
+
 ```
-sudo docker run \
---link chaos_postgresql:postgresql \
--v `pwd`:/var/www/chaos \
--d -p 5000:5000 chaos
+(cd provisioning && sudo docker-compose up)
 ```
 
 ## FAQ
+
+**How to build a PostgreSQL image for Chaos?**
+
+Execute the following command to change the current directory and build PostgreSQL image
+
+```
+(cd  provisioning/postgresql && sudo docker build -t postgresql .)
+```
+
+**How to run PostgresSQL container manually in background?**
+
+Execute the following commands in order to
+ * export respectively development `postgres` and `navitia` passwords
+ * run a database container
+
+```
+export POSTGRES_PASSWORD="%~\`4cj,|@snhg!''f@ay~"
+export NAVITIA_PASSWORD=AGPXSnTFHmXknK
+sudo docker run \
+--name chaos_postgresql \
+-v `pwd`/provisioning/postgresql/logs:/var/log/postgresql \
+-v `pwd`/provisioning/postgresql/data:/var/lib/postgresql \
+-e PGPASSWORD=$POSTGRES_PASSWORD \
+-e NAVITIA_PASSWORD=$NAVITIA_PASSWORD \
+-e POSTGRES_PASS=$POSTGRES_PASSWORD \
+-d -p 5432:5432 postgresql
+```
 
 **How to connect to PostgreSQL running container?**
 
@@ -79,5 +84,27 @@ Remove logs and database files
 Execute `Docker logs` command with `follow` (`-f`) option
 
 ```
-suo docker logs -f `sudo docker ps -a | grep postgres | awk '{print $1}'`
+sudo docker logs -f `sudo docker ps -a | grep postgres | awk '{print $1}'`
 ```
+
+**How to build the Chaos application image?**
+
+```
+(cd provisioning/app && sudo docker build -t chaos .)
+```
+
+**How to run the Chaos application image?**
+
+Run the following commands in order to
+ * export development `navitia` password
+ * run an application container
+
+```
+export NAVITIA_PASSWORD=AGPXSnTFHmXknK
+sudo docker run \
+--link chaos_postgresql:postgresql \
+-e PGPASSWORD=NAVITIA_PASSWORD
+-v `pwd`:/var/www/chaos \
+-d -p 5000:5000 chaos
+```
+

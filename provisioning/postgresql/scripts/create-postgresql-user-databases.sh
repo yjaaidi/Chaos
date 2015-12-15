@@ -2,7 +2,8 @@
 
 # Create navitia user
 echo 'Create navitia PostgreSQL user'
-echo "CREATE ROLE navitia WITH UNENCRYPTED PASSWORD 'AGPXSnTFHmXknK'" | psql -U postgres
+CREATE_USER_QUERY="CREATE ROLE navitia WITH UNENCRYPTED PASSWORD '$NAVITIA_PASSWORD'"
+echo $CREATE_USER_QUERY | psql -U postgres
 echo "ALTER ROLE navitia WITH LOGIN;" | psql -U postgres
 
 # Create chaos databases ("chaos" and "chaos_testing") with navitia user as their respective owners

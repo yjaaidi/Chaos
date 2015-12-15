@@ -16,6 +16,8 @@ chmod -R 0700 $postgres_dir
 source /run.sh &
 
 sleep 5
-sudo -u postgres /scripts/create-postgresql-user-databases.sh
+
+# pass environment variables to user / database creation script using sudo command -E option
+sudo -E -u postgres /scripts/create-postgresql-user-databases.sh
 
 %1

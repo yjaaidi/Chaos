@@ -40,6 +40,8 @@ RUN chmod 0700 /usr/local/bin/run-server.sh
 # Fix "Your terminal is not configured to receive UTF-8 encoded text" warning
 ENV PYTHONIOENCODING utf-8
 
+ENV CHAOS_CONFIG_FILE "/default_settings.py"
+
 WORKDIR /var/www/chaos
 
 VOLUME /var/www/chaos

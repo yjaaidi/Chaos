@@ -1,24 +1,27 @@
 #!/bin/bash
 
-POSTGRESQL_PASSWORD='AGPXSnTFHmXknK'
+# Wait for the database to be online
+# See also https://github.com/docker/compose/issues/374
+sleep 10
+
+POSTGRESQL_PORT_5432_TCP_ADDR='localhost'
 PROJECT_DIR=/var/www/chaos
+
 cd $PROJECT_DIR
 
-cp /default_settings.py /tmp/default_settings.py
+echo 'PostgreSQL database will listen on port port 5432 of host "'$POSTGRESQL_PORT_5432_TCP_ADDR'"'
 
+cp /default_settings.py /tmp/default_settings.py
 sed "s/_ip_address_/$POSTGRESQL_PORT_5432_TCP_ADDR/" /tmp/default_settings.py > \
 /tmp/default_settings.py_
 
 # Replace password in application settings
-sed "s/_password_/$POSTGRESQL_PASSWORD/" /tmp/default_settings.py_ > \
+sed "s/_password_/$PGPASSWORD/" /tmp/default_settings.py_ > \
 /default_settings.py
 
 test -d venv || virtualenv venv
 echo 'Activating virtual environment'
 source venv/bin/activate
-
-# Replace ip address in application settings
-/bin/bash -c "echo 'CHAOS_CONFIG_FILE=/default_settings.py' >> /.env"
 
 if [ ! -e ./venv/.installed_requirements ]
 then
@@ -60,7 +63,7 @@ QUERIES
     touch ./venv/.inserted_queries
 fi
 
-export PGPASSWORD=$POSTGRESQL_PASSWORD
 echo $SQL_QUERIES | psql -U navitia -h $POSTGRESQL_PORT_5432_TCP_ADDR chaos
 
 honcho -d $PROJECT_DIR -f /Procfile.txt start
+
