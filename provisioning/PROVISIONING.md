@@ -87,13 +87,13 @@ Execute `Docker logs` command with `follow` (`-f`) option
 sudo docker logs -f `sudo docker ps -a | grep postgres | awk '{print $1}'`
 ```
 
-**How to build the Chaos application image?**
+**How to build Chaos application image?**
 
 ```
 (cd provisioning/app && sudo docker build -t chaos .)
 ```
 
-**How to run the Chaos application image?**
+**How to run Chaos application image?**
 
 Run the following commands in order to
  * export development `navitia` password
