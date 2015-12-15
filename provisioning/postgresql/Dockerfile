@@ -1,5 +1,7 @@
 FROM tutum/postgresql
 
+MAINTAINER Kisio Digital
+
 ADD scripts /scripts
 
 RUN chmod -R 755 /scripts

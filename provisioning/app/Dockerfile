@@ -1,6 +1,6 @@
 FROM ubuntu:15.10
 
-MAINTAINER CANALTP
+MAINTAINER Kisio Digital
 
 # Update source repositories and install packages using aptitude
 
