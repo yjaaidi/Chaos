@@ -1,7 +1,7 @@
 #URI for postgresql
 # postgresql://<user>:<password>@<host>:<port>/<dbname>
 #http://docs.sqlalchemy.org/en/rel_0_9/dialects/postgresql.html#psycopg2
-SQLALCHEMY_DATABASE_URI = 'postgresql://navitia:AGPXSnTFHmXknK@_ip_address_/chaos'
+SQLALCHEMY_DATABASE_URI = 'postgresql://navitia:_password_@_ip_address_/chaos'
 
 DEBUG = True
 
