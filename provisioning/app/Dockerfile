@@ -7,23 +7,11 @@ MAINTAINER Kisio Digital
 RUN apt-get update -y
 
 RUN apt-get install -y wget python python-dev python-pip \
-libpq-dev rabbitmq-server git postgresql-client
+libpq-dev rabbitmq-server git postgresql-client protobuf-compiler
 
 RUN pip install virtualenv
 
 WORKDIR /tmp
-
-RUN wget https://protobuf.googlecode.com/svn/rc/protobuf-2.6.0.tar.gz
-
-# Build protobuf
-
-RUN tar zxvf protobuf-2.6.0.tar.gz
-
-RUN cd protobuf-2.6.0 && ./configure && make && make check && make install
-
-RUN ldconfig
-
-RUN rm -rf /tmp/protobuf-2.6.0
 
 RUN mkdir -p /var/www/chaos
 
