@@ -4,15 +4,15 @@
 # See also https://github.com/docker/compose/issues/374
 sleep 10
 
-POSTGRESQL_PORT_5432_TCP_ADDR='localhost'
+DATABASE_HOST='chaos_database'
 PROJECT_DIR=/var/www/chaos
 
 cd $PROJECT_DIR
 
-echo 'PostgreSQL database will listen on port port 5432 of host "'$POSTGRESQL_PORT_5432_TCP_ADDR'"'
+echo 'PostgreSQL database will listen on port port 5432 of host "'$DATABASE_HOST'"'
 
 cp /default_settings.py /tmp/default_settings.py
-sed "s/_ip_address_/$POSTGRESQL_PORT_5432_TCP_ADDR/" /tmp/default_settings.py > \
+sed "s/_ip_address_/$DATABASE_HOST/" /tmp/default_settings.py > \
 /tmp/default_settings.py_
 
 # Replace password in application settings
@@ -63,7 +63,7 @@ QUERIES
     touch ./venv/.inserted_queries
 fi
 
-echo $SQL_QUERIES | psql -U navitia -h $POSTGRESQL_PORT_5432_TCP_ADDR chaos
+echo $SQL_QUERIES | psql -U navitia -h $DATABASE_HOST chaos
 
 honcho -d $PROJECT_DIR -f /Procfile.txt start
 

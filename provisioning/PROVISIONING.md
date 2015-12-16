@@ -19,7 +19,7 @@ Build the required images
 Run PostgreSQL and application containers
 
 ```
-(cd provisioning && sudo docker-compose up)
+(cd provisioning && sudo docker-compose  --x-networking up)
 ```
 
 ## FAQ
