@@ -41,14 +41,16 @@ Execute the following commands in order to
 ```
 export POSTGRES_PASSWORD="%~\`4cj,|@snhg!''f@ay~"
 export NAVITIA_PASSWORD=AGPXSnTFHmXknK
+sudo docker network create provisioning
 sudo docker run \
---name chaos_postgresql \
+--net=provisioning \
+--name chaos_database \
 -v `pwd`/provisioning/postgresql/logs:/var/log/postgresql \
 -v `pwd`/provisioning/postgresql/data:/var/lib/postgresql \
 -e PGPASSWORD=$POSTGRES_PASSWORD \
 -e NAVITIA_PASSWORD=$NAVITIA_PASSWORD \
 -e POSTGRES_PASS=$POSTGRES_PASSWORD \
--d -p 5432:5432 postgresql
+-d postgresql
 ```
 
 **How to connect to PostgreSQL running container?**
@@ -95,15 +97,16 @@ sudo docker logs -f `sudo docker ps -a | grep postgres | awk '{print $1}'`
 
 **How to run Chaos application image?**
 
-Run the following commands in order to
+After having executed the command to run manually the PostgreSQL container,
+run the next commands in order to
  * export development `navitia` password
  * run an application container
 
 ```
 export NAVITIA_PASSWORD=AGPXSnTFHmXknK
 sudo docker run \
---link chaos_postgresql:postgresql \
--e PGPASSWORD=NAVITIA_PASSWORD
+--net=provisioning \
+-e PGPASSWORD=$NAVITIA_PASSWORD \
 -v `pwd`:/var/www/chaos \
 -d -p 5000:5000 chaos
 ```
