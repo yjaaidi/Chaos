@@ -9,8 +9,8 @@ database:
   ports:
    - 5432:5432
   volumes:
-   - logs:/var/log/postgresql
-   - data:/var/lib/postgresql
+   - ./logs:/var/log/postgresql
+   - ./data:/var/lib/postgresql
 web:
   build: app/.
   container_name: "chaos"
