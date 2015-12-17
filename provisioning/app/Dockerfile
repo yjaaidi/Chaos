@@ -7,7 +7,7 @@ MAINTAINER Kisio Digital
 RUN apt-get update -y
 
 RUN apt-get install -y wget python python-dev python-pip \
-libpq-dev rabbitmq-server git postgresql-client protobuf-compiler
+libpq-dev git postgresql-client protobuf-compiler
 
 RUN pip install virtualenv
 
