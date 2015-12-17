@@ -12,11 +12,9 @@ cd $PROJECT_DIR
 echo 'PostgreSQL database will listen on port port 5432 of host "'$DATABASE_HOST'"'
 
 cp /default_settings.py /tmp/default_settings.py
-sed "s/_ip_address_/$DATABASE_HOST/" /tmp/default_settings.py > \
-/tmp/default_settings.py_
 
-# Replace password in application settings
-sed "s/_password_/$PGPASSWORD/" /tmp/default_settings.py_ > \
+# Replace IP address and password in application settings
+sed -e "s/_password_/$PGPASSWORD/" -e "s/_ip_address_/$DATABASE_HOST/" /tmp/default_settings.py > \
 /default_settings.py
 
 test -d venv || virtualenv venv
