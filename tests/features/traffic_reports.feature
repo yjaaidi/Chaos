@@ -848,7 +848,7 @@ Feature: traffic report api
         When I get "/traffic_reports?current_time=2014-01-17T23:52:12Z"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
-        And the field "disruptions" should have a size of 2
+        And the field "disruptions" should have a size of 1
         And the field "traffic_reports" should have a size of 2
         And the field "disruptions.0.status" should be "active"
         And the field "disruptions.0.id" should be "7ffab232-3d47-4eea-aa2c-22f8680230b6"
@@ -917,7 +917,7 @@ Feature: traffic report api
         When I get "/traffic_reports?current_time=2014-01-17T23:52:12Z"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
-        And the field "disruptions" should have a size of 2
+        And the field "disruptions" should have a size of 1
         And the field "traffic_reports" should have a size of 1
         And the field "disruptions.0.status" should be "active"
         And the field "disruptions.0.id" should be "7ffab232-3d47-4eea-aa2c-22f8680230b6"
