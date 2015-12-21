@@ -422,12 +422,15 @@ def get_traffic_report_objects(impacts, navitia):
                     result["traffic_report"][pt_object.uri] = dict()
                     navitia_network["impacts"] = []
                     navitia_network["impacts"].append(impact)
-                    result["impacts_used"].append(impact)
+                    if impact not in result["impacts_used"]:
+                        result["impacts_used"].append(impact)
                     result["traffic_report"][pt_object.uri]['network'] = navitia_network
             else:
                 if pt_object.type == 'network' and pt_object.uri in result["traffic_report"]:
+                    navitia_network = result["traffic_report"][pt_object.uri]["network"]
                     navitia_network["impacts"].append(impact)
-                    result["impacts_used"].append(impact)
+                    if impact not in result["impacts_used"]:
+                        result["impacts_used"].append(impact)
                 else:
                     navitia_networks = navitia.get_pt_object(pt_object.uri, pt_object.type, 'networks')
                     if navitia_networks and pt_object.type in collections:
@@ -446,11 +449,13 @@ def get_traffic_report_objects(impacts, navitia):
                                 if navitia_object:
                                     navitia_object["impacts"] = []
                                     navitia_object["impacts"].append(impact)
-                                    result["impacts_used"].append(impact)
+                                    if impact not in result["impacts_used"]:
+                                        result["impacts_used"].append(impact)
                                     if collections[pt_object.type] not in result["traffic_report"][network['id']]:
                                         result["traffic_report"][network['id']][collections[pt_object.type]] = []
                                     result["traffic_report"][network['id']][collections[pt_object.type]].append(navitia_object)
                             else:
                                 navitia_object["impacts"].append(impact)
-                                result["impacts_used"].append(impact)
+                                if impact not in result["impacts_used"]:
+                                    result["impacts_used"].append(impact)
     return result

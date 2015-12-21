@@ -630,7 +630,7 @@ Return all impacts by ptobject.
 
 | Name                 | description                                                                                | required | default                     |
 | -------------------- | ------------------------------------------------------------------------------------------ | -------- | --------------------------- |
-| pt_object_type       | filter by ptobject, possible value are: network, stoparea, line, line_section, stop_point  | false    |                             |
+| pt_object_type       | filter by ptobject, possible value are: network, stop_area, line, line_section, stop_point  | false    |                             |
 | uri[]                | filtre by ptobject.uri                                                                     | false    |                             |
 | start_date           | filtre by application period :star date                                                    | false    | Now():00:00:00Z             |
 | end_date             | filtre by application period :end date                                                     | false    | Now():23:59:59Z             |
