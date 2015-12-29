@@ -39,6 +39,7 @@ from chaos.populate_pb import populate_pb
 from chaos.exceptions import HeaderAbsent
 import chaos
 import pytz
+import logging
 
 
 def make_pager(resultset, endpoint, **kwargs):
@@ -381,13 +382,11 @@ def get_application_periods(json):
     return result
 
 
-def pt_object_in_list(pt_object, list_objects):
-    if not list_objects:
-        return False
+def get_pt_object_from_list(pt_object, list_objects):
     for object in list_objects:
         if pt_object.uri == object['id']:
-            return True
-    return False
+            return object
+    return None
 
 
 def get_traffic_report_objects(impacts, navitia):
@@ -416,46 +415,58 @@ def get_traffic_report_objects(impacts, navitia):
     result = {'traffic_report': {}, 'impacts_used': []}
     for impact in impacts:
         for pt_object in impact.objects:
-            if pt_object.type == 'network' and pt_object.uri not in result["traffic_report"]:
-                navitia_network = navitia.get_pt_object(pt_object.uri, pt_object.type)
-                if navitia_network:
-                    result["traffic_report"][pt_object.uri] = dict()
-                    navitia_network["impacts"] = []
-                    navitia_network["impacts"].append(impact)
-                    if impact not in result["impacts_used"]:
-                        result["impacts_used"].append(impact)
-                    result["traffic_report"][pt_object.uri]['network'] = navitia_network
-            else:
-                if pt_object.type == 'network' and pt_object.uri in result["traffic_report"]:
+            if pt_object.type == 'network':
+                if pt_object.uri in result["traffic_report"]:
                     navitia_network = result["traffic_report"][pt_object.uri]["network"]
+                else:
+                    navitia_network = navitia.get_pt_object(pt_object.uri, pt_object.type)
+                    if navitia_network:
+                        result["traffic_report"][pt_object.uri] = dict()
+                        navitia_network["impacts"] = []
+                        result["traffic_report"][pt_object.uri]['network'] = navitia_network
+                if navitia_network:
                     navitia_network["impacts"].append(impact)
                     if impact not in result["impacts_used"]:
                         result["impacts_used"].append(impact)
-                else:
-                    navitia_networks = navitia.get_pt_object(pt_object.uri, pt_object.type, 'networks')
-                    if navitia_networks and pt_object.type in collections:
-                        for network in navitia_networks:
-                            if 'id' in network and network['id'] not in result["traffic_report"]:
-                                result["traffic_report"][network['id']] = dict()
-                                result["traffic_report"][network['id']]['network'] = network
-                                result["traffic_report"][network['id']][collections[pt_object.type]] = []
+            else:
+                if pt_object.type not in collections:
+                    logging.getLogger(__name__).debug('PtObject ignored: {type} [{uri}], not in collections {col}'.
+                                                      format(type=pt_object.type, uri=pt_object.uri, col=collections))
+                    continue
+                navitia_networks = navitia.get_pt_object(pt_object.uri, pt_object.type, 'networks')
+                if navitia_networks:
+                    for network in navitia_networks:
+                        if 'id' in network and network['id'] not in result["traffic_report"]:
+                            result["traffic_report"][network['id']] = dict()
+                            result["traffic_report"][network['id']]['network'] = network
+                            result["traffic_report"][network['id']][collections[pt_object.type]] = []
 
-                            if collections[pt_object.type] in result["traffic_report"][network['id']]:
-                                list_objects = result["traffic_report"][network['id']][collections[pt_object.type]]
-                            else:
-                                list_objects = None
-                            if not pt_object_in_list(pt_object, list_objects):
-                                navitia_object = navitia.get_pt_object(pt_object.uri, pt_object.type)
-                                if navitia_object:
-                                    navitia_object["impacts"] = []
-                                    navitia_object["impacts"].append(impact)
-                                    if impact not in result["impacts_used"]:
-                                        result["impacts_used"].append(impact)
-                                    if collections[pt_object.type] not in result["traffic_report"][network['id']]:
-                                        result["traffic_report"][network['id']][collections[pt_object.type]] = []
-                                    result["traffic_report"][network['id']][collections[pt_object.type]].append(navitia_object)
-                            else:
+                        if collections[pt_object.type] in result["traffic_report"][network['id']]:
+                            list_objects = result["traffic_report"][network['id']][collections[pt_object.type]]
+                        else:
+                            list_objects = None
+                        navitia_object = get_pt_object_from_list(pt_object, list_objects)
+                        if not navitia_object:
+                            navitia_object = navitia.get_pt_object(pt_object.uri, pt_object.type)
+                            if navitia_object:
+                                navitia_object["impacts"] = []
                                 navitia_object["impacts"].append(impact)
                                 if impact not in result["impacts_used"]:
                                     result["impacts_used"].append(impact)
+                                if collections[pt_object.type] not in result["traffic_report"][network['id']]:
+                                    result["traffic_report"][network['id']][collections[pt_object.type]] = []
+                                result["traffic_report"][network['id']][collections[pt_object.type]].\
+                                    append(navitia_object)
+                            else:
+                                logging.getLogger(__name__).debug('PtObject ignored : {type} [{uri}], '
+                                                                  'not found in navitia.'.
+                                                                  format(type=pt_object.type, uri=pt_object.uri))
+                        else:
+                            navitia_object["impacts"].append(impact)
+                            if impact not in result["impacts_used"]:
+                                result["impacts_used"].append(impact)
+                else:
+                    logging.getLogger(__name__).debug('PtObject ignored : {type} [{uri}], '
+                                                      'not found network in navitia.'.format(type=pt_object.type,
+                                                                                             uri=pt_object.uri))
     return result
