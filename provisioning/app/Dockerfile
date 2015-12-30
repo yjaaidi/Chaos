@@ -23,6 +23,8 @@ ADD run-server.sh /usr/local/bin/run-server.sh
 
 ADD Procfile.txt /Procfile.txt
 
+ADD testing_settings.py /testing_settings.py
+
 RUN chmod 0700 /usr/local/bin/run-server.sh
 
 # Fix "Your terminal is not configured to receive UTF-8 encoded text" warning

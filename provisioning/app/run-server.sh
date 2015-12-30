@@ -61,7 +61,15 @@ QUERIES
     touch ./venv/.inserted_queries
 fi
 
+cp /testing_settings.py $PROJECT_DIR/tests
+
 echo $SQL_QUERIES | psql -U navitia -h $DATABASE_HOST chaos
+
+if [ -e $PROJECT_DIR/.env ]
+then
+    echo 'Your environment configuration file will be move to comply with docker use requirements'
+    mv $PROJECT_DIR/.env $PROJECT_DIR/.`date +"%Y%d%m_%H_%M"`_env
+fi
 
 honcho -d $PROJECT_DIR -f /Procfile.txt start
 
