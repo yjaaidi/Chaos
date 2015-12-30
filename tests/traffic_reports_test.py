@@ -1,5 +1,5 @@
 from nose.tools import *
-from chaos.utils import get_traffic_report_objects, pt_object_in_list
+from chaos.utils import get_traffic_report_objects, get_pt_object_from_list
 import chaos
 from mock import MagicMock
 
@@ -19,26 +19,28 @@ def test_get_traffic_report_without_objects():
     eq_(len(dd["traffic_report"].items()), 0)
 
 
-def test_pt_object_in_list_false():
+def test_get_pt_object_from_list_None():
     stop_area = chaos.models.PTobject()
     stop_area.type = 'stop_area'
     stop_area.uri = 'uri1'
-    eq_(pt_object_in_list(stop_area, []), False)
+    eq_(get_pt_object_from_list(stop_area, []), None)
 
 
-def test_pt_object_in_list_True():
+def test_get_pt_object_from_list_True():
     stop_area = chaos.models.PTobject()
     stop_area.type = 'stop_area'
     stop_area.uri = 'uri1'
-    eq_(pt_object_in_list(stop_area, [{'id': 'uri1', 'name': 'stop area name'}]), True)
+    eq_(get_pt_object_from_list(stop_area, [{'id': 'uri1', 'name': 'stop area name'}]),
+        {'id': 'uri1', 'name': 'stop area name'})
 
 
-def test_pt_object_in_list_True_2_objects():
+def test_get_pt_object_from_list_True_2_objects():
     stop_area = chaos.models.PTobject()
     stop_area.type = 'stop_area'
     stop_area.uri = 'uri1'
-    eq_(pt_object_in_list(stop_area, [{'id': 'uri2', 'name': 'stop area name'},
-                                      {'id': 'uri1', 'name': 'stop area name'}]), True)
+    eq_(get_pt_object_from_list(stop_area, [{'id': 'uri2', 'name': 'stop area name'},
+                                            {'id': 'uri1', 'name': 'stop area name'}]),
+        {'id': 'uri1', 'name': 'stop area name'})
 
 
 def test_get_traffic_report_with_network():
@@ -225,17 +227,17 @@ def test_get_traffic_report_with_2_impact_on_stop_area():
     impacts = []
 
     impact = chaos.models.Impact()
-    line = chaos.models.PTobject()
-    line.type = 'stop_area'
-    line.uri = 'stop_area:uri1'
-    impact.objects.append(line)
+    stop_area = chaos.models.PTobject()
+    stop_area.type = 'stop_area'
+    stop_area.uri = 'stop_area:uri1'
+    impact.objects.append(stop_area)
 
     impacts.append(impact)
     impact = chaos.models.Impact()
-    line = chaos.models.PTobject()
-    line.type = 'stop_area'
-    line.uri = 'stop_area:uri1'
-    impact.objects.append(line)
+    stop_area = chaos.models.PTobject()
+    stop_area.type = 'stop_area'
+    stop_area.uri = 'stop_area:uri1'
+    impact.objects.append(stop_area)
     impacts.append(impact)
 
     result = {
