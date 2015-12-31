@@ -47,25 +47,51 @@ class Navitia(object):
             "stop_point": "stop_points"
         }
 
-    def get_pt_object(self, uri, object_type):
-
+    def query_formater(self, uri, object_type, pt_objects=None):
         if object_type == 'line_section':
             return None
         if object_type not in self.collections:
             logging.getLogger(__name__).exception('object type {object_type} unknown'.format(object_type=object_type))
             raise exceptions.ObjectTypeUnknown(object_type)
 
+        if pt_objects and pt_objects != 'networks':
+            logging.getLogger(__name__).exception('object type {object_type} unknown'.format(object_type=object_type))
+            raise exceptions.ObjectTypeUnknown(object_type)
+
         query = '{url}/v1/coverage/{coverage}/{collection}/{uri}'.format(
-                url=self.url, coverage=self.coverage, collection=self.collections[object_type], uri=uri)
+            url=self.url, coverage=self.coverage, collection=self.collections[object_type], uri=uri)
+        if pt_objects:
+            query = '{q}/{objects}'.format(q=query, objects=pt_objects)
+        return query + '?depth=0'
+
+    def navitia_caller(self, query):
+
         try:
-            response = requests.get(query, auth=(self.token, None), timeout=self.timeout)
+            return requests.get(query, auth=(self.token, None), timeout=self.timeout)
         except (requests.exceptions.RequestException):
             logging.getLogger(__name__).exception('call to navitia failed')
             #currently we reraise the previous exceptions
             raise exceptions.NavitiaError('call to navitia failed, data : {}'.format(query))
 
+    def get_pt_object(self, uri, object_type, pt_objects=None):
+        try:
+            query = self.query_formater(uri, object_type, pt_objects)
+        except exceptions.ObjectTypeUnknown:
+            raise
+        
+        if not query:
+            return None
+
+        try:
+            response = self.navitia_caller(query)
+        except exceptions.NavitiaError:
+            raise
+
         if response:
             json = response.json()
+            if pt_objects and json[pt_objects]:
+                return json[pt_objects]
+
             if self.collections[object_type] in json and json[self.collections[object_type]]:
                 return json[self.collections[object_type]][0]
 

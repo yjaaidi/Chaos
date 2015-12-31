@@ -35,7 +35,7 @@ from utils import paginate, get_current_time
 from sqlalchemy.dialects.postgresql import UUID, BIT
 from datetime import datetime
 from formats import publication_status_values
-from sqlalchemy import or_, and_, not_
+from sqlalchemy import or_, and_, between
 from sqlalchemy.orm import aliased
 
 
@@ -199,6 +199,7 @@ associate_wording_cause = db.Table('associate_wording_cause',
                                     db.Column('cause_id', UUID, db.ForeignKey('cause.id')),
                                     db.PrimaryKeyConstraint('wording_id', 'cause_id', name='wording_cause_pk')
 )
+
 
 class Cause(TimestampMixin, db.Model):
     """
@@ -577,6 +578,15 @@ class Impact(TimestampMixin, db.Model):
         query = query.union_all(query_line_section).filter(and_(start_filter, end_filter)).order_by("application_periods_1.start_date")
         return query.all()
 
+    @classmethod
+    def traffic_report_filter(cls, contributor_id):
+        query = cls.query.filter(cls.status == 'published')
+        query = query.join(Disruption)
+        query = query.filter(Disruption.contributor_id == contributor_id)
+        query = query.filter(between(get_current_time(), Disruption.start_publication_date, Disruption.end_publication_date))
+        return query.all()
+
+
 associate_line_section_route_object = db.Table('associate_line_section_route_object',
                                       db.metadata,
                                       db.Column('line_section_id', UUID, db.ForeignKey('line_section.id')),
@@ -590,6 +600,7 @@ associate_line_section_via_object = db.Table('associate_line_section_via_object'
                                       db.Column('stop_area_object_id', UUID, db.ForeignKey('pt_object.id')),
                                       db.PrimaryKeyConstraint('line_section_id', 'stop_area_object_id', name='line_section_stop_area_object_pk')
 )
+
 
 class PTobject(TimestampMixin, db.Model):
     __tablename__ = 'pt_object'
@@ -711,6 +722,15 @@ class Message(TimestampMixin, db.Model):
     def get(cls, id):
         return cls.query.filter_by(id=id).first_or_404()
 
+associate_wording_line_section = db.Table('associate_wording_line_section',
+                                    db.metadata,
+                                    db.Column('wording_id', UUID, db.ForeignKey('wording.id')),
+                                    db.Column('line_section_id', UUID, db.ForeignKey('line_section.id')),
+                                    db.PrimaryKeyConstraint('wording_id', 'line_section_id',
+                                                            name='wording_line_section_pk')
+)
+
+
 class LineSection(TimestampMixin, db.Model):
     __tablename__ = 'line_section'
     id = db.Column(UUID, primary_key=True)
@@ -724,6 +744,15 @@ class LineSection(TimestampMixin, db.Model):
     end_point = db.relationship('PTobject', foreign_keys=end_object_id)
     routes = db.relationship("PTobject", secondary=associate_line_section_route_object, lazy='joined')
     via = db.relationship("PTobject", secondary=associate_line_section_via_object, lazy='joined')
+    wordings = db.relationship("Wording", secondary=associate_wording_line_section, backref="linesections")
+
+    def delete_wordings(self):
+        index = len(self.wordings) - 1
+        while index >= 0:
+            wording = self.wordings[index]
+            self.wordings.remove(wording)
+            db.session.delete(wording)
+            index -= 1
 
     def __repr__(self):
         return '<LineSection %r>' % self.id
