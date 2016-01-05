@@ -1153,7 +1153,7 @@ Feature: traffic report api
         And the field "disruptions" should have a size of 4
         And the field "traffic_reports" should have a size of 1
         And the field "traffic_reports.0.network.id" should be "network:JDR:1"
-        And the field "traffic_reports.0.network.name" should be "SNCF"
+        And the field "traffic_reports.0.network.name" should be "RATP"
         And the field "traffic_reports.0.network.links" should not exist
         And the field "traffic_reports.0.lines" should have a size of 4
         And the field "traffic_reports.0.lines.0.id" should be "line:JDR:M1"
