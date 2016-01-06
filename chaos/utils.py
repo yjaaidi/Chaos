@@ -442,7 +442,7 @@ def manage_other_object(result, impact, pt_object, navitia, types):
             if types in result["traffic_report"][network['id']]:
                 list_objects = result["traffic_report"][network['id']][types]
             else:
-                list_objects = None
+                list_objects = []
             navitia_object = get_pt_object_from_list(pt_object, list_objects)
             if not navitia_object:
                 navitia_object = navitia.get_pt_object(pt_object.uri, pt_object.type)
