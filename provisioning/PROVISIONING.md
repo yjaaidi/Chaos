@@ -22,6 +22,22 @@ Run PostgreSQL and application containers
 (cd provisioning && sudo docker-compose  --x-networking up)
 ```
 
+## Testing
+
+Access a running Chaos web container
+
+```
+sudo docker exec -ti `sudo docker ps -a | grep chaos | grep provisioning_web | awk '{print $1}'` /bin/bash
+```
+
+Test features using Lettuce
+
+```
+cd /var/www/chaos && source venv/bin/activate && \
+pip install -r requirements/test.txt && \
+CHAOS_CONFIG_FILE=$(pwd)/tests/testing_settings.py lettuce tests/features
+```
+
 ## FAQ
 
 **How to build a PostgreSQL image for Chaos?**
