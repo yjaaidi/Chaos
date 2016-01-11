@@ -1,15 +1,16 @@
 from kombu import BrokerConnection, Exchange
-from kombu.pools import producers, connections
+from kombu.pools import producers
 import logging
-from amqp.exceptions import ConnectionForced
-
+import socket
 from gevent import spawn_later
-import weakref
+
 
 class Publisher(object):
     def __init__(self, connection_string, exchange, is_active=True):
         self._is_active = is_active
+        self.is_connected = True
         if not is_active:
+            self.is_connected = False
             return
 
         self._connection = BrokerConnection(connection_string)
@@ -28,16 +29,29 @@ class Publisher(object):
             return
 
         with self._get_producer() as producer:
-            producer.publish(item, exchange=self._exchange, routing_key=contributor, declare=[self._exchange])
+            try:
+                producer.publish(item, exchange=self._exchange, routing_key=contributor, declare=[self._exchange])
+                self.is_connected = True
+            except socket.error:
+                self.is_connected = False
+                logging.getLogger(__name__).debug('Impossible to publish message !')
+                raise
 
     def info(self):
+        result = {
+            "is_active": self._is_active,
+            "is_connected": self.is_connected
+        }
         if not self._is_active:
-            return {}
+            return result
+
         with self._get_producer() as producer:
             res = producer.connection.info()
             if 'password' in res:
                 del res['password']
-            return res
+            for key, value in res.items():
+                result[key] = value
+        return result
 
 
 def monitor_heartbeats(connections, rate=2):
@@ -54,18 +68,23 @@ def monitor_heartbeats(connections, rate=2):
     if not supports_heartbeats:
         logging.getLogger(__name__).info('heartbeat is not enabled')
         return
-
     logging.getLogger(__name__).info('start rabbitmq monitoring')
+
     def heartbeat_check():
+        to_remove = []
         for conn in connections:
             if conn.connected:
                 logging.getLogger(__name__).debug('heartbeat_check for %s', conn)
                 try:
                     conn.heartbeat_check(rate=rate)
-                except ConnectionForced:
-                    #I don't know why, but pyamqp fail to detect the heartbeat
-                    #So even if it fail we don't do anything
-                    pass
+                except socket.error:
+                    logging.getLogger(__name__).info('connection %s dead: closing it!', conn)
+                    #actualy we don't do a close(), else we won't be able to reopen it after...
+                    to_remove.append(conn)
+            else:
+                to_remove.append(conn)
+        for conn in to_remove:
+            connections.remove(conn)
         spawn_later(interval, heartbeat_check)
 
     spawn_later(interval, heartbeat_check)
