@@ -29,3 +29,11 @@ You need to compile `protobuf` files before using chaos:
 ## Provisioning
 
 Provisioning instructions can be followed from [provisioning/PROVISIONING.md](provisioning/PROVISIONING.md)
+
+## Update database
+source venv/bin/activate
+honcho run ./manage.py db upgrade
+
+## Change schema database
+source venv/bin/activate
+honcho run ./manage.py db migrate
