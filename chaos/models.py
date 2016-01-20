@@ -293,6 +293,45 @@ associate_disruption_pt_object = db.Table('associate_disruption_pt_object',
 )
 
 
+class AssociateDisruptionProperty(db.Model):
+    """
+    links disruptions to properties
+    """
+    __tablename__ = 'associate_disruption_property'
+    value = db.Column(db.Text, primary_key=True)
+    disruption_id = db.Column(
+        UUID,
+        db.ForeignKey('disruption.id'),
+        primary_key=True
+    )
+    property_id = db.Column(
+        UUID,
+        db.ForeignKey('property.id'),
+        primary_key=True
+    )
+    property = db.relationship('Property', back_populates='disruptions')
+    disruption = db.relationship('Disruption', back_populates='properties')
+
+    @classmethod
+    def get(cls, property_id, disruption_id, value):
+        return cls.query.filter_by(
+            property_id=property_id,
+            disruption_id=disruption_id,
+            value=value
+        ).first()
+
+    @classmethod
+    def get_by_disruption(cls, disruption_id):
+        return cls.query.filter_by(
+            disruption_id=disruption_id
+        ).all()
+
+    def __repr__(self):
+        return '<%s: %s %s %s>' % (
+            self.__class__.__name__, self.property_id, self.disruption_id, self.value
+        )
+
+
 class Disruption(TimestampMixin, db.Model):
     __tablename__ = 'disruption'
     id = db.Column(UUID, primary_key=True)
@@ -311,6 +350,11 @@ class Disruption(TimestampMixin, db.Model):
     contributor = db.relationship('Contributor', backref='disruptions', lazy='joined')
     version = db.Column(db.Integer, nullable=False, default=1)
     localizations = db.relationship("PTobject", secondary=associate_disruption_pt_object, backref="disruptions")
+    properties = db.relationship(
+        'AssociateDisruptionProperty',
+        lazy='joined',
+        back_populates='disruption'
+    )
 
     def __repr__(self):
         return '<Disruption %r>' % self.id
@@ -818,6 +862,7 @@ class TimeSlot(TimestampMixin, db.Model):
     def __repr__(self):
         return '<TimeSlot %r>' % self.id
 
+
 class ChannelType(TimestampMixin, db.Model):
     """
     represents the types of a channel
@@ -833,3 +878,50 @@ class ChannelType(TimestampMixin, db.Model):
 
     def __repr__(self):
         return '<ChannelType %r>' % self.id
+
+
+class Property(TimestampMixin, db.Model):
+    """
+    represents the types of properties
+    """
+    __tablename__ = 'property'
+    __table_args__ = (
+        db.UniqueConstraint(
+            'type',
+            'key',
+            'client_id',
+            name='property_type_key_client_id_uc'
+        ),
+    )
+    id = db.Column(UUID, primary_key=True)
+    client_id = db.Column(UUID, db.ForeignKey(Client.id), nullable=False)
+    client = db.relationship('Client', backref='properties', lazy='joined')
+    key = db.Column(db.Text, nullable=False)
+    type = db.Column(db.Text, nullable=False)
+    disruptions = db.relationship(
+        'AssociateDisruptionProperty',
+        lazy='joined',
+        back_populates='property'
+    )
+
+    def __init__(self):
+        self.id = str(uuid.uuid1())
+
+    def __repr__(self):
+        return '%s: %s %s %s>' % (
+            self.__class__.__name__, self.id, self.type, self.key
+        )
+
+    @classmethod
+    def all(cls, client_id, type=None):
+        if type:
+            return cls.query.filter_by(client_id=client_id, type=type).all()
+
+        return cls.query.filter_by(client_id=client_id).all()
+
+    @classmethod
+    def get(cls, id, client_id):
+        return cls.query.filter_by(
+            id=id,
+            client_id=client_id
+        ).first()
