@@ -566,6 +566,4 @@ def get_traffic_report_objects(impacts, navitia):
                                                       format(type=pt_object.type, uri=pt_object.uri, col=collections))
                     continue
                 manage_other_object(result, impact, pt_object, navitia, collections[pt_object.type])
-    print ('result')
-    print (result)
     return result

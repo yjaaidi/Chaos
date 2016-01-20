@@ -937,8 +937,8 @@ Feature: traffic report api
         And the field "traffic_reports.0.lines.1.links.0.id" should be "7ffab232-3d47-4eea-aa2c-22f8680230b6"
         And the field "traffic_reports.0.lines.1.links.0.rel" should be "disruptions"
 
-
-        Scenario: Impact on line_section, current_time between start publication period and end application period. The line section should not appear
+@line_section_test
+        Scenario: Impact on line_section, current_time between start publication period and end application period. The line section should appear
 #
 #                       |          01-01-2014                                  01-31-2014
 #  publication_period   |               +-------------------------------------------+
@@ -1012,7 +1012,16 @@ Feature: traffic report api
         And the field "traffic_reports" should have a size of 1
         And the field "disruptions.0.id" should be "7ffab232-3d47-4eea-aa2c-22f8680230b6"
         And the field "disruptions.0.disruption_id" should be "7ffab230-3d48-4eea-aa2c-22f8680230b6"
-        And the field "traffic_reports.0.line_sections" should not exist
+        And the field "traffic_reports.0.line_sections" should exist
+        And the field "traffic_reports.0.line_sections.0.line_section" should exist
+        And the field "traffic_reports.0.line_sections.0.type" should be "line_section"
+        And the field "traffic_reports.0.line_sections.0.line_section.end_point.type" should be "stop_area"
+        And the field "traffic_reports.0.line_sections.0.line_section.end_point.id" should be "stop_area:JDR:SA:CHVIN"
+        And the field "traffic_reports.0.line_sections.0.line_section.start_point.type" should be "stop_area"
+        And the field "traffic_reports.0.line_sections.0.line_section.start_point.id" should be "stop_area:JDR:SA:BASTI"
+        And the field "traffic_reports.0.line_sections.0.line_section.line.type" should be "line"
+        And the field "traffic_reports.0.line_sections.0.line_section.line.id" should be "line:JDR:M1"
+        And the field "traffic_reports.0.line_sections.0.line_section.line.name" should exist
         And the field "traffic_reports.0.network.id" should be "network:JDR:1"
         And the field "traffic_reports.0.network.name" should be "RATP"
         And the field "traffic_reports.0.network.links" should not exist
