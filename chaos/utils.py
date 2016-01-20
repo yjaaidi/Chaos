@@ -465,6 +465,67 @@ def manage_other_object(result, impact, pt_object, navitia, types):
         logging.getLogger(__name__).debug('PtObject ignored : {type} [{uri}], '
                                           'not found network in navitia.'.format(type=pt_object.type,
                                                                                  uri=pt_object.uri))
+def create_line_section(navitia_object, pt_object):
+    line_section = {
+        "id": pt_object.line_section.id,
+        "type": "line_section",
+        "line_section":
+            {
+                "line": {
+                    "id": navitia_object["id"],
+                    "name": navitia_object["name"],
+                    "type": 'line'
+                },
+                "start_point":
+                    {
+                        "id": pt_object.line_section.start_point.uri,
+                        "type": pt_object.line_section.start_point.type
+                    },
+                "end_point":
+                    {
+                        "id": pt_object.line_section.end_point.uri,
+                        "type": pt_object.line_section.end_point.type
+                    }
+            }
+    }
+    return line_section
+
+def manage_line_section(result, impact, pt_object, navitia, types):
+
+    navitia_networks = get_navitia_networks(result, pt_object.line_section.line, navitia, 'lines')
+    if navitia_networks:
+        for network in navitia_networks:
+            if 'id' in network and network['id'] not in result["traffic_report"]:
+                add_network(result, network, False)
+                result["traffic_report"][network['id']][types] = []
+
+            if types in result["traffic_report"][network['id']]:
+                list_objects = result["traffic_report"][network['id']][types]
+            else:
+                list_objects = []
+            navitia_object = get_pt_object_from_list(pt_object, list_objects)
+            if not navitia_object:
+                navitia_object = navitia.get_pt_object(pt_object.line_section.line.uri, 'line')
+                if navitia_object:
+                    navitia_object = create_line_section(navitia_object, pt_object)
+                    navitia_object["impacts"] = []
+                    navitia_object["impacts"].append(impact)
+                    fill_impacts_used(result, impact)
+                    if types not in result["traffic_report"][network['id']]:
+                        result["traffic_report"][network['id']][types] = []
+                    result["traffic_report"][network['id']][types].\
+                        append(navitia_object)
+                else:
+                    logging.getLogger(__name__).debug(' PtObject ignored : {type} [{uri}], '
+                                                      'not found in navitia.'.
+                                                      format(type=pt_object.type, uri=pt_object.uri))
+            else:
+                navitia_object["impacts"].append(impact)
+                fill_impacts_used(result, impact)
+    else:
+        logging.getLogger(__name__).debug('PtObject ignored : {type} [{uri}], '
+                                          'not found network in navitia.'.format(type=pt_object.type,
+                                                                                 uri=pt_object.uri))
 
 
 def get_traffic_report_objects(impacts, navitia):
@@ -487,7 +548,8 @@ def get_traffic_report_objects(impacts, navitia):
     collections = {
         "stop_area": "stop_areas",
         "line": "lines",
-        "stop_point": "stop_points"
+        "stop_point": "stop_points",
+        "line_section": "line_sections"
     }
 
     result = {'traffic_report': {}, 'impacts_used': []}
@@ -495,10 +557,15 @@ def get_traffic_report_objects(impacts, navitia):
         for pt_object in impact.objects:
             if pt_object.type == 'network':
                 manage_network(result, impact, pt_object, navitia)
+            if pt_object.type == 'line_section':
+                manage_line_section(result, impact, pt_object, navitia, collections[pt_object.type])
             else:
                 if pt_object.type not in collections:
+                    print(pt_object.type)
                     logging.getLogger(__name__).debug('PtObject ignored: {type} [{uri}], not in collections {col}'.
                                                       format(type=pt_object.type, uri=pt_object.uri, col=collections))
                     continue
                 manage_other_object(result, impact, pt_object, navitia, collections[pt_object.type])
+    print ('result')
+    print (result)
     return result

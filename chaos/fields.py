@@ -130,7 +130,7 @@ class FieldChannelTypes(fields.Raw):
 
 class FieldLinks(fields.Raw):
     def output(self, key, obj):
-        if "impacts" in obj:
+        if obj and "impacts" in obj:
             return [{"internal": True,
                      "type": "disruption",
                      "id": impact.id,
@@ -430,17 +430,35 @@ impacts_by_object_fields = {
 generic_type = {
     "name": fields.String(),
     "id": fields.String(),
+    "type": fields.String(),
     "links": FieldLinks()
 }
 
 line_fields = deepcopy(generic_type)
 line_fields['code'] = fields.String()
 
+
+line_section_fields = {
+    "line": fields.Nested(generic_type, display_null=False),
+    "start_point": fields.Nested(generic_type, display_null=False),
+    "end_point": fields.Nested(generic_type, display_null=False),
+}
+
+
+line_sections_fields = {
+    "id": fields.String(),
+    "type": fields.String(),
+    "line_section": fields.Nested(line_section_fields, display_null=False),
+    "links":FieldLinks()
+}
+
+
 traffic_report_fields = {
     "network": fields.Nested(generic_type, display_null=False),
     "lines": fields.List(fields.Nested(line_fields, display_null=False)),
     "stop_areas": fields.List(fields.Nested(generic_type, display_null=False)),
-    "stop_points": fields.List(fields.Nested(generic_type, display_null=False))
+    "stop_points": fields.List(fields.Nested(generic_type, display_null=False)),
+    "line_sections": fields.List(fields.Nested(line_sections_fields, display_null=False))
 }
 
 traffic_report_impact_field = {
