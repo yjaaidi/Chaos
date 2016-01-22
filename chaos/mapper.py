@@ -114,6 +114,11 @@ tag_mapping = {
     'name': None
 }
 
+property_mapping = {
+    'key': None,
+    'type': None
+}
+
 category_mapping = {
     'name': None
 }

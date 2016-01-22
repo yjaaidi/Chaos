@@ -35,7 +35,8 @@ from flask.ext.restful import abort
 from fields import *
 from formats import *
 from formats import impact_input_format, channel_input_format, pt_object_type_values,\
-    tag_input_format, category_input_format, channel_type_values
+    tag_input_format, category_input_format, channel_type_values,\
+    property_input_format
 from chaos import mapper, exceptions
 from chaos import utils, db_helper
 import chaos
@@ -63,7 +64,8 @@ class Index(flask_restful.Resource):
             "categories": {"href": url_for('category', _external=True)},
             "channeltypes": {"href": url_for('channeltype', _external=True)},
             "status": {"href": url_for('status', _external=True)},
-            "traffic_reports": {"href": url_for('trafficreport', _external=True)}
+            "traffic_reports": {"href": url_for('trafficreport', _external=True)},
+            "properties": {"href": url_for('property', _external=True)}
 
 
         }
@@ -225,6 +227,12 @@ class Disruptions(flask_restful.Resource):
         except exceptions.ObjectUnknown, e:
             return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 404
 
+        # Add all properties present in Json
+        try:
+            db_helper.manage_properties(disruption, json)
+        except exceptions.ObjectUnknown, e:
+            return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 404
+
         except exceptions.InvalidJson, e:
             return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 400
 
@@ -275,6 +283,16 @@ class Disruptions(flask_restful.Resource):
 
         except exceptions.InvalidJson, e:
             return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 400
+
+        # Add all properties present in Json
+        try:
+            db_helper.manage_properties(disruption, json)
+        except exceptions.ObjectUnknown as e:
+            db.session.rollback()
+            return marshal(
+                {'error': {'message': '{}'.format(e.message)}},
+                error_fields
+                ), 404
 
         disruption.upgrade_version()
         db.session.commit()
@@ -564,7 +582,6 @@ class Impacts(flask_restful.Resource):
         parser_get.add_argument("start_page", type=int, default=1)
         parser_get.add_argument("items_per_page", type=int, default=20)
 
-    
     @validate_contributor()
     @validate_navitia()
     @manage_navitia_error()
@@ -773,3 +790,112 @@ class TrafficReport(flask_restful.Resource):
         result = utils.get_traffic_report_objects(impacts, self.navitia)
         return marshal({'traffic_reports': [value for key, value in result["traffic_report"].items()],
                         "disruptions": result["impacts_used"]}, traffic_reports_marshaler), 200
+
+
+class Property(flask_restful.Resource):
+    def __init__(self):
+        self.parsers = {'get': reqparse.RequestParser()}
+        self.parsers['get'].add_argument('key').add_argument('type')
+
+    @validate_client()
+    @validate_id()
+    def get(self, client, id=None):
+        args = self.parsers['get'].parse_args()
+        key = args['key']
+        type = args['type']
+
+        if id:
+            property = models.Property.get(client.id, id)
+
+            if property is None:
+                return marshal({
+                    'error': {'message': 'Property {} not found'.format(id)}
+                }, error_fields), 404
+
+            return marshal({'property': property}, one_property_fields)
+        else:
+            response = {
+                'properties': models.Property.all(client.id, key, type)
+            }
+            return marshal(response, properties_fields)
+
+    @validate_client(True)
+    def post(self, client):
+        json = request.get_json()
+        logging.getLogger(__name__).debug('POST property: %s', json)
+
+        try:
+            validate(json, property_input_format)
+        except ValidationError, e:
+            return marshal({'error': {'message': utils.parse_error(e)}},
+                           error_fields), 400
+
+        property = models.Property()
+        mapper.fill_from_json(property, json, mapper.property_mapping)
+        property.client = client
+        db.session.add(property)
+
+        try:
+            db.session.commit()
+        except IntegrityError, e:
+            return marshal({'error': {'message': utils.parse_error(e)}},
+                           error_fields), 409
+
+        return marshal({'property': property}, one_property_fields), 201
+
+    @validate_client()
+    @validate_id(True)
+    def put(self, client, id):
+        property = models.Property.get(client.id, id)
+
+        if property is None:
+            return marshal({
+                'error': {'message': 'Property {} not found'.format(id)}
+            }, error_fields), 404
+
+        json = request.get_json()
+        logging.getLogger(__name__).debug('PUT property: %s', json)
+
+        try:
+            validate(json, property_input_format)
+        except ValidationError, e:
+            return marshal({'error': {'message': utils.parse_error(e)}},
+                           error_fields), 400
+
+        mapper.fill_from_json(property, json, mapper.property_mapping)
+
+        try:
+            db.session.commit()
+        except IntegrityError, e:
+            return marshal({'error': {'message': utils.parse_error(e)}},
+                           error_fields), 409
+
+        return marshal({'property': property}, one_property_fields), 200
+
+    @validate_client()
+    @validate_id(True)
+    def delete(self, client, id):
+        property = models.Property.get(client.id, id)
+
+        if property is None:
+            return marshal({
+                'error': {'message': 'Property {} not found'.format(id)}
+            }, error_fields), 404
+
+        can_be_deleted = property.disruptions.filter(
+            models.Disruption.status != 'archived',
+            models.AssociateDisruptionProperty.disruption_id == models.Disruption.id
+        ).count() == 0
+
+        if can_be_deleted:
+            db.session.delete(property)
+            db.session.commit()
+        else:
+            return marshal({
+                'error': {
+                    'message': 'The current {} is linked to at least one disruption\
+ and cannot be deleted'.format(property)
+                }
+            }, error_fields), 409
+
+        return None, 204

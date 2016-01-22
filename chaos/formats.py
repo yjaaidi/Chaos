@@ -129,6 +129,24 @@ tag_input_format = {
     'required': ['name']
 }
 
+property_input_format = {
+    'type': 'object',
+    'properties': {
+        'key': {'type': 'string', 'minLength': 1, 'maxLength': 250},
+        'type': {'type': 'string', 'minLength': 1, 'maxLength': 250}
+    },
+    'required': ['key', 'type']
+}
+
+associate_disruption_property_input_format = {
+    'type': 'object',
+    'properties': {
+        'property_id': {'type': 'string', 'pattern': id_format_text},
+        'value': {'type': 'string', 'minLength': 1, 'maxLength': 250}
+    },
+    'required': ['property_id', 'value']
+}
+
 category_input_format = {
     'type': 'object',
     'properties': {'name': {'type': 'string', 'maxLength': 250},
@@ -269,36 +287,43 @@ impact_input_format = {
 
 disruptions_input_format = {
     'type': 'object',
-    'properties': {'reference': {'type': 'string', 'maxLength': 250},
-                   'note': {'type': ['string', 'null']},
-                   'publication_period': date_period_format,
-                   'contributor': {'type': 'string'},
-                   'cause': {
-                       'type': 'object',
-                       'properties': {
-                           'id': {'type': 'string', 'pattern': id_format_text}
-                       },
-                       'required': ['id']
-                   },
-                   'localization': {'type': 'array',
-                                    'items': localization_object_input_format,
-                                    "uniqueItems": True
-                   },
-                   'tags': {
-                       'type': 'array',
-                       'items': {
-                           'type': 'object',
-                           'properties': {
-                               'id': {'type': 'string', 'pattern': id_format_text}
-                           },
-                           'required': ['id']
-                       },
-                       "uniqueItems": True
-                   },
-                   'impacts': {'type': 'array',
-                                    'items': impact_input_format,
-                                    "uniqueItems": True
-                   }
+    'properties': {
+        'reference': {'type': 'string', 'maxLength': 250},
+        'note': {'type': ['string', 'null']},
+        'publication_period': date_period_format,
+        'contributor': {'type': 'string'},
+        'cause': {
+            'type': 'object',
+            'properties': {
+                'id': {'type': 'string', 'pattern': id_format_text}
+            },
+            'required': ['id']
+        },
+        'localization': {
+            'type': 'array',
+            'items': localization_object_input_format,
+            'uniqueItems': True
+        },
+        'tags': {
+            'type': 'array',
+            'items': {
+                'type': 'object',
+                'properties': {
+                    'id': {'type': 'string', 'pattern': id_format_text}
+                },
+                'required': ['id']
+            },
+            'uniqueItems': True
+        },
+        'impacts': {
+            'type': 'array',
+            'items': impact_input_format,
+            'uniqueItems': True
+        },
+        'properties': {
+            'type': 'array',
+            'items': associate_disruption_property_input_format
+        }
     },
     'required': ['reference', 'cause', 'contributor']
 }

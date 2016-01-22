@@ -328,7 +328,10 @@ class AssociateDisruptionProperty(db.Model):
 
     def __repr__(self):
         return '<%s: %s %s %s>' % (
-            self.__class__.__name__, self.property_id, self.disruption_id, self.value
+            self.__class__.__name__,
+            self.property_id,
+            self.disruption_id,
+            self.value
         )
 
 
@@ -900,28 +903,39 @@ class Property(TimestampMixin, db.Model):
     type = db.Column(db.Text, nullable=False)
     disruptions = db.relationship(
         'AssociateDisruptionProperty',
-        lazy='joined',
-        back_populates='property'
+        lazy='dynamic',
+        back_populates='property',
+        cascade='delete'
     )
 
     def __init__(self):
         self.id = str(uuid.uuid1())
 
     def __repr__(self):
-        return '%s: %s %s %s>' % (
+        return '<%s: %s %s %s>' % (
             self.__class__.__name__, self.id, self.type, self.key
         )
 
     @classmethod
-    def all(cls, client_id, type=None):
+    def prepare_request(cls, client_id, key=None, type=None, id=None):
+        request = {'client_id': client_id}
+        if id:
+            request['id'] = id
+        if key:
+            request['key'] = key
         if type:
-            return cls.query.filter_by(client_id=client_id, type=type).all()
+            request['type'] = type
 
-        return cls.query.filter_by(client_id=client_id).all()
+        return request
 
     @classmethod
-    def get(cls, id, client_id):
-        return cls.query.filter_by(
-            id=id,
-            client_id=client_id
-        ).first()
+    def all(cls, client_id, key=None, type=None):
+        kargs = cls.prepare_request(client_id, key, type)
+
+        return cls.query.filter_by(**kargs).all()
+
+    @classmethod
+    def get(cls, client_id, id=None, key=None, type=None):
+        kargs = cls.prepare_request(client_id, key, type, id)
+
+        return cls.query.filter_by(**kargs).first()
