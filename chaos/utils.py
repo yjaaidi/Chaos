@@ -561,7 +561,6 @@ def get_traffic_report_objects(impacts, navitia):
                 manage_line_section(result, impact, pt_object, navitia, collections[pt_object.type])
             else:
                 if pt_object.type not in collections:
-                    print(pt_object.type)
                     logging.getLogger(__name__).debug('PtObject ignored: {type} [{uri}], not in collections {col}'.
                                                       format(type=pt_object.type, uri=pt_object.uri, col=collections))
                     continue
