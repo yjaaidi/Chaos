@@ -485,7 +485,10 @@ def create_line_section(navitia_object, pt_object):
                     {
                         "id": pt_object.line_section.end_point.uri,
                         "type": pt_object.line_section.end_point.type
-                    }
+                    },
+                "routes": pt_object.line_section.routes,
+                "via": pt_object.line_section.via,
+                "metas": pt_object.line_section.metadata
             }
     }
     return line_section
