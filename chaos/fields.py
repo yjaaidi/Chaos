@@ -437,8 +437,12 @@ generic_type = {
 line_fields = deepcopy(generic_type)
 line_fields['code'] = fields.String()
 
+meta_for_traffic_report_fields = {
+    "key": fields.Raw,
+    "value": fields.Raw,
+}
 
-line_section_fields = {
+line_section_for_traffic_report_fields = {
     "line": fields.Nested(generic_type, display_null=False),
     "start_point": fields.Nested(generic_type, display_null=False),
     "end_point": fields.Nested(generic_type, display_null=False),
@@ -450,16 +454,14 @@ line_section_fields = {
             one_objectTC_fields,
             display_null=False),
         display_empty=False),
-    'metas': fields.List(fields.Nested(wording_fields),
-                         attribute='wordings',
-                         display_empty=False),
+    'metas': fields.List(fields.Nested(meta_for_traffic_report_fields)),
 }
 
 
 line_sections_fields = {
     "id": fields.String(),
     "type": fields.String(),
-    "line_section": fields.Nested(line_section_fields, display_null=False),
+    "line_section": fields.Nested(line_section_for_traffic_report_fields, display_null=False),
     "links":FieldLinks()
 }
 
