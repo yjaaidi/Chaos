@@ -488,7 +488,7 @@ def create_line_section(navitia_object, pt_object):
                     },
                 "routes": pt_object.line_section.routes,
                 "via": pt_object.line_section.via,
-                "metas": pt_object.line_section.metadata
+                "metas": pt_object.line_section.wordings
             }
     }
     return line_section
