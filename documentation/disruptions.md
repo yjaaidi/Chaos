@@ -2292,7 +2292,7 @@ A typical traffic_report object will contain:
 	each line contains at least a link to its disruptions
 	
 - 0..n **line_sections**
-	each line_section contains at least a link to its disruptions, start_point, stop_point and the line 
+	each line_section contains at least a link to its disruptions, start_point, stop_point, the line, routes, meta and via if exist 
 
 - 0..n **stop_areas**
 	each stop_area contains at least a link to its disruptions

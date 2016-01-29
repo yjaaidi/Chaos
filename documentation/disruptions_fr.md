@@ -2740,7 +2740,7 @@ Un objet traffic_report typique contient:
 	chaque line contient au moins un link vers ses disruptions
 	
 - 0..n **line_sections**
-	chaque line_section contient au moins un link vers ses disruptions, start_point, end_point et la line
+	chaque line_section contient au moins un link vers ses disruptions, start_point, end_point, la line, routes, meta et via si existe
 
 - 0..n **stop_areas**
 	chaque stop_area contient au moins un link vers ses disruptions
