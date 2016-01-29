@@ -2500,7 +2500,8 @@ It means that if a stop_area is used by many networks, it will appear many times
                                             "line": {
                                                 "id": "line:DUA:810801041", 
                                                 "name": "Cergy Le Haut / Poissy / St-Germain-en-Laye - Marne-la-Vall\u00e9e Chessy Disneyland / Boissy-St-L\u00e9ger", 
-                                                "type": "line"
+                                                "type": "line",
+                                                "code": "A"
                                             }, 
                                             "start_point": {
                                                 "id": "stop_area:DUA:SA:8738221", 

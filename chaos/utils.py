@@ -474,7 +474,8 @@ def create_line_section(navitia_object, pt_object):
                 "line": {
                     "id": navitia_object["id"],
                     "name": navitia_object["name"],
-                    "type": 'line'
+                    "type": 'line',
+                    "code": navitia_object["code"]
                 },
                 "start_point":
                     {

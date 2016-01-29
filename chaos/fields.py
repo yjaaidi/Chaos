@@ -431,7 +431,8 @@ generic_type = {
     "name": fields.String(),
     "id": fields.String(),
     "type": fields.String(),
-    "links": FieldLinks()
+    "links": FieldLinks(),
+    "code": fields.String(),
 }
 
 line_fields = deepcopy(generic_type)

@@ -1022,6 +1022,7 @@ Feature: traffic report api
         And the field "traffic_reports.0.line_sections.0.line_section.line.type" should be "line"
         And the field "traffic_reports.0.line_sections.0.line_section.line.id" should be "line:JDR:M1"
         And the field "traffic_reports.0.line_sections.0.line_section.line.name" should exist
+        And the field "traffic_reports.0.line_sections.0.line_section.line.code" should exist
         And the field "traffic_reports.0.line_sections.0.line_section.routes" should exist
         And the field "traffic_reports.0.line_sections.0.line_section.routes" should have a size of 2
         And the field "traffic_reports.0.line_sections.0.line_section.routes.0.id" should be "route:JDR:M14"
