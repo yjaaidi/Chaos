@@ -2953,7 +2953,39 @@ Cela signifie qu'un stop_area utilisé par plusieurs networks va apparaître plu
                                             "start_point": {
                                                 "id": "stop_area:DUA:SA:8738221", 
                                                 "type": "stop_area"
-                                            }
+                                            },
+                                            "routes":[
+                                               {
+                                                   "id": "route:MTD:9",
+                                                   "name": "corquilleroy",
+                                                   "type": "route"
+                                               },
+                                               {
+                                                   "id": "route:MTD:10",
+                                                   "name": "corquilleroy",
+                                                   "type": "route"
+                                               },
+                                               {
+                                                   "id": "route:MTD:Nav24",
+                                                   "name": "pannes",
+                                                   "type": "route"
+                                               }
+                                            ],
+                                            "via":[
+                                                {
+                                                "id":"stop_area:MTD:SA:154",
+                                                "type":"stoparea"
+                                                },
+                                            "metas": [
+                                                {
+                                                    "key": "direction", 
+                                                    "value": "5"
+                                                }, 
+                                                {
+                                                    "key": "direction", 
+                                                    "value": "4"
+                                                }
+                                            ]
                                         }, 
                                         "links": [
                                             {
