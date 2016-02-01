@@ -2528,7 +2528,8 @@ It means that if a stop_area is used by many networks, it will appear many times
                                                 {
                                                 "id":"stop_area:MTD:SA:154",
                                                 "type":"stoparea"
-                                                },
+                                                }
+                                            ],
                                             "metas": [
                                                 {
                                                     "key": "direction", 
@@ -2542,7 +2543,7 @@ It means that if a stop_area is used by many networks, it will appear many times
                                         }, 
                                         "links": [
                                             {
-                                                "id": "3c216db5-be9f-11e5-b1eb-6c4008c05e42", 
+                                                "id": "0615615a-8c60-11e5-b2c5-ecf4bb4460c7", 
                                                 "internal": true, 
                                                 "rel": "disruptions", 
                                                 "template": false, 

@@ -2976,7 +2976,8 @@ Cela signifie qu'un stop_area utilisé par plusieurs networks va apparaître plu
                                                 {
                                                 "id":"stop_area:MTD:SA:154",
                                                 "type":"stoparea"
-                                                },
+                                                }
+                                            ],
                                             "metas": [
                                                 {
                                                     "key": "direction", 
@@ -2990,7 +2991,7 @@ Cela signifie qu'un stop_area utilisé par plusieurs networks va apparaître plu
                                         }, 
                                         "links": [
                                             {
-                                                "id": "3c216db5-be9f-11e5-b1eb-6c4008c05e42", 
+                                                "id": "0615615a-8c60-11e5-b2c5-ecf4bb4460c7", 
                                                 "internal": true, 
                                                 "rel": "disruptions", 
                                                 "template": false, 
