@@ -2958,17 +2958,14 @@ Cela signifie qu'un stop_area utilisé par plusieurs networks va apparaître plu
                                             "routes":[
                                                {
                                                    "id": "route:MTD:9",
-                                                   "name": "corquilleroy",
                                                    "type": "route"
                                                },
                                                {
                                                    "id": "route:MTD:10",
-                                                   "name": "corquilleroy",
                                                    "type": "route"
                                                },
                                                {
                                                    "id": "route:MTD:Nav24",
-                                                   "name": "pannes",
                                                    "type": "route"
                                                }
                                             ],

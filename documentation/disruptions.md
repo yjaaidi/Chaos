@@ -2510,17 +2510,14 @@ It means that if a stop_area is used by many networks, it will appear many times
                                             "routes":[
                                                {
                                                    "id": "route:MTD:9",
-                                                   "name": "corquilleroy",
                                                    "type": "route"
                                                },
                                                {
                                                    "id": "route:MTD:10",
-                                                   "name": "corquilleroy",
                                                    "type": "route"
                                                },
                                                {
                                                    "id": "route:MTD:Nav24",
-                                                   "name": "pannes",
                                                    "type": "route"
                                                }
                                             ],

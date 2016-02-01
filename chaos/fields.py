@@ -301,11 +301,13 @@ one_severity_fields = {
     'severity': fields.Nested(severity_fields)
 }
 
-one_objectTC_fields = {
+one_objectTC_generic_fields = {
     'id': fields.Raw(attribute='uri'),
-    'type': fields.Raw,
-    'name': FieldObjectName()
+    'type': fields.Raw
 }
+
+one_objectTC_fields = deepcopy(one_objectTC_generic_fields)
+one_objectTC_fields['name'] = FieldObjectName()
 
 line_section_fields = {
     'line': fields.Nested(one_objectTC_fields, display_null=False),
@@ -442,11 +444,11 @@ line_section_for_traffic_report_fields = {
     "start_point": fields.Nested(generic_type, display_null=False),
     "end_point": fields.Nested(generic_type, display_null=False),
     'routes': fields.List(
-        fields.Nested(one_objectTC_fields, display_null=False),
+        fields.Nested(one_objectTC_generic_fields, display_null=False),
         display_empty=False),
     'via': fields.List(
         fields.Nested(
-            one_objectTC_fields,
+            one_objectTC_generic_fields,
             display_null=False),
         display_empty=False),
     'metas': fields.List(fields.Nested(wording_fields)),
