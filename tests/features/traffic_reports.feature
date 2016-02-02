@@ -922,6 +922,7 @@ Feature: traffic report api
         And the field "disruptions.0.status" should be "active"
         And the field "disruptions.0.id" should be "7ffab232-3d47-4eea-aa2c-22f8680230b6"
         And the field "disruptions.0.disruption_id" should be "7ffab230-3d48-4eea-aa2c-22f8680230b6"
+        And the field "traffic_reports.0.line_sections" should not exist
         And the field "traffic_reports.0.network.id" should be "network:JDR:1"
         And the field "traffic_reports.0.network.name" should be "RATP"
         And the field "traffic_reports.0.network.links" should not exist
