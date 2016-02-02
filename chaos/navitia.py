@@ -44,8 +44,7 @@ class Navitia(object):
             "stop_area": "stop_areas",
             "line": "lines",
             "route": "routes",
-            "stop_point": "stop_points",
-            "line_section": "line_sections"
+            "stop_point": "stop_points"
         }
 
     def query_formater(self, uri, object_type, pt_objects=None):

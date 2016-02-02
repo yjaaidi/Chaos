@@ -320,5 +320,4 @@ def test_get_traffic_report_with_impact_on_line_sections():
         }
     }
     dd = get_traffic_report_objects([impact], navitia)
-    print dd["traffic_report"]
     eq_(cmp(dd["traffic_report"], result), 0)
