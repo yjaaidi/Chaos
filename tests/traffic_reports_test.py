@@ -75,6 +75,9 @@ def get_pt_object(uri, object_type, pt_objects=None):
     if uri == 'line:uri1' and pt_objects:
         return [{'id': 'network:uri1', 'name': 'network 1 name'}]
 
+    if uri == 'line:uri3' and pt_objects:
+        return [{'id': 'network:uri1', 'name': 'network 1 name'}]
+
     if uri == 'line:uri2' and not pt_objects:
         return {'id': 'line:uri2', 'name': 'line 2 name'}
 
@@ -90,13 +93,13 @@ def get_pt_object(uri, object_type, pt_objects=None):
     if uri == 'line:uri2' and pt_objects:
         return [{'id': 'network:uri2', 'name': 'network 2 name'}]
 
+    if uri == 'line:uri3' and not pt_objects:
+        return {'id': 'line:uri3', 'name': 'line 3 name', 'code': 'line 3 code'}
+
     if uri == 'stop_area:uri2' and not pt_objects:
         return {'id': 'stop_area:uri2', 'name': 'stop area 2 name'}
 
     if uri == 'stop_area:uri2' and pt_objects:
-        return [{'id': 'network:uri4', 'name': 'network 4 name'}, {'id': 'network:uri5', 'name': 'network 5 name'}]
-
-    if uri == 'line_section:123' and pt_objects:
         return [{'id': 'network:uri4', 'name': 'network 4 name'}, {'id': 'network:uri5', 'name': 'network 5 name'}]
 
 
@@ -266,9 +269,10 @@ def test_get_traffic_report_with_impact_on_line_sections():
     ptobject.uri = "line_section:123"
     ptobject.type = "line_section"
     ptobject.line_section = chaos.models.LineSection()
+    ptobject.line_section.id = '7ffab234-3d49-4eea-aa2c-22f8680230b6'
     ptobject.line_section.sens = 1
     ptobject.line_section.line = chaos.models.PTobject()
-    ptobject.line_section.line.uri = 'line:1'
+    ptobject.line_section.line.uri = 'line:uri3'
     ptobject.line_section.line.type = 'line'
 
     ptobject.line_section.start_point = chaos.models.PTobject()
@@ -288,58 +292,33 @@ def test_get_traffic_report_with_impact_on_line_sections():
                 "name": "network 1 name"
             },
             "line_sections": [
-                                    {
-                                        "id": "line_section:123",
-                                        "line_section": {
-                                            "end_point": {
-                                                "id": "stop_area:2",
-                                                "type": "stop_area"
-                                            },
-                                            "line": {
-                                                "id": "line:1",
-                                                "name": "Cergy Le Haut / Poissy / St-Germain-en-Laye - Marne-la-Vall\u00e9e Chessy Disneyland / Boissy-St-L\u00e9ger",
-                                                "type": "line",
-                                                "code": "A"
-                                            },
-                                            "start_point": {
-                                                "id": "stop_area:1",
-                                                "type": "stop_area"
-                                            },
-                                            "routes":[
-                                               {
-                                                   "id": "route:MTD:9",
-                                                   "type": "route"
-                                               },
-                                               {
-                                                   "id": "route:MTD:10",
-                                                   "type": "route"
-                                               },
-                                               {
-                                                   "id": "route:MTD:Nav24",
-                                                   "type": "route"
-                                               }
-                                            ],
-                                            "via":[
-                                                {
-                                                "id":"stop_area:MTD:SA:154",
-                                                "type":"stoparea"
-                                                }
-                                            ],
-                                            "metas": [
-                                                {
-                                                    "key": "direction",
-                                                    "value": "5"
-                                                },
-                                                {
-                                                    "key": "direction",
-                                                    "value": "4"
-                                                }
-                                            ]
-                                        },
-                                        "type": "line_section"
-                                    }
-                                ]
+                {
+                    "id": "7ffab234-3d49-4eea-aa2c-22f8680230b6",
+                    "line_section": {
+                        "end_point": {
+                            "id": "stop_area:2",
+                            "type": "stop_area"
+                        },
+                        "line": {
+                            "id": "line:uri3",
+                            "name": "line 3 name",
+                            "type": "line",
+                            "code": "line 3 code"
+                        },
+                        "start_point": {
+                            "id": "stop_area:1",
+                            "type": "stop_area"
+                        },
+                        "routes": [],
+                        "via": [],
+                        "metas": []
+                    },
+                    "type": "line_section",
+                    "impacts": [impact]
+                }
+            ]
         }
     }
     dd = get_traffic_report_objects([impact], navitia)
+    print dd["traffic_report"]
     eq_(cmp(dd["traffic_report"], result), 0)

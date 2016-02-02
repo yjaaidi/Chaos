@@ -427,6 +427,7 @@ def get_navitia_networks(result, pt_object, navitia, types):
                             networks.append(objects['network'])
     if len(networks) == 0:
         networks = navitia.get_pt_object(pt_object.uri, pt_object.type, 'networks')
+
     return networks
 
 
