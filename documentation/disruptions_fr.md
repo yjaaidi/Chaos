@@ -2738,6 +2738,9 @@ Un objet traffic_report typique contient:
 
 - 0..n **lines**
 	chaque line contient au moins un link vers ses disruptions
+	
+- 0..n **line_sections**
+	chaque line_section contient au moins un link vers ses disruptions, start_point, end_point, la line, routes, meta et via si existe
 
 - 0..n **stop_areas**
 	chaque stop_area contient au moins un link vers ses disruptions
@@ -2934,6 +2937,67 @@ Cela signifie qu'un stop_area utilisé par plusieurs networks va apparaître plu
                                 "name": "Creil - Saturne / Mars / Pluton"
                             }
                         ],
+                        "line_sections": [
+                                    {
+                                        "id": "7ffab234-3d49-4eea-aa2c-22f8680230b6", 
+                                        "line_section": {
+                                            "end_point": {
+                                                "id": "stop_area:DUA:SA:8775810", 
+                                                "type": "stop_area"
+                                            }, 
+                                            "line": {
+                                                "id": "line:DUA:810801041", 
+                                                "name": "Cergy Le Haut / Poissy / St-Germain-en-Laye - Marne-la-Vall\u00e9e Chessy Disneyland / Boissy-St-L\u00e9ger", 
+                                                "type": "line",
+                                                "code": "A"
+                                            }, 
+                                            "start_point": {
+                                                "id": "stop_area:DUA:SA:8738221", 
+                                                "type": "stop_area"
+                                            },
+                                            "routes":[
+                                               {
+                                                   "id": "route:MTD:9",
+                                                   "type": "route"
+                                               },
+                                               {
+                                                   "id": "route:MTD:10",
+                                                   "type": "route"
+                                               },
+                                               {
+                                                   "id": "route:MTD:Nav24",
+                                                   "type": "route"
+                                               }
+                                            ],
+                                            "via":[
+                                                {
+                                                "id":"stop_area:MTD:SA:154",
+                                                "type":"stoparea"
+                                                }
+                                            ],
+                                            "metas": [
+                                                {
+                                                    "key": "direction", 
+                                                    "value": "5"
+                                                }, 
+                                                {
+                                                    "key": "direction", 
+                                                    "value": "4"
+                                                }
+                                            ]
+                                        }, 
+                                        "links": [
+                                            {
+                                                "id": "0615615a-8c60-11e5-b2c5-ecf4bb4460c7", 
+                                                "internal": true, 
+                                                "rel": "disruptions", 
+                                                "template": false, 
+                                                "type": "disruption"
+                                            }
+                                        ], 
+                                        "type": "line_section"
+                                    }
+                                ],
                         "network": {
                             "id": "network:DUA777",
                             "name": "RESEAU D"

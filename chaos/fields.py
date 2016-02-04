@@ -130,7 +130,7 @@ class FieldChannelTypes(fields.Raw):
 
 class FieldLinks(fields.Raw):
     def output(self, key, obj):
-        if "impacts" in obj:
+        if obj and "impacts" in obj:
             return [{"internal": True,
                      "type": "disruption",
                      "id": impact.id,
@@ -301,11 +301,13 @@ one_severity_fields = {
     'severity': fields.Nested(severity_fields)
 }
 
-one_objectTC_fields = {
+one_objectTC_generic_fields = {
     'id': fields.Raw(attribute='uri'),
-    'type': fields.Raw,
-    'name': FieldObjectName()
+    'type': fields.Raw
 }
+
+one_objectTC_fields = deepcopy(one_objectTC_generic_fields)
+one_objectTC_fields['name'] = FieldObjectName()
 
 line_section_fields = {
     'line': fields.Nested(one_objectTC_fields, display_null=False),
@@ -430,17 +432,43 @@ impacts_by_object_fields = {
 generic_type = {
     "name": fields.String(),
     "id": fields.String(),
-    "links": FieldLinks()
+    "type": fields.String(),
+    "links": FieldLinks(),
 }
 
 line_fields = deepcopy(generic_type)
 line_fields['code'] = fields.String()
 
+line_section_for_traffic_report_fields = {
+    "line": fields.Nested(line_fields, display_null=False),
+    "start_point": fields.Nested(generic_type, display_null=False),
+    "end_point": fields.Nested(generic_type, display_null=False),
+    'routes': fields.List(
+        fields.Nested(one_objectTC_generic_fields, display_null=False),
+        display_empty=False),
+    'via': fields.List(
+        fields.Nested(
+            one_objectTC_generic_fields,
+            display_null=False),
+        display_empty=False),
+    'metas': fields.List(fields.Nested(wording_fields)),
+}
+
+
+line_sections_fields = {
+    "id": fields.String(),
+    "type": fields.String(),
+    "line_section": fields.Nested(line_section_for_traffic_report_fields, display_null=False),
+    "links":FieldLinks()
+}
+
+
 traffic_report_fields = {
     "network": fields.Nested(generic_type, display_null=False),
     "lines": fields.List(fields.Nested(line_fields, display_null=False)),
     "stop_areas": fields.List(fields.Nested(generic_type, display_null=False)),
-    "stop_points": fields.List(fields.Nested(generic_type, display_null=False))
+    "stop_points": fields.List(fields.Nested(generic_type, display_null=False)),
+    "line_sections": fields.List(fields.Nested(line_sections_fields, display_null=False))
 }
 
 traffic_report_impact_field = {
