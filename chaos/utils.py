@@ -432,7 +432,14 @@ def get_navitia_networks(result, pt_object, navitia, types):
 
 def manage_other_object(result, impact, pt_object, navitia, types):
 
-    navitia_networks = get_navitia_networks(result, pt_object, navitia, types)
+    navitia_type = types
+    pt_object_for_navitia_research = pt_object
+
+    if types == 'line_sections':
+         navitia_type = 'lines'
+         pt_object_for_navitia_research = pt_object.line_section.line
+
+    navitia_networks = get_navitia_networks(result, pt_object_for_navitia_research, navitia, navitia_type)
     if navitia_networks:
         for network in navitia_networks:
             if 'id' in network and network['id'] not in result["traffic_report"]:
@@ -445,8 +452,11 @@ def manage_other_object(result, impact, pt_object, navitia, types):
                 list_objects = []
             navitia_object = get_pt_object_from_list(pt_object, list_objects)
             if not navitia_object:
-                navitia_object = navitia.get_pt_object(pt_object.uri, pt_object.type)
+                navitia_object = navitia.get_pt_object(pt_object_for_navitia_research.uri, pt_object_for_navitia_research.type)
                 if navitia_object:
+                    if types == 'line_sections':
+                        navitia_object = create_line_section(navitia_object, pt_object)
+
                     navitia_object["impacts"] = []
                     navitia_object["impacts"].append(impact)
                     fill_impacts_used(result, impact)
@@ -465,6 +475,34 @@ def manage_other_object(result, impact, pt_object, navitia, types):
         logging.getLogger(__name__).debug('PtObject ignored : {type} [{uri}], '
                                           'not found network in navitia.'.format(type=pt_object.type,
                                                                                  uri=pt_object.uri))
+def create_line_section(navitia_object, pt_object):
+    line_section = {
+        "id": pt_object.line_section.id,
+        "type": "line_section",
+        "line_section":
+            {
+                "line": {
+                    "id": navitia_object["id"],
+                    "name": navitia_object["name"],
+                    "type": 'line',
+                    "code": navitia_object["code"]
+                },
+                "start_point":
+                    {
+                        "id": pt_object.line_section.start_point.uri,
+                        "type": pt_object.line_section.start_point.type
+                    },
+                "end_point":
+                    {
+                        "id": pt_object.line_section.end_point.uri,
+                        "type": pt_object.line_section.end_point.type
+                    },
+                "routes": pt_object.line_section.routes,
+                "via": pt_object.line_section.via,
+                "metas": pt_object.line_section.wordings
+            }
+    }
+    return line_section
 
 
 def get_traffic_report_objects(impacts, navitia):
@@ -487,7 +525,8 @@ def get_traffic_report_objects(impacts, navitia):
     collections = {
         "stop_area": "stop_areas",
         "line": "lines",
-        "stop_point": "stop_points"
+        "stop_point": "stop_points",
+        "line_section": "line_sections",
     }
 
     result = {'traffic_report': {}, 'impacts_used': []}

@@ -75,6 +75,9 @@ def get_pt_object(uri, object_type, pt_objects=None):
     if uri == 'line:uri1' and pt_objects:
         return [{'id': 'network:uri1', 'name': 'network 1 name'}]
 
+    if uri == 'line:uri3' and pt_objects:
+        return [{'id': 'network:uri1', 'name': 'network 1 name'}]
+
     if uri == 'line:uri2' and not pt_objects:
         return {'id': 'line:uri2', 'name': 'line 2 name'}
 
@@ -89,6 +92,9 @@ def get_pt_object(uri, object_type, pt_objects=None):
 
     if uri == 'line:uri2' and pt_objects:
         return [{'id': 'network:uri2', 'name': 'network 2 name'}]
+
+    if uri == 'line:uri3' and not pt_objects:
+        return {'id': 'line:uri3', 'name': 'line 3 name', 'code': 'line 3 code'}
 
     if uri == 'stop_area:uri2' and not pt_objects:
         return {'id': 'stop_area:uri2', 'name': 'stop area 2 name'}
@@ -250,4 +256,68 @@ def test_get_traffic_report_with_2_impact_on_stop_area():
         }
     }
     dd = get_traffic_report_objects(impacts, navitia)
+    eq_(cmp(dd["traffic_report"], result), 0)
+
+
+def test_get_traffic_report_with_impact_on_line_sections():
+    navitia = chaos.navitia.Navitia('http://api.navitia.io', 'jdr')
+    navitia.get_pt_object = get_pt_object
+    impact = chaos.models.Impact()
+
+    #LineSection
+    ptobject = chaos.models.PTobject()
+    ptobject.uri = "line_section:123"
+    ptobject.type = "line_section"
+    ptobject.line_section = chaos.models.LineSection()
+    ptobject.line_section.id = '7ffab234-3d49-4eea-aa2c-22f8680230b6'
+    ptobject.line_section.sens = 1
+    ptobject.line_section.line = chaos.models.PTobject()
+    ptobject.line_section.line.uri = 'line:uri3'
+    ptobject.line_section.line.type = 'line'
+
+    ptobject.line_section.start_point = chaos.models.PTobject()
+    ptobject.line_section.start_point.uri = 'stop_area:1'
+    ptobject.line_section.start_point.type = 'stop_area'
+
+    ptobject.line_section.end_point = chaos.models.PTobject()
+    ptobject.line_section.end_point.uri = 'stop_area:2'
+    ptobject.line_section.end_point.type = 'stop_area'
+
+    impact.objects.append(ptobject)
+
+    result = {
+        "network:uri1": {
+            "network": {
+                "id": "network:uri1",
+                "name": "network 1 name"
+            },
+            "line_sections": [
+                {
+                    "id": "7ffab234-3d49-4eea-aa2c-22f8680230b6",
+                    "line_section": {
+                        "end_point": {
+                            "id": "stop_area:2",
+                            "type": "stop_area"
+                        },
+                        "line": {
+                            "id": "line:uri3",
+                            "name": "line 3 name",
+                            "type": "line",
+                            "code": "line 3 code"
+                        },
+                        "start_point": {
+                            "id": "stop_area:1",
+                            "type": "stop_area"
+                        },
+                        "routes": [],
+                        "via": [],
+                        "metas": []
+                    },
+                    "type": "line_section",
+                    "impacts": [impact]
+                }
+            ]
+        }
+    }
+    dd = get_traffic_report_objects([impact], navitia)
     eq_(cmp(dd["traffic_report"], result), 0)
