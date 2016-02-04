@@ -433,13 +433,13 @@ def get_navitia_networks(result, pt_object, navitia, types):
 def manage_other_object(result, impact, pt_object, navitia, types):
 
     navitia_type = types
-    navitia_pt_object = pt_object
+    pt_object_for_navitia_research = pt_object
 
     if types == 'line_sections':
          navitia_type = 'lines'
-         navitia_pt_object = pt_object.line_section.line
+         pt_object_for_navitia_research = pt_object.line_section.line
 
-    navitia_networks = get_navitia_networks(result, navitia_pt_object, navitia, navitia_type)
+    navitia_networks = get_navitia_networks(result, pt_object_for_navitia_research, navitia, navitia_type)
     if navitia_networks:
         for network in navitia_networks:
             if 'id' in network and network['id'] not in result["traffic_report"]:
@@ -452,7 +452,7 @@ def manage_other_object(result, impact, pt_object, navitia, types):
                 list_objects = []
             navitia_object = get_pt_object_from_list(pt_object, list_objects)
             if not navitia_object:
-                navitia_object = navitia.get_pt_object(navitia_pt_object.uri, navitia_pt_object.type)
+                navitia_object = navitia.get_pt_object(pt_object_for_navitia_research.uri, pt_object_for_navitia_research.type)
                 if navitia_object:
                     if types == 'line_sections':
                         navitia_object = create_line_section(navitia_object, pt_object)
