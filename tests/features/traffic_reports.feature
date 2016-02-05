@@ -1032,10 +1032,6 @@ Feature: traffic report api
         And the field "traffic_reports.0.line_sections.0.line_section.routes.1.type" should be "route"
         And the field "traffic_reports.0.line_sections.0.line_section.via" should exist
         And the field "traffic_reports.0.line_sections.0.line_section.via" should have a size of 2
-        And the field "traffic_reports.0.line_sections.0.line_section.via.0.id" should be "stop_area:JDR:SA:BASTI"
-        And the field "traffic_reports.0.line_sections.0.line_section.via.0.type" should be "stop_area"
-        And the field "traffic_reports.0.line_sections.0.line_section.via.1.id" should be "stop_area:JDR:SA:CHVIN"
-        And the field "traffic_reports.0.line_sections.0.line_section.via.1.type" should be "stop_area"
         And the field "traffic_reports.0.network.id" should be "network:JDR:1"
         And the field "traffic_reports.0.network.name" should be "RATP"
         And the field "traffic_reports.0.network.links" should not exist
