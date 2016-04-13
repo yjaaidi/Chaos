@@ -113,6 +113,7 @@ def get_datetime(value, name):
         raise ValueError("The {} argument value is not valid, you gave: {}"
                          .format(name, value))
 
+
 def get_utc_datetime_by_zone(value, time_zone):
     """
         Convert datetime naive to UTC for a time zone. for example 'Europe/Paris'
@@ -142,7 +143,7 @@ def get_current_time():
 
 def option_value(values):
     def to_return(value, name):
-        if not value in values:
+        if value not in values:
             error = "The {} argument must be in list {}, you gave {}".\
                 format(name, str(values), value)
             raise ValueError(error)
@@ -191,19 +192,19 @@ def get_object_in_line_section_by_uri(pt_object, uris):
 
     if pt_object.line_section:
         object = pt_object.line_section
-        #Search object.uri in line_section : line, start_point and end_point
+        # Search object.uri in line_section : line, start_point and end_point
         if object.line.uri in uris:
             return object.line
         if object.start_point.uri in uris:
             return object.start_point
         if object.end_point.uri in uris:
             return object.end_point
-        #Search object.uri in line_section.routes
+        # Search object.uri in line_section.routes
         for route in object.routes:
             if route.uri in uris:
                 return route
 
-        #Search object.uri in line_section.via
+        # Search object.uri in line_section.via
         for via in object.via:
             if via.uri in uris:
                 return via
@@ -222,7 +223,7 @@ def get_object_in_line_section_by_type(pt_object, object_type):
 
     if pt_object.line_section:
         object = pt_object.line_section
-        #Search object.uri in line_section : line, start_point and end_point
+        # Search object.uri in line_section : line, start_point and end_point
         if object.line.type == object_type:
             return object.line
         if object.start_point.type == object_type:
@@ -240,11 +241,11 @@ def get_object_in_line_section(pt_object, object_type, uris):
     :param uris: public transport object uri
     :return: object found
     """
-    #Verify object by object uri:
+    # Verify object by object uri:
     if uris:
         return get_object_in_line_section_by_uri(pt_object, uris)
 
-    #Verify object by object type:
+    # Verify object by object type:
     if object_type:
         return get_object_in_line_section_by_type(pt_object, object_type)
 
@@ -261,9 +262,9 @@ def group_impacts_by_pt_object(impacts, object_type, uris, get_pt_object):
     for impact in impacts:
         for pt_object in impact.objects:
             if pt_object.type != 'line_section':
-               result = is_pt_object_valid(pt_object, object_type, uris)
-               if not result:
-                   pt_object = None
+                result = is_pt_object_valid(pt_object, object_type, uris)
+                if not result:
+                    pt_object = None
             else:
                 pt_object = get_object_in_line_section(pt_object,  object_type, uris)
             if pt_object:
@@ -275,10 +276,11 @@ def group_impacts_by_pt_object(impacts, object_type, uris, get_pt_object):
                         name = nav_pt_object['name']
                     else:
                         name = None
-                    resp = {'id': pt_object.uri,
-                            'type': pt_object.type,
-                            'name': name,
-                            'impacts': []
+                    resp = {
+                        'id': pt_object.uri,
+                        'type': pt_object.type,
+                        'name': name,
+                        'impacts': []
                     }
                     dictionary[pt_object.uri] = resp
                 resp['impacts'].append(impact)
@@ -298,8 +300,10 @@ def parse_error(error):
 
 def get_uuid(value, name):
     if not id_format.match(value):
-        raise ValidationError(("The {} argument value is not valid, you gave: {}"
-                               .format(name, value)))
+        raise ValidationError(
+            "The {} argument value is not valid, you gave: {}".
+            format(name, value)
+        )
     return value
 
 
@@ -365,7 +369,10 @@ def get_application_periods_by_pattern(start_date, end_date, weekly_pattern, tim
 def get_application_periods_by_periods(json_application_periods):
     result = []
     for app_periods in json_application_periods:
-        period = (parse_datetime(app_periods['begin']).replace(tzinfo=None), parse_datetime(app_periods['end']).replace(tzinfo=None))
+        period = (
+            parse_datetime(app_periods['begin']).replace(tzinfo=None),
+            parse_datetime(app_periods['end']).replace(tzinfo=None)
+        )
         result.append(period)
     return result
 
@@ -413,8 +420,10 @@ def manage_network(result, impact, pt_object, navitia):
         if navitia_network:
             add_network(result, navitia_network)
         else:
-            logging.getLogger(__name__).debug('PtObject ignored : {type} [{uri}].'.
-                                              format(type=pt_object.type, uri=pt_object.uri))
+            logging.getLogger(__name__).debug(
+                'PtObject ignored : {type} [{uri}].'.
+                format(type=pt_object.type, uri=pt_object.uri)
+            )
     if navitia_network:
         navitia_network["impacts"].append(impact)
         fill_impacts_used(result, impact)
@@ -440,8 +449,8 @@ def manage_other_object(result, impact, pt_object, navitia, types):
     pt_object_for_navitia_research = pt_object
 
     if types == 'line_sections':
-         navitia_type = 'lines'
-         pt_object_for_navitia_research = pt_object.line_section.line
+        navitia_type = 'lines'
+        pt_object_for_navitia_research = pt_object.line_section.line
 
     navitia_networks = get_navitia_networks(result, pt_object_for_navitia_research, navitia, navitia_type)
     if navitia_networks:
@@ -469,16 +478,22 @@ def manage_other_object(result, impact, pt_object, navitia, types):
                     result["traffic_report"][network['id']][types].\
                         append(navitia_object)
                 else:
-                    logging.getLogger(__name__).debug('PtObject ignored : {type} [{uri}], '
-                                                      'not found in navitia.'.
-                                                      format(type=pt_object.type, uri=pt_object.uri))
+                    logging.getLogger(__name__).debug(
+                        'PtObject ignored : {type} [{uri}], '
+                        'not found in navitia.'.
+                        format(type=pt_object.type, uri=pt_object.uri)
+                    )
             else:
                 navitia_object["impacts"].append(impact)
                 fill_impacts_used(result, impact)
     else:
-        logging.getLogger(__name__).debug('PtObject ignored : {type} [{uri}], '
-                                          'not found network in navitia.'.format(type=pt_object.type,
-                                                                                 uri=pt_object.uri))
+        logging.getLogger(__name__).debug(
+            'PtObject ignored : {type} [{uri}], '
+            'not found network in navitia.'.
+            format(type=pt_object.type, uri=pt_object.uri)
+        )
+
+
 def create_line_section(navitia_object, pt_object):
     line_section = {
         "id": pt_object.line_section.id,
@@ -510,22 +525,31 @@ def create_line_section(navitia_object, pt_object):
 
 
 def get_traffic_report_objects(impacts, navitia):
-    '''
+    """
     :param impacts: Sequence of impact (Database object)
     :return: dict
-            {
-        "network1": {"network": {"id": "network1", "name": "Network 1", "impacts": []},
-                    "lines":[{"id": "id1", "name": "line 1", "impacts": []},
-                            {"id": "id2", "name": "line 2", "impacts": []}],
-                    "stop_areas":[{"id": "id1", "name": "stop area 1", "impacts": []},
-                            {"id": "id2", "name": "stop area 2", "impacts": []}],
-                    "stop_points":[{"id": "id1", "name": "stop point 1", "impacts": []},
-                            {"id": "id2", "name": "stop point 2, "impacts": []"}]
-                    },
-                    ....
+        {
+            "network1": {
+                "network": {
+                    "id": "network1", "name": "Network 1", "impacts": []
+                },
+                "lines": [
+                    {"id": "id1", "name": "line 1", "impacts": []},
+                    {"id": "id2", "name": "line 2", "impacts": []}
+                ],
+                "stop_areas": [
+                    {"id": "id1", "name": "stop area 1", "impacts": []},
+                    {"id": "id2", "name": "stop area 2", "impacts": []}
+                ],
+                "stop_points": [
+                    {"id": "id1", "name": "stop point 1", "impacts": []},
+                    {"id": "id2", "name": "stop point 2, "impacts": []"}
+                ]
+            },
+            ...
         }
 
-    '''
+    """
     collections = {
         "stop_area": "stop_areas",
         "line": "lines",
@@ -540,8 +564,10 @@ def get_traffic_report_objects(impacts, navitia):
                 manage_network(result, impact, pt_object, navitia)
             else:
                 if pt_object.type not in collections:
-                    logging.getLogger(__name__).debug('PtObject ignored: {type} [{uri}], not in collections {col}'.
-                                                      format(type=pt_object.type, uri=pt_object.uri, col=collections))
+                    logging.getLogger(__name__).debug(
+                        'PtObject ignored: {type} [{uri}], not in collections {col}'.
+                        format(type=pt_object.type, uri=pt_object.uri, col=collections)
+                    )
                     continue
                 manage_other_object(result, impact, pt_object, navitia, collections[pt_object.type])
     return result

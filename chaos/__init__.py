@@ -29,8 +29,8 @@
 
 VERSION = '0.31.0-dev'
 
-#remplace blocking method by a non blocking equivalent
-#this enable us to use gevent for launching background task
+# remplace blocking method by a non blocking equivalent
+# this enable us to use gevent for launching background task
 from gevent import monkey
 monkey.patch_all()
 

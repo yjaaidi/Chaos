@@ -27,7 +27,8 @@
 # https://groups.google.com/d/forum/navitia
 # www.navitia.io
 
-import chaos_pb2, gtfs_realtime_pb2
+import chaos_pb2
+import gtfs_realtime_pb2
 import datetime
 
 
@@ -70,6 +71,7 @@ def created_upated_at(src, dest):
     dest.created_at = get_pos_time(src.created_at)
     if src.updated_at:
         dest.updated_at = get_pos_time(src.updated_at)
+
 
 def get_severity_effect_value(effect):
     available_effects = {

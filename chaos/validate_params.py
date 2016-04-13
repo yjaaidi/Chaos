@@ -53,8 +53,10 @@ class validate_client(object):
             else:
                 client = models.Client.get_by_code(client_code)
             if not client:
-                return marshal({'error': {'message': 'X-Customer-Id {} Not Found'.format(client_code)}},
-                               fields.error_fields), 404
+                return marshal(
+                    {'error': {'message': 'X-Customer-Id {} Not Found'.format(client_code)}},
+                    fields.error_fields
+                ), 404
             return func(*args, client=client, **kwargs)
         return wrapper
 
@@ -70,8 +72,10 @@ class validate_contributor(object):
                                fields.error_fields), 400
             contributor = models.Contributor.get_by_code(contributor_code)
             if not contributor:
-                return marshal({'error': {'message': 'X-Contributors {} Not Found'.format(contributor_code)}},
-                               fields.error_fields), 404
+                return marshal(
+                    {'error': {'message': 'X-Contributors {} Not Found'.format(contributor_code)}},
+                    fields.error_fields
+                ), 404
             return func(*args, contributor=contributor, **kwargs)
         return wrapper
 
@@ -84,11 +88,14 @@ class validate_navitia(object):
                 coverage = get_coverage(request)
                 token = get_token(request)
             except exceptions.HeaderAbsent, e:
-                return marshal({'error': {'message': utils.parse_error(e)}},
-                               fields.error_fields), 400
+                return marshal(
+                    {'error': {'message': utils.parse_error(e)}},
+                    fields.error_fields
+                ), 400
             nav = Navitia(current_app.config['NAVITIA_URL'], coverage, token)
             return func(*args, navitia=nav, **kwargs)
         return wrapper
+
 
 class manage_navitia_error(object):
     def __call__(self, func):
@@ -97,7 +104,10 @@ class manage_navitia_error(object):
             try:
                 return func(*args, **kwargs)
             except exceptions.NavitiaError, e:
-                return marshal({'error': {'message': '{}'.format(e.message)}}, fields.error_fields), 503
+                return marshal(
+                    {'error': {'message': '{}'.format(e.message)}},
+                    fields.error_fields
+                ), 503
         return wrapper
 
 
@@ -108,8 +118,10 @@ class validate_id(object):
     def __call__(self, func):
         @wraps(func)
         def wrapper(*args, **kwargs):
-            resp = marshal({'error': {'message': "id invalid"}},
-                                   fields.error_fields), 400
+            resp = marshal(
+                {'error': {'message': "id invalid"}},
+                fields.error_fields
+            ), 400
 
             if self.required and ('id' not in kwargs):
                 return resp

@@ -31,7 +31,6 @@ from flask_restful import fields, url_for
 from flask import current_app, request
 from utils import make_pager, get_coverage, get_token, get_current_time
 from chaos.navitia import Navitia
-from chaos import exceptions
 from copy import deepcopy
 
 
@@ -42,6 +41,7 @@ class FieldDateTime(fields.Raw):
         else:
             return None
 
+
 class FieldTime(fields.Raw):
     def format(self, value):
         try:
@@ -49,12 +49,14 @@ class FieldTime(fields.Raw):
         except:
             return None
 
+
 class FieldDate(fields.Raw):
     def format(self, value):
         if value:
             return value.strftime('%Y-%m-%d')
         else:
             return None
+
 
 class FieldPaginateImpacts(fields.Raw):
     '''
@@ -322,7 +324,6 @@ error_fields = {
     'error': fields.Nested({'message': fields.String})
 }
 
-
 base_severity_fields = {
     'id': fields.Raw,
     'color': fields.Raw,
@@ -375,7 +376,6 @@ line_section_fields = {
                          display_empty=False),
 }
 
-
 objectTC_fields = {
     'id': fields.Raw(attribute='uri'),
     'type': fields.Raw,
@@ -397,6 +397,7 @@ base_channel_fields = {
     'content_type': fields.Raw,
     'types': FieldChannelTypes()
 }
+
 channel_fields = deepcopy(base_channel_fields)
 channel_fields['created_at'] = FieldDateTime
 channel_fields['updated_at'] = FieldDateTime
@@ -406,7 +407,6 @@ channels_fields = {
     'channels': fields.List(fields.Nested(channel_fields)),
     'meta': {}
 }
-
 
 one_channel_fields = {
     'channel': fields.Nested(channel_fields)
@@ -476,7 +476,6 @@ impacts_by_object_fields = {
     'objects': fields.List(fields.Nested(impact_by_object_fields))
 }
 
-
 generic_type = {
     "name": fields.String(),
     "id": fields.String(),
@@ -502,14 +501,12 @@ line_section_for_traffic_report_fields = {
     'metas': fields.List(fields.Nested(wording_fields)),
 }
 
-
 line_sections_fields = {
     "id": fields.String(),
     "type": fields.String(),
     "line_section": fields.Nested(line_section_for_traffic_report_fields, display_null=False),
     "links":FieldLinks()
 }
-
 
 traffic_report_fields = {
     "network": fields.Nested(generic_type, display_null=False),
