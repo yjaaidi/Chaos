@@ -51,14 +51,58 @@ sqlalchemy.event.listen(sqlalchemy.pool.Pool, 'connect', set_utc_on_connect)
 
 
 class TimestampMixin(object):
-    created_at = db.Column(db.DateTime(), default=datetime.utcnow, nullable=False)
-    updated_at = db.Column(db.DateTime(), default=None, onupdate=datetime.utcnow)
+    created_at = db.Column(
+        db.DateTime(),
+        default=datetime.utcnow,
+        nullable=False
+    )
+    updated_at = db.Column(
+        db.DateTime(),
+        default=None,
+        onupdate=datetime.utcnow
+    )
 
-DisruptionStatus = db.Enum('published', 'archived', name='disruption_status')
-SeverityEffect = db.Enum('no_service', 'reduced_service', 'significant_delays', 'detour', 'additional_service', 'modified_service', 'other_effect', 'unknown_effect', 'stop_moved', name='severity_effect')
+DisruptionStatus = db.Enum(
+    'published',
+    'archived',
+    'draft',
+    name='disruption_status'
+)
+
+SeverityEffect = db.Enum(
+    'no_service',
+    'reduced_service',
+    'significant_delays',
+    'detour',
+    'additional_service',
+    'modified_service',
+    'other_effect',
+    'unknown_effect',
+    'stop_moved',
+    name='severity_effect'
+)
+
 ImpactStatus = db.Enum('published', 'archived', name='impact_status')
-PtObjectType = db.Enum('network', 'stop_area', 'line', 'line_section', 'route', 'stop_point', name='pt_object_type')
-ChannelTypeEnum = db.Enum('web', 'sms', 'email', 'mobile', 'notification', 'twitter', 'facebook')
+
+PtObjectType = db.Enum(
+    'network',
+    'stop_area',
+    'line',
+    'line_section',
+    'route',
+    'stop_point',
+    name='pt_object_type'
+)
+
+ChannelTypeEnum = db.Enum(
+    'web',
+    'sms',
+    'email',
+    'mobile',
+    'notification',
+    'twitter',
+    'facebook'
+)
 
 class Client(TimestampMixin, db.Model):
     __tablename__ = 'client'
@@ -340,7 +384,9 @@ class Disruption(TimestampMixin, db.Model):
     id = db.Column(UUID, primary_key=True)
     reference = db.Column(db.Text, unique=False, nullable=True)
     note = db.Column(db.Text, unique=False, nullable=True)
-    status = db.Column(DisruptionStatus, nullable=False, default='published', index=True)
+    status = db.Column(
+        DisruptionStatus, nullable=False, default='published', index=True
+    )
     start_publication_date = db.Column(db.DateTime(), nullable=True)
     end_publication_date = db.Column(db.DateTime(), nullable=True)
     impacts = db.relationship('Impact', backref='disruption', lazy='dynamic')
@@ -376,9 +422,16 @@ class Disruption(TimestampMixin, db.Model):
         for impact in self.impacts:
             impact.archive()
 
+    def is_published(self):
+        return self.status == 'published'
+
     @classmethod
     def get(cls, id, contributor_id):
-        return cls.query.filter_by(id=id, contributor_id=contributor_id, status='published').first_or_404()
+        return cls.query.filter(
+            (cls.id == id) and
+            (cls.contributor == contributor_id) and
+            (cls.status != 'archived')
+        ).first_or_404()
 
     @classmethod
     @paginate()

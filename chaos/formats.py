@@ -290,6 +290,7 @@ disruptions_input_format = {
     'properties': {
         'reference': {'type': 'string', 'maxLength': 250},
         'note': {'type': ['string', 'null']},
+        'status': {'enum': ['published', 'draft']},
         'publication_period': date_period_format,
         'contributor': {'type': 'string'},
         'cause': {

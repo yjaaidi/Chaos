@@ -246,7 +246,7 @@ class Disruptions(flask_restful.Resource):
     @validate_contributor()
     @manage_navitia_error()
     @validate_id(True)
-    def put(self, client, contributor,navitia, id):
+    def put(self, client, contributor, navitia, id):
         self.navitia = navitia
         disruption = models.Disruption.get(id, contributor.id)
         json = request.get_json()
@@ -256,9 +256,15 @@ class Disruptions(flask_restful.Resource):
             validate(json, disruptions_input_format)
         except ValidationError, e:
             logging.getLogger(__name__).debug(str(e))
-            #TODO: generate good error messages
+            # TODO: generate good error messages
             return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 400
+
+        if disruption.is_published() and 'status' in json\
+           and json['status'] == 'draft':
+                return marshal(
+                    {'error': {'message': 'The current disruption is already\
+ published and cannot get back to the \'draft\' status.'}}, error_fields), 409
 
         mapper.fill_from_json(disruption, json, mapper.disruption_mapping)
 
@@ -295,7 +301,15 @@ class Disruptions(flask_restful.Resource):
                 ), 404
 
         disruption.upgrade_version()
-        db.session.commit()
+        try:
+            db.session.commit()
+        except IntegrityError as e:
+            db.session.rollback()
+            return marshal(
+                {'error': {'message': '{}'.format(e.message)}},
+                error_fields
+                ), 500
+
         chaos.utils.send_disruption_to_navitia(disruption)
         return marshal({'disruption': disruption}, one_disruption_fields), 200
 
