@@ -27,7 +27,7 @@ Feature: Manipulate impacts in a Disruption
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         When I post to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/impacts" with:
         """
         {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "application_period_patterns":[{"start_date":"2015-02-01","end_date":"2015-02-06","weekly_pattern":"1111100","time_zone":"Europe/Paris","time_slots":[{"begin": "07:45", "end": "09:30"}]}]}
@@ -69,7 +69,7 @@ Feature: Manipulate impacts in a Disruption
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         When I post to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/impacts" with:
         """
         {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "application_period_patterns":[{"start_date":"2015-02-01","end_date":"2015-02-06","weekly_pattern":"1111100","time_zone":"Europe/Paris","time_slots":[{"begin": "07:45", "end": "09:30"}]}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}
@@ -112,7 +112,7 @@ Feature: Manipulate impacts in a Disruption
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         When I post to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/impacts" with:
         """
         {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "application_periods": [{"begin": "2015-02-15T08:52:00Z","end": "2015-02-18T23:15:00Z"}]}
@@ -152,7 +152,7 @@ Feature: Manipulate impacts in a Disruption
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         When I post to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/impacts" with:
         """
         {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "application_period_patterns":[{"start_date":"2015-02-01","end_date":"2015-02-06","weekly_pattern":"1111100","time_zone":"Europe/Paris","time_slots":[{"begin": "07:45", "end": "09:30"}, {"begin": "17:30", "end": "19:30"}]}]}
@@ -199,7 +199,7 @@ Feature: Manipulate impacts in a Disruption
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         When I post to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/impacts" with:
         """
         {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "application_period_patterns":[{"start_date":"2015-02-01","end_date":"2015-02-06","weekly_pattern":"1111100", "time_zone": "Europe/Paris", "time_slots":[{"begin": "07:45", "end": "09:30"}]}, {"start_date":"2015-02-01","end_date":"2015-02-06","weekly_pattern":"0000011", "time_zone": "Europe/Paris", "time_slots":[{"begin": "10:45", "end": "16:30"}]}]}
@@ -260,7 +260,7 @@ Feature: Manipulate impacts in a Disruption
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         When I put to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/impacts/7ffab232-3d47-4eea-aa2c-22f8680230b6" with:
         """
         {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "application_periods": [{"begin": "2015-02-05T10:52:00Z","end": "2015-02-07T23:15:00Z"}, {"begin": "2015-02-08T10:52:00Z","end": "2015-02-10T23:15:00Z"}]}
@@ -307,7 +307,7 @@ Feature: Manipulate impacts in a Disruption
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
 
         #Modify impact with two application_periods
         When I put to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/impacts/7ffab232-3d47-4eea-aa2c-22f8680230b6" with:
@@ -368,7 +368,7 @@ Feature: Manipulate impacts in a Disruption
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         When I post to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/impacts" with:
         """
         {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "application_period_patterns":[{"start_date":"2015-02-23","end_date":"2015-02-28","weekly_pattern":"1100011","time_zone":"Europe/Paris","time_slots":[{"begin": "11:00", "end": "19:00"}]}]}
@@ -407,7 +407,7 @@ Feature: Manipulate impacts in a Disruption
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         When I post to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/impacts" with:
         """
         {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "application_period_patterns":[{"start_date":"2015-03-27","end_date":"2015-04-01","weekly_pattern":"1111111","time_zone":"Europe/Paris","time_slots":[{"begin": "07:45", "end": "09:30"}]}]}
@@ -460,7 +460,7 @@ Feature: Manipulate impacts in a Disruption
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         When I post to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/impacts" with:
         """
         {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "application_period_patterns":[{"start_date":"2015-10-23","end_date":"2015-10-27","weekly_pattern":"1111111","time_zone":"Europe/Paris","time_slots":[{"begin": "07:45", "end": "09:30"}]}]}
@@ -512,7 +512,7 @@ Feature: Manipulate impacts in a Disruption
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         When I post to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/impacts" with:
         """
         {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "application_period_patterns":[{"start_date":"2015-02-01","end_date":"2015-02-06","weekly_pattern":"1111100", "time_zone": "Europe/Paris", "time_slots":[{"begin": "07:45", "end": "09:30"}]}, {"start_date":"2015-02-04","end_date":"2015-02-10","weekly_pattern":"0000011", "time_zone": "Europe/Paris", "time_slots":[{"begin": "10:45", "end": "16:30"}]}]}
@@ -560,7 +560,7 @@ Feature: Manipulate impacts in a Disruption
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         When I post to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/impacts" with:
         """
         {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "application_period_patterns":[{"start_date":"2015-05-27","end_date":"2015-05-27","weekly_pattern":"1111100","time_zone":"Europe/Paris","time_slots":[{"begin": "14:45", "end": "16:45"}]}]}
@@ -605,7 +605,7 @@ Feature: Manipulate impacts in a Disruption
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         When I post to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/impacts" with:
         """
         {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "application_period_patterns":[{"start_date":"2015-05-27","end_date":"2015-05-27","weekly_pattern":"1111100","time_zone":"Asia/Katmandu","time_slots":[{"begin": "14:45", "end": "16:45"}]}]}
@@ -650,7 +650,7 @@ Feature: Manipulate impacts in a Disruption
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         When I post to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/impacts" with:
         """
         {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "application_period_patterns":[{"start_date":"2015-05-27","end_date":"2015-05-27","weekly_pattern":"1111100","time_zone":"Europe/Paris","time_slots":[{"begin": "00:00", "end": "16:45"}]}]}
@@ -696,7 +696,7 @@ Feature: Manipulate impacts in a Disruption
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         When I post to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/impacts" with:
         """
         {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "application_periods": [{"begin": "2015-06-01T00:00:00Z","end": "2015-06-01T23:59:59Z"}]}
@@ -737,7 +737,7 @@ Feature: Manipulate impacts in a Disruption
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         When I post to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/impacts" with:
         """
         {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "application_period_patterns":[{"start_date":"2015-09-21","end_date":"2015-09-21","weekly_pattern":"1111111","time_zone":"Europe/Paris","time_slots":[{"begin": "18:00", "end": "03:00"}]}]}
@@ -783,7 +783,7 @@ Feature: Manipulate impacts in a Disruption
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         When I post to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/impacts" with:
         """
         {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "application_period_patterns":[{"start_date":"2015-09-21","end_date":"2015-09-26","weekly_pattern":"1101010","time_zone":"Europe/Paris","time_slots":[{"begin": "18:00", "end": "03:00"}]}]}
@@ -835,7 +835,7 @@ Scenario: Add an impact in a disruption with a application_period pattern having
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         When I post to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/impacts" with:
         """
         {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "application_period_patterns":[{"start_date":"2015-10-24","end_date":"2015-10-24","weekly_pattern":"0000010","time_zone":"Europe/Paris","time_slots":[{"begin": "22:00", "end": "02:00"}]}]}

@@ -3,7 +3,7 @@ Feature: Create disruption
     Scenario: we cannot create a disruption without client
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
 
         When I post to "/disruptions"
         Then the status code should be "400"
@@ -13,7 +13,7 @@ Feature: Create disruption
     Scenario: Reference and contributor is required
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
 
         When I post to "/disruptions"
         Then the status code should be "400"
@@ -30,7 +30,7 @@ Feature: Create disruption
 
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         When I post to "/disruptions" with:
         """
         {"reference": "foo", "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}}
@@ -50,7 +50,7 @@ Feature: Create disruption
 
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         When I post to "/disruptions" with:
         """
         {"reference": "foo", "contributor": "contrib1", "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}}
@@ -73,7 +73,7 @@ Feature: Create disruption
 
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         Given I post to "/disruptions" with:
         """
         {"reference": "foo", "contributor": "contrib1", "note": "hello", "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}}
@@ -81,7 +81,7 @@ Feature: Create disruption
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Coverage" with "jdr"
         I fill in header "X-Contributors" with "contrib1"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         When I get "/disruptions"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
@@ -102,7 +102,7 @@ Feature: Create disruption
 
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         When I post to "/disruptions" with:
         """
         {"reference": "foo", "contributor": "contrib1", "publication_period": {"begin": "2014-06-24T10:35:00Z", "end": "2014-06-24T23:59:59Z"}, "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}}
@@ -126,7 +126,7 @@ Feature: Create disruption
 
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         When I post to "/disruptions" with:
         """
         {"reference": "foo", "contributor": "contrib1", "publication_period": {"begin": "2014-06-24T10:35:00Z"}, "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}}
@@ -146,7 +146,7 @@ Feature: Create disruption
 
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         When I post to "/disruptions" with:
         """
         {"reference": "foo", "contributor": "contrib1", "publication_period": {"begin": "2014-06-24T10:35:00Z", "end": "2014-06-24T23:59:59Z"}, "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}}
@@ -170,14 +170,14 @@ Feature: Create disruption
 
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         Given I post to "/disruptions" with:
         """
         {"reference": "foo", "contributor": "contrib1", "publication_period": {"begin": "2014-06-24T10:35:00Z", "end": "2014-06-24T23:59:59Z"}, "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}}
         """
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         I fill in header "X-Contributors" with "contrib1"
         When I get "/disruptions"
         Then the status code should be "200"
@@ -198,7 +198,7 @@ Feature: Create disruption
 
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         When I post to "/disruptions" with:
         """
         {"reference": "foo", "contributor": "contrib1", "publication_period": {"begin": "2014-06-24T10:35:00Z", "end": null}, "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}}
@@ -222,7 +222,7 @@ Feature: Create disruption
 
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         When I post to "/disruptions" with:
         """
         {"reference": "foo", "contributor": "contrib1", "publication_period": {"begin": "2014-06-24T10:35:00Z", "end": null}, "localization":[{"id":"stop_area:JDR:SA:CHVIN", "type": "stop_area"}], "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}}
@@ -247,7 +247,7 @@ Feature: Create disruption
 
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         When I post to "/disruptions" with:
         """
         {"reference": "foo", "contributor": "contrib1", "publication_period": {"begin": "2014-06-24T10:35:00Z", "end": null}, "localization":[{"id":"stop_area:AAA", "type": "stop_area"}], "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}}
@@ -273,7 +273,7 @@ Feature: Create disruption
 
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         When I post to "/disruptions" with:
         """
         {"reference": "foo", "contributor": "contrib1", "publication_period": {"begin": "2014-06-24T10:35:00Z", "end": "2014-06-24T23:35:00Z"}, "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}, "tags": [{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}]}
@@ -296,7 +296,7 @@ Feature: Create disruption
 
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         Given I post to "/disruptions" with:
         """
         {"reference": "foo", "contributor": "contrib1", "note": null, "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}}
@@ -304,7 +304,7 @@ Feature: Create disruption
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Coverage" with "jdr"
         I fill in header "X-Contributors" with "contrib1"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         When I get "/disruptions"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
