@@ -33,7 +33,7 @@ Feature: Update Disruption and impacts
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         When I put to "/disruptions/2ffab230-3d48-4eea-aa2c-22f8680230b6" with:
         """
         {"reference": "new ref", "contributor": "contrib1", "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}, "impacts": [{"id": "7ffab232-3d47-4eea-aa2c-22f8680230b6", "severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"},{"begin": "2014-04-29T16:52:00Z","end": "2014-05-22T02:15:00Z"}]}]}
@@ -77,7 +77,7 @@ Feature: Update Disruption and impacts
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         When I put to "/disruptions/2ffab230-3d48-4eea-aa2c-22f8680230b6" with:
         """
         {"reference": "new ref", "contributor": "contrib1", "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}, "impacts": [{"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"},{"begin": "2014-04-29T16:52:00Z","end": "2014-05-22T02:15:00Z"}]}, {"id": "7ffab232-3d47-4eea-aa2c-22f8680230b6", "severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"},{"begin": "2014-04-29T16:52:00Z","end": "2014-05-22T02:15:00Z"}]}]}
@@ -122,7 +122,7 @@ Feature: Update Disruption and impacts
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         When I put to "/disruptions/2ffab230-3d48-4eea-aa2c-22f8680230b6" with:
         """
         {"reference": "new ref", "contributor": "contrib1", "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}, "impacts": [{"id": "7ffab232-3d47-4eea-aa2c-22f8680230b6", "severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"},{"begin": "2014-04-29T16:52:00Z","end": "2014-05-22T02:15:00Z"}]}]}
@@ -168,7 +168,7 @@ Feature: Update Disruption and impacts
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         When I put to "/disruptions/2ffab230-3d48-4eea-aa2c-22f8680230b6" with:
         """
         {"reference": "new ref", "contributor": "contrib1", "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}, "impacts": [{"id": "aaa", "severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"},{"begin": "2014-04-29T16:52:00Z","end": "2014-05-22T02:15:00Z"}]}]}
@@ -211,7 +211,7 @@ Feature: Update Disruption and impacts
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         When I put to "/disruptions/2ffab230-3d48-4eea-aa2c-22f8680230b6" with:
         """
         {"reference": "modified ref", "contributor": "contrib1", "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}}
@@ -257,7 +257,7 @@ Feature: Update Disruption and impacts
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         When I put to "/disruptions/2ffab230-3d48-4eea-aa2c-22f8680230b6" with:
         """
         {"reference": "modified ref", "contributor": "contrib1", "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}, "impacts": []}

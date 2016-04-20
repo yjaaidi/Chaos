@@ -58,7 +58,7 @@ Feature: list impacts by ptobject and/or uri(s)
 
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         When I get "/impacts?uri[]=stop_point:JDR:SP:ABBES2&start_date=2014-01-21T23:52:12Z&end_date=2014-01-25T23:52:12Z"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
@@ -123,7 +123,7 @@ Feature: list impacts by ptobject and/or uri(s)
 
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         When I get "/impacts?uri[]=network:JDR:1&start_date=2013-12-02T23:52:12Z&end_date=2014-05-21T23:52:12Z"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
@@ -188,7 +188,7 @@ Feature: list impacts by ptobject and/or uri(s)
 
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         When I get "/impacts?uri[]=network:JDR:1&uri[]=network:JDR:2&start_date=2013-12-02T23:52:12Z&end_date=2014-05-21T23:52:12Z"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
@@ -254,7 +254,7 @@ Feature: list impacts by ptobject and/or uri(s)
 
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         When I get "/impacts?pt_object_type=network&uri[]=network:JDR:1&start_date=2013-12-02T23:52:12Z&end_date=2014-05-21T23:52:12Z"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
@@ -319,7 +319,7 @@ Feature: list impacts by ptobject and/or uri(s)
 
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         When I get "/impacts?pt_object_type=network&uri[]=network:JDR:1&uri[]=network:JDR:2&start_date=2013-12-02T23:52:12Z&end_date=2014-05-21T23:52:12Z"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
@@ -385,7 +385,7 @@ Feature: list impacts by ptobject and/or uri(s)
 
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         When I get "/impacts?uri[]=network:JDR:1&uri[]=stop_area:JDR:SA:CHVIN&start_date=2013-12-02T23:52:12Z&end_date=2014-05-21T23:52:12Z"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
@@ -455,7 +455,7 @@ Feature: list impacts by ptobject and/or uri(s)
 
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         When I get "/impacts?start_date=2013-12-02T23:52:12Z&end_date=2014-05-21T23:52:12Z"
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
@@ -518,7 +518,7 @@ Feature: list impacts by ptobject and/or uri(s)
 
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         #Fetch impact by uri of object in start_point of line_section
         When I get "/impacts?uri[]=stop_area:JDR:SA:BASTI&start_date=2013-12-02T23:52:12Z&end_date=2014-10-21T23:52:12Z"
         Then the status code should be "200"
@@ -620,7 +620,7 @@ Feature: list impacts by ptobject and/or uri(s)
 
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         #Fetch impact by uri of object in start_point of line_section
         When I get "/impacts?uri[]=stop_area:JDR:SA:NATIO&start_date=2013-12-02T23:52:12Z&end_date=2014-10-21T23:52:12Z"
         Then the status code should be "200"

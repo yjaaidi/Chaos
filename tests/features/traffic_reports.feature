@@ -2,7 +2,7 @@ Feature: traffic report api
 
     Scenario: response of traffic report api without "X-Contributors"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         When I get "/traffic_reports"
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
@@ -13,7 +13,7 @@ Feature: traffic report api
             | contributor_code   | created_at          | updated_at          | id                                   |
             | contrib1           | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
         I fill in header "X-Contributors" with "contrib1"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         When I get "/traffic_reports"
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
@@ -36,7 +36,7 @@ Feature: traffic report api
             | contrib1           | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         When I get "/traffic_reports"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
@@ -88,7 +88,7 @@ Feature: traffic report api
 
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         When I get "/traffic_reports?current_time=2013-12-15T23:52:12Z"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
@@ -142,7 +142,7 @@ Feature: traffic report api
 
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         When I get "/traffic_reports?current_time=2014-01-15T23:52:12Z"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
@@ -204,7 +204,7 @@ Feature: traffic report api
 
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         When I get "/traffic_reports?current_time=2014-01-23T23:52:12Z"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
@@ -265,7 +265,7 @@ Feature: traffic report api
 
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         When I get "/traffic_reports?current_time=2014-02-01T23:52:12Z"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
@@ -326,7 +326,7 @@ Feature: traffic report api
 
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         When I get "/traffic_reports?current_time=2014-02-15T23:52:12Z"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
@@ -381,7 +381,7 @@ Feature: traffic report api
 
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         When I get "/traffic_reports?current_time=2013-12-15T23:52:12Z"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
@@ -436,7 +436,7 @@ Feature: traffic report api
 
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         When I get "/traffic_reports?current_time=2014-02-02T23:52:12Z"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
@@ -497,7 +497,7 @@ Feature: traffic report api
 
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         When I get "/traffic_reports?current_time=2014-01-23T23:52:12Z"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
@@ -563,7 +563,7 @@ Feature: traffic report api
 
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         When I get "/traffic_reports?current_time=2014-01-23T23:52:12Z"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
@@ -628,7 +628,7 @@ Feature: traffic report api
 
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         When I get "/traffic_reports?current_time=2014-01-23T23:52:12Z"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
@@ -699,7 +699,7 @@ Feature: traffic report api
 
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         When I get "/traffic_reports?current_time=2014-01-15T23:52:12Z"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
@@ -775,7 +775,7 @@ Feature: traffic report api
 
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         When I get "/traffic_reports?current_time=2014-01-17T23:52:12Z"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
@@ -844,7 +844,7 @@ Feature: traffic report api
 
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         When I get "/traffic_reports?current_time=2014-01-17T23:52:12Z"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
@@ -913,7 +913,7 @@ Feature: traffic report api
 
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         When I get "/traffic_reports?current_time=2014-01-17T23:52:12Z"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
@@ -1005,7 +1005,7 @@ Feature: traffic report api
 
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         When I get "/traffic_reports?current_time=2014-01-17T23:52:12Z"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
@@ -1119,7 +1119,7 @@ Feature: traffic report api
 
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         When I get "/traffic_reports?current_time=2014-01-17T23:52:12Z"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
@@ -1181,7 +1181,7 @@ Feature: traffic report api
 
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         When I get "/traffic_reports?current_time=2014-01-21T23:52:12Z"
         Then the status code should be "200"
         And the field "disruptions" should have a size of 2
@@ -1250,7 +1250,7 @@ Feature: traffic report api
 
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         When I get "/traffic_reports?current_time=2014-01-21T23:52:12Z"
         Then the status code should be "200"
         And the field "disruptions" should have a size of 4
@@ -1331,7 +1331,7 @@ Feature: traffic report api
 
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         When I get "/traffic_reports?current_time=2014-01-21T23:52:12Z"
         Then the status code should be "200"
         And the field "disruptions" should have a size of 6
