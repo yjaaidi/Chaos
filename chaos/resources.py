@@ -160,6 +160,12 @@ class Disruptions(flask_restful.Resource):
                                 action="append")
         parser_get.add_argument("current_time", type=utils.get_datetime)
         parser_get.add_argument("uri", type=str)
+        parser_get.add_argument(
+            "status[]",
+            type=option_value(disruption_status_values),
+            action="append",
+            default=disruption_status_values
+        )
 
     @validate_navitia()
     @validate_contributor()
@@ -181,13 +187,18 @@ class Disruptions(flask_restful.Resource):
             publication_status = args['publication_status[]']
             tags = args['tag[]']
             uri = args['uri']
+            statuses = args['status[]']
 
             g.current_time = args['current_time']
-            result = models.Disruption.all_with_filter(page_index=page_index,
-                                                       items_per_page=items_per_page,
-                                                       contributor_id=contributor.id,
-                                                       publication_status=publication_status,
-                                                       tags=tags, uri=uri)
+            result = models.Disruption.all_with_filter(
+                page_index=page_index,
+                items_per_page=items_per_page,
+                contributor_id=contributor.id,
+                publication_status=publication_status,
+                tags=tags,
+                uri=uri,
+                statuses=statuses
+            )
             response = {'disruptions': result.items, 'meta': make_pager(result, 'disruption')}
             return marshal(response, disruptions_fields)
 

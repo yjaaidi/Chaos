@@ -28,7 +28,8 @@
 # www.navitia.io
 
 __all__ = ['disruptions_input_format', 'publication_status_values',
-           'severity_input_format', 'id_format', 'cause_input_format']
+           'severity_input_format', 'id_format', 'cause_input_format',
+           'disruption_status_values']
 import re
 import pytz
 #see http://json-schema.org/
@@ -43,7 +44,7 @@ publication_status_values = ["past", "ongoing", "coming"]
 time_pattern = '^\d{2}:\d{2}$'
 week_pattern = '^[0-1]{7,7}$'
 channel_type_values = ["web", "sms", "email", "mobile", "notification", "twitter", "facebook"]
-
+disruption_status_values = ["published", "draft"]
 
 def get_object_format(object_type):
     return  {
@@ -290,7 +291,7 @@ disruptions_input_format = {
     'properties': {
         'reference': {'type': 'string', 'maxLength': 250},
         'note': {'type': ['string', 'null']},
-        'status': {'enum': ['published', 'draft']},
+        'status': {'enum': disruption_status_values},
         'publication_period': date_period_format,
         'contributor': {'type': 'string'},
         'cause': {
