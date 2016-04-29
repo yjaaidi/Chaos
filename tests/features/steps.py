@@ -109,8 +109,8 @@ def and_in_the_json_the_field_is_set_to(step, fields):
     eq_(find_field(world.response_json, fields), None)
 
 @step(u'And the field "([^"]*)" should be not null')
-def and_in_the_json_the_field_is_set_to(step, fields):
-    not eq_(find_field(world.response_json, fields), None)
+def and_in_the_json_the_field_is_not_null(step, fields):
+    assert_not_equal(find_field(world.response_json, fields), None)
 
 @step(u'and "([^"]*)" should be empty')
 def and_field_should_be_empty(step, fields):
