@@ -85,7 +85,7 @@ class Severity(flask_restful.Resource):
 
     @validate_client(True)
     def post(self, client):
-        json = request.get_json()
+        json = request.get_json(silent=True)
         logging.getLogger(__name__).debug('Post severity: %s', json)
         try:
             validate(json, severity_input_format)
@@ -112,7 +112,7 @@ class Severity(flask_restful.Resource):
     def put(self, client, id):
 
         severity = models.Severity.get(id, client.id)
-        json = request.get_json()
+        json = request.get_json(silent=True)
         logging.getLogger(__name__).debug('PUT severity: %s', json)
 
         try:
@@ -207,7 +207,7 @@ class Disruptions(flask_restful.Resource):
     @manage_navitia_error()
     def post(self, client, navitia):
         self.navitia = navitia
-        json = request.get_json()
+        json = request.get_json(silent=True)
         logging.getLogger(__name__).debug('POST disruption: %s', json)
         try:
             validate(json, disruptions_input_format)
@@ -260,7 +260,7 @@ class Disruptions(flask_restful.Resource):
     def put(self, client, contributor, navitia, id):
         self.navitia = navitia
         disruption = models.Disruption.get(id, contributor.id)
-        json = request.get_json()
+        json = request.get_json(silent=True)
         logging.getLogger(__name__).debug('PUT disruption: %s', json)
 
         try:
@@ -357,7 +357,7 @@ class Cause(flask_restful.Resource):
 
     @validate_client(True)
     def post(self, client):
-        json = request.get_json()
+        json = request.get_json(silent=True)
         logging.getLogger(__name__).debug('Post cause: %s', json)
         try:
             validate(json, cause_input_format)
@@ -383,7 +383,7 @@ class Cause(flask_restful.Resource):
     @validate_id(True)
     def put(self, client, id):
         cause = models.Cause.get(id, client.id)
-        json = request.get_json()
+        json = request.get_json(silent=True)
         logging.getLogger(__name__).debug('PUT cause: %s', json)
 
         try:
@@ -426,7 +426,7 @@ class Tag(flask_restful.Resource):
 
     @validate_client(True)
     def post(self, client):
-        json = request.get_json()
+        json = request.get_json(silent=True)
         logging.getLogger(__name__).debug('Post tag: %s', json)
         try:
             validate(json, tag_input_format)
@@ -460,7 +460,7 @@ class Tag(flask_restful.Resource):
     @validate_id(True)
     def put(self, client, id):
         tag = models.Tag.get(id, client.id)
-        json = request.get_json()
+        json = request.get_json(silent=True)
         logging.getLogger(__name__).debug('PUT tag: %s', json)
 
         try:
@@ -503,7 +503,7 @@ class Category(flask_restful.Resource):
 
     @validate_client(True)
     def post(self, client):
-        json = request.get_json()
+        json = request.get_json(silent=True)
         logging.getLogger(__name__).debug('Post category: %s', json)
         try:
             validate(json, category_input_format)
@@ -536,7 +536,7 @@ class Category(flask_restful.Resource):
     @validate_id(True)
     def put(self, client, id):
         category = models.Category.get(id, client.id)
-        json = request.get_json()
+        json = request.get_json(silent=True)
         logging.getLogger(__name__).debug('PUT category: %s', json)
 
         try:
@@ -645,7 +645,7 @@ class Impacts(flask_restful.Resource):
             return marshal({'error': {'message': "id invalid"}},
                            error_fields), 400
 
-        json = request.get_json()
+        json = request.get_json(silent=True)
         logging.getLogger(__name__).debug('POST impcat: %s', json)
 
         try:
@@ -677,7 +677,7 @@ class Impacts(flask_restful.Resource):
     @validate_id(True)
     def put(self, client, contributor, navitia, disruption_id, id):
         self.navitia = navitia
-        json = request.get_json()
+        json = request.get_json(silent=True)
         logging.getLogger(__name__).debug('PUT impact: %s', json)
 
         try:
@@ -727,7 +727,7 @@ class Channel(flask_restful.Resource):
 
     @validate_client(True)
     def post(self, client):
-        json = request.get_json()
+        json = request.get_json(silent=True)
         logging.getLogger(__name__).debug('Post channel: %s', json)
         try:
             validate(json, channel_input_format)
@@ -753,7 +753,7 @@ class Channel(flask_restful.Resource):
     @validate_id(True)
     def put(self, client, id):
         channel = models.Channel.get(id, client.id)
-        json = request.get_json()
+        json = request.get_json(silent=True)
         logging.getLogger(__name__).debug('PUT channel: %s', json)
 
         try:
@@ -846,7 +846,7 @@ class Property(flask_restful.Resource):
 
     @validate_client(True)
     def post(self, client):
-        json = request.get_json()
+        json = request.get_json(silent=True)
         logging.getLogger(__name__).debug('POST property: %s', json)
 
         try:
@@ -878,7 +878,7 @@ class Property(flask_restful.Resource):
                 'error': {'message': 'Property {} not found'.format(id)}
             }, error_fields), 404
 
-        json = request.get_json()
+        json = request.get_json(silent=True)
         logging.getLogger(__name__).debug('PUT property: %s', json)
 
         try:
