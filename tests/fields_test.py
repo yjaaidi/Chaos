@@ -54,6 +54,23 @@ def test_name_disruption():
     eq_(str(disruption), "<Disruption '{}'>".format(disruption.id))
 
 
+def test_name_property():
+    property = models.Property()
+    property.key = 'key'
+    property.type = 'type'
+    eq_(str(property), "<Property: {} {} {}>".
+        format(property.id, property.type, property.key))
+
+
+def test_name_associate_disruption_property():
+    adp = models.AssociateDisruptionProperty()
+    adp.value = 'value'
+    adp.property_id = 'property_id'
+    adp.disruption_id = 'disruption_id'
+    eq_(str(adp), "<AssociateDisruptionProperty: {} {} {}>".
+        format(adp.property_id, adp.disruption_id, adp.value))
+
+
 def test_none_field_time():
     class_time = fields.FieldTime(Obj())
     eq_(class_time.format(None), None)

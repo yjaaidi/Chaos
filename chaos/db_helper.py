@@ -30,6 +30,7 @@
 from chaos import models, exceptions, mapper, db
 from utils import get_application_periods
 
+
 def fill_and_get_pt_object(navitia, all_objects, json, add_to_db=True):
     """
     :param all_objects: dictionary of objects to be added in this session
@@ -300,6 +301,69 @@ def manage_impacts(disruption, json, navitia):
         difference = set(impacts_db) - set(impacts_json)
         for diff in difference:
             impacts_db[diff].archive()
+
+
+def manage_properties(disruption, json):
+    """ Add properties linked to a post|put disruption by creating
+        associate_disruption_property objects.
+        The property has to be present in database or the function
+        will end in error.
+
+        Json format expected:
+        "properties": [
+            {
+                "property_id": "",
+                "value": ""
+            }, ...
+        ]
+    """
+    if 'properties' in json:
+        properties_json = list()
+        properties_db = list(
+            (adp.property_id, adp.disruption_id, adp.value,)
+            for adp in disruption.properties
+        )
+        for json_property in json['properties']:
+            property_db = models.Property.get(
+                disruption.client.id,
+                json_property['property_id']
+            )
+            if property_db is None:
+                raise exceptions.ObjectUnknown(
+                    'property {} not found'.format(json_property['property_id'])
+                )
+            adp_db = create_adp(
+                disruption,
+                property_db.id,
+                json_property['value']
+            )
+            properties_json.append(
+                (adp_db.property_id, adp_db.disruption_id, adp_db.value,)
+            )
+
+        difference = set(properties_db) - set(properties_json)
+        for diff in difference:
+            adp = models.AssociateDisruptionProperty.get(*diff)
+            db.session.delete(adp)
+
+
+def create_adp(disruption, property_id, value):
+    """ Create or update an associate_disruption_property object in database
+    """
+    adp = models.AssociateDisruptionProperty.get(
+        property_id,
+        disruption.id,
+        value
+    )
+
+    if adp is None:
+        adp = models.AssociateDisruptionProperty()
+        adp.value = value
+        adp.disruption_id = disruption.id
+        adp.property_id = property_id
+        db.session.add(adp)
+
+    return adp
 
 
 def manage_channel_types(db_object, json_types):

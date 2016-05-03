@@ -162,6 +162,38 @@ class FieldCause(fields.Raw):
                     return wording.value
         return None
 
+
+class FieldAssociatedProperties(fields.Raw):
+    def output(self, key, obj):
+        properties = {}
+        if obj.properties:
+            for property in obj.properties:
+                prop = property.property
+                properties.setdefault(prop.type, []).append(
+                    {
+                        'value': property.value,
+                        'property': {
+                            'id': prop.id,
+                            'created_at': FieldDateTime().format(
+                                prop.created_at
+                            ),
+                            'updated_at': FieldDateTime().format(
+                                prop.updated_at
+                            ),
+                            'self': {
+                                'href': url_for(
+                                    'property',
+                                    id=prop.id,
+                                    _external=True
+                                )
+                            },
+                            'key': prop.key,
+                            'type': prop.type
+                        }
+                    }
+                )
+        return properties
+
 href_field = {
     "href": fields.String
 }
@@ -214,11 +246,26 @@ one_tag_fields = {
     'tag': fields.Nested(tag_fields)
 }
 
+property_fields = {
+    'id': fields.Raw,
+    'created_at': FieldDateTime,
+    'updated_at': FieldDateTime,
+    'self': {'href': fields.Url('property', absolute=True)},
+    'key': fields.Raw,
+    'type': fields.Raw
+}
+
+one_property_fields = {
+    'property': fields.Nested(property_fields, display_null=False)
+}
+
+properties_fields = {
+    'properties': fields.List(fields.Nested(property_fields))
+}
 
 one_category_fields = {
     'category': fields.Nested(category_fields)
 }
-
 
 categories_fields = {
     'categories': fields.List(fields.Nested(category_fields)),
@@ -244,6 +291,7 @@ disruption_fields = {
     'localization': FieldLocalization(attribute='localizations'),
     'cause': fields.Nested(cause_fields, allow_null=True),
     'tags': fields.List(fields.Nested(tag_fields)),
+    'properties': FieldAssociatedProperties(attribute='properties')
 }
 
 paginate_fields = {

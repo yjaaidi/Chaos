@@ -85,9 +85,13 @@ api.add_resource(resources.ChannelType,
 api.add_resource(resources.Status,
                  '/status')
 
-
 api.add_resource(resources.TrafficReport,
                  '/traffic_reports')
+
+api.add_resource(resources.Property,
+                 '/properties',
+                 '/properties/<string:id>',
+                 endpoint='property')
 
 
 @app.errorhandler(Exception)

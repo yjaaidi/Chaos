@@ -16,6 +16,17 @@ def test_validate_severity_format():
 def test_validate_cause_format():
     Draft4Validator.check_schema(formats.cause_input_format)
 
+
+def test_validate_property_format():
+    Draft4Validator.check_schema(formats.property_input_format)
+
+
+def test_validate_associte_disruption_property_format():
+    Draft4Validator.check_schema(
+        formats.associate_disruption_property_input_format
+    )
+
+
 def test_severities_validation():
     json = {'wordings': [{'key': 'foo', 'value': 'test'}], 'color': 'a'*20}
     validate(json, formats.severity_input_format)
@@ -387,3 +398,123 @@ def test_impact_with_send_notifications_boolean():
     json = {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},
             "send_notifications": True}
     validate(json, formats.impact_input_format)
+
+
+# Property
+def test_property_validation():
+    json = {'key': 'test', 'type': 'test'}
+    validate(json, formats.property_input_format)
+
+
+@raises(ValidationError)
+def test_property_no_key():
+    json = {'type': 'test'}
+    validate(json, formats.property_input_format)
+
+
+@raises(ValidationError)
+def test_property_no_type():
+    json = {'key': 'test'}
+    validate(json, formats.property_input_format)
+
+
+@raises(ValidationError)
+def test_property_empty():
+    json = {}
+    validate(json, formats.property_input_format)
+
+
+@raises(ValidationError)
+def test_property_type_is_int():
+    json = {'type': 42, 'key': 'test'}
+    validate(json, formats.property_input_format)
+
+
+@raises(ValidationError)
+def test_property_key_is_int():
+    json = {'type': 'test', 'key': 42}
+    validate(json, formats.property_input_format)
+
+
+@raises(ValidationError)
+def test_property_key_is_empty_string():
+    json = {'type': 'test', 'key': ''}
+    validate(json, formats.property_input_format)
+
+
+@raises(ValidationError)
+def test_property_type_is_empty_string():
+    json = {'type': '', 'key': 'test'}
+    validate(json, formats.property_input_format)
+
+
+# AssociateDisruptionProperty
+def test_associate_disruption_property_validation():
+    json = {
+        'property_id': '7ffab232-3d48-4eea-aa2c-22f8680230b6',
+        'value': 'test'
+    }
+    validate(json, formats.associate_disruption_property_input_format)
+
+
+@raises(ValidationError)
+def test_associate_disruption_property_no_value():
+    json = {'property_id': '7ffab232-3d48-4eea-aa2c-22f8680230b6'}
+    validate(json, formats.associate_disruption_property_input_format)
+
+
+@raises(ValidationError)
+def test_associate_disruption_property_no_property_id():
+    json = {'value': 'test'}
+    validate(json, formats.associate_disruption_property_input_format)
+
+
+@raises(ValidationError)
+def test_associate_disruption_property_empty():
+    json = {}
+    validate(json, formats.associate_disruption_property_input_format)
+
+
+@raises(ValidationError)
+def test_associate_disruption_property_value_is_int():
+    json = {
+        'property_id': '7ffab232-3d48-4eea-aa2c-22f8680230b6',
+        'value': 42
+    }
+    validate(json, formats.associate_disruption_property_input_format)
+
+
+@raises(ValidationError)
+def test_associate_disruption_property_property_id_is_int():
+    json = {
+        'property_id': 42,
+        'value': 'test'
+    }
+    validate(json, formats.associate_disruption_property_input_format)
+
+
+@raises(ValidationError)
+def test_associate_disruption_property_value_is_empty_string():
+    json = {
+        'property_id': '7ffab232-3d48-4eea-aa2c-22f8680230b6',
+        'value': ''
+    }
+    validate(json, formats.associate_disruption_property_input_format)
+
+
+@raises(ValidationError)
+def test_associate_disruption_property_property_id_is_empty_string():
+    json = {
+        'property_id': '',
+        'value': 'test'
+    }
+    validate(json, formats.associate_disruption_property_input_format)
+
+
+@raises(ValidationError)
+def test_associate_disruption_property_property_id_is_not_uuid():
+    json = {
+        'property_id': '7ffab232-3d48-4eea-aa2c-22f8680230b',
+        'value': 'test'
+    }
+    validate(json, formats.associate_disruption_property_input_format)
