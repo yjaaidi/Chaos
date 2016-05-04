@@ -75,3 +75,20 @@ def test_alias_text_value_not_valid():
     text_alis = mapper.AliasText('value')
     text_alis(obj, 'field', None)
     eq_(obj.value, None)
+
+
+def test_fill_from_json_with_optional_field():
+    obj = Obj()
+    obj.value = 'test'
+    fields = {'value': mapper.OptionalField(attribute='value')}
+    empty_json = {}
+    json = {'value': 'real value'}
+
+    mapper.fill_from_json(obj, empty_json, fields)
+    eq_(obj.value, 'test')
+
+    mapper.fill_from_json(obj, json, fields)
+    eq_(obj.value, 'real value')
+
+    mapper.fill_from_json(obj, empty_json, fields)
+    eq_(obj.value, 'real value')
