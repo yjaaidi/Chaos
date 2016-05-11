@@ -42,12 +42,13 @@ Return all visible disruptions.
 
 | Name                 | description                                                                    | required | default                 |
 | -------------------- | ------------------------------------------------------------------------------ | -------- | ----------------------- |
-| start_page          | index of the first element returned (start at 1)                               | false    | 1                       |
+| start_page           | index of the first element returned (start at 1)                               | false    | 1                       |
 | items_per_page       | number of items per page                                                       | false    | 20                      |
 | publication_status[] | filter by publication_status, possible value are: past, ongoing, coming        | false    | [past, ongoing, coming] |
 | current_time         | parameter for settings the use by this request, mostly for debugging purpose   | false    | NOW                     |
 | tag[]                | filter by tag (id of tag)                                                      | false    |                         |
 | uri                  | filter by uri of ptobject                                                      | false    |                         |
+| status[]             | filter by status                                                               | false    | [published, draft]      |
 
 @TODO: search and sort
 
@@ -264,6 +265,7 @@ Create one valid disruption with impacts
                 "reference": "foo",
                 "note": null,
                 "contributor": "shortterm.tn",
+                "status": "published",
                 "cause": {
                        "id": "3d1f34b2-e8df-1ae3-8c3e-0008ca8657ea"
                 },
@@ -691,6 +693,40 @@ Retrieve one existing disruption:
                 },
                 "meta": {}
             }
+
+You can pass the status in the request in order to update it:
+
+### Request
+
+    Method
+            PUT
+    Uri
+            /disruptions/7ffab230-3d48-4eea-aa2c-22f8680230b6
+    Headers
+            X-Customer-Id: [customer id]
+            X-Coverage: jdr
+            Authorization: d5b0148c-36f4-443c-9818-1f2f74a00be0
+            X-Contributors: contributor
+    Body
+        {
+            "reference": "foo",
+            "contributor": "contributor",
+            "cause": {
+                "id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"
+            },
+            "status": "draft"
+        }
+
+But you can't make a 'published' disruption going back to 'draft' status:
+
+### Response 409 CONFLICT (application/json)
+
+    Body
+        {
+            "error": {
+                "message": "The current disruption is already published and cannot get back to the 'draft' status."
+            }
+        }
 
 ##Delete a disruption [DELETE]
 Archive one disruption.

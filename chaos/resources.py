@@ -160,6 +160,12 @@ class Disruptions(flask_restful.Resource):
                                 action="append")
         parser_get.add_argument("current_time", type=utils.get_datetime)
         parser_get.add_argument("uri", type=str)
+        parser_get.add_argument(
+            "status[]",
+            type=option_value(disruption_status_values),
+            action="append",
+            default=disruption_status_values
+        )
 
     @validate_navitia()
     @validate_contributor()
@@ -181,13 +187,18 @@ class Disruptions(flask_restful.Resource):
             publication_status = args['publication_status[]']
             tags = args['tag[]']
             uri = args['uri']
+            statuses = args['status[]']
 
             g.current_time = args['current_time']
-            result = models.Disruption.all_with_filter(page_index=page_index,
-                                                       items_per_page=items_per_page,
-                                                       contributor_id=contributor.id,
-                                                       publication_status=publication_status,
-                                                       tags=tags, uri=uri)
+            result = models.Disruption.all_with_filter(
+                page_index=page_index,
+                items_per_page=items_per_page,
+                contributor_id=contributor.id,
+                publication_status=publication_status,
+                tags=tags,
+                uri=uri,
+                statuses=statuses
+            )
             response = {'disruptions': result.items, 'meta': make_pager(result, 'disruption')}
             return marshal(response, disruptions_fields)
 
@@ -246,7 +257,7 @@ class Disruptions(flask_restful.Resource):
     @validate_contributor()
     @manage_navitia_error()
     @validate_id(True)
-    def put(self, client, contributor,navitia, id):
+    def put(self, client, contributor, navitia, id):
         self.navitia = navitia
         disruption = models.Disruption.get(id, contributor.id)
         json = request.get_json()
@@ -256,9 +267,15 @@ class Disruptions(flask_restful.Resource):
             validate(json, disruptions_input_format)
         except ValidationError, e:
             logging.getLogger(__name__).debug(str(e))
-            #TODO: generate good error messages
+            # TODO: generate good error messages
             return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 400
+
+        if disruption.is_published() and 'status' in json\
+           and json['status'] == 'draft':
+                return marshal(
+                    {'error': {'message': 'The current disruption is already\
+ published and cannot get back to the \'draft\' status.'}}, error_fields), 409
 
         mapper.fill_from_json(disruption, json, mapper.disruption_mapping)
 
@@ -295,7 +312,15 @@ class Disruptions(flask_restful.Resource):
                 ), 404
 
         disruption.upgrade_version()
-        db.session.commit()
+        try:
+            db.session.commit()
+        except IntegrityError as e:
+            db.session.rollback()
+            return marshal(
+                {'error': {'message': '{}'.format(e.message)}},
+                error_fields
+                ), 500
+
         chaos.utils.send_disruption_to_navitia(disruption)
         return marshal({'disruption': disruption}, one_disruption_fields), 200
 
