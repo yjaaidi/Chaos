@@ -66,15 +66,7 @@ Feature: Update property
         """
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
-        And the field "message" should be "Bad Request"
-        # TODO: If the post data is empty the message should be :
-        # And the field "error.message" should be "None is not of type 'object'"
-        # But, the request.get_json() method bypass json validation with a
-        # 400 error and the message is:
-        # {
-        #     "message": "Bad Request",
-        #     "status": 400
-        # }
+        And the field "error.message" should be "None is not of type 'object'"
 
 
     Scenario: we cannot update a property without 'key' and 'type' in data
