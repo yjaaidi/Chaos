@@ -1,21 +1,21 @@
-#URI for postgresql
+# URI for postgresql
 # postgresql://<user>:<password>@<host>:<port>/<dbname>
-#http://docs.sqlalchemy.org/en/rel_0_9/dialects/postgresql.html#psycopg2
+# http://docs.sqlalchemy.org/en/rel_0_9/dialects/postgresql.html#psycopg2
 SQLALCHEMY_DATABASE_URI = 'postgresql://navitia:navitia@localhost/chaos'
 
 DEBUG = True
 
 NAVITIA_URL = 'http://navitia2-ws.ctp.dev.canaltp.fr'
 
-#rabbitmq connections string: http://kombu.readthedocs.org/en/latest/userguide/connections.html#urls
-RABBITMQ_CONNECTION_STRING='pyamqp://guest:guest@localhost:5672//?heartbeat=60'
+# rabbitmq connections string: http://kombu.readthedocs.org/en/latest/userguide/connections.html#urls
+RABBITMQ_CONNECTION_STRING = 'pyamqp://guest:guest@localhost:5672//?heartbeat=60'
 
-#amqp exhange used for sending disruptions
-EXCHANGE='navitia'
+# amqp exhange used for sending disruptions
+EXCHANGE = 'navitia'
 
-ENABLE_RABBITMQ=True
+ENABLE_RABBITMQ = True
 
-#Log Level available
+# Log Level available
 # - DEBUG
 # - INFO
 # - WARN
@@ -28,7 +28,7 @@ from chaos.logging_utils import ChaosFilter
 LOGGER = {
     'version': 1,
     'disable_existing_loggers': True,
-    'formatters':{
+    'formatters': {
         'default': {
             'format': '[%(asctime)s] [%(request_id)s] [%(levelname)5s] [%(process)5s] [%(name)25s] %(message)s',
         },
@@ -51,7 +51,7 @@ LOGGER = {
             'handlers': ['default'],
             'level': 'DEBUG',
         },
-        'amqp':{
+        'amqp': {
             'level': 'DEBUG',
         },
         'sqlalchemy.engine': {

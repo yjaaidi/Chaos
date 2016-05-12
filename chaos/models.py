@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-#  Copyright (c) 2001-2014, Canal TP and/or its affiliates. All rights reserved.
+# Copyright (c) 2001-2014, Canal TP and/or its affiliates. All rights reserved.
 #
 # This file is part of Navitia,
 #     the software to build cool stuff with public transport.
@@ -39,7 +39,7 @@ from sqlalchemy import or_, and_, between
 from sqlalchemy.orm import aliased
 
 
-#force the server to use UTC time for each connection
+# force the server to use UTC time for each connection
 import sqlalchemy
 
 
@@ -104,6 +104,7 @@ ChannelTypeEnum = db.Enum(
     'facebook'
 )
 
+
 class Client(TimestampMixin, db.Model):
     __tablename__ = 'client'
     id = db.Column(UUID, primary_key=True)
@@ -123,6 +124,7 @@ class Client(TimestampMixin, db.Model):
         if not client:
             client = Client(code)
         return client
+
 
 class Contributor(TimestampMixin, db.Model):
     __tablename__ = 'contributor'
@@ -145,13 +147,17 @@ class Contributor(TimestampMixin, db.Model):
         return contributor
 
 
-associate_wording_severity = db.Table('associate_wording_severity',
-                                    db.metadata,
-                                    db.Column('wording_id', UUID, db.ForeignKey('wording.id')),
-                                    db.Column('severity_id', UUID, db.ForeignKey('severity.id')),
-                                    db.PrimaryKeyConstraint('wording_id', 'severity_id', name='wording_severity_pk')
+associate_wording_severity = db.Table(
+    'associate_wording_severity',
+    db.metadata,
+    db.Column('wording_id', UUID, db.ForeignKey('wording.id')),
+    db.Column('severity_id', UUID, db.ForeignKey('severity.id')),
+    db.PrimaryKeyConstraint(
+        'wording_id',
+        'severity_id',
+        name='wording_severity_pk'
+    )
 )
-
 
 
 class Severity(TimestampMixin, db.Model):
@@ -161,12 +167,16 @@ class Severity(TimestampMixin, db.Model):
     id = db.Column(UUID, primary_key=True)
     wording = db.Column(db.Text, unique=False, nullable=False)
     color = db.Column(db.Text, unique=False, nullable=True)
-    is_visible = db.Column(db.Boolean, unique=False, nullable=False, default=True)
+    is_visible = db.Column(
+        db.Boolean, unique=False, nullable=False, default=True
+    )
     priority = db.Column(db.Integer, unique=False, nullable=True)
     effect = db.Column(SeverityEffect, nullable=True)
     client_id = db.Column(UUID, db.ForeignKey(Client.id), nullable=False)
     client = db.relationship('Client', backref='severity', lazy='joined')
-    wordings = db.relationship("Wording", secondary=associate_wording_severity, backref="severities")
+    wordings = db.relationship(
+        "Wording", secondary=associate_wording_severity, backref="severities"
+    )
 
     def delete_wordings(self):
         index = len(self.wordings) - 1
@@ -185,11 +195,18 @@ class Severity(TimestampMixin, db.Model):
 
     @classmethod
     def all(cls, client_id):
-        return cls.query.filter_by(client_id=client_id, is_visible=True).order_by(cls.priority).all()
+        return cls.query.filter_by(
+            client_id=client_id,
+            is_visible=True
+        ).order_by(cls.priority).all()
 
     @classmethod
     def get(cls, id, client_id):
-        return cls.query.filter_by(id=id, client_id=client_id, is_visible=True).first_or_404()
+        return cls.query.filter_by(
+            id=id,
+            client_id=client_id,
+            is_visible=True
+        ).first_or_404()
 
 
 class Category(TimestampMixin, db.Model):
@@ -199,10 +216,14 @@ class Category(TimestampMixin, db.Model):
     __tablename__ = 'category'
     id = db.Column(UUID, primary_key=True)
     name = db.Column(db.Text, unique=False, nullable=False)
-    is_visible = db.Column(db.Boolean, unique=False, nullable=False, default=True)
+    is_visible = db.Column(
+        db.Boolean, unique=False, nullable=False, default=True
+    )
     client_id = db.Column(UUID, db.ForeignKey(Client.id), nullable=False)
     client = db.relationship('Client', backref='categories', lazy='joined')
-    __table_args__ = (db.UniqueConstraint('name', 'client_id', name='category_name_client_id_key'),)
+    __table_args__ = (db.UniqueConstraint(
+        'name', 'client_id', name='category_name_client_id_key'
+    ),)
 
     def __init__(self):
         self.id = str(uuid.uuid1())
@@ -212,15 +233,26 @@ class Category(TimestampMixin, db.Model):
 
     @classmethod
     def all(cls, client_id):
-        return cls.query.filter_by(client_id=client_id,is_visible=True).order_by(cls.name).all()
+        return cls.query.filter_by(
+            client_id=client_id,
+            is_visible=True
+        ).order_by(cls.name).all()
 
     @classmethod
     def get(cls, id, client_id):
-        return cls.query.filter_by(id=id, client_id=client_id, is_visible=True).first_or_404()
+        return cls.query.filter_by(
+            id=id,
+            client_id=client_id,
+            is_visible=True
+        ).first_or_404()
 
     @classmethod
     def get_archived_by_name(cls, name, client_id):
-        return cls.query.filter_by(name=name, client_id=client_id, is_visible=False).first()
+        return cls.query.filter_by(
+            name=name,
+            client_id=client_id,
+            is_visible=False
+        ).first()
 
 
 class Wording(TimestampMixin, db.Model):
@@ -237,11 +269,12 @@ class Wording(TimestampMixin, db.Model):
     def __repr__(self):
         return '<Wording %r>' % self.id
 
-associate_wording_cause = db.Table('associate_wording_cause',
-                                    db.metadata,
-                                    db.Column('wording_id', UUID, db.ForeignKey('wording.id')),
-                                    db.Column('cause_id', UUID, db.ForeignKey('cause.id')),
-                                    db.PrimaryKeyConstraint('wording_id', 'cause_id', name='wording_cause_pk')
+associate_wording_cause = db.Table(
+    'associate_wording_cause',
+    db.metadata,
+    db.Column('wording_id', UUID, db.ForeignKey('wording.id')),
+    db.Column('cause_id', UUID, db.ForeignKey('cause.id')),
+    db.PrimaryKeyConstraint('wording_id', 'cause_id', name='wording_cause_pk')
 )
 
 
@@ -290,11 +323,16 @@ class Cause(TimestampMixin, db.Model):
             db.session.delete(wording)
             index -= 1
 
-associate_disruption_tag = db.Table('associate_disruption_tag',
-                                    db.metadata,
-                                    db.Column('tag_id', UUID, db.ForeignKey('tag.id')),
-                                    db.Column('disruption_id', UUID, db.ForeignKey('disruption.id')),
-                                    db.PrimaryKeyConstraint('tag_id', 'disruption_id', name='tag_disruption_pk')
+associate_disruption_tag = db.Table(
+    'associate_disruption_tag',
+    db.metadata,
+    db.Column('tag_id', UUID, db.ForeignKey('tag.id')),
+    db.Column('disruption_id', UUID, db.ForeignKey('disruption.id')),
+    db.PrimaryKeyConstraint(
+        'tag_id',
+        'disruption_id',
+        name='tag_disruption_pk'
+    )
 )
 
 
@@ -329,11 +367,16 @@ class Tag(TimestampMixin, db.Model):
         return cls.query.filter_by(name=name, client_id=client_id, is_visible=False).first()
 
 
-associate_disruption_pt_object = db.Table('associate_disruption_pt_object',
-                                          db.metadata,
-                                          db.Column('disruption_id', UUID, db.ForeignKey('disruption.id')),
-                                          db.Column('pt_object_id', UUID, db.ForeignKey('pt_object.id')),
-                                          db.PrimaryKeyConstraint('disruption_id', 'pt_object_id', name='disruption_pt_object_pk')
+associate_disruption_pt_object = db.Table(
+    'associate_disruption_pt_object',
+    db.metadata,
+    db.Column('disruption_id', UUID, db.ForeignKey('disruption.id')),
+    db.Column('pt_object_id', UUID, db.ForeignKey('pt_object.id')),
+    db.PrimaryKeyConstraint(
+        'disruption_id',
+        'pt_object_id',
+        name='disruption_pt_object_pk'
+    )
 )
 
 
@@ -510,11 +553,17 @@ class Disruption(TimestampMixin, db.Model):
         if self.start_publication_date > current_time:
             return "coming"
 
-associate_impact_pt_object = db.Table('associate_impact_pt_object',
-                                      db.metadata,
-                                      db.Column('impact_id', UUID, db.ForeignKey('impact.id')),
-                                      db.Column('pt_object_id', UUID, db.ForeignKey('pt_object.id')),
-                                      db.PrimaryKeyConstraint('impact_id', 'pt_object_id', name='impact_pt_object_pk')
+
+associate_impact_pt_object = db.Table(
+    'associate_impact_pt_object',
+    db.metadata,
+    db.Column('impact_id', UUID, db.ForeignKey('impact.id')),
+    db.Column('pt_object_id', UUID, db.ForeignKey('pt_object.id')),
+    db.PrimaryKeyConstraint(
+        'impact_id',
+        'pt_object_id',
+        name='impact_pt_object_pk'
+    )
 )
 
 
@@ -691,18 +740,29 @@ class Impact(TimestampMixin, db.Model):
         return query.all()
 
 
-associate_line_section_route_object = db.Table('associate_line_section_route_object',
-                                      db.metadata,
-                                      db.Column('line_section_id', UUID, db.ForeignKey('line_section.id')),
-                                      db.Column('route_object_id', UUID, db.ForeignKey('pt_object.id')),
-                                      db.PrimaryKeyConstraint('line_section_id', 'route_object_id', name='line_section_route_object_pk')
+associate_line_section_route_object = db.Table(
+    'associate_line_section_route_object',
+    db.metadata,
+    db.Column('line_section_id', UUID, db.ForeignKey('line_section.id')),
+    db.Column('route_object_id', UUID, db.ForeignKey('pt_object.id')),
+    db.PrimaryKeyConstraint(
+        'line_section_id',
+        'route_object_id',
+        name='line_section_route_object_pk'
+    )
 )
 
-associate_line_section_via_object = db.Table('associate_line_section_via_object',
-                                      db.metadata,
-                                      db.Column('line_section_id', UUID, db.ForeignKey('line_section.id')),
-                                      db.Column('stop_area_object_id', UUID, db.ForeignKey('pt_object.id')),
-                                      db.PrimaryKeyConstraint('line_section_id', 'stop_area_object_id', name='line_section_stop_area_object_pk')
+
+associate_line_section_via_object = db.Table(
+    'associate_line_section_via_object',
+    db.metadata,
+    db.Column('line_section_id', UUID, db.ForeignKey('line_section.id')),
+    db.Column('stop_area_object_id', UUID, db.ForeignKey('pt_object.id')),
+    db.PrimaryKeyConstraint(
+        'line_section_id',
+        'stop_area_object_id',
+        name='line_section_stop_area_object_pk'
+    )
 )
 
 
@@ -738,6 +798,7 @@ class PTobject(TimestampMixin, db.Model):
     @classmethod
     def get_pt_object_by_uri(cls, uri):
         return cls.query.filter_by(uri=uri).first()
+
 
 class ApplicationPeriods(TimestampMixin, db.Model):
     """
@@ -826,12 +887,17 @@ class Message(TimestampMixin, db.Model):
     def get(cls, id):
         return cls.query.filter_by(id=id).first_or_404()
 
-associate_wording_line_section = db.Table('associate_wording_line_section',
-                                    db.metadata,
-                                    db.Column('wording_id', UUID, db.ForeignKey('wording.id')),
-                                    db.Column('line_section_id', UUID, db.ForeignKey('line_section.id')),
-                                    db.PrimaryKeyConstraint('wording_id', 'line_section_id',
-                                                            name='wording_line_section_pk')
+
+associate_wording_line_section = db.Table(
+    'associate_wording_line_section',
+    db.metadata,
+    db.Column('wording_id', UUID, db.ForeignKey('wording.id')),
+    db.Column('line_section_id', UUID, db.ForeignKey('line_section.id')),
+    db.PrimaryKeyConstraint(
+        'wording_id',
+        'line_section_id',
+        name='wording_line_section_pk'
+    )
 )
 
 

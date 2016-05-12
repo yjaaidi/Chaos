@@ -70,7 +70,7 @@ class Navitia(object):
             return requests.get(query, auth=(self.token, None), timeout=self.timeout)
         except (requests.exceptions.RequestException):
             logging.getLogger(__name__).exception('call to navitia failed')
-            #currently we reraise the previous exceptions
+            # currently we reraise the previous exceptions
             raise exceptions.NavitiaError('call to navitia failed, data : {}'.format(query))
 
     def get_pt_object(self, uri, object_type, pt_objects=None):
@@ -78,7 +78,7 @@ class Navitia(object):
             query = self.query_formater(uri, object_type, pt_objects)
         except exceptions.ObjectTypeUnknown:
             raise
-        
+
         if not query:
             return None
 

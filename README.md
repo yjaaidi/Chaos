@@ -8,9 +8,9 @@ Installation instructions can be followed from [http://confluence.canaltp.fr/dis
 
 ### Python & Protobuf
 
-Install [`pip`](https://pip.pypa.io/en/latest/installing/) and [`virtualenv`](http://virtualenv.readthedocs.org/en/latest/installation.html)
+1) Install [`pip`](https://pip.pypa.io/en/latest/installing/) and [`virtualenv`](http://virtualenv.readthedocs.org/en/latest/installation.html)
 
-Install Python dependencies
+2) Install Python dependencies
 
 ```
 virtualenv venv
@@ -30,10 +30,39 @@ You need to compile `protobuf` files before using chaos:
 
 Provisioning instructions can be followed from [provisioning/PROVISIONING.md](provisioning/PROVISIONING.md)
 
+## Optional: Honcho
+
+You can run all the tests using honcho so you can install it this way:
+
+```
+pip install honcho
+```
+
+## Export CHAOS_CONFIG_FILE
+
+In order to allow database upgrade with honcho, you have to set the path to the default configuration file in an env var.
+For example:
+
+```
+export CHAOS_CONFIG_FILE=./default_settings.py
+```
+
+Or you can create a `.env` file with this line:
+
+```
+CHAOS_CONFIG_FILE=default_settings.py
+```
+
 ## Update database
+
+```
 source venv/bin/activate
 honcho run ./manage.py db upgrade
+```
 
 ## Change schema database
+
+```
 source venv/bin/activate
 honcho run ./manage.py db migrate
+```

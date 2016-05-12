@@ -37,7 +37,11 @@ class Datetime(object):
 
     def __call__(self, item, field, value):
         if value:
-            setattr(item, self.attribute, parse_datetime(value).replace(tzinfo=None))
+            setattr(
+                item,
+                self.attribute,
+                parse_datetime(value).replace(tzinfo=None)
+            )
         else:
             setattr(item, self.attribute, None)
 
@@ -48,7 +52,11 @@ class Time(object):
 
     def __call__(self, item, field, value):
         if value:
-            setattr(item, self.attribute, parse_time(value).replace(tzinfo=None))
+            setattr(
+                item,
+                self.attribute,
+                parse_time(value).replace(tzinfo=None)
+            )
         else:
             setattr(item, self.attribute, None)
 

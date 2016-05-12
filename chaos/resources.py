@@ -66,8 +66,6 @@ class Index(flask_restful.Resource):
             "status": {"href": url_for('status', _external=True)},
             "traffic_reports": {"href": url_for('trafficreport', _external=True)},
             "properties": {"href": url_for('property', _external=True)}
-
-
         }
         return response, 200
 
@@ -91,7 +89,7 @@ class Severity(flask_restful.Resource):
             validate(json, severity_input_format)
         except ValidationError, e:
             logging.debug(str(e))
-            #TODO: generate good error messages
+            # TODO: generate good error messages
             return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 400
 
@@ -119,7 +117,7 @@ class Severity(flask_restful.Resource):
             validate(json, severity_input_format)
         except ValidationError, e:
             logging.debug(str(e))
-            #TODO: generate good error messages
+            # TODO: generate good error messages
             return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 400
 
@@ -174,8 +172,10 @@ class Disruptions(flask_restful.Resource):
     def get(self, contributor, navitia, id=None):
         self.navitia = navitia
         if id:
-            return marshal({'disruption': models.Disruption.get(id, contributor.id)},
-                           one_disruption_fields)
+            return marshal(
+                {'disruption': models.Disruption.get(id, contributor.id)},
+                one_disruption_fields
+            )
         else:
             args = self.parsers['get'].parse_args()
             page_index = args['start_page']
@@ -213,26 +213,26 @@ class Disruptions(flask_restful.Resource):
             validate(json, disruptions_input_format)
         except ValidationError, e:
             logging.debug(str(e))
-            #TODO: generate good error messages
+            # TODO: generate good error messages
             return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 400
         disruption = models.Disruption()
         mapper.fill_from_json(disruption, json, mapper.disruption_mapping)
 
-        #Use contributor_code present in the json to get contributor_id
+        # Use contributor_code present in the json to get contributor_id
         if 'contributor' in json:
             disruption.contributor = models.Contributor.get_or_create(json['contributor'])
         disruption.client = client
 
-        #Add localization present in Json
+        # Add localization present in Json
         try:
             db_helper.manage_pt_object_without_line_section(self.navitia, disruption.localizations, 'localization', json)
         except exceptions.ObjectUnknown, e:
             return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 404
 
-        #Add all tags present in Json
+        # Add all tags present in Json
         db_helper.manage_tags(disruption, json)
-        #Add all impacts present in Json
+        # Add all impacts present in Json
         try:
             db_helper.manage_impacts(disruption, json, self.navitia)
         except exceptions.ObjectUnknown, e:
@@ -279,20 +279,20 @@ class Disruptions(flask_restful.Resource):
 
         mapper.fill_from_json(disruption, json, mapper.disruption_mapping)
 
-        #Use contributor_code present in the json to get contributor_id
+        # Use contributor_code present in the json to get contributor_id
         if 'contributor' in json:
             disruption.contributor = models.Contributor.get_or_create(json['contributor'])
 
-        #Add localization present in Json
+        # Add localization present in Json
         try:
             db_helper.manage_pt_object_without_line_section(self.navitia, disruption.localizations, 'localization', json)
         except exceptions.ObjectUnknown, e:
             return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 404
 
-        #Add/delete tags present/ not present in Json
+        # Add/delete tags present/ not present in Json
         db_helper.manage_tags(disruption, json)
 
-        #Add all impacts present in Json
+        # Add all impacts present in Json
         try:
             db_helper.manage_impacts(disruption, json, self.navitia)
         except exceptions.ObjectUnknown, e:
@@ -341,8 +341,11 @@ class Cause(flask_restful.Resource):
         self.parsers = {}
         self.parsers["get"] = reqparse.RequestParser()
         parser_get = self.parsers["get"]
-        parser_get.add_argument("category",
-                                type=utils.get_uuid)
+        parser_get.add_argument(
+            "category",
+            type=utils.get_uuid
+        )
+
     @validate_client()
     @validate_id()
     def get(self, client, id=None):
@@ -363,7 +366,7 @@ class Cause(flask_restful.Resource):
             validate(json, cause_input_format)
         except ValidationError, e:
             logging.debug(str(e))
-            #TODO: generate good error messages
+            # TODO: generate good error messages
             return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 400
 
@@ -390,7 +393,7 @@ class Cause(flask_restful.Resource):
             validate(json, cause_input_format)
         except ValidationError, e:
             logging.debug(str(e))
-            #TODO: generate good error messages
+            # TODO: generate good error messages
             return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 400
 
@@ -432,11 +435,11 @@ class Tag(flask_restful.Resource):
             validate(json, tag_input_format)
         except ValidationError, e:
             logging.debug(str(e))
-            #TODO: generate good error messages
+            # TODO: generate good error messages
             return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 400
 
-        #if an archived tag exists with same name use the same instead of creating a new one.
+        # if an archived tag exists with same name use the same instead of creating a new one.
         archived_tag = models.Tag.get_archived_by_name(json['name'], client.id)
         if archived_tag:
             tag = archived_tag
@@ -467,7 +470,7 @@ class Tag(flask_restful.Resource):
             validate(json, tag_input_format)
         except ValidationError, e:
             logging.debug(str(e))
-            #TODO: generate good error messages
+            # TODO: generate good error messages
             return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 400
 
@@ -509,11 +512,11 @@ class Category(flask_restful.Resource):
             validate(json, category_input_format)
         except ValidationError, e:
             logging.debug(str(e))
-            #TODO: generate good error messages
+            # TODO: generate good error messages
             return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 400
 
-        #if an archived category exists with same name use the same instead of creating a new one.
+        # if an archived category exists with same name use the same instead of creating a new one.
         archived_category = models.Category.get_archived_by_name(json['name'], client.id)
         if archived_category:
             category = archived_category
@@ -543,7 +546,7 @@ class Category(flask_restful.Resource):
             validate(json, category_input_format)
         except ValidationError, e:
             logging.debug(str(e))
-            #TODO: generate good error messages
+            # TODO: generate good error messages
             return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 400
 
@@ -596,6 +599,7 @@ class ImpactsByObject(flask_restful.Resource):
         impacts = models.Impact.all_with_filter(start_date, end_date, pt_object_type, uris, contributor.id)
         result = utils.group_impacts_by_pt_object(impacts, pt_object_type, uris, self.navitia.get_pt_object)
         return marshal({'objects': result}, impacts_by_object_fields)
+
 
 class Impacts(flask_restful.Resource):
     def __init__(self):
@@ -652,7 +656,7 @@ class Impacts(flask_restful.Resource):
             validate(json, impact_input_format)
         except ValidationError, e:
             logging.debug(str(e))
-            #TODO: generate good error messages
+            # TODO: generate good error messages
             return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 400
 
@@ -684,7 +688,7 @@ class Impacts(flask_restful.Resource):
             validate(json, impact_input_format)
         except ValidationError, e:
             logging.debug(str(e))
-            #TODO: generate good error messages
+            # TODO: generate good error messages
             return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 400
 
@@ -733,7 +737,7 @@ class Channel(flask_restful.Resource):
             validate(json, channel_input_format)
         except ValidationError, e:
             logging.debug(str(e))
-            #TODO: generate good error messages
+            # TODO: generate good error messages
             return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 400
 
@@ -760,7 +764,7 @@ class Channel(flask_restful.Resource):
             validate(json, channel_input_format)
         except ValidationError, e:
             logging.debug(str(e))
-            #TODO: generate good error messages
+            # TODO: generate good error messages
             return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 400
 
@@ -789,11 +793,13 @@ class ChannelType(flask_restful.Resource):
 
 class Status(flask_restful.Resource):
     def get(self):
-        return {'version': chaos.VERSION,
-                'db_pool_status': db.engine.pool.status(),
-                'db_version': db.engine.scalar('select version_num from alembic_version;'),
-                'navitia_url': current_app.config['NAVITIA_URL'],
-                'rabbitmq_info': publisher.info()}, 200
+        return {
+            'version': chaos.VERSION,
+            'db_pool_status': db.engine.pool.status(),
+            'db_version': db.engine.scalar('select version_num from alembic_version;'),
+            'navitia_url': current_app.config['NAVITIA_URL'],
+            'rabbitmq_info': publisher.info()
+        }, 200
 
 
 class TrafficReport(flask_restful.Resource):
@@ -813,8 +819,13 @@ class TrafficReport(flask_restful.Resource):
         g.current_time = args['current_time']
         impacts = models.Impact.traffic_report_filter(contributor.id)
         result = utils.get_traffic_report_objects(impacts, self.navitia)
-        return marshal({'traffic_reports': [value for key, value in result["traffic_report"].items()],
-                        "disruptions": result["impacts_used"]}, traffic_reports_marshaler), 200
+        return marshal(
+            {
+                'traffic_reports': [value for key, value in result["traffic_report"].items()],
+                'disruptions': result["impacts_used"]
+            },
+            traffic_reports_marshaler
+        ), 200
 
 
 class Property(flask_restful.Resource):
