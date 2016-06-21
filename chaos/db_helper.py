@@ -242,6 +242,7 @@ def create_or_update_impact(disruption, json_impact, navitia, impact_id=None):
     if impact_id:
         # impact exist in database
         impact_bd = models.Impact.get(impact_id, disruption.contributor.id)
+        impact_bd.upgrade_version()
     else:
         impact_bd = models.Impact()
         impact_bd.severity = models.Severity.get(json_impact['severity']['id'], disruption.client.id)
