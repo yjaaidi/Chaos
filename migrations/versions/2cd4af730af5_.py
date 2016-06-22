@@ -1,4 +1,4 @@
-"""empty message
+""" Add version column in impact
 
 Revision ID: 2cd4af730af5
 Revises: 484225f46268
