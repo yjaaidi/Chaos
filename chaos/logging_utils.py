@@ -37,6 +37,6 @@ class ChaosFilter(logging.Filter):
         try:
             record.request_id = request.id
         except RuntimeError:
-            #if we are outside of a application context
+            # if we are outside of a application context
             record.request_id = None
         return True

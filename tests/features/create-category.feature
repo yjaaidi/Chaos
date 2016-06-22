@@ -1,4 +1,4 @@
-Feature: Create cause
+Feature: Create category
 
     Scenario: we cannot create a categories without client
         When I post to "/categories"

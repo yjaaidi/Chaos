@@ -42,12 +42,13 @@ Return all visible disruptions.
 
 | Name                 | description                                                                    | required | default                 |
 | -------------------- | ------------------------------------------------------------------------------ | -------- | ----------------------- |
-| start_page          | index of the first element returned (start at 1)                               | false    | 1                       |
+| start_page           | index of the first element returned (start at 1)                               | false    | 1                       |
 | items_per_page       | number of items per page                                                       | false    | 20                      |
 | publication_status[] | filter by publication_status, possible value are: past, ongoing, coming        | false    | [past, ongoing, coming] |
 | current_time         | parameter for settings the use by this request, mostly for debugging purpose   | false    | NOW                     |
 | tag[]                | filter by tag (id of tag)                                                      | false    |                         |
 | uri                  | filter by uri of ptobject                                                      | false    |                         |
+| status[]             | filter by status                                                               | false    | [published, draft]      |
 
 @TODO: search and sort
 
@@ -136,7 +137,7 @@ Return all visible disruptions.
                             "wordings": [{"key": "msg", "value": "accident voyageur"}],
                             "category": {"id": "32b07ff8-10e0-11e4-ae39-d4bed99855be", "name": "category-1"}
                         },
-                        tags": [
+                        "tags": [
                             {
                                 "created_at": "2014-07-30T07:11:08Z",
                                 "id": "ad9d80ce-17b8-11e4-a553-d4bed99855be",
@@ -147,6 +148,23 @@ Return all visible disruptions.
                                 "updated_at": null
                             }
                         ],
+                        "properties": {
+                            "comment": [
+                                {
+                                    "property": {
+                                        "created_at": "2014-04-12T12:49:58Z",
+                                        "id": "10216aec-00ad-11e6-9f6d-0050568c8382",
+                                        "key": "special",
+                                        "self": {
+                                            "href": "http://127.0.0.1:5000/properties/10216aec-00ad-11e6-9f6d-0050568c8382"
+                                        },
+                                        "type": "comment",
+                                        "updated_at": "2014-04-12T13:00:57Z"
+                                    },
+                                    "value": "This is a very nice comment !"
+                                }
+                            ]
+                        },
                         "localization": [],
                         "publication_period" : {
                             "begin": "2014-04-31T17:00:00Z",
@@ -247,6 +265,7 @@ Create one valid disruption with impacts
                 "reference": "foo",
                 "note": null,
                 "contributor": "shortterm.tn",
+                "status": "published",
                 "cause": {
                        "id": "3d1f34b2-e8df-1ae3-8c3e-0008ca8657ea"
                 },
@@ -309,6 +328,12 @@ Create one valid disruption with impacts
                         ]
                         "send_notifications": true,
                     }
+                ],
+                "properties": [
+                    {
+                        "property_id": "10216aec-00ad-11e6-9f6d-0050568c8382",
+                        "value": "This is a very nice comment !"
+                    }
                 ]
             }
 
@@ -335,7 +360,7 @@ Create one valid disruption with impacts
                         "wordings": [{"key": "msg", "value": "accident voyageur"}],
                         "category": {"id": "32b07ff8-10e0-11e4-ae39-d4bed99855be", "name": "category-1"}
                     },
-                    tags": [
+                    "tags": [
                         {
                             "created_at": "2014-07-30T07:11:08Z",
                             "id": "ad9d80ce-17b8-11e4-a553-d4bed99855be",
@@ -345,7 +370,7 @@ Create one valid disruption with impacts
                             },
                             "updated_at": null
                         }
-                    ]
+                    ],
                     "localization": [
                         {
                             "id": "stop_area:RTP:SA:3786125",
@@ -380,6 +405,23 @@ Create one valid disruption with impacts
                             "first": {"href": "https://chaos.apiary-mock.com/disruptions/1/impacts?start_page=1&item_per_page=20"},
                             "last": null
                         }
+                    },
+                    "properties": {
+                        "comment": [
+                            {
+                                "property": {
+                                    "created_at": "2014-04-12T12:49:58Z",
+                                    "id": "10216aec-00ad-11e6-9f6d-0050568c8382",
+                                    "key": "special",
+                                    "self": {
+                                        "href": "http://127.0.0.1:5000/properties/10216aec-00ad-11e6-9f6d-0050568c8382"
+                                    },
+                                    "type": "comment",
+                                    "updated_at": "2014-04-12T13:00:57Z"
+                                },
+                                "value": "This is a very nice comment !"
+                            }
+                        ]
                     }
                 },
                 "meta": {}
@@ -500,7 +542,11 @@ Retrieve one existing disruption:
                 "cause": {
                     "id": "3d1f32b2-e8df-11e3-8c3e-0008ca86c7ea"
                 },
-                "tags":[{"id": "ad9d80ce-17b8-11e4-a553-d4bed99855be"}],
+                "tags": [
+                    {
+                        "id": "ad9d80ce-17b8-11e4-a553-d4bed99855be"
+                    }
+                ],
                 "localization": [
                     {
                         "id": "stop_area:RTP:SA:3786125",
@@ -515,12 +561,38 @@ Retrieve one existing disruption:
                     "begin": "2014-04-31T17:00:00Z",
                     "end": null
                 },
-                "impacts":[{ "severity": {"id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657ea"},
-                             "application_periods": [{"begin": "2014-04-31T16:52:00Z","end": "2014-05-22T02:15:00Z"}]
-                          },{ "id":"7ffab230-3d48-4eea-aa2c-22f8680230b6", "severity": {"id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657ea"},
-                             "application_periods": [{"begin": "2014-04-31T16:52:00Z","end": "2014-05-22T02:15:00Z"}],
-                             "send_notifications": true
-                          }]
+                "impacts": [
+                    {
+                        "severity": {
+                            "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657ea"
+                        },
+                        "application_periods": [
+                            {
+                                "begin": "2014-04-31T16:52:00Z",
+                                "end": "2014-05-22T02:15:00Z"
+                            }
+                        ]
+                    },
+                    {
+                        "id":"7ffab230-3d48-4eea-aa2c-22f8680230b6",
+                        "severity": {
+                            "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657ea"
+                        },
+                        "application_periods": [
+                            {
+                                "begin": "2014-04-31T16:52:00Z",
+                                "end": "2014-05-22T02:15:00Z"
+                            }
+                        ],
+                        "send_notifications": true
+                    }
+                ],
+                "properties": [
+                    {
+                        "property_id": "10216aec-00ad-11e6-9f6d-0050568c8382",
+                        "value": "This is a very nice comment !"
+                    }
+                ]
             }
 
 
@@ -545,7 +617,7 @@ Retrieve one existing disruption:
                         "wordings": [{"key": "msg", "value": "accident voyageur"}],
                         "category": {"id": "32b07ff8-10e0-11e4-ae39-d4bed99855be", "name": "category-1"}
                     },
-                    tags": [
+                    "tags": [
                         {
                             "created_at": "2014-07-30T07:11:08Z",
                             "id": "ad9d80ce-17b8-11e4-a553-d4bed99855be",
@@ -590,6 +662,23 @@ Retrieve one existing disruption:
                             "first": {"href": "https://ogv2ws.apiary-mock.com/disruptions/1/impacts?start_page=1&item_per_page=20"},
                             "last": {"href": "https://ogv2ws.apiary-mock.com/disruptions/1/impacts?start_page=1&item_per_page=20"}
                         }
+                    },
+                    "properties": {
+                        "comment": [
+                            {
+                                "property": {
+                                    "created_at": "2014-04-12T12:49:58Z",
+                                    "id": "10216aec-00ad-11e6-9f6d-0050568c8382",
+                                    "key": "special",
+                                    "self": {
+                                        "href": "http://127.0.0.1:5000/properties/10216aec-00ad-11e6-9f6d-0050568c8382"
+                                    },
+                                    "type": "comment",
+                                    "updated_at": "2014-04-12T13:00:57Z"
+                                },
+                                "value": "This is a very nice comment !"
+                            }
+                        ]
                     }
                 },
                 "meta": {}
@@ -604,6 +693,40 @@ Retrieve one existing disruption:
                 },
                 "meta": {}
             }
+
+You can pass the status in the request in order to update it:
+
+### Request
+
+    Method
+            PUT
+    Uri
+            /disruptions/7ffab230-3d48-4eea-aa2c-22f8680230b6
+    Headers
+            X-Customer-Id: [customer id]
+            X-Coverage: jdr
+            Authorization: d5b0148c-36f4-443c-9818-1f2f74a00be0
+            X-Contributors: contributor
+    Body
+        {
+            "reference": "foo",
+            "contributor": "contributor",
+            "cause": {
+                "id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"
+            },
+            "status": "draft"
+        }
+
+But you can't make a 'published' disruption going back to 'draft' status:
+
+### Response 409 CONFLICT (application/json)
+
+    Body
+        {
+            "error": {
+                "message": "The current disruption is already published and cannot get back to the 'draft' status."
+            }
+        }
 
 ##Delete a disruption [DELETE]
 Archive one disruption.
@@ -2270,7 +2393,306 @@ Archive a category.
                 "meta": {}
             }
 
+# Properties
 
+## Retrieve the list of all properties
+
+### Request
+
+    Method
+            GET
+    Uri
+            /properties
+    Available arguments for filtering
+            type, key
+    Headers
+            X-Customer-Id: [customer id]
+
+### Response 200 OK (application/json)
+
+    Body
+            {
+                "properties": [
+                    {
+                        "created_at": "2016-04-12T12:00:00Z",
+                        "id": "10216aec-00ad-11e6-9f6d-0050568c8380",
+                        "key": "almost-special",
+                        "self": {
+                            "href": "http://127.0.0.1:5000/properties/10216aec-00ad-11e6-9f6d-0050568c8380"
+                        },
+                        "type": "not_a_comment",
+                        "updated_at": "2016-04-12T13:00:00Z"
+                    },
+                    {
+                        "created_at": "2016-04-12T12:01:00Z",
+                        "id": "10216aec-00ad-11e6-9f6d-0050568c8382",
+                        "key": "special",
+                        "self": {
+                            "href": "http://127.0.0.1:5000/properties/10216aec-00ad-11e6-9f6d-0050568c8382"
+                        },
+                        "type": "comment",
+                        "updated_at": "2016-04-12T13:01:00Z"
+                    }
+                ]
+            }
+
+## Retrieve one property by id
+
+### Request
+
+    Method
+            GET
+    Uri
+            /properties/10216aec-00ad-11e6-9f6d-0050568c8382
+    Headers
+            X-Customer-Id: [customer id]
+
+### Response 200 OK (application/json)
+
+    Body
+            {
+                "property": {
+                    "created_at": "2016-04-12T12:01:00Z",
+                    "id": "10216aec-00ad-11e6-9f6d-0050568c8382",
+                    "key": "special",
+                    "self": {
+                        "href": "http://127.0.0.1:5000/properties/10216aec-00ad-11e6-9f6d-0050568c8382"
+                    },
+                    "type": "comment",
+                    "updated_at": "2016-04-12T13:01:00Z"
+                }
+            }
+
+### Request
+
+    Method
+            GET
+    Uri
+            /properties/10216aec-00ad-11e6-9f6d-0050568c8381
+    Headers
+            X-Customer-Id: [customer id]
+
+### Response 404 NOT FOUND (application/json)
+
+    Body
+            {
+                "error": {
+                    "message": "Property 10216aec-00ad-11e6-9f6d-0050568c8381 not found""
+                }
+            }
+
+## Create a property
+
+### Request
+
+    Method
+            POST
+    Uri
+            /properties
+    Headers
+            Content-Type: application/json
+            X-Customer-Id: [customer id]
+    Body
+            {
+                "key": "really-special",
+                "type": "comment"
+            }
+
+### Response 201 CREATED (application/json)
+
+    Body
+            {
+                "property": {
+                    "created_at": "2016-04-12T14:00:00Z",
+                    "id": "10216aec-00ad-11e6-9f6d-0050568c8383",
+                    "key": "really-special",
+                    "self": {
+                        "href": "http://127.0.0.1:5000/properties/10216aec-00ad-11e6-9f6d-0050568c8383"
+                    },
+                    "type": "comment"
+                }
+            }
+
+If a property with the same attributes 'key' and 'type' already exists in database:
+
+### Request
+
+    Method
+            POST
+    Uri
+            /properties
+    Headers
+            Content-Type: application/json
+            X-Customer-Id: [customer id]
+    Body
+            {
+                "key": "special",
+                "type": "comment"
+            }
+
+### Response 409 CONFLICT (application/json)
+
+    Body
+            {
+                "error": {
+                    "message": "(IntegrityError) duplicate key value violates unique constraint \"property_type_key_client_id_uc\"\nDETAIL:  Key (type, key, client_id)=(comment, special, 9dbf2fa4-86d0-11e4-b461-f01faf2a7e2a) already exists.\n"
+                }
+            }
+
+### Request
+
+    Method
+            POST
+    Uri
+            /properties
+    Headers
+            Content-Type: application/json
+            X-Customer-Id: [customer id]
+    Body
+            {
+                "type": "comment"
+            }
+
+### Response 400 BAD REQUEST (application/json)
+
+    Body
+            {
+                "error": {
+                    "message": "'key' is a required property"
+                }
+            }
+
+## Update a property
+
+### Request
+
+    Method
+            PUT
+    Uri
+            /properties/10216aec-00ad-11e6-9f6d-0050568c8382
+    Headers
+            Content-Type: application/json
+            X-Customer-Id: [customer id]
+    Body
+            {
+                "key": "special",
+                "type": "datasource"
+            }
+
+### Response 200 OK (application/json)
+
+    Body
+            {
+                "property": {
+                    "created_at": "2016-04-12T12:01:00Z",
+                    "id": "10216aec-00ad-11e6-9f6d-0050568c8382",
+                    "key": "special",
+                    "self": {
+                        "href": "http://127.0.0.1:5000/properties/10216aec-00ad-11e6-9f6d-0050568c8382"
+                    },
+                    "type": "datasource",
+                    "updated_at": "2016-04-12T14:01:00Z"
+                }
+            }
+
+### Request
+
+    Method
+            PUT
+    Uri
+            /properties/10216aec-00ad-11e6-9f6d-0050568c8381
+    Headers
+            Content-Type: application/json
+            X-Customer-Id: [customer id]
+    Body
+            {
+                "key": "special",
+                "type": "datasource"
+            }
+
+### Response 404 NOT FOUND (application/json)
+
+    Body
+            {
+                "error": {
+                    "message": "Property 10216aec-00ad-11e6-9f6d-0050568c8381 not found""
+                }
+            }
+
+### Request
+
+    Method
+            PUT
+    Uri
+            /properties/10216aec-00ad-11e6-9f6d-0050568c8382
+    Headers
+            Content-Type: application/json
+            X-Customer-Id: [customer id]
+    Body
+            {
+                "type": "comment"
+            }
+
+### Response 400 BAD REQUEST (application/json)
+
+    Body
+            {
+                "error": {
+                    "message": "'key' is a required property"
+                }
+            }
+
+
+## Delete a property
+
+### Request
+
+    Method
+            DELETE
+    Uri
+            /properties/10216aec-00ad-11e6-9f6d-0050568c8382
+    Headers
+            X-Customer-Id: [customer id]
+
+### Response 204 NO CONTENT
+
+### Request
+
+    Method
+            DELETE
+    Uri
+            /properties/10216aec-00ad-11e6-9f6d-0050568c8381
+    Headers
+            X-Customer-Id: [customer id]
+
+### Response 404 NOT FOUND (application/json)
+
+    Body
+            {
+                "error": {
+                    "message": "Property 10216aec-00ad-11e6-9f6d-0050568c8381 not found""
+                }
+            }
+
+If the requested property is linked via associate_disruption_property table:
+
+### Request
+
+    Method
+            DELETE
+    Uri
+            /properties/10216aec-00ad-11e6-9f6d-0050568c8380
+    Headers
+            X-Customer-Id: [customer id]
+
+### Response 409 CONFLICT (application/json)
+
+    Body
+            {
+                "error": {
+                    "message": "The current <Property: 10216aec-00ad-11e6-9f6d-0050568c8380 comment almost_special> is linked to at least one disruption and cannot be deleted"
+                }
+            }
 
 #Traffic reports [/traffic_reports]
 

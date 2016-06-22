@@ -28,6 +28,7 @@ def test_none_field_date_time():
     class_datetime = fields.FieldDateTime(Obj())
     eq_(class_datetime.format(None), None)
 
+
 @raises(AttributeError)
 def test_field_date_time_invalid():
     class_datetime = fields.FieldDateTime(Obj())
@@ -36,7 +37,10 @@ def test_field_date_time_invalid():
 
 def test_field_date_time_valid():
     class_datetime = fields.FieldDateTime(Obj())
-    eq_(class_datetime.format(datetime(2014, 2, 10, 13, 5, 10)), '2014-02-10T13:05:10Z')
+    eq_(
+        class_datetime.format(datetime(2014, 2, 10, 13, 5, 10)),
+        '2014-02-10T13:05:10Z'
+    )
 
 
 def test_name_channel():
@@ -54,6 +58,23 @@ def test_name_disruption():
     eq_(str(disruption), "<Disruption '{}'>".format(disruption.id))
 
 
+def test_name_property():
+    property = models.Property()
+    property.key = 'key'
+    property.type = 'type'
+    eq_(str(property), "<Property: {} {} {}>".
+        format(property.id, property.type, property.key))
+
+
+def test_name_associate_disruption_property():
+    adp = models.AssociateDisruptionProperty()
+    adp.value = 'value'
+    adp.property_id = 'property_id'
+    adp.disruption_id = 'disruption_id'
+    eq_(str(adp), "<AssociateDisruptionProperty: {} {} {}>".
+        format(adp.property_id, adp.disruption_id, adp.value))
+
+
 def test_none_field_time():
     class_time = fields.FieldTime(Obj())
     eq_(class_time.format(None), None)
@@ -68,12 +89,13 @@ def test_field_time_valid():
     class_time = fields.FieldTime(Obj())
     eq_(class_time.format(time(hour=13, minute=5)), '13:05')
 
-# disruption.status : future
-'''
-application_period              2014-02-10                                  2014-03-10
-current date        2014-01-10
-'''
+
 def test_future_status_disruption():
+    '''
+        application_period              2014-02-10  2014-03-10
+        current date        2014-01-10
+        disruption.status   future
+    '''
     disruption = models.Disruption()
     disruption.start_publication_date = datetime(2014, 2, 10, 13, 5, 10)
     disruption.end_publication_date = datetime(2014, 3, 10, 13, 5, 10)
@@ -90,12 +112,12 @@ def test_future_status_disruption():
         eq_(class_time.output(None, impact), 'future')
 
 
-# disruption.status : activate
-'''
-application_period              2014-02-10                                  2014-03-10
-current date                                        2014-02-11
-'''
 def test_activate_status_disruption():
+    '''
+        application_period  2014-02-10              2014-03-10
+        current_date                    2014-02-11
+        disruption.status   activate
+    '''
     disruption = models.Disruption()
     disruption.start_publication_date = datetime(2014, 2, 10, 13, 5, 10)
     disruption.end_publication_date = datetime(2014, 3, 10, 13, 5, 10)
@@ -111,12 +133,13 @@ def test_activate_status_disruption():
         class_time = fields.ComputeDisruptionStatus(Obj())
         eq_(class_time.output(None, impact), 'active')
 
-# disruption.status : past
-'''
-application_period              2014-02-10                    2014-03-10
-current date                                                                                2014-03-11
-'''
+
 def test_past_status_disruption():
+    '''
+        application_period  2014-02-10  2014-03-10
+        current date                                2014-03-11
+        disruption.status   past
+    '''
     disruption = models.Disruption()
     disruption.start_publication_date = datetime(2014, 2, 10, 13, 5, 10)
     disruption.end_publication_date = datetime(2014, 3, 10, 13, 5, 10)
@@ -132,13 +155,14 @@ def test_past_status_disruption():
         class_time = fields.ComputeDisruptionStatus(Obj())
         eq_(class_time.output(None, impact), 'past')
 
-# disruption.status : future
-'''
-application_period              2014-02-10                   2014-03-10
-application_period                                                                  2014-03-12                014-03-15
-current date        2014-01-10
-'''
+
 def test_future_status_disruption_2_periods():
+    '''
+        application_period              2014-02-10 2014-03-10
+        application_period              2014-03-12 2014-03-15
+        current date        2014-01-10
+        disruption.status   future
+    '''
     disruption = models.Disruption()
     disruption.start_publication_date = datetime(2014, 2, 10, 13, 5, 10)
     disruption.end_publication_date = datetime(2014, 3, 16, 13, 5, 10)
@@ -162,13 +186,14 @@ def test_future_status_disruption_2_periods():
         class_time = fields.ComputeDisruptionStatus(Obj())
         eq_(class_time.output(None, impact), 'future')
 
-# disruption.status : activate
-'''
-application_period              2014-02-10                             2014-03-10
-application_period                                                                  2014-03-12                2014-03-15
-current date                                        2014-02-11
-'''
+
 def test_activate_disruption_2_periods():
+    '''
+        application_period  2014-02-10              2014-03-10
+        application_period                          2014-03-12  2014-03-15
+        current date                    2014-02-11
+        disruption.status   activate
+    '''
     disruption = models.Disruption()
     disruption.start_publication_date = datetime(2014, 2, 10, 13, 5, 10)
     disruption.end_publication_date = datetime(2014, 3, 16, 13, 5, 10)
@@ -191,13 +216,14 @@ def test_activate_disruption_2_periods():
         class_time = fields.ComputeDisruptionStatus(Obj())
         eq_(class_time.output(None, impact), 'active')
 
-# disruption.status : future
-'''
-application_period              2014-02-10                2014-03-10
-application_period                                                                    2014-03-12       014-03-15
-current date                                                            2014-03-11
-'''
+
 def test_future_disruption_2_periods():
+    '''
+        application_period  2014-02-10 2014-03-10
+        application_period                                2014-03-12 2014-03-15
+        current date                            2014-03-11
+        disruption.status   future
+    '''
     disruption = models.Disruption()
     disruption.start_publication_date = datetime(2014, 2, 10, 13, 5, 10)
     disruption.end_publication_date = datetime(2014, 3, 16, 13, 5, 10)
@@ -219,13 +245,14 @@ def test_future_disruption_2_periods():
         class_time = fields.ComputeDisruptionStatus(Obj())
         eq_(class_time.output(None, impact), 'future')
 
-# disruption.status : activate
-'''
-application_period              2014-02-10          2014-03-10
-application_period                                                    2014-03-12                    2014-03-15
-current date                                                                        2014-03-13
-'''
+
 def test_activate_disruption_2_periods_1():
+    '''
+        application_period  2014-02-10 2014-03-10
+        application_period                       2014-03-12          2014-03-15
+        current date                                       2014-03-13
+        disruption.status   activate
+    '''
     disruption = models.Disruption()
     disruption.start_publication_date = datetime(2014, 2, 10, 13, 5, 10)
     disruption.end_publication_date = datetime(2014, 3, 16, 13, 5, 10)
@@ -248,13 +275,14 @@ def test_activate_disruption_2_periods_1():
         class_time = fields.ComputeDisruptionStatus(Obj())
         eq_(class_time.output(None, impact), 'active')
 
-# disruption.status : past
-'''
-application_period          2014-02-10     2014-03-10
-application_period                                         2014-03-12        2014-03-15
-current date                                                                                2014-03-16
-'''
+
 def test_past_disruption_2_periods():
+    '''
+        application_period  2014-02-10  2014-03-10
+        application_period  2014-03-12  2014-03-15
+        current date                                2014-03-16
+        disruption.status   past
+    '''
     disruption = models.Disruption()
     disruption.start_publication_date = datetime(2014, 2, 10, 13, 5, 10)
     disruption.end_publication_date = datetime(2014, 3, 16, 13, 5, 10)

@@ -38,7 +38,7 @@ Feature: Manipulate messages in a impact
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         When I put to "/disruptions/2ffab230-3d48-4eea-aa2c-22f8680230b6/impacts/7ffab232-3d47-4eea-aa2c-22f8680230b6" with:
         """
         {"severity": {"id": "3ffab232-3d48-4eea-aa2c-22f8680230b6"}, "messages": [{"text": "message 1","channel": {"id": "4ffab230-3d48-4eea-aa2c-22f8680230b6"}}], "objects": [{"id": "network:JDR:1","type": "network"}]}
@@ -86,13 +86,13 @@ Feature: Manipulate messages in a impact
             | web    | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 4ffbb230-3d48-4eea-aa2c-21f8680230b6 | 4ffab230-3d48-4eea-aa2c-22f8680230b6 |
 
         Given I have the following messages in my database:
-            | text       |  created_at          | updated_at          | channel_id                            | id                                   |
-            | message 1  |  2014-04-02T23:52:12 | None                | 4ffab230-3d48-4eea-aa2c-22f8680230b6  | 5ffab230-3d48-4eea-aa2c-22f8680230b6 |
+            | text       |  created_at          | updated_at          | channel_id                            | id                                   | impact_id                            |
+            | message 1  |  2014-04-02T23:52:12 | None                | 4ffab230-3d48-4eea-aa2c-22f8680230b6  | 5ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab232-3d47-4eea-aa2c-22f8680230b6 |
 
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         When I put to "/disruptions/2ffab230-3d48-4eea-aa2c-22f8680230b6/impacts/7ffab232-3d47-4eea-aa2c-22f8680230b6" with:
         """
         {"severity": {"id": "3ffab232-3d48-4eea-aa2c-22f8680230b6"}, "messages": [{"text": "message 2","channel": {"id": "4ffab230-3d48-4eea-aa2c-22f8680230b6"}}], "objects": [{"id": "network:JDR:1","type": "network"}]}
@@ -147,7 +147,7 @@ Feature: Manipulate messages in a impact
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         When I put to "/disruptions/2ffab230-3d48-4eea-aa2c-22f8680230b6/impacts/7ffab232-3d47-4eea-aa2c-22f8680230b6" with:
         """
         {"severity": {"id": "3ffab232-3d48-4eea-aa2c-22f8680230b6"}, "messages": [{"text": "message 2","channel": {"id": "8ffab230-3d48-4eea-aa2c-22f8680230b6"}}, {"text": "message 1","channel": {"id": "4ffab230-3d48-4eea-aa2c-22f8680230b6"}}]}
@@ -203,7 +203,7 @@ Feature: Manipulate messages in a impact
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         When I put to "/disruptions/2ffab230-3d48-4eea-aa2c-22f8680230b6/impacts/7ffab232-3d47-4eea-aa2c-22f8680230b6" with:
         """
         {"severity": {"id": "3ffab232-3d48-4eea-aa2c-22f8680230b6"}, "messages": [{"text": "message 2","channel": {"id": "8ffab230-3d48-4eea-aa2c-22f8680230b6"}}]}

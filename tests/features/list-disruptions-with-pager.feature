@@ -22,7 +22,7 @@ Feature: list disruptions with pager
 
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         When I get "/disruptions"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
@@ -55,7 +55,7 @@ Feature: list disruptions with pager
 
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         When I get "/disruptions?start_page=1&items_per_page=2"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
@@ -92,7 +92,7 @@ Feature: list disruptions with pager
 
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         When I get "/disruptions?start_page=2&items_per_page=2"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
@@ -131,7 +131,7 @@ Feature: list disruptions with pager
 
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         When I get "/disruptions"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
@@ -172,7 +172,7 @@ Feature: list disruptions with pager
 
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         When I get "/disruptions?start_page=0&items_per_page=10"
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
@@ -202,7 +202,7 @@ Feature: list disruptions with pager
 
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "e74598a0-239b-4d9f-92e3-18cfc120672b"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         When I get "/disruptions?start_page=1&items_per_page=0"
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"

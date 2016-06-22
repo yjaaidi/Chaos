@@ -32,7 +32,7 @@ import flask_restful
 
 from chaos import app
 
-#we always want pretty json
+# we always want pretty json
 flask_restful.representations.json.settings = {'indent': 4}
 
 api = flask_restful.Api(app, catch_all_404s=True)
@@ -85,9 +85,13 @@ api.add_resource(resources.ChannelType,
 api.add_resource(resources.Status,
                  '/status')
 
-
 api.add_resource(resources.TrafficReport,
                  '/traffic_reports')
+
+api.add_resource(resources.Property,
+                 '/properties',
+                 '/properties/<string:id>',
+                 endpoint='property')
 
 
 @app.errorhandler(Exception)

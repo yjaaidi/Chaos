@@ -37,7 +37,11 @@ class Datetime(object):
 
     def __call__(self, item, field, value):
         if value:
-            setattr(item, self.attribute, parse_datetime(value).replace(tzinfo=None))
+            setattr(
+                item,
+                self.attribute,
+                parse_datetime(value).replace(tzinfo=None)
+            )
         else:
             setattr(item, self.attribute, None)
 
@@ -48,7 +52,11 @@ class Time(object):
 
     def __call__(self, item, field, value):
         if value:
-            setattr(item, self.attribute, parse_time(value).replace(tzinfo=None))
+            setattr(
+                item,
+                self.attribute,
+                parse_time(value).replace(tzinfo=None)
+            )
         else:
             setattr(item, self.attribute, None)
 
@@ -72,27 +80,40 @@ class AliasText(object):
         setattr(item, self.attribute, value)
 
 
+class OptionalField(object):
+    def __init__(self, attribute):
+        self.attribute = attribute
+
+    def __call__(self, item, field, json):
+        if field in json and json[field]:
+            setattr(item, self.attribute, json[field])
+
+
 def fill_from_json(item, json, fields):
     for field, formater in fields.iteritems():
-        if field not in json:
-            setattr(item, field, None)
-            continue
-        if isinstance(formater, Mapping):
-            fill_from_json(item, json[field], fields=formater)
-        elif isinstance(formater, Sequence):
-            for fr in formater:
-                for key in fr.keys():
-                    for one_json in json[field]:
-                        fr[key](item, key, one_json[key])
-        elif not formater:
-            setattr(item, field, json[field])
-        elif formater:
-            formater(item, field, json[field])
+        if isinstance(formater, OptionalField):
+            formater(item, field, json)
+        else:
+            if field not in json:
+                setattr(item, field, None)
+                continue
+            if isinstance(formater, Mapping):
+                fill_from_json(item, json[field], fields=formater)
+            elif isinstance(formater, Sequence):
+                for fr in formater:
+                    for key in fr.keys():
+                        for one_json in json[field]:
+                            fr[key](item, key, one_json[key])
+            elif not formater:
+                setattr(item, field, json[field])
+            elif formater:
+                formater(item, field, json[field])
 
 
 disruption_mapping = {
     'reference': None,
     'note': None,
+    'status': OptionalField(attribute='status'),
     'publication_period': {
         'begin': Datetime(attribute='start_publication_date'),
         'end': Datetime(attribute='end_publication_date')
@@ -112,6 +133,11 @@ cause_mapping = {
 
 tag_mapping = {
     'name': None
+}
+
+property_mapping = {
+    'key': None,
+    'type': None
 }
 
 category_mapping = {
