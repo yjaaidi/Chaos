@@ -578,6 +578,7 @@ class Impact(TimestampMixin, db.Model):
     objects = db.relationship("PTobject", secondary=associate_impact_pt_object, lazy='joined', order_by="PTobject.type, PTobject.uri")
     patterns = db.relationship('Pattern', backref='impact', lazy='joined')
     send_notifications = db.Column(db.Boolean, unique=False, nullable=False, default=True)
+    version = db.Column(db.Integer, nullable=False, default=1)
 
     def __repr__(self):
         return '<Impact %r>' % self.id
@@ -616,6 +617,9 @@ class Impact(TimestampMixin, db.Model):
         """
         self.objects.append(object)
         db.session.add(object)
+
+    def upgrade_version(self):
+        self.version = self.version + 1
 
     def insert_message(self, message):
         """
