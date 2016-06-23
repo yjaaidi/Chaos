@@ -17,7 +17,7 @@ This script is generated from the different between the model file and your loca
 
 Modify the script
 ---------------------
-Modify the first line to a understandable title.
+Modify the first line to an understandable title.
 This script generated automatically may have some useless elements, you can remove them and keep useful elements only
 
 Test the script
