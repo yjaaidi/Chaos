@@ -4,13 +4,15 @@ It can work together with [Kirin](https://github.com/CanalTP/kirin) which can fe
 
 ## Installation
 
-### Clone the repository Chaos
+### The hard way
+
+#### Clone the Chaos repository
 ```
 git clone git@github.com:CanalTP/Chaos.git
 cd Chaos
 ```
 
-### Python requirements
+#### Python requirements
 - Install Python `sudo apt-get install python2.7 python2.7-dev`
 - Install [pip](https://pip.pypa.io/en/latest/installing/)
 - Install [virtualenv](http://virtualenv.readthedocs.org/en/latest/installation.html)
@@ -21,7 +23,7 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### Build protobufs
+#### Build protobufs
 Install [protobuf v2.6.1](https://github.com/google/protobuf/blob/master/src/README.md)
 ```
 git submodule init
@@ -29,7 +31,7 @@ git submodule update
 ./setup.py build_pbf
 ```
 
-### Create the database
+#### Create the database
 ```
 sudo apt-get install postgresql libpq-dev
 sudo -i -u postgres
@@ -44,27 +46,27 @@ createdb -O navitia chaos_testing
 ctrl + d
 ```
 
-## Run Chaos with honcho (optional)
-### Install honcho
+#### Run Chaos with honcho (optional)
+##### Install honcho
 You can use [honcho](https://github.com/nickstenning/honcho) for managing Procfile-based applications.
 
 ```
 pip install honcho
 ```
 
-### create a `.env` file
+##### create a `.env` file
 Write this line inside
 ```
 CHAOS_CONFIG_FILE=default_settings.py
 ```
 
-### Upgrade database
+##### Upgrade database
 
 ```
 honcho run ./manage.py db upgrade
 ```
 
-### RabbitMQ (optional)
+##### RabbitMQ (optional)
 RabbitMQ is optional and you can deactivate it if you don't want to send disruptions to a queue.
 
 ```
@@ -72,10 +74,27 @@ RabbitMQ is optional and you can deactivate it if you don't want to send disrupt
 ENABLE_RABBITMQ = False
 ```
 
-### Run Chaos
+##### Run Chaos
 ```
 honcho start
 ```
+
+#### The easy way (with Docker)
+
+```
+git clone git@github.com:CanalTP/Chaos.git
+cd Chaos
+git submodule init
+git submodule update
+docker-compose up -d
+```
+
+To watch logs output: 
+```
+docker-compose logs -f
+``` 
+
+Chaos will be accessible on http://chaos_ws_1.docker and if you are using the [docker-gen-hosts tool](https://github.com/vincentlepot/docker-gen-hosts), it will also be accessible on http://chaos-ws.local.canaltp.fr 
 
 ## Tests
 Create an .env file in tests/ with:

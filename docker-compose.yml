@@ -1,0 +1,32 @@
+version: '2'
+
+services:
+  ws:
+    image: par-vm232.srv.canaltp.fr:5000/chaos-ws:dev
+    environment:
+      - DATABASE_HOST=database
+      - RABBITMQ_HOST=rabbitmq
+      - DOMAIN_NAME=chaos-ws.local.canaltp.fr
+    command: /bin/bash /var/www/Chaos/docker/honcho_launcher.sh
+    volumes:
+      - .:/var/www/Chaos
+    links:
+      - database
+      - rabbitmq
+
+  rabbitmq:
+    image: rabbitmq:management
+
+  database:
+    image: postgres:9.4
+    environment:
+      - POSTGRES_USER=navitia
+      - POSTGRES_PASSWORD=navitia
+      - POSTGRES_DB=chaos
+    volumes:
+      - ./docker/add_uuid_extension.sh:/docker-entrypoint-initdb.d/add_uuid_extension.sh
+
+networks:
+  default:
+    external:
+      name: canaltp

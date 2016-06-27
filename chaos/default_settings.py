@@ -1,14 +1,17 @@
+import os
 # URI for postgresql
 # postgresql://<user>:<password>@<host>:<port>/<dbname>
 # http://docs.sqlalchemy.org/en/rel_0_9/dialects/postgresql.html#psycopg2
-SQLALCHEMY_DATABASE_URI = 'postgresql://navitia:navitia@localhost/chaos'
+DATABASE_HOST = str(os.getenv('DATABASE_HOST', 'localhost'))
+SQLALCHEMY_DATABASE_URI = 'postgresql://navitia:navitia@' + DATABASE_HOST + '/chaos'
 
 DEBUG = True
 
 NAVITIA_URL = 'http://navitia2-ws.ctp.dev.canaltp.fr'
 
 # rabbitmq connections string: http://kombu.readthedocs.org/en/latest/userguide/connections.html#urls
-RABBITMQ_CONNECTION_STRING = 'pyamqp://guest:guest@localhost:5672//?heartbeat=60'
+RABBITMQ_HOST = str(os.getenv('RABBITMQ_HOST', 'localhost'))
+RABBITMQ_CONNECTION_STRING = 'pyamqp://guest:guest@' + RABBITMQ_HOST + ':5672//?heartbeat=60'
 
 # amqp exhange used for sending disruptions
 EXCHANGE = 'navitia'
