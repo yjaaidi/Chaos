@@ -114,6 +114,3 @@ cd tests
 honcho run lettuce
 ```
 
-## Provisioning
-
-Provisioning instructions can be followed from [provisioning/PROVISIONING.md](provisioning/PROVISIONING.md)
