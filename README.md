@@ -94,13 +94,14 @@ To watch logs output:
 docker-compose logs -f
 ``` 
 
-Chaos will be accessible on http://chaos_ws_1.docker and if you are using the [docker-gen-hosts tool](https://github.com/vincentlepot/docker-gen-hosts), it will also be accessible on http://chaos-ws.local.canaltp.fr 
+Chaos will be accessible on http://chaos_ws_1.docker if you are using the [docker-gen-hosts tool](https://github.com/vincentlepot/docker-gen-hosts), it will also be accessible on http://chaos-ws.local.canaltp.fr 
 
 ## Tests
-Create an .env file in tests/ with:
+
+The following commands for tests are also working in Docker environment, you just have to run before: 
 ```
-CHAOS_CONFIG_FILE=../tests/testing_settings.py
-PYTHONPATH=..
+docker-compose exec ws bash
+cd tests
 ```
 
 ### Unit tests

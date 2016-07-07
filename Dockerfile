@@ -10,7 +10,6 @@ RUN apt-get update && \
         libpq-dev \
         wget \
         netcat && \
-        locales && \
     rm -rf /var/lib/apt/lists/*
 
 ADD requirements.txt /tmp/requirements.txt
@@ -30,8 +29,9 @@ ADD docker/run.sh /run.sh
 RUN chmod 755 /run.sh
 
 # fix python encoding warning
-RUN locale-gen fr_FR.UTF-8
-ENV LANG fr_FR.UTF-8
+ENV PYTHONIOENCODING utf-8
+
+WORKDIR /var/www/Chaos
 
 EXPOSE 80
 
