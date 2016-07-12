@@ -1,4 +1,4 @@
-from kombu import BrokerConnection, Exchange
+from kombu import Connection, Exchange
 from kombu.pools import producers
 import logging
 import socket
@@ -13,7 +13,7 @@ class Publisher(object):
             self.is_connected = False
             return
 
-        self._connection = BrokerConnection(connection_string)
+        self._connection = Connection(connection_string)
         self._connections = set([self._connection])#set of connection for the heartbeat
         self._exchange = Exchange(exchange, durable=True, delivry_mode=2, type='topic')
         self._connection.connect()
@@ -30,7 +30,8 @@ class Publisher(object):
 
         with self._get_producer() as producer:
             try:
-                producer.publish(item, exchange=self._exchange, routing_key=contributor, declare=[self._exchange])
+                publish = producer.connection.ensure(producer, producer.publish, max_retries=3)
+                publish(item, exchange=self._exchange, routing_key=contributor, declare=[self._exchange])
                 self.is_connected = True
             except socket.error:
                 self.is_connected = False
