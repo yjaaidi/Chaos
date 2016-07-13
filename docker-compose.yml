@@ -2,7 +2,7 @@ version: '2'
 
 services:
   ws:
-    image: par-vm232.srv.canaltp.fr:5000/chaos-ws:dev
+    image: navitia/chaos-ws:dev
     environment:
       - DATABASE_HOST=database
       - RABBITMQ_HOST=rabbitmq
