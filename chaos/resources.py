@@ -103,6 +103,7 @@ class Severity(flask_restful.Resource):
                            error_fields), 400
         db.session.add(severity)
         db.session.commit()
+        db.session.refresh(severity)
         return marshal({'severity': severity}, one_severity_fields), 201
 
     @validate_client()
@@ -128,6 +129,7 @@ class Severity(flask_restful.Resource):
             return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 400
         db.session.commit()
+        db.session.refresh(severity)
         return marshal({'severity': severity}, one_severity_fields), 200
 
     @validate_client()
@@ -249,6 +251,7 @@ class Disruptions(flask_restful.Resource):
 
         db.session.add(disruption)
         db.session.commit()
+        db.session.refresh(disruption)
         chaos.utils.send_disruption_to_navitia(disruption)
         return marshal({'disruption': disruption}, one_disruption_fields), 201
 
@@ -314,6 +317,7 @@ class Disruptions(flask_restful.Resource):
         disruption.upgrade_version()
         try:
             db.session.commit()
+            db.session.refresh(disruption)
         except IntegrityError as e:
             db.session.rollback()
             return marshal(
@@ -331,6 +335,7 @@ class Disruptions(flask_restful.Resource):
         disruption.upgrade_version()
         disruption.archive()
         db.session.commit()
+        db.session.refresh(disruption)
         chaos.utils.send_disruption_to_navitia(disruption)
         return None, 204
 
@@ -380,6 +385,7 @@ class Cause(flask_restful.Resource):
                            error_fields), 400
         db.session.add(cause)
         db.session.commit()
+        db.session.refresh(cause)
         return marshal({'cause': cause}, one_cause_fields), 201
 
     @validate_client()
@@ -404,6 +410,7 @@ class Cause(flask_restful.Resource):
             return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 400
         db.session.commit()
+        db.session.refresh(cause)
         return marshal({'cause': cause}, one_cause_fields), 200
 
     @validate_client()
@@ -453,6 +460,7 @@ class Tag(flask_restful.Resource):
 
         try:
             db.session.commit()
+            db.session.refresh(tag)
         except IntegrityError, e:
             logging.debug(str(e))
             return marshal({'error': {'message': utils.parse_error(e)}},
@@ -477,6 +485,7 @@ class Tag(flask_restful.Resource):
         mapper.fill_from_json(tag, json, mapper.tag_mapping)
         try:
             db.session.commit()
+            db.session.refresh(tag)
         except IntegrityError, e:
             logging.debug(str(e))
             return marshal({'error': {'message': utils.parse_error(e)}},
@@ -529,6 +538,7 @@ class Category(flask_restful.Resource):
 
         try:
             db.session.commit()
+            db.session.refresh(category)
         except IntegrityError, e:
             logging.debug(str(e))
             return marshal({'error': {'message': utils.parse_error(e)}},
@@ -553,6 +563,7 @@ class Category(flask_restful.Resource):
         mapper.fill_from_json(category, json, mapper.category_mapping)
         try:
             db.session.commit()
+            db.session.refresh(category)
         except IntegrityError, e:
             logging.debug(str(e))
             return marshal({'error': {'message': utils.parse_error(e)}},
@@ -671,6 +682,7 @@ class Impacts(flask_restful.Resource):
 
         disruption.upgrade_version()
         db.session.commit()
+        db.session.refresh(disruption)
         chaos.utils.send_disruption_to_navitia(disruption)
         return marshal({'impact': impact}, one_impact_fields), 201
 
@@ -703,6 +715,7 @@ class Impacts(flask_restful.Resource):
         disruption = models.Disruption.get(disruption_id, contributor.id)
         disruption.upgrade_version()
         db.session.commit()
+        db.session.refresh(disruption)
         chaos.utils.send_disruption_to_navitia(disruption)
         return marshal({'impact': impact}, one_impact_fields), 200
 
@@ -714,6 +727,7 @@ class Impacts(flask_restful.Resource):
         disruption = models.Disruption.get(disruption_id, contributor.id)
         disruption.upgrade_version()
         db.session.commit()
+        db.session.refresh(disruption)
         chaos.utils.send_disruption_to_navitia(disruption)
         return None, 204
 
@@ -751,6 +765,7 @@ class Channel(flask_restful.Resource):
                            error_fields), 400
         db.session.add(channel)
         db.session.commit()
+        db.session.refresh(channel)
         return marshal({'channel': channel}, one_channel_fields), 201
 
     @validate_client()
@@ -775,6 +790,7 @@ class Channel(flask_restful.Resource):
             return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 400
         db.session.commit()
+        db.session.refresh(channel)
         return marshal({'channel': channel}, one_channel_fields), 200
 
     @validate_client()
@@ -873,6 +889,7 @@ class Property(flask_restful.Resource):
 
         try:
             db.session.commit()
+            db.session.refresh(property)
         except IntegrityError, e:
             return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 409
@@ -902,6 +919,7 @@ class Property(flask_restful.Resource):
 
         try:
             db.session.commit()
+            db.session.refresh(property)
         except IntegrityError, e:
             return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 409
