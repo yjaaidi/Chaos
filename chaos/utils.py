@@ -308,12 +308,11 @@ def get_uuid(value, name):
 
 
 def send_disruption_to_navitia(disruption):
-    if disruption.is_published():
-        feed_entity = populate_pb(disruption)
-        chaos.publisher.publish(
-            feed_entity.SerializeToString(),
-            disruption.contributor.contributor_code
-        )
+    feed_entity = populate_pb(disruption)
+    chaos.publisher.publish(
+        feed_entity.SerializeToString(),
+        disruption.contributor.contributor_code
+    )
 
 
 def get_client_code(request):
