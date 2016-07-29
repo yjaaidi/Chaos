@@ -114,4 +114,9 @@ honcho run nosetests
 cd tests
 honcho run lettuce
 ```
+To stop directly on faulty test
+```
+honcho run lettuce --failfast
+```
+
 
