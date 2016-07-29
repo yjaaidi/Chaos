@@ -887,7 +887,6 @@ class Property(flask_restful.Resource):
         property.client = client
         db.session.add(property)
 
-        logging.getLogger(__name__).debug(property)
         try:
             db.session.commit()
             db.session.refresh(property)
