@@ -468,6 +468,9 @@ class Disruption(TimestampMixin, db.Model):
     def is_published(self):
         return self.status == 'published'
 
+    def is_draft(self):
+        return self.status == 'draft'
+
     @classmethod
     def get(cls, id, contributor_id):
         return cls.query.filter(

@@ -239,7 +239,7 @@ def populate_pb(disruption):
 
     feed_entity = feed_message.entity.add()
     feed_entity.id = disruption.id
-    feed_entity.is_deleted = disruption.status == "archived"
+    feed_entity.is_deleted = (disruption.status == "archived")
 
     if not feed_entity.is_deleted:
         disruption_pb = feed_entity.Extensions[chaos_pb2.disruption]
