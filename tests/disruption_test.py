@@ -12,9 +12,9 @@ def test_disruption_with_draft_status_isnnot_send():
     '''
     disruption = models.Disruption()
     disruption.status = 'draft'
-    hasBeenSent = send_disruption_to_navitia(disruption)
+    has_been_sent = send_disruption_to_navitia(disruption)
 
-    eq_(hasBeenSent, False)
+    eq_(has_been_sent, False)
 
 def test_disruption_with_archived_status_is_sent():
     '''
@@ -27,9 +27,9 @@ def test_disruption_with_archived_status_is_sent():
     disruption.contributor_id = disruption.contributor.id
 
     disruption.status = 'archived'
-    hasBeenSent = send_disruption_to_navitia(disruption)
+    has_been_sent = send_disruption_to_navitia(disruption)
 
-    eq_(hasBeenSent, None)
+    eq_(has_been_sent, None)
 
 def test_disruption_with_published_status_is_sent():
     '''
@@ -71,6 +71,6 @@ def test_disruption_with_published_status_is_sent():
     disruption.tags.append(tag)
 
     disruption.status = 'published'
-    hasBeenSent = send_disruption_to_navitia(disruption)
+    has_been_sent = send_disruption_to_navitia(disruption)
 
-    eq_(hasBeenSent, None)
+    eq_(has_been_sent, None)
