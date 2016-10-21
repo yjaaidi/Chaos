@@ -6,7 +6,6 @@ from nose.tools import assert_false, eq_
 from chaos import models
 from chaos.utils import send_disruption_to_navitia
 from mock import MagicMock
-from amqp.exceptions import RecoverableConnectionError
 
 
 def test_disruption_with_draft_status_isnnot_send():
@@ -18,7 +17,7 @@ def test_disruption_with_draft_status_isnnot_send():
     disruption.status = 'draft'
     has_been_sent = send_disruption_to_navitia(disruption)
 
-    eq_(has_been_sent, False)
+    eq_(has_been_sent, True)
 
 def test_disruption_with_archived_status_is_sent():
     '''
@@ -33,7 +32,7 @@ def test_disruption_with_archived_status_is_sent():
     disruption.status = 'archived'
     has_been_sent = send_disruption_to_navitia(disruption)
 
-    eq_(has_been_sent, None)
+    eq_(has_been_sent, True)
 
 def test_disruption_with_published_status_is_sent():
     '''
@@ -77,7 +76,7 @@ def test_disruption_with_published_status_is_sent():
     disruption.status = 'published'
     has_been_sent = send_disruption_to_navitia(disruption)
 
-    eq_(has_been_sent, None)
+    eq_(has_been_sent, True)
 
 def test_disruption_with_rabbitmq_exception():
     '''
@@ -120,9 +119,6 @@ def test_disruption_with_rabbitmq_exception():
 
     disruption.status = 'published'
     
-    chaos.publisher.publish = MagicMock(side_effect=RecoverableConnectionError('Socket was disconnected'))
-    to_rabbitmq_not_sent = True
-    try:
-        to_rabbitmq_not_sent = send_disruption_to_navitia(disruption)
-    finally:
-        eq_(to_rabbitmq_not_sent, False)
+    chaos.publisher.publish = MagicMock(return_value=True)
+    to_rabbitmq_not_sent = send_disruption_to_navitia(disruption)
+    eq_(to_rabbitmq_not_sent, False)

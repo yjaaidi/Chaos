@@ -2,6 +2,7 @@ from kombu import Connection, Exchange
 from kombu.pools import producers
 import logging
 import socket
+import sys
 from gevent import spawn_later
 
 
@@ -26,17 +27,19 @@ class Publisher(object):
 
     def publish(self, item, contributor):
         if not self._is_active:
-            return
+            return True
 
         with self._get_producer() as producer:
             try:
+                self.is_connected = True
                 publish = producer.connection.ensure(producer, producer.publish, max_retries=3)
                 publish(item, exchange=self._exchange, routing_key=contributor, declare=[self._exchange])
-                self.is_connected = True
-            except socket.error:
+            except:
                 self.is_connected = False
-                logging.getLogger(__name__).debug('Impossible to publish message !')
-                raise
+                err = sys.exec_info()[0]
+                logging.getLogger(__name__).debug("Impossible to publish message to rabbitmq !, error : %s" % err)
+            finally:
+                return self.is_connected
 
     def info(self):
         result = {

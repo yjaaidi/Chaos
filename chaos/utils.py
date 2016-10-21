@@ -309,7 +309,7 @@ def get_uuid(value, name):
 
 def send_disruption_to_navitia(disruption):
     if disruption.is_draft():
-        return False
+        return True
 
     feed_entity = populate_pb(disruption)
     return chaos.publisher.publish(
