@@ -119,6 +119,6 @@ def test_disruption_with_rabbitmq_exception():
 
     disruption.status = 'published'
     
-    chaos.publisher.publish = MagicMock(return_value=True)
+    chaos.publisher.publish = MagicMock(return_value=False)
     to_rabbitmq_not_sent = send_disruption_to_navitia(disruption)
     eq_(to_rabbitmq_not_sent, False)
