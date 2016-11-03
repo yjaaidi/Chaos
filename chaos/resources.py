@@ -260,6 +260,10 @@ class Disruptions(flask_restful.Resource):
 
             return marshal({'disruption': disruption}, one_disruption_fields), 201
         except exceptions.NavitiaError, e:
+            db.session.delete(disruption)
+            db.session.commit()
+            return marshal({'error': {'message': '{}'.format(e.message)}}, fields.error_fields), 503
+        except e:
             db.session.rollback()
             return marshal({'error': {'message': '{}'.format(e.message)}}, fields.error_fields), 500
 
@@ -330,8 +334,8 @@ class Disruptions(flask_restful.Resource):
             if not chaos.utils.send_disruption_to_navitia(disruption):
                 return marshal(
                     {'error': {'message': 'An error occurred during transferring\
-this disruption to Navitia. Please try again.'}}, error_fields), 500
-        except IntegrityError as e:
+this disruption to Navitia. Please try again.'}}, error_fields), 503
+        except e:
             db.session.rollback()
             return marshal(
                 {'error': {'message': '{}'.format(e.message)}},
@@ -354,7 +358,7 @@ this disruption to Navitia. Please try again.'}}, error_fields), 500
                 db.session.rollback()
                 return marshal(
                 {'error': {'message': 'An error occurred during transferring\
-this disruption to Navitia. Please try again.'}}, error_fields), 500
+this disruption to Navitia. Please try again.'}}, error_fields), 503
         except:
             db.session.rollback()
         return marshal(
@@ -703,17 +707,23 @@ class Impacts(flask_restful.Resource):
             return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 400
 
         disruption.upgrade_version()
-        db.session.commit()
-        db.session.refresh(disruption)
-        if chaos.utils.send_disruption_to_navitia(disruption):
+        try:
+            db.session.commit()
+            db.session.refresh(disruption)
+            if not chaos.utils.send_disruption_to_navitia(disruption):
+                ex_msg = 'An error occurred during transferring this impact to Navitia. Please try again'
+                raise exceptions.NavitiaError(ex_msg)
             return marshal({'impact': impact}, one_impact_fields), 201
-        else:
+        except exceptions.NavitiaError, e:
             db.session.delete(impact)
             db.session.commit()
+            return marshal({'error': {'message': '{}'.format(e.message)}}, fields.error_fields), 503
+        except e:
+            db.session.rollback()
             return marshal(
-                {'error': {'message': 'An error occurred during transferring\
-this impact to Navitia. Please try again.'}}, error_fields), 500
-
+                {'error': {'message': '{}'.format(e.message)}},
+                error_fields
+                ), 500
 
     @validate_client()
     @validate_contributor()
@@ -749,8 +759,8 @@ this impact to Navitia. Please try again.'}}, error_fields), 500
             if not chaos.utils.send_disruption_to_navitia(disruption):
                 return marshal(
                     {'error': {'message': 'An error occurred during transferring\
-this impact to Navitia. Please try again.'}}, error_fields), 500
-        except IntegrityError as e:
+this impact to Navitia. Please try again.'}}, error_fields), 503
+        except e:
             db.session.rollback()
             return marshal(
                 {'error': {'message': '{}'.format(e.message)}},
@@ -774,7 +784,7 @@ this impact to Navitia. Please try again.'}}, error_fields), 500
                 db.session.rollback()
                 return marshal(
                 {'error': {'message': 'An error occurred during transferring\
-this impact to Navitia. Please try again.'}}, error_fields), 500
+this impact to Navitia. Please try again.'}}, error_fields), 503
         except:
             db.session.rollback()
         return marshal(
