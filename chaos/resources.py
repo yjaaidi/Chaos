@@ -248,18 +248,21 @@ class Disruptions(flask_restful.Resource):
 
         except exceptions.InvalidJson, e:
             return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 400
-        
-        db.session.add(disruption)
-        db.session.commit()
-        db.session.refresh(disruption)
-        if chaos.utils.send_disruption_to_navitia(disruption):
-            return marshal({'disruption': disruption}, one_disruption_fields), 201
-        else:
-            db.session.delete(disruption)
+
+        try:
+            db.session.add(disruption)
             db.session.commit()
-            return marshal(
-                {'error': {'message': 'An error occurred during transferring\
-this disruption to Navitia. Please try again.'}}, error_fields), 500
+            db.session.refresh(disruption)
+
+            if not chaos.utils.send_disruption_to_navitia(disruption):
+                ex_msg = 'An error occurred during transferring this disruption to Navitia. Please try again'
+                raise exceptions.NavitiaError(ex_msg)
+
+            return marshal({'disruption': disruption}, one_disruption_fields), 201
+        except exceptions.NavitiaError, e:
+            db.session.rollback()
+            return marshal({'error': {'message': '{}'.format(e.message)}}, fields.error_fields), 500
+
 
     @validate_navitia()
     @validate_client()
