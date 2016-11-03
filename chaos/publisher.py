@@ -26,6 +26,7 @@ class Publisher(object):
 
     def publish(self, item, contributor):
         if not self._is_active:
+            logging.getLogger(__name__).info('RabbitMQ is not enabled')
             return True
 
         with self._get_producer() as producer:
@@ -33,6 +34,7 @@ class Publisher(object):
                 self.is_connected = True
                 publish = producer.connection.ensure(producer, producer.publish, max_retries=3)
                 publish(item, exchange=self._exchange, routing_key=contributor, declare=[self._exchange])
+                logging.getLogger(__name__).info('Publishing message on exchange %s', self._exchange.name)
             except:
                 self.is_connected = False
                 logging.exception("Impossible to publish message to rabbitmq")
