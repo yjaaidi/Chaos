@@ -335,7 +335,7 @@ class Disruptions(flask_restful.Resource):
                 return marshal(
                     {'error': {'message': 'An error occurred during transferring\
 this disruption to Navitia. Please try again.'}}, error_fields), 503
-        except e:
+        except Exception, e:
             db.session.rollback()
             return marshal(
                 {'error': {'message': '{}'.format(e.message)}},
@@ -718,7 +718,7 @@ class Impacts(flask_restful.Resource):
             db.session.delete(impact)
             db.session.commit()
             return marshal({'error': {'message': '{}'.format(e.message)}}, fields.error_fields), 503
-        except e:
+        except Exception, e:
             db.session.rollback()
             return marshal(
                 {'error': {'message': '{}'.format(e.message)}},
@@ -760,7 +760,7 @@ class Impacts(flask_restful.Resource):
                 return marshal(
                     {'error': {'message': 'An error occurred during transferring\
 this impact to Navitia. Please try again.'}}, error_fields), 503
-        except e:
+        except Exception, e:
             db.session.rollback()
             return marshal(
                 {'error': {'message': '{}'.format(e.message)}},
