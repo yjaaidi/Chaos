@@ -82,7 +82,7 @@ def monitor_heartbeats(connections, rate=2):
                 try:
                     conn.heartbeat_check(rate=rate)
                 except socket.error:
-                    logging.getLogger(__name__).info('connection %s dead : closing it !', conn)
+                    logging.getLogger(__name__).info('connection %s dead: closing it !', conn)
                     # actually we don't do a close(), else we won't be able to reopen it after...
                     to_remove.append(conn)
             else:
