@@ -263,7 +263,7 @@ class Disruptions(flask_restful.Resource):
             db.session.delete(disruption)
             db.session.commit()
             return marshal({'error': {'message': '{}'.format(e.message)}}, fields.error_fields), 503
-        except e:
+        except Exception, e:
             db.session.rollback()
             return marshal({'error': {'message': '{}'.format(e.message)}}, fields.error_fields), 500
 
@@ -687,7 +687,7 @@ class Impacts(flask_restful.Resource):
                            error_fields), 400
 
         json = request.get_json(silent=True)
-        logging.getLogger(__name__).debug('POST impcat: %s', json)
+        logging.getLogger(__name__).debug('POST impact: %s', json)
 
         try:
             validate(json, impact_input_format)
