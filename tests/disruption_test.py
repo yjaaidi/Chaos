@@ -1,9 +1,12 @@
 import sys
+import chaos.publisher
 if 'threading' in sys.modules:
     del sys.modules['threading']
 from nose.tools import assert_false, eq_
 from chaos import models
 from chaos.utils import send_disruption_to_navitia
+from mock import MagicMock
+
 
 def test_disruption_with_draft_status_isnnot_send():
     '''
@@ -14,7 +17,7 @@ def test_disruption_with_draft_status_isnnot_send():
     disruption.status = 'draft'
     has_been_sent = send_disruption_to_navitia(disruption)
 
-    eq_(has_been_sent, False)
+    eq_(has_been_sent, True)
 
 def test_disruption_with_archived_status_is_sent():
     '''
@@ -29,7 +32,7 @@ def test_disruption_with_archived_status_is_sent():
     disruption.status = 'archived'
     has_been_sent = send_disruption_to_navitia(disruption)
 
-    eq_(has_been_sent, None)
+    eq_(has_been_sent, True)
 
 def test_disruption_with_published_status_is_sent():
     '''
@@ -73,4 +76,49 @@ def test_disruption_with_published_status_is_sent():
     disruption.status = 'published'
     has_been_sent = send_disruption_to_navitia(disruption)
 
-    eq_(has_been_sent, None)
+    eq_(has_been_sent, True)
+
+def test_disruption_with_rabbitmq_exception():
+    '''
+    Tests when a disruption fail to publish to rabbitmq
+    :return:
+    '''
+    disruption = models.Disruption()
+    
+    #contributor
+    disruption.contributor = models.Contributor()
+    disruption.contributor_id = disruption.contributor.id
+
+    #cause
+    disruption.cause = models.Cause()
+    disruption.cause.wording = "CauseTest"
+    disruption.cause.category = models.Category()
+    disruption.cause.category.name = "CategoryTest"
+    disruption.reference = "DisruptionTest"
+
+    #localization
+    localization = models.PTobject()
+    localization.uri = "stop_area:123"
+    localization.type = "stop_area"
+    disruption.localizations.append(localization)
+
+    # Wording
+    wording = models.Wording()
+    wording.key = "key_1"
+    wording.value = "value_1"
+    disruption.cause.wordings.append(wording)
+    wording = models.Wording()
+    wording.key = "key_2"
+    wording.value = "value_2"
+    disruption.cause.wordings.append(wording)
+
+    # Tag
+    tag = models.Tag()
+    tag.name = "rer"
+    disruption.tags.append(tag)
+
+    disruption.status = 'published'
+    
+    chaos.publisher.publish = MagicMock(return_value=False)
+    to_rabbitmq_not_sent = send_disruption_to_navitia(disruption)
+    eq_(to_rabbitmq_not_sent, False)
