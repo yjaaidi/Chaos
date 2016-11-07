@@ -432,7 +432,7 @@ class Disruption(TimestampMixin, db.Model):
     )
     start_publication_date = db.Column(db.DateTime(), nullable=True)
     end_publication_date = db.Column(db.DateTime(), nullable=True)
-    impacts = db.relationship('Impact', backref='disruption', lazy='dynamic')
+    impacts = db.relationship('Impact', backref='disruption', lazy='dynamic', cascade='delete')
     cause_id = db.Column(UUID, db.ForeignKey(Cause.id))
     cause = db.relationship('Cause', backref='disruption', lazy='joined')
     tags = db.relationship("Tag", secondary=associate_disruption_tag, backref="disruptions")
@@ -445,7 +445,8 @@ class Disruption(TimestampMixin, db.Model):
     properties = db.relationship(
         'AssociateDisruptionProperty',
         lazy='joined',
-        back_populates='disruption'
+        back_populates='disruption',
+        cascade='delete'
     )
 
     def __repr__(self):
