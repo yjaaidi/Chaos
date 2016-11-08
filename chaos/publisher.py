@@ -14,7 +14,7 @@ class Publisher(object):
             return
 
         self._connection = Connection(connection_string)
-        self._connections = set([self._connection])#set of connection for the heartbeat
+        self._connections = set([self._connection])  # set of connection for the heartbeat
         self._exchange = Exchange(exchange, durable=True, delivry_mode=2, type='topic')
         self._connection.connect()
         monitor_heartbeats(self._connections)
@@ -26,17 +26,20 @@ class Publisher(object):
 
     def publish(self, item, contributor):
         if not self._is_active:
-            return
+            logging.getLogger(__name__).info('RabbitMQ is not enabled')
+            return True
 
         with self._get_producer() as producer:
             try:
+                self.is_connected = True
                 publish = producer.connection.ensure(producer, producer.publish, max_retries=3)
                 publish(item, exchange=self._exchange, routing_key=contributor, declare=[self._exchange])
-                self.is_connected = True
-            except socket.error:
+                logging.getLogger(__name__).info('Publishing message on exchange %s', self._exchange.name)
+            except:
                 self.is_connected = False
-                logging.getLogger(__name__).debug('Impossible to publish message !')
-                raise
+                logging.exception("Impossible to publish message to rabbitmq")
+            finally:
+                return self.is_connected
 
     def info(self):
         result = {
@@ -57,7 +60,7 @@ class Publisher(object):
 
 def monitor_heartbeats(connections, rate=2):
     """
-    launch the heartbeat of amqp, it's mostly for prevent the f@#$ firewall from droping the connection
+    launch the heartbeat of amqp, it's mostly for prevent the f@#$ firewall from dropping the connection
     """
     supports_heartbeats = False
     interval = 10000
@@ -79,8 +82,8 @@ def monitor_heartbeats(connections, rate=2):
                 try:
                     conn.heartbeat_check(rate=rate)
                 except socket.error:
-                    logging.getLogger(__name__).info('connection %s dead: closing it!', conn)
-                    #actualy we don't do a close(), else we won't be able to reopen it after...
+                    logging.getLogger(__name__).info('connection %s dead: closing it !', conn)
+                    # actually we don't do a close(), else we won't be able to reopen it after...
                     to_remove.append(conn)
             else:
                 to_remove.append(conn)
