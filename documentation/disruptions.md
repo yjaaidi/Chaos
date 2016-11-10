@@ -427,6 +427,45 @@ Create one valid disruption with impacts
                 "meta": {}
             }
 
+- response 400 (application/json)
+
+    * Body
+
+            {
+                "error": {
+                    "message": "'reference' is a required property"
+                }
+            }
+
+- response 404 (application/json)
+
+    * Body
+
+            {
+                "error": {
+                    "message": "..."
+                }
+            }
+
+- response 503 (application/json)
+
+    * Body
+
+            {
+                "error": {
+                    "message": "An error occurred during transferring this disruption to Navitia. Please try again"
+                }
+            }
+
+- response 500 (application/json)
+
+    * Body
+
+            {
+                "error": {
+                    "message": "..."
+                }
+            }
 
 # Disruptions [/disruptions/{id}]
 ##Retrieve one disruption [GET]
@@ -513,8 +552,7 @@ Retrieve one existing disruption:
             {
                 "error": {
                     "message": "No disruption"
-                },
-                "meta": {}
+                }
             }
 
 
@@ -690,8 +728,37 @@ Retrieve one existing disruption:
             {
                 "error": {
                     "message": "No disruption"
-                },
-                "meta": {}
+                }
+            }
+
+
+- response 400 (application/json)
+
+    * Body
+
+            {
+                "error": {
+                    "message": "'reference' is a required property"
+                }
+            }
+
+- response 503 (application/json)
+    * Body
+
+            {
+                "error": {
+                    "message": "An error occurred during transferring this disruption to Navitia. Please try again."
+                }
+            }
+
+
+- response 500 (application/json)
+    * Body
+
+            {
+                "error": {
+                    "message": "..."
+                }
             }
 
 You can pass the status in the request in order to update it:
@@ -740,9 +807,8 @@ Archive one disruption.
 
             {
                 "error": {
-                    "message": "No disruption"
-                },
-                "meta": {}
+                    "message": "..."
+                }
             }
 
 # List of Impacts by object type [/impacts]
@@ -763,108 +829,108 @@ Return all impacts by ptobject.
 
             {
 
-			"meta": {
-				"pagination": {
-						"first": {
-							"href": "http://127.0.0.1:5000/impacts?start_page=1&items_per_page=20"
-						},
-						"items_on_page": "1",
-						"items_per_page": "20",
-						"last": {
-							"href": "http://127.0.0.1:5000/impacts?start_page=1&items_per_page=20"
-						},
-						"next": {
-							"href": null
-						},
-						"prev": {
-							"href": null
-						},
-						"start_page": "1",
-						"total_result": "1"
-				}
-			},
-			"objects": [
-				{
-					"id": "RER:A",
-					"impacts": [
-						{
-							"application_period_patterns": [],
-							"application_periods": [
-									{
-										"begin": "2014-03-29T16:52:00Z",
-										"end": "2014-05-22T02:15:00Z"
-									}
-							],
-							"send_notifications": true,
-							"created_at": "2014-04-31T16:52:18Z",
-							"id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657ea",
-							"messages": [
-									{
-										"channel": {
-										"content_type": "text/plain",
-										"created_at": "2014-04-31T16:52:18Z",
-										"id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657da",
-										"max_size": 140,
-										"name": "message court",
-										"updated_at": "2014-04-31T16:55:18Z",
-										"types": ["web", "mobile"]
-										},
-										"created_at": "2014-04-31T16:52:18Z",
-										"id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657ca",
-										"publication_date": [
-											"2014-04-31T16:52:18Z"
-											],
-										"publication_period": null,
-										"text": "ptit dej la gare!!",
-										"updated_at": "2014-04-31T16:55:18Z"
-									},
-									{
-										"channel": {
-											"content_type": "text/markdown",
-											"created_at": "2014-04-31T16:52:18Z",
-											"id": "3d1f42b2-e8df-11e3-8c3e-0008cb8657ea",
-											"max_size": null,
-											"name": "message long",
-											"updated_at": "2014-04-31T16:55:18Z",
-										    "types": ["sms", "notification"]
-										},
-										"created_at": "2014-04-31T16:52:18Z",
-										"id": "3d1f42b2-e8df-11e3-8c3e-0008ca8257ea",
-										"publication_date": null,
-										"publication_period": {
-											"begin": "2014-04-31T17:00:00Z",
-											"end": "2014-05-01T17:00:00Z"
-										},
-										"text": "est ptit dej en gare",
-										"updated_at": "2014-04-31T16:55:18Z"
-									}
-							],
-							"object": [
-								{
-									"id": "RER:A",
-									"name": "RER:A",
-									"type": "network"
-								}
-							],
-							"self": {
-								"href": "https://chaos.apiary-mock.com/disruptions/3d1f32b2-e8df-11e3-8c3e-0008ca8657ea/impacts/3d1f42b2-e8df-11e3-8c3e-0008ca8657ea"
-							},
-							"severity": {
-								"color": "#123456",
-								"created_at": "2014-04-31T16:52:18Z",
-								"effect": "none",
-								"id": "3d1f42b2-e8df-11e3-8c3e-0008ca86c7ea",
-								"updated_at": "2014-04-31T16:55:18Z",
-								"wordings" : [{"key": "msg", "value": "Bonne nouvelle"}]
-							},
-							"updated_at": "2014-04-31T16:55:18Z"
-							}
-					],
-					"name": "RER:A",
-					"type": "network"
-				}
-			]
-			}
+            "meta": {
+                "pagination": {
+                        "first": {
+                            "href": "http://127.0.0.1:5000/impacts?start_page=1&items_per_page=20"
+                        },
+                        "items_on_page": "1",
+                        "items_per_page": "20",
+                        "last": {
+                            "href": "http://127.0.0.1:5000/impacts?start_page=1&items_per_page=20"
+                        },
+                        "next": {
+                            "href": null
+                        },
+                        "prev": {
+                            "href": null
+                        },
+                        "start_page": "1",
+                        "total_result": "1"
+                }
+            },
+            "objects": [
+                {
+                    "id": "RER:A",
+                    "impacts": [
+                        {
+                            "application_period_patterns": [],
+                            "application_periods": [
+                                    {
+                                        "begin": "2014-03-29T16:52:00Z",
+                                        "end": "2014-05-22T02:15:00Z"
+                                    }
+                            ],
+                            "send_notifications": true,
+                            "created_at": "2014-04-31T16:52:18Z",
+                            "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657ea",
+                            "messages": [
+                                    {
+                                        "channel": {
+                                        "content_type": "text/plain",
+                                        "created_at": "2014-04-31T16:52:18Z",
+                                        "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657da",
+                                        "max_size": 140,
+                                        "name": "message court",
+                                        "updated_at": "2014-04-31T16:55:18Z",
+                                        "types": ["web", "mobile"]
+                                        },
+                                        "created_at": "2014-04-31T16:52:18Z",
+                                        "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657ca",
+                                        "publication_date": [
+                                            "2014-04-31T16:52:18Z"
+                                            ],
+                                        "publication_period": null,
+                                        "text": "ptit dej la gare!!",
+                                        "updated_at": "2014-04-31T16:55:18Z"
+                                    },
+                                    {
+                                        "channel": {
+                                            "content_type": "text/markdown",
+                                            "created_at": "2014-04-31T16:52:18Z",
+                                            "id": "3d1f42b2-e8df-11e3-8c3e-0008cb8657ea",
+                                            "max_size": null,
+                                            "name": "message long",
+                                            "updated_at": "2014-04-31T16:55:18Z",
+                                            "types": ["sms", "notification"]
+                                        },
+                                        "created_at": "2014-04-31T16:52:18Z",
+                                        "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8257ea",
+                                        "publication_date": null,
+                                        "publication_period": {
+                                            "begin": "2014-04-31T17:00:00Z",
+                                            "end": "2014-05-01T17:00:00Z"
+                                        },
+                                        "text": "est ptit dej en gare",
+                                        "updated_at": "2014-04-31T16:55:18Z"
+                                    }
+                            ],
+                            "object": [
+                                {
+                                    "id": "RER:A",
+                                    "name": "RER:A",
+                                    "type": "network"
+                                }
+                            ],
+                            "self": {
+                                "href": "https://chaos.apiary-mock.com/disruptions/3d1f32b2-e8df-11e3-8c3e-0008ca8657ea/impacts/3d1f42b2-e8df-11e3-8c3e-0008ca8657ea"
+                            },
+                            "severity": {
+                                "color": "#123456",
+                                "created_at": "2014-04-31T16:52:18Z",
+                                "effect": "none",
+                                "id": "3d1f42b2-e8df-11e3-8c3e-0008ca86c7ea",
+                                "updated_at": "2014-04-31T16:55:18Z",
+                                "wordings" : [{"key": "msg", "value": "Bonne nouvelle"}]
+                            },
+                            "updated_at": "2014-04-31T16:55:18Z"
+                            }
+                    ],
+                    "name": "RER:A",
+                    "type": "network"
+                }
+            ]
+            }
 
 
 # List of Impacts [/disruptions/{disruption_id}/impacts]
@@ -885,102 +951,102 @@ Return all impacts of a impact.
 
     * Body
 
-		{
-			"impacts": [
-				{
-				"id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657ea",
-				"self": {"href": "https://chaos.apiary-mock.com/disruptions/3d1f32b2-e8df-11e3-8c3e-0008ca8657ea/impacts/3d1f42b2-e8df-11e3-8c3e-0008ca8657ea"},
-				"created_at": "2014-04-31T16:52:18Z",
-				"updated_at": "2014-04-31T16:55:18Z",
-				"send_notifications": true,
-				"severity": {
-					"id": "3d1f42b2-e8df-11e3-8c3e-0008ca86c7ea",
-					"wordings" : [{"key": "msg", "value": "Bonne nouvelle"}],
-					"created_at": "2014-04-31T16:52:18Z",
-					"updated_at": "2014-04-31T16:55:18Z",
-					"color": "#123456",
-					"priority": null,
-					"effect": null
-				},
-				"application_period_patterns": [],
-				"application_periods": [
-					{
-						"begin": "2014-04-31T16:52:00Z",
-						"end": "2014-05-22T02:15:00Z"
-					}
-				],
-				"messages":[
-					{
-						"id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657ca",
-						"created_at": "2014-04-31T16:52:18Z",
-						"updated_at": "2014-04-31T16:55:18Z",
-						"text": "ptit dej à la gare!!",
-						"publication_date": ["2014-04-31T16:52:18Z"],
-						"publication_period": null,
-						"channel": {
-							"id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657da",
-							"name": "message court",
-							"content_type": "text/plain",
-							"created_at": "2014-04-31T16:52:18Z",
-							"updated_at": "2014-04-31T16:55:18Z",
-							"max_size": 140,
-							"types": ["web", "mobile"]
-						}
-					},
-					{
-						"id": "3d1f42b2-e8df-11e3-8c3e-0008ca8257ea",
-						"created_at": "2014-04-31T16:52:18Z",
-						"updated_at": "2014-04-31T16:55:18Z",
-						"text": "#Youpi\n**aujourd'hui c'est ptit dej en gare",
-						"publication_period" : {
-							"begin":"2014-04-31T17:00:00Z",
-							"end":"2014-05-01T17:00:00Z"
-						},
-						"publication_date" : null,
-						"channel": {
-							"id": "3d1f42b2-e8df-11e3-8c3e-0008cb8657ea",
-							"name": "message long",
-							"content_type": "text/markdown",
-							"created_at": "2014-04-31T16:52:18Z",
-							"updated_at": "2014-04-31T16:55:18Z",
-							"max_size": null,
-							"types": ["web", "mobile"]
-						}
-					}
-				],
-				"objects": [
-					{
-						"id": "stop_area:RTP:SA:3786125",
-						"name": "HENRI THIRARD - LEON JOUHAUX",
-						"type": "stop_area",
-						"coord": {
-							"lat": "48.778867",
-							"lon": "2.340927"
-						}
-					},
-					{
-						"id": "line:RTP:LI:378",
-						"name": "DE GAULLE - GOUNOD - TABANOU",
-						"type": "line",
-						"code": 2,
-						"color": "FFFFFF"
-					}
-				],
-				"disruption" : {"href": "https://chaos.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-823e-0008ca8657ea"}
-				}
-			],
-			"meta": {
-				"pagination": {
-				"start_page": 1,
-				"items_per_page": 3,
-				"total_results": 6,
-				"prev": null,
-				"next": {"href": "https://chaos.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-823e-0008ca8657ea/impacts?start_page=4&items_per_page=3"},
-				"first": {"href": "https://chaos.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-823e-0008ca8657ea/impacts?start_page=1&items_per_page=3"},
-				"last": {"href": "https://chaos.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-823e-0008ca8657ea/impacts?start_page=4&items_per_page=3"}
-				}
-			}
-		}
+            {
+                "impacts": [
+                    {
+                    "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657ea",
+                    "self": {"href": "https://chaos.apiary-mock.com/disruptions/3d1f32b2-e8df-11e3-8c3e-0008ca8657ea/impacts/3d1f42b2-e8df-11e3-8c3e-0008ca8657ea"},
+                    "created_at": "2014-04-31T16:52:18Z",
+                    "updated_at": "2014-04-31T16:55:18Z",
+                    "send_notifications": true,
+                    "severity": {
+                        "id": "3d1f42b2-e8df-11e3-8c3e-0008ca86c7ea",
+                        "wordings" : [{"key": "msg", "value": "Bonne nouvelle"}],
+                        "created_at": "2014-04-31T16:52:18Z",
+                        "updated_at": "2014-04-31T16:55:18Z",
+                        "color": "#123456",
+                        "priority": null,
+                        "effect": null
+                    },
+                    "application_period_patterns": [],
+                    "application_periods": [
+                        {
+                            "begin": "2014-04-31T16:52:00Z",
+                            "end": "2014-05-22T02:15:00Z"
+                        }
+                    ],
+                    "messages":[
+                        {
+                            "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657ca",
+                            "created_at": "2014-04-31T16:52:18Z",
+                            "updated_at": "2014-04-31T16:55:18Z",
+                            "text": "ptit dej à la gare!!",
+                            "publication_date": ["2014-04-31T16:52:18Z"],
+                            "publication_period": null,
+                            "channel": {
+                                "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657da",
+                                "name": "message court",
+                                "content_type": "text/plain",
+                                "created_at": "2014-04-31T16:52:18Z",
+                                "updated_at": "2014-04-31T16:55:18Z",
+                                "max_size": 140,
+                                "types": ["web", "mobile"]
+                            }
+                        },
+                        {
+                            "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8257ea",
+                            "created_at": "2014-04-31T16:52:18Z",
+                            "updated_at": "2014-04-31T16:55:18Z",
+                            "text": "#Youpi\n**aujourd'hui c'est ptit dej en gare",
+                            "publication_period" : {
+                                "begin":"2014-04-31T17:00:00Z",
+                                "end":"2014-05-01T17:00:00Z"
+                            },
+                            "publication_date" : null,
+                            "channel": {
+                                "id": "3d1f42b2-e8df-11e3-8c3e-0008cb8657ea",
+                                "name": "message long",
+                                "content_type": "text/markdown",
+                                "created_at": "2014-04-31T16:52:18Z",
+                                "updated_at": "2014-04-31T16:55:18Z",
+                                "max_size": null,
+                                "types": ["web", "mobile"]
+                            }
+                        }
+                    ],
+                    "objects": [
+                        {
+                            "id": "stop_area:RTP:SA:3786125",
+                            "name": "HENRI THIRARD - LEON JOUHAUX",
+                            "type": "stop_area",
+                            "coord": {
+                                "lat": "48.778867",
+                                "lon": "2.340927"
+                            }
+                        },
+                        {
+                            "id": "line:RTP:LI:378",
+                            "name": "DE GAULLE - GOUNOD - TABANOU",
+                            "type": "line",
+                            "code": 2,
+                            "color": "FFFFFF"
+                        }
+                    ],
+                    "disruption" : {"href": "https://chaos.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-823e-0008ca8657ea"}
+                    }
+                ],
+                "meta": {
+                    "pagination": {
+                    "start_page": 1,
+                    "items_per_page": 3,
+                    "total_results": 6,
+                    "prev": null,
+                    "next": {"href": "https://chaos.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-823e-0008ca8657ea/impacts?start_page=4&items_per_page=3"},
+                    "first": {"href": "https://chaos.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-823e-0008ca8657ea/impacts?start_page=1&items_per_page=3"},
+                    "last": {"href": "https://chaos.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-823e-0008ca8657ea/impacts?start_page=4&items_per_page=3"}
+                    }
+                }
+            }
 
 
 ##Create a impact [POST]
@@ -1080,7 +1146,7 @@ Create a new impact.
                 "send_notifications": true
             }
 
-- response 200 (application/json)
+- response 201 (application/json)
 
     * Body
 
@@ -1202,6 +1268,46 @@ Create a new impact.
                     "disruption" : {"href": "https://chaos.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-1c3e-0008ca8617ea"}
                 },
                 "meta": {}
+            }
+
+- response 400 (application/json)
+
+    * Body
+
+            {
+                "error": {
+                    "message": "'severity' is a required property"
+                }
+            }
+
+- response 404 (application/json)
+
+    * Body
+
+            {
+                "error": {
+                    "message": "..."
+                }
+            }
+
+- response 503 (application/json)
+
+    * Body
+
+            {
+                "error": {
+                    "message": "An error occurred during transferring this disruption to Navitia. Please try again"
+                }
+            }
+
+- response 500 (application/json)
+
+    * Body
+
+            {
+                "error": {
+                    "message": "..."
+                }
             }
 
 ##Update a impact [PUT]
@@ -1515,8 +1621,37 @@ Create a new impact.
             {
                 "error": {
                     "message": "No impact"
-                },
-                "meta": {}
+                }
+            }
+
+- response 400 (application/json)
+
+    * Body
+
+            {
+                "error": {
+                    "message": "'severity' is a required property"
+                }
+            }
+
+- response 503 (application/json)
+
+    * Body
+
+            {
+                "error": {
+                    "message": "An error occurred during transferring this impact to Navitia. Please try again."
+                }
+            }
+
+- response 500 (application/json)
+
+    * Body
+
+            {
+                "error": {
+                    "message": "..."
+                }
             }
 
 ##Delete a impact [DELETE]
@@ -1532,8 +1667,25 @@ Archive one impact.
             {
                 "error": {
                     "message": "No impact"
-                },
-                "meta": {}
+                }
+            }
+
+- response 503 (application/json)
+    * Body
+
+            {
+                "error": {
+                    "message": "An error occurred during transferring this impact to Navitia. Please try again."
+                }
+            }
+
+- response 500 (application/json)
+    * Body
+
+            {
+                "error": {
+                    "message": "An error occurred during deletion. Please try again."
+                }
             }
 
 #Impact [/disruptions/{disruption_id}/impacts/{id}]
@@ -1635,8 +1787,7 @@ Archive one impact.
             {
                 "error": {
                     "message": "No disruption or impact"
-                },
-                "meta": {}
+                }
             }
 
 #List of severities [/severities]
@@ -1697,7 +1848,7 @@ Return all the severities ordered by priority.
                     "effect": null
                 }
 
-- response 200 (application/json)
+- response 201 (application/json)
 
     * Body
 
@@ -1712,6 +1863,16 @@ Return all the severities ordered by priority.
                     "effect": null
                 },
                 "meta": {}
+            }
+
+- response 400 (application/json)
+
+    * Body
+
+            {
+                "error": {
+                    "message": "'wording' is a required property"
+                }
             }
 
 #List of causes [/causes]
@@ -1768,7 +1929,7 @@ Return all the severities ordered by priority.
                     "category": {"id": "32b07ff8-10e0-11e4-ae39-d4bed99855be"}
                 }
 
-- response 200 (application/json)
+- response 201 (application/json)
 
     * Body
 
@@ -1781,6 +1942,16 @@ Return all the severities ordered by priority.
                     "updated_at": null
                 },
                 "meta": {}
+            }
+
+- response 400 (application/json)
+
+    * Body
+
+            {
+                "error": {
+                    "message": "'wording' is a required property"
+                }
             }
 
 #List of tags [/tags]
@@ -1828,7 +1999,7 @@ Return all the severities ordered by priority.
                     "name": "meteo"
                 }
 
-- response 200 (application/json)
+- response 201 (application/json)
 
     * Body
 
@@ -1840,6 +2011,16 @@ Return all the severities ordered by priority.
                     "updated_at": null
                 },
                 "meta": {}
+            }
+
+- response 400 (application/json)
+
+    * Body
+
+            {
+                "error": {
+                    "message": "'name' is a required property"
+                }
             }
 
 # tags [/tags/{id}]
@@ -1873,8 +2054,7 @@ Retrieve one existing tag:
             {
                 "error": {
                     "message": "No tag"
-                },
-                "meta": {}
+                }
             }
 
 ##Update a tag [PUT]
@@ -1907,8 +2087,7 @@ Retrieve one existing tag:
                     "name": "rer",
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": "2014-04-31T16:55:18Z"
-                },
-                "meta": {}
+                }
             }
 
 - response 404 (application/json)
@@ -1917,8 +2096,7 @@ Retrieve one existing tag:
             {
                 "error": {
                     "message": "No tag"
-                },
-                "meta": {}
+                }
             }
 
 - response 400 (application/json)
@@ -1928,7 +2106,6 @@ Retrieve one existing tag:
                 "error": {
                     "message": "'name' is a required property"
                 }
-                "meta": {}
             }
 
 ##Delete a tag [DELETE]
@@ -1944,8 +2121,7 @@ Archive a tag.
             {
                 "error": {
                     "message": "No tag"
-                },
-                "meta": {}
+                }
             }
 
 
@@ -2019,7 +2195,7 @@ Archive a tag.
                     "types": ["sms", "notification"]
                 }
 
-- response 200 (application/json)
+- response 201 (application/json)
 
     * Body
 
@@ -2034,6 +2210,15 @@ Archive a tag.
                     "types": ["sms", "notification"]
                 },
                 "meta": {}
+            }
+
+- response 400 (application/json)
+    * Body
+
+            {
+                "error": {
+                    "message": "'name' is a required property"
+                }
             }
 
 # Severities [/severities/{id}]
@@ -2067,8 +2252,7 @@ Retrieve one existing severity:
             {
                 "error": {
                     "message": "No severity"
-                },
-                "meta": {}
+                }
             }
 
 ##Update a severity [PUT]
@@ -2114,8 +2298,17 @@ Retrieve one existing severity:
             {
                 "error": {
                     "message": "No severity"
-                },
-                "meta": {}
+                }
+            }
+
+- response 400 (application/json)
+
+    * Body
+
+            {
+                "error": {
+                    "message": "'wordings' is a required property"
+                }
             }
 
 ##Delete a severity [DELETE]
@@ -2131,8 +2324,7 @@ Archive one severity.
             {
                 "error": {
                     "message": "No severity"
-                },
-                "meta": {}
+                }
             }
 
 # Causes [/causes/{id}]
@@ -2164,8 +2356,7 @@ Retrieve one existing cause:
             {
                 "error": {
                     "message": "No cause"
-                },
-                "meta": {}
+                }
             }
 
 ##Update a cause [PUT]
@@ -2207,8 +2398,16 @@ Retrieve one existing cause:
             {
                 "error": {
                     "message": "No cause"
-                },
-                "meta": {}
+                }
+            }
+
+- response 400 (application/json)
+    * Body
+
+            {
+                "error": {
+                    "message": "'wordings' is a required property"
+                }
             }
 
 ##Delete a cause [DELETE]
@@ -2224,8 +2423,7 @@ Archive a cause.
             {
                 "error": {
                     "message": "No cause"
-                },
-                "meta": {}
+                }
             }
 
 #List of categories [/categories]
@@ -2273,7 +2471,7 @@ Archive a cause.
                     "name": "meteo"
                 }
 
-- response 200 (application/json)
+- response 201 (application/json)
 
     * Body
 
@@ -2318,8 +2516,7 @@ Retrieve one existing category:
             {
                 "error": {
                     "message": "No category"
-                },
-                "meta": {}
+                }
             }
 
 ##Update a category [PUT]
@@ -2362,8 +2559,7 @@ Retrieve one existing category:
             {
                 "error": {
                     "message": "No category"
-                },
-                "meta": {}
+                }
             }
 
 - response 400 (application/json)
@@ -2373,7 +2569,6 @@ Retrieve one existing category:
                 "error": {
                     "message": "'name' is a required property"
                 }
-                "meta": {}
             }
 
 ##Delete a category [DELETE]
@@ -2389,8 +2584,7 @@ Archive a category.
             {
                 "error": {
                     "message": "No category"
-                },
-                "meta": {}
+                }
             }
 
 # Properties
@@ -2711,16 +2905,16 @@ A typical traffic_report object will contain:
     it can contain links to its disruptions. These disruptions are globals and might not be applied on lines or stop_areas.
 
 - 0..n **lines**
-	each line contains at least a link to its disruptions
-	
+    each line contains at least a link to its disruptions
+
 - 0..n **line_sections**
-	each line_section contains at least a link to its disruptions, start_point, stop_point, the line, routes, meta and via if exist 
+    each line_section contains at least a link to its disruptions, start_point, stop_point, the line, routes, meta and via if exist
 
 - 0..n **stop_areas**
-	each stop_area contains at least a link to its disruptions
-	
+    each stop_area contains at least a link to its disruptions
+
 - 0..n **stop_points**
-	each stop_point contains at least a link to its disruptions
+    each stop_point contains at least a link to its disruptions
 
 It means that if a stop_area is used by many networks, it will appear many times.
 
@@ -2913,20 +3107,20 @@ It means that if a stop_area is used by many networks, it will appear many times
                         ],
                         "line_sections": [
                                     {
-                                        "id": "7ffab234-3d49-4eea-aa2c-22f8680230b6", 
+                                        "id": "7ffab234-3d49-4eea-aa2c-22f8680230b6",
                                         "line_section": {
                                             "end_point": {
-                                                "id": "stop_area:DUA:SA:8775810", 
+                                                "id": "stop_area:DUA:SA:8775810",
                                                 "type": "stop_area"
-                                            }, 
+                                            },
                                             "line": {
-                                                "id": "line:DUA:810801041", 
-                                                "name": "Cergy Le Haut / Poissy / St-Germain-en-Laye - Marne-la-Vall\u00e9e Chessy Disneyland / Boissy-St-L\u00e9ger", 
+                                                "id": "line:DUA:810801041",
+                                                "name": "Cergy Le Haut / Poissy / St-Germain-en-Laye - Marne-la-Vall\u00e9e Chessy Disneyland / Boissy-St-L\u00e9ger",
                                                 "type": "line",
                                                 "code": "A"
-                                            }, 
+                                            },
                                             "start_point": {
-                                                "id": "stop_area:DUA:SA:8738221", 
+                                                "id": "stop_area:DUA:SA:8738221",
                                                 "type": "stop_area"
                                             },
                                             "routes":[
@@ -2951,24 +3145,24 @@ It means that if a stop_area is used by many networks, it will appear many times
                                             ],
                                             "metas": [
                                                 {
-                                                    "key": "direction", 
+                                                    "key": "direction",
                                                     "value": "5"
-                                                }, 
+                                                },
                                                 {
-                                                    "key": "direction", 
+                                                    "key": "direction",
                                                     "value": "4"
                                                 }
                                             ]
-                                        }, 
+                                        },
                                         "links": [
                                             {
-                                                "id": "0615615a-8c60-11e5-b2c5-ecf4bb4460c7", 
-                                                "internal": true, 
-                                                "rel": "disruptions", 
-                                                "template": false, 
+                                                "id": "0615615a-8c60-11e5-b2c5-ecf4bb4460c7",
+                                                "internal": true,
+                                                "rel": "disruptions",
+                                                "template": false,
                                                 "type": "disruption"
                                             }
-                                        ], 
+                                        ],
                                         "type": "line_section"
                                     }
                                 ],
