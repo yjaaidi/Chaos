@@ -413,9 +413,37 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient la perturbat
                 "error": {
                     "message": "'reference' is a required property"
                 }
-                "meta": {}
             }
 
+- response 404 (application/json)
+
+    * Body
+
+            {
+                "error": {
+                    "message": "..."
+                }
+            }
+
+- response 503 (application/json)
+
+    * Body
+
+            {
+                "error": {
+                    "message": "An error occurred during transferring this disruption to Navitia. Please try again"
+                }
+            }
+
+- response 500 (application/json)
+
+    * Body
+
+            {
+                "error": {
+                    "message": "..."
+                }
+            }
 
 # Disruptions [/disruptions/{id}]
 ##Récupérer une perturbation [GET]
@@ -512,8 +540,7 @@ Retourne une perturbation (si elle existe):
             {
                 "error": {
                     "message": "No disruption"
-                },
-                "meta": {}
+                }
             }
 
 
@@ -651,14 +678,22 @@ Lors d'un succés une réponse 200 est retourné, celle ci contient la perturbat
                 "meta": {}
             }
 
+- response 409 (application/json)
+    * Body
+
+            {
+                "error": {
+                    "message": "The current disruption is already published and cannot get back to the 'draft' status."
+                }
+            }
+
 - response 404 (application/json)
     * Body
 
             {
                 "error": {
                     "message": "No disruption"
-                },
-                "meta": {}
+                }
             }
 
 
@@ -670,7 +705,25 @@ Lors d'un succés une réponse 200 est retourné, celle ci contient la perturbat
                 "error": {
                     "message": "'reference' is a required property"
                 }
-                "meta": {}
+            }
+
+- response 503 (application/json)
+    * Body
+
+            {
+                "error": {
+                    "message": "An error occurred during transferring this disruption to Navitia. Please try again."
+                }
+            }
+
+
+- response 500 (application/json)
+    * Body
+
+            {
+                "error": {
+                    "message": "..."
+                }
             }
 
 ##Effacer une perturbation [DELETE]
@@ -688,9 +741,8 @@ Une réponse de type 204 est retournée en cas de succés.
 
             {
                 "error": {
-                    "message": "No disruption"
-                },
-                "meta": {}
+                    "message": "..."
+                }
             }
 
 
@@ -1043,7 +1095,7 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient l'impact cr�
                 ]
             }
 
-- response 200 (application/json)
+- response 201 (application/json)
 
     * Body
 
@@ -1212,9 +1264,37 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient l'impact cr�
                 "error": {
                     "message": "'severity' is a required property"
                 }
-                "meta": {}
             }
 
+- response 404 (application/json)
+
+    * Body
+
+            {
+                "error": {
+                    "message": "..."
+                }
+            }
+
+- response 503 (application/json)
+
+    * Body
+
+            {
+                "error": {
+                    "message": "An error occurred during transferring this disruption to Navitia. Please try again"
+                }
+            }
+
+- response 500 (application/json)
+
+    * Body
+
+            {
+                "error": {
+                    "message": "..."
+                }
+            }
 
 #Impact [/disruptions/{disruption_id}/impacts/{id}]
 ##Retourne un impact [GET]
@@ -1343,8 +1423,7 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient l'impact cr�
             {
                 "error": {
                     "message": "No disruption or impact"
-                },
-                "meta": {}
+                }
             }
 
 
@@ -1679,8 +1758,7 @@ Lors d'un succés une réponse 200 est retourné, celle ci contient l'impact mod
             {
                 "error": {
                     "message": "No impact"
-                },
-                "meta": {}
+                }
             }
 
 
@@ -1692,7 +1770,26 @@ Lors d'un succés une réponse 200 est retourné, celle ci contient l'impact mod
                 "error": {
                     "message": "'severity' is a required property"
                 }
-                "meta": {}
+            }
+
+- response 503 (application/json)
+
+    * Body
+
+            {
+                "error": {
+                    "message": "An error occurred during transferring this impact to Navitia. Please try again."
+                }
+            }
+
+- response 500 (application/json)
+
+    * Body
+
+            {
+                "error": {
+                    "message": "..."
+                }
             }
 
 ##Effacer un impact [DELETE]
@@ -1711,10 +1808,26 @@ Une réponse de type 204 est retournée en cas de succés.
             {
                 "error": {
                     "message": "No impact"
-                },
-                "meta": {}
+                }
             }
 
+- response 503 (application/json)
+    * Body
+
+            {
+                "error": {
+                    "message": "An error occurred during transferring this impact to Navitia. Please try again."
+                }
+            }
+
+- response 500 (application/json)
+    * Body
+
+            {
+                "error": {
+                    "message": "An error occurred during deletion. Please try again."
+                }
+            }
 
 #Liste des sévérités [/severities]
 
@@ -1805,7 +1918,7 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient la sévérit
                     "priority": 1
                 }
 
-- response 200 (application/json)
+- response 201 (application/json)
 
     * Body
 
@@ -1833,7 +1946,6 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient la sévérit
                 "error": {
                     "message": "'wording' is a required property"
                 }
-                "meta": {}
             }
 
 
@@ -1871,8 +1983,7 @@ Retourne une sévérité existante.
             {
                 "error": {
                     "message": "No severity"
-                },
-                "meta": {}
+                }
             }
 
 ##Mise à jour d'une sévérité [PUT]
@@ -1928,8 +2039,7 @@ Lors d'un succés une réponse 200 est retourné, celle ci contient la sévérit
             {
                 "error": {
                     "message": "No severity"
-                },
-                "meta": {}
+                }
             }
 
 
@@ -1941,7 +2051,6 @@ Lors d'un succés une réponse 200 est retourné, celle ci contient la sévérit
                 "error": {
                     "message": "'wordings' is a required property"
                 }
-                "meta": {}
             }
 
 ##supprimer une sévérité [DELETE]
@@ -1957,8 +2066,7 @@ supprime une sévérité.
             {
                 "error": {
                     "message": "No severity"
-                },
-                "meta": {}
+                }
             }
 
 #Liste des causes [/causes]
@@ -2039,7 +2147,7 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient la cause cr�
                     "wordings": [{"key": "msg", "value": "accident voyageur"}],
                 }
 
-- response 200 (application/json)
+- response 201 (application/json)
 
     * Body
 
@@ -2065,7 +2173,6 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient la cause cr�
                 "error": {
                     "message": "'wording' is a required property"
                 }
-                "meta": {}
             }
 
 # Causes [/causes/{id}]
@@ -2100,8 +2207,7 @@ Retourne une cause existante.
             {
                 "error": {
                     "message": "No cause"
-                },
-                "meta": {}
+                }
             }
 
 ##Mise à jour d'une cause [PUT]
@@ -2152,8 +2258,7 @@ Lors d'un succés une réponse 200 est retourné, celle ci contient la cause mod
             {
                 "error": {
                     "message": "No cause"
-                },
-                "meta": {}
+                }
             }
 
 - response 400 (application/json)
@@ -2163,7 +2268,6 @@ Lors d'un succés une réponse 200 est retourné, celle ci contient la cause mod
                 "error": {
                     "message": "'wordings' is a required property"
                 }
-                "meta": {}
             }
 
 ##Archive une cause [DELETE]
@@ -2179,8 +2283,7 @@ Archive une cause.
             {
                 "error": {
                     "message": "No cause"
-                },
-                "meta": {}
+                }
             }
 
 #Liste des tags [/tags]
@@ -2250,7 +2353,7 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient le tag cré�
                     "name": "rer"
                 }
 
-- response 200 (application/json)
+- response 201 (application/json)
 
     * Body
 
@@ -2275,7 +2378,6 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient le tag cré�
                 "error": {
                     "message": "'name' is a required property"
                 }
-                "meta": {}
             }
 
 # tags [/tags/{id}]
@@ -2309,8 +2411,7 @@ Retourne un tag existant.
             {
                 "error": {
                     "message": "No tag"
-                },
-                "meta": {}
+                }
             }
 
 ##Mise à jour d'un tag [PUT]
@@ -2359,8 +2460,7 @@ Lors d'un succés une réponse 200 est retourné, celle ci contient le tag modif
             {
                 "error": {
                     "message": "No tag"
-                },
-                "meta": {}
+                }
             }
 
 - response 400 (application/json)
@@ -2370,7 +2470,6 @@ Lors d'un succés une réponse 200 est retourné, celle ci contient le tag modif
                 "error": {
                     "message": "'name' is a required property"
                 }
-                "meta": {}
             }
 
 ##Archive un tag [DELETE]
@@ -2386,8 +2485,7 @@ Archive un tag.
             {
                 "error": {
                     "message": "No tag"
-                },
-                "meta": {}
+                }
             }
 
 
@@ -2483,7 +2581,7 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient la canal cr�
                     "types": ["sms", "notification"]
                 }
 
-- response 200 (application/json)
+- response 201 (application/json)
 
     * Body
 
@@ -2510,7 +2608,6 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient la canal cr�
                 "error": {
                     "message": "'name' is a required property"
                 }
-                "meta": {}
             }
 
 #Liste des categories [/categories]
@@ -2580,7 +2677,7 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient la category 
                     "name": "rer"
                 }
 
-- response 200 (application/json)
+- response 201 (application/json)
 
     * Body
 
@@ -2605,7 +2702,6 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient la category 
                 "error": {
                     "message": "'name' is a required property"
                 }
-                "meta": {}
             }
 
 # categories [/categories/{id}]
@@ -2639,8 +2735,7 @@ Retourne une category existant.
             {
                 "error": {
                     "message": "No category"
-                },
-                "meta": {}
+                }
             }
 
 ##Mise à jour d'une category [PUT]
@@ -2689,8 +2784,7 @@ Lors d'un succés une réponse 200 est retourné, celle ci contient la category 
             {
                 "error": {
                     "message": "No category"
-                },
-                "meta": {}
+                }
             }
 
 - response 400 (application/json)
@@ -2700,7 +2794,6 @@ Lors d'un succés une réponse 200 est retourné, celle ci contient la category 
                 "error": {
                     "message": "'name' is a required property"
                 }
-                "meta": {}
             }
 
 ##Archive une category [DELETE]
@@ -2716,8 +2809,7 @@ Archive une category.
             {
                 "error": {
                     "message": "No category"
-                },
-                "meta": {}
+                }
             }
 
 #Traffic reports [/traffic_reports]
@@ -2737,16 +2829,16 @@ Un objet traffic_report typique contient:
     il peut contenir des links vers ses disruptions. Ces disruptions sont globales et ne sont peut-être pas appliquées sur des lines ou stop_areas
 
 - 0..n **lines**
-	chaque line contient au moins un link vers ses disruptions
-	
+    chaque line contient au moins un link vers ses disruptions
+
 - 0..n **line_sections**
-	chaque line_section contient au moins un link vers ses disruptions, start_point, end_point, la line, routes, meta et via si existe
+    chaque line_section contient au moins un link vers ses disruptions, start_point, end_point, la line, routes, meta et via si existe
 
 - 0..n **stop_areas**
-	chaque stop_area contient au moins un link vers ses disruptions
+    chaque stop_area contient au moins un link vers ses disruptions
 
 - 0..n **stop_points**
-	chaque stop_point contient au moins un link vers ses disruptions
+    chaque stop_point contient au moins un link vers ses disruptions
 
 Cela signifie qu'un stop_area utilisé par plusieurs networks va apparaître plusieurs fois.
 
@@ -2939,20 +3031,20 @@ Cela signifie qu'un stop_area utilisé par plusieurs networks va apparaître plu
                         ],
                         "line_sections": [
                                     {
-                                        "id": "7ffab234-3d49-4eea-aa2c-22f8680230b6", 
+                                        "id": "7ffab234-3d49-4eea-aa2c-22f8680230b6",
                                         "line_section": {
                                             "end_point": {
-                                                "id": "stop_area:DUA:SA:8775810", 
+                                                "id": "stop_area:DUA:SA:8775810",
                                                 "type": "stop_area"
-                                            }, 
+                                            },
                                             "line": {
-                                                "id": "line:DUA:810801041", 
-                                                "name": "Cergy Le Haut / Poissy / St-Germain-en-Laye - Marne-la-Vall\u00e9e Chessy Disneyland / Boissy-St-L\u00e9ger", 
+                                                "id": "line:DUA:810801041",
+                                                "name": "Cergy Le Haut / Poissy / St-Germain-en-Laye - Marne-la-Vall\u00e9e Chessy Disneyland / Boissy-St-L\u00e9ger",
                                                 "type": "line",
                                                 "code": "A"
-                                            }, 
+                                            },
                                             "start_point": {
-                                                "id": "stop_area:DUA:SA:8738221", 
+                                                "id": "stop_area:DUA:SA:8738221",
                                                 "type": "stop_area"
                                             },
                                             "routes":[
@@ -2977,24 +3069,24 @@ Cela signifie qu'un stop_area utilisé par plusieurs networks va apparaître plu
                                             ],
                                             "metas": [
                                                 {
-                                                    "key": "direction", 
+                                                    "key": "direction",
                                                     "value": "5"
-                                                }, 
+                                                },
                                                 {
-                                                    "key": "direction", 
+                                                    "key": "direction",
                                                     "value": "4"
                                                 }
                                             ]
-                                        }, 
+                                        },
                                         "links": [
                                             {
-                                                "id": "0615615a-8c60-11e5-b2c5-ecf4bb4460c7", 
-                                                "internal": true, 
-                                                "rel": "disruptions", 
-                                                "template": false, 
+                                                "id": "0615615a-8c60-11e5-b2c5-ecf4bb4460c7",
+                                                "internal": true,
+                                                "rel": "disruptions",
+                                                "template": false,
                                                 "type": "disruption"
                                             }
-                                        ], 
+                                        ],
                                         "type": "line_section"
                                     }
                                 ],
