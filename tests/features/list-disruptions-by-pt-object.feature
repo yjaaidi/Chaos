@@ -319,5 +319,5 @@ Feature: list impacts by ptobject and/or uri(s)
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
         And the field "disruptions" should have a size of 2
-        And the field "disruptions.0.id" should be "8ffab230-3d48-4eea-aa2c-22f8680230b6"
-        And the field "disruptions.1.id" should be "7ffab230-3d48-4eea-aa2c-22f8680230b6"
+        And the field "disruptions.0.id" should be "7ffab230-3d48-4eea-aa2c-22f8680230b6"
+        And the field "disruptions.1.id" should be "8ffab230-3d48-4eea-aa2c-22f8680230b6"
