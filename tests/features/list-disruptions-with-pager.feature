@@ -228,6 +228,7 @@ Feature: list disruptions with pager
             | bar       | bye   | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | published | 8ffab230-3d48-4eea-aa2c-22f8680230b6 | 2014-05-02T19:00:00 | 7ffab230-3d48-4eea-aa2c-22f8680230b6| 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
             | toto      |       | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | published | 9ffab230-3d48-4eea-aa2c-22f8680230b6 | 2014-05-02T19:00:00 | 7ffab230-3d48-4eea-aa2c-22f8680230b6| 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
             | chien     |       | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | published | 0ffab230-3d48-4eea-aa2c-22f8680230b6 | 2014-05-02T19:00:00 | 7ffab230-3d48-4eea-aa2c-22f8680230b6| 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
+            | clown     |       | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | published | 1ffab230-3d48-4eea-aa2c-22f8680230b6 | 2014-05-02T19:00:00 | 7ffab230-3d48-4eea-aa2c-22f8680230b6| 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
 
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
@@ -235,8 +236,17 @@ Feature: list disruptions with pager
         When I get "/disruptions"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
-        And the field "disruptions" should have a size of 4
+        And the field "disruptions" should have a size of 5
         And the field "disruptions.0.id" should be "0ffab230-3d48-4eea-aa2c-22f8680230b6"
-        And the field "disruptions.1.id" should be "7ffab230-3d48-4eea-aa2c-22f8680230b6"
-        And the field "disruptions.2.id" should be "8ffab230-3d48-4eea-aa2c-22f8680230b6"
-        And the field "disruptions.3.id" should be "9ffab230-3d48-4eea-aa2c-22f8680230b6"
+        And the field "disruptions.1.id" should be "1ffab230-3d48-4eea-aa2c-22f8680230b6"
+        And the field "disruptions.2.id" should be "7ffab230-3d48-4eea-aa2c-22f8680230b6"
+        And the field "disruptions.3.id" should be "8ffab230-3d48-4eea-aa2c-22f8680230b6"
+        And the field "disruptions.4.id" should be "9ffab230-3d48-4eea-aa2c-22f8680230b6"
+        When I get "/disruptions?start_page=2&items_per_page=2"
+        Then the status code should be "200"
+        And the field "disruptions.0.id" should be "7ffab230-3d48-4eea-aa2c-22f8680230b6"
+        And the field "disruptions.1.id" should be "8ffab230-3d48-4eea-aa2c-22f8680230b6"
+        When I get "/disruptions?start_page=2&items_per_page=3"
+        Then the status code should be "200"
+        And the field "disruptions.0.id" should be "9ffab230-3d48-4eea-aa2c-22f8680230b6"
+
