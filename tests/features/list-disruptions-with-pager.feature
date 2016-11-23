@@ -246,7 +246,7 @@ Feature: list disruptions with pager
         Then the status code should be "200"
         And the field "disruptions.0.id" should be "7ffab230-3d48-4eea-aa2c-22f8680230b6"
         And the field "disruptions.1.id" should be "8ffab230-3d48-4eea-aa2c-22f8680230b6"
-        When I get "/disruptions?start_page=2&items_per_page=3"
+        When I get "/disruptions?start_page=3&items_per_page=2"
         Then the status code should be "200"
         And the field "disruptions.0.id" should be "9ffab230-3d48-4eea-aa2c-22f8680230b6"
 
