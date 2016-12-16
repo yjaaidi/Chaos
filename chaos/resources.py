@@ -40,6 +40,7 @@ from formats import impact_input_format, channel_input_format, pt_object_type_va
 from chaos import mapper, exceptions
 from chaos import utils, db_helper
 import chaos
+import json
 from sqlalchemy.exc import IntegrityError
 import logging
 from utils import make_pager, option_value
@@ -204,20 +205,30 @@ class Disruptions(flask_restful.Resource):
             response = {'disruptions': result.items, 'meta': make_pager(result, 'disruption')}
             return marshal(response, disruptions_fields)
 
+    def get_error_response_and_log(self, exception):
+        logging.getLogger(__name__).debug(
+            'Error REQUEST disruption: [X-Customer-Id:%s;X-Coverage:%s;X-Contributors:%s] %s',
+            request.headers.get('X-Customer-Id'),
+            request.headers.get('X-Coverage'),
+            request.headers.get('X-Contributors'),
+            json.dumps(request.get_json(silent=True))
+        )
+        response_content = marshal({'error': {'message': '{}'.format(exception.message)}}, error_fields)
+        logging.getLogger(__name__).debug('Error RESPONSE disruption: %s', json.dumps(response_content))
+        return response_content
+
     @validate_navitia()
     @validate_client(True)
     @manage_navitia_error()
     def post(self, client, navitia):
         self.navitia = navitia
         json = request.get_json(silent=True)
-        logging.getLogger(__name__).debug('POST disruption: %s', json)
+
         try:
             validate(json, disruptions_input_format)
         except ValidationError, e:
-            logging.debug(str(e))
-            # TODO: generate good error messages
-            return marshal({'error': {'message': utils.parse_error(e)}},
-                           error_fields), 400
+            response = self.get_error_response_and_log(e)
+            return response, 400
         disruption = models.Disruption()
         mapper.fill_from_json(disruption, json, mapper.disruption_mapping)
 
@@ -230,7 +241,8 @@ class Disruptions(flask_restful.Resource):
         try:
             db_helper.manage_pt_object_without_line_section(self.navitia, disruption.localizations, 'localization', json)
         except exceptions.ObjectUnknown, e:
-            return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 404
+            response = self.get_error_response_and_log(e)
+            return response, 404
 
         # Add all tags present in Json
         db_helper.manage_tags(disruption, json)
@@ -238,16 +250,19 @@ class Disruptions(flask_restful.Resource):
         try:
             db_helper.manage_impacts(disruption, json, self.navitia)
         except exceptions.ObjectUnknown, e:
-            return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 404
+            response = self.get_error_response_and_log(e)
+            return response, 404
 
         # Add all properties present in Json
         try:
             db_helper.manage_properties(disruption, json)
         except exceptions.ObjectUnknown, e:
-            return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 404
+            response = self.get_error_response_and_log(e)
+            return response, 404
 
         except exceptions.InvalidJson, e:
-            return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 400
+            response = self.get_error_response_and_log(e)
+            return response, 400
 
         try:
             db.session.add(disruption)
