@@ -103,7 +103,7 @@ def make_fake_pager(resultcount, per_page, endpoint, **kwargs):
 
     if resultcount > 0:
         last_link = url_for(endpoint,
-                            start_page=ceil(resultcount / per_page),
+                            start_page=int(ceil(float(resultcount) / per_page)),
                             items_per_page=per_page,
                             _external=True, **kwargs)
         first_link = url_for(endpoint,
