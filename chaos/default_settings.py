@@ -61,7 +61,7 @@ LOGGER = {
         },
         'sqlalchemy.engine': {
             'handlers': ['default'],
-            'level': 'INFO',
+            'level': 'WARN',
             'propagate': False
         },
         'sqlalchemy.pool': {
