@@ -18,6 +18,8 @@ EXCHANGE = 'navitia'
 
 ENABLE_RABBITMQ = True
 
+ACTIVATE_PROFILING = False
+
 # Log Level available
 # - DEBUG
 # - INFO
@@ -59,7 +61,7 @@ LOGGER = {
         },
         'sqlalchemy.engine': {
             'handlers': ['default'],
-            'level': 'WARN',
+            'level': 'INFO',
             'propagate': False
         },
         'sqlalchemy.pool': {
