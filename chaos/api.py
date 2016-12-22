@@ -100,3 +100,12 @@ def error_handler(exception):
     log all exceptions not catch before
     """
     app.logger.exception('')
+
+if api.app.config.get('ACTIVATE_PROFILING'):
+    api.app.logger.warning('=======================================================')
+    api.app.logger.warning('activation of the profiling, all query will be slow !')
+    api.app.logger.warning('=======================================================')
+    from werkzeug.contrib.profiler import ProfilerMiddleware
+    api.app.config['PROFILE'] = True
+    f = open('/tmp/profiler.log', 'a+')
+    api.app.wsgi_app = ProfilerMiddleware(api.app.wsgi_app, f, restrictions=[80], profile_dir='/tmp/profile')

@@ -40,6 +40,7 @@ from chaos.exceptions import HeaderAbsent
 import chaos
 import pytz
 import logging
+from math import ceil
 
 
 def make_pager(resultset, endpoint, **kwargs):
@@ -83,6 +84,46 @@ def make_pager(resultset, endpoint, **kwargs):
     }
     return result
 
+
+def make_fake_pager(resultcount, per_page, endpoint, **kwargs):
+    """
+        Generate a fake pager object only based on the object count
+        for the first page
+    """
+    prev_link = None
+    next_link = None
+    last_link = None
+    first_link = None
+
+    if resultcount > per_page:
+        next_link = url_for(endpoint,
+                            start_page=2,
+                            items_per_page=per_page,
+                            _external=True, **kwargs)
+
+    if resultcount > 0:
+        last_link = url_for(endpoint,
+                            start_page=int(ceil(float(resultcount) / per_page)),
+                            items_per_page=per_page,
+                            _external=True, **kwargs)
+        first_link = url_for(endpoint,
+                             start_page=1,
+                             items_per_page=per_page,
+                             _external=True, **kwargs)
+
+    result = {
+        "pagination": {
+            "start_page": 1,
+            "items_on_page": min(resultcount, per_page),
+            "items_per_page": per_page,
+            "total_result": resultcount,
+            "prev": {"href": prev_link},
+            "next": {"href": next_link},
+            "first": {"href": first_link},
+            "last": {"href": last_link}
+        }
+    }
+    return result
 
 class paginate(object):
     def __call__(self, func):
