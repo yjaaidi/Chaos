@@ -205,23 +205,25 @@ class Disruptions(flask_restful.Resource):
             response = {'disruptions': result.items, 'meta': make_pager(result, 'disruption')}
             return marshal(response, disruptions_fields)
 
-    def get_post_error_response_and_log(self, exception):
-        return self.get_error_response_and_log('POST', exception)
+    def get_post_error_response_and_log(self, exception, status_code):
+        return self.get_error_response_and_log('POST', exception, status_code)
 
-    def get_put_error_response_and_log(self, exception):
-        return self.get_error_response_and_log('PUT', exception)
+    def get_put_error_response_and_log(self, exception, status_code):
+        return self.get_error_response_and_log('PUT', exception, status_code)
 
-    def get_error_response_and_log(self, method, exception):
+    def get_error_response_and_log(self, method, exception, status_code):
+        response_content = marshal({'error': {'message': '{}'.format(exception.message)}}, error_fields)
         logging.getLogger(__name__).debug(
-            'Error REQUEST %s disruption: [X-Customer-Id:%s;X-Coverage:%s;X-Contributors:%s] %s',
+            "\nError REQUEST %s disruption: [X-Customer-Id:%s;X-Coverage:%s;X-Contributors:%s] with payload \n%s" +
+            "\ngot RESPONSE with status %d:\n%s",
             method,
             request.headers.get('X-Customer-Id'),
             request.headers.get('X-Coverage'),
             request.headers.get('X-Contributors'),
-            json.dumps(request.get_json(silent=True))
+            json.dumps(request.get_json(silent=True)),
+            status_code,
+            json.dumps(response_content)
         )
-        response_content = marshal({'error': {'message': '{}'.format(exception.message)}}, error_fields)
-        logging.getLogger(__name__).debug('Error RESPONSE disruption: %s', json.dumps(response_content))
         return response_content
 
     @validate_navitia()
@@ -234,7 +236,7 @@ class Disruptions(flask_restful.Resource):
         try:
             validate(json, disruptions_input_format)
         except ValidationError, e:
-            response = self.get_post_error_response_and_log(e)
+            response = self.get_post_error_response_and_log(e, 400)
             return response, 400
         disruption = models.Disruption()
         mapper.fill_from_json(disruption, json, mapper.disruption_mapping)
@@ -248,7 +250,7 @@ class Disruptions(flask_restful.Resource):
         try:
             db_helper.manage_pt_object_without_line_section(self.navitia, disruption.localizations, 'localization', json)
         except exceptions.ObjectUnknown, e:
-            response = self.get_post_error_response_and_log(e)
+            response = self.get_post_error_response_and_log(e, 404)
             return response, 404
 
         # Add all tags present in Json
@@ -257,18 +259,18 @@ class Disruptions(flask_restful.Resource):
         try:
             db_helper.manage_impacts(disruption, json, self.navitia)
         except exceptions.ObjectUnknown, e:
-            response = self.get_post_error_response_and_log(e)
+            response = self.get_post_error_response_and_log(e, 404)
             return response, 404
 
         # Add all properties present in Json
         try:
             db_helper.manage_properties(disruption, json)
         except exceptions.ObjectUnknown, e:
-            response = self.get_post_error_response_and_log(e)
+            response = self.get_post_error_response_and_log(e, 404)
             return response, 404
 
         except exceptions.InvalidJson, e:
-            response = self.get_post_error_response_and_log(e)
+            response = self.get_post_error_response_and_log(e, 404)
             return response, 400
 
         try:
@@ -303,7 +305,7 @@ class Disruptions(flask_restful.Resource):
         try:
             validate(json, disruptions_input_format)
         except ValidationError, e:
-            response = self.get_put_error_response_and_log(e)
+            response = self.get_put_error_response_and_log(e, 400)
             return response, 400
 
         if disruption.is_published() and 'status' in json\
@@ -322,7 +324,7 @@ class Disruptions(flask_restful.Resource):
         try:
             db_helper.manage_pt_object_without_line_section(self.navitia, disruption.localizations, 'localization', json)
         except exceptions.ObjectUnknown, e:
-            response = self.get_put_error_response_and_log(e)
+            response = self.get_put_error_response_and_log(e, 404)
             return response, 404
 
         # Add/delete tags present/ not present in Json
@@ -332,11 +334,11 @@ class Disruptions(flask_restful.Resource):
         try:
             db_helper.manage_impacts(disruption, json, self.navitia)
         except exceptions.ObjectUnknown, e:
-            response = self.get_put_error_response_and_log(e)
+            response = self.get_put_error_response_and_log(e, 404)
             return response, 404
 
         except exceptions.InvalidJson, e:
-            response = self.get_put_error_response_and_log(e)
+            response = self.get_put_error_response_and_log(e, 404)
             return response, 404
 
         # Add all properties present in Json
@@ -344,7 +346,7 @@ class Disruptions(flask_restful.Resource):
             db_helper.manage_properties(disruption, json)
         except exceptions.ObjectUnknown as e:
             db.session.rollback()
-            response = self.get_put_error_response_and_log(e)
+            response = self.get_put_error_response_and_log(e, 404)
             return response, 404
 
         disruption.upgrade_version()
