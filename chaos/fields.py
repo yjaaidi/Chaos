@@ -29,7 +29,7 @@
 
 from flask_restful import fields, url_for
 from flask import current_app, request
-from utils import make_pager, get_coverage, get_token, get_current_time
+from utils import make_fake_pager, get_coverage, get_token, get_current_time
 from chaos.navitia import Navitia
 from copy import deepcopy
 
@@ -63,7 +63,7 @@ class FieldPaginateImpacts(fields.Raw):
     Pagination of impacts list for one disruption
     '''
     def output(self, key, disruption):
-        return make_pager(disruption.impacts.paginate(1, 20),
+        return make_fake_pager(disruption.impacts.count(), 20,
                           'impact',
                           disruption_id=disruption.id)
 

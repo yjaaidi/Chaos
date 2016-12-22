@@ -18,6 +18,8 @@ EXCHANGE = 'navitia'
 
 ENABLE_RABBITMQ = True
 
+ACTIVATE_PROFILING = False
+
 # Log Level available
 # - DEBUG
 # - INFO
