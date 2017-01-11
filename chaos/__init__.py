@@ -32,7 +32,7 @@ VERSION = '0.35.4-dev'
 # remplace blocking method by a non blocking equivalent
 # this enable us to use gevent for launching background task
 from gevent import monkey
-monkey.patch_all()
+monkey.patch_all(thread=False)
 
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
