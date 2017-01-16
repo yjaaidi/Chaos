@@ -30,13 +30,14 @@
 # www.navitia.io
 
 import uuid
-from chaos import db, utils
+from chaos import db, utils, exceptions
 from utils import paginate, get_current_time
 from sqlalchemy.dialects.postgresql import UUID, BIT
 from datetime import datetime
 from formats import publication_status_values
 from sqlalchemy import or_, and_, between
 from sqlalchemy.orm import aliased
+import logging
 
 
 # force the server to use UTC time for each connection
@@ -202,12 +203,16 @@ class Severity(TimestampMixin, db.Model):
 
     @classmethod
     def get(cls, id, client_id):
-        return cls.query.filter_by(
-            id=id,
-            client_id=client_id,
-            is_visible=True
-        ).first_or_404()
+        severity = cls.query.filter_by(
+                id=id,
+                client_id=client_id,
+                is_visible=True
+            ).first()
 
+        if severity is None:
+            raise exceptions.ObjectUnknown('Unable to find the severty with id {} and client id {}'.format(id, client_id))
+
+        return severity
 
 class Category(TimestampMixin, db.Model):
     """
