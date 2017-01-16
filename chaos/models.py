@@ -37,7 +37,6 @@ from datetime import datetime
 from formats import publication_status_values
 from sqlalchemy import or_, and_, between
 from sqlalchemy.orm import aliased
-import logging
 
 
 # force the server to use UTC time for each connection
