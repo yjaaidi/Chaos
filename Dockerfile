@@ -17,8 +17,8 @@ RUN apk --update --no-cache add \
         git \
         postgresql-dev && \
     pip install -U pip && \
-    pip install --no-cache-dir uwsgi && \
     pip install --no-cache-dir -r requirements.txt && \
+    pip install --no-cache-dir uwsgi && \
     apk del \
         g++ \
         build-base \
