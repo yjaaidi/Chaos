@@ -67,7 +67,7 @@ class Navitia(object):
     def navitia_caller(self, query):
 
         try:
-            return requests.get(query, auth=(self.token, None), timeout=self.timeout)
+            return requests.get(query, headers={"Authorization": self.token}, timeout=self.timeout)
         except (requests.exceptions.RequestException):
             logging.getLogger(__name__).exception('call to navitia failed')
             # currently we reraise the previous exceptions

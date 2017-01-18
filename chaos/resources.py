@@ -214,12 +214,13 @@ class Disruptions(flask_restful.Resource):
     def get_error_response_and_log(self, method, exception, status_code):
         response_content = marshal({'error': {'message': '{}'.format(exception.message)}}, error_fields)
         logging.getLogger(__name__).debug(
-            "\nError REQUEST %s disruption: [X-Customer-Id:%s;X-Coverage:%s;X-Contributors:%s] with payload \n%s" +
+            "\nError REQUEST %s disruption: [X-Customer-Id:%s;X-Coverage:%s;X-Contributors:%s;Authorization:%s] with payload \n%s" +
             "\ngot RESPONSE with status %d:\n%s",
             method,
             request.headers.get('X-Customer-Id'),
             request.headers.get('X-Coverage'),
             request.headers.get('X-Contributors'),
+            request.headers.get('Authorization'),
             json.dumps(request.get_json(silent=True)),
             status_code,
             json.dumps(response_content)
