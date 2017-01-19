@@ -4,8 +4,8 @@ services:
   ws:
     image: navitia/chaos-ws:dev
     environment:
-      - DATABASE_HOST=database
-      - RABBITMQ_HOST=rabbitmq
+      - SQLALCHEMY_DATABASE_URI=postgresql://navitia:navitia@database/chaos
+      - RABBITMQ_CONNECTION_STRING=pyamqp://guest:guest@rabbitmq:5672//?heartbeat=60
       - DOMAIN_NAME=chaos-ws.local.canaltp.fr
     command: /bin/bash /var/www/Chaos/docker/honcho_launcher.sh
     volumes:
