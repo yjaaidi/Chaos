@@ -77,7 +77,12 @@ class Severity(flask_restful.Resource):
     @validate_id()
     def get(self, client, id=None):
         if id:
-            return marshal({'severity': models.Severity.get(id, client.id)}, one_severity_fields)
+            try:
+                severity = models.Severity.get(id, client.id)
+            except exceptions.ObjectUnknown, e:
+                return marshal({'error': {'message': utils.parse_error(e)}},
+                               error_fields), 404
+            return marshal({'severity': severity}, one_severity_fields)
         else:
             response = {'severities': models.Severity.all(client.id), 'meta': {}}
             return marshal(response, severities_fields)
@@ -111,7 +116,11 @@ class Severity(flask_restful.Resource):
     @validate_id(True)
     def put(self, client, id):
 
-        severity = models.Severity.get(id, client.id)
+        try:
+            severity = models.Severity.get(id, client.id)
+        except exceptions.ObjectUnknown, e:
+            return marshal({'error': {'message': utils.parse_error(e)}},
+                           error_fields), 404
         json = request.get_json(silent=True)
         logging.getLogger(__name__).debug('PUT severity: %s', json)
 
@@ -137,7 +146,11 @@ class Severity(flask_restful.Resource):
     @validate_id(True)
     def delete(self, client, id):
 
-        severity = models.Severity.get(id, client.id)
+        try:
+            severity = models.Severity.get(id, client.id)
+        except exceptions.ObjectUnknown, e:
+            return marshal({'error': {'message': utils.parse_error(e)}},
+                           error_fields), 404
         severity.is_visible = False
         db.session.commit()
         return None, 204
