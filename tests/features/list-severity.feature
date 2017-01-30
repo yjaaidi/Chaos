@@ -56,7 +56,6 @@ Feature: list severity
             And the field "severities.1.color" should be "#654321"
             And the field "severities.1.priority" should be null
 
-
         Scenario: only visible severities have to be return
             Given I have the following clients in my database:
             | client_code   | created_at          | updated_at          | id                                   |
@@ -148,3 +147,26 @@ Feature: list severity
             And the field "severities.1.color" should be "#654321"
             And the field "severities.1.priority" should be null
             And the field "severities.1.effect" should be "no_service"
+
+        Scenario: Severity could be retrieved by ID and for client
+            Given I have the following clients in my database:
+            | client_code   | created_at          | updated_at          | id                                   |
+            | 7             | 2017-01-30T00:00:00 | 2017-01-30T00:00:00 | 5ffab229-3d48-4eea-aa2c-22f8680230b5 |
+            | 8             | 2017-01-30T00:00:00 | 2017-01-30T00:00:00 | 6ffab229-3d48-4eea-aa2c-22f8680230b6 |
+            Given I have the following severities in my database:
+            | wording                | color   | created_at          | updated_at          | is_visible | id                                   | client_id                            |
+            | severity_for_client_7  | #123456 | 2017-01-30T00:00:00 | 2017-01-30T00:00:00 | True       | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 5ffab229-3d48-4eea-aa2c-22f8680230b5 |
+            | severity_for_client_8  | #ffffff | 2017-01-30T00:00:00 | 2017-01-30T00:00:00 | True       | 6ffab229-3d48-4eea-aa2c-22f8680230b6 | 6ffab229-3d48-4eea-aa2c-22f8680230b6 |
+
+            I fill in header "X-Customer-Id" with "8"
+            When I get "/severities/5ffab229-3d48-4eea-aa2c-22f8680230b5"
+            Then the status code should be "404"
+            And the header "Content-Type" should be "application/json"
+            And the field "error" should have a size of 1
+            And the field "error.message" should be "The severty with id 5ffab229-3d48-4eea-aa2c-22f8680230b5 does not exist for this client"
+
+            #A severity created by client is visible for that client
+            When I get "/severities/6ffab229-3d48-4eea-aa2c-22f8680230b6"
+            Then the status code should be "200"
+            And the header "Content-Type" should be "application/json"
+            And the field "severity.wording" should be "severity_for_client_8"

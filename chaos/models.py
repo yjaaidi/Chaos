@@ -209,7 +209,7 @@ class Severity(TimestampMixin, db.Model):
             ).first()
 
         if severity is None:
-            raise exceptions.ObjectUnknown('The severty with id {} does not exist for this client.'.format(id))
+            raise exceptions.ObjectUnknown('The severty with id {} does not exist for this client'.format(id))
 
         return severity
 
