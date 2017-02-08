@@ -1878,7 +1878,7 @@ Return all the severities ordered by priority.
 #List of causes [/causes]
 
 ##Retrieve the list of all causes [GET]
-##Paramètres
+##Parameters
 
 | Name                 | description                                                                               | required | default                 |
 | -------------------- | ----------------------------------------------------------------------------------------- | -------- | ----------------------- |
@@ -1915,44 +1915,6 @@ Return all the severities ordered by priority.
                 "meta": {}
             }
 
-##Create a cause [POST]
-- request
-    + headers
-
-            Content-Type: application/json
-            X-Customer-Id: [customer id]
-
-    * Body
-
-                {
-                    "wordings": [{"msg": "météo"}],
-                    "category": {"id": "32b07ff8-10e0-11e4-ae39-d4bed99855be"}
-                }
-
-- response 201 (application/json)
-
-    * Body
-
-            {
-                "cause": {
-                    "id": "3d1f42b2-e8df-11e4-8c3e-0008ca8617ea",
-                    "wordings": [{"key": "msg", "value": "accident voyageur"}],
-                    "category": {"id": "32b07ff8-10e0-11e4-ae39-d4bed99855be", "name": "test"}
-                    "created_at": "2014-04-31T16:52:18Z",
-                    "updated_at": null
-                },
-                "meta": {}
-            }
-
-- response 400 (application/json)
-
-    * Body
-
-            {
-                "error": {
-                    "message": "'wording' is a required property"
-                }
-            }
 
 #List of tags [/tags]
 
@@ -2359,8 +2321,57 @@ Retrieve one existing cause:
                 }
             }
 
+##Create a cause [POST]
+###Parameters
+
+| Name           | description                                      | required | default |
+| -------------- | ------------------------------------------------ | -------- | ------- |
+| wording        | default wording displayed in navitia             | false    |         |
+
+- request
+    + headers
+
+            Content-Type: application/json
+            X-Customer-Id: [customer id]
+
+    * Body
+
+                {
+                    "wordings": [{"msg": "accident voyageur"}],
+                    "category": {"id": "32b07ff8-10e0-11e4-ae39-d4bed99855be"}
+                }
+
+- response 201 (application/json)
+
+    * Body
+
+            {
+                "cause": {
+                    "id": "3d1f42b2-e8df-11e4-8c3e-0008ca8617ea",
+                    "wordings": [{"key": "msg", "value": "accident voyageur"}],
+                    "category": {"id": "32b07ff8-10e0-11e4-ae39-d4bed99855be", "name": "test"}
+                    "created_at": "2014-04-31T16:52:18Z",
+                    "updated_at": null
+                },
+                "meta": {}
+            }
+
+- response 400 (application/json)
+
+    * Body
+
+            {
+                "error": {
+                    "message": "'wording' is a required property"
+                }
+            }
+
+
 ##Update a cause [PUT]
 ###Parameters
+| Name           | description                                      | required | default |
+| -------------- | ------------------------------------------------ | -------- | ------- |
+| wording        | default wording displayed in navitia             | false    |         |
 
 
 - Request
