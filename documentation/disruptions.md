@@ -1871,7 +1871,7 @@ Return all the severities ordered by priority.
 
             {
                 "error": {
-                    "message": "'wording' is a required property"
+                    "message": "'wordings' is a required property"
                 }
             }
 
@@ -2362,7 +2362,7 @@ Retrieve one existing cause:
 
             {
                 "error": {
-                    "message": "'wording' is a required property"
+                    "message": "'wordings' is a required property"
                 }
             }
 
