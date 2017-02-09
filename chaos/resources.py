@@ -441,7 +441,7 @@ class Cause(flask_restful.Resource):
         mapper.fill_from_json(cause, json, mapper.cause_mapping)
         cause.client = client
         try:
-            db_helper.manage_wordings(cause, json["wordings"])
+            db_helper.manage_wordings(cause, json["wordings"], json["wording"])
         except exceptions.InvalidJson, e:
             return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 400
@@ -467,7 +467,7 @@ class Cause(flask_restful.Resource):
 
         mapper.fill_from_json(cause, json, mapper.cause_mapping)
         try:
-            db_helper.manage_wordings(cause, json["wordings"])
+            db_helper.manage_wordings(cause, json["wordings"], json["wording"])
         except exceptions.InvalidJson, e:
             return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 400
