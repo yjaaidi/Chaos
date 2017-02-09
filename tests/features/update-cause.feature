@@ -102,6 +102,7 @@ Feature: update cause
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
         And the field "cause.wordings" should have a size of 2
+        And in the database for the cause "7ffab230-3d48-4eea-aa2c-22f8680230b6" the field "wording" should be "bb"
 
     Scenario: I can update a cause with a default wording
         Given I have the following clients in my database:
@@ -120,7 +121,7 @@ Feature: update cause
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
         And the field "cause.wordings" should have a size of 2
-
+        And in the database for the cause "7ffab230-3d48-4eea-aa2c-22f8680230b6" the field "wording" should be "cc"
 
     Scenario: I can't update a invisible cause
         Given I have the following clients in my database:
