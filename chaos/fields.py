@@ -159,9 +159,7 @@ class FieldCause(fields.Raw):
     def output(self, key, obj):
         disruption = obj.disruption
         if hasattr(obj.disruption, 'cause') and hasattr(obj.disruption.cause, 'wordings'):
-            for wording in disruption.cause.wordings:
-                if wording.key == 'external_medium':
-                    return wording.value
+            return disruption.cause.wording
         return None
 
 
