@@ -99,10 +99,10 @@ def manage_wordings(db_object, json_wordings, json_default_wording=None):
         db_wording.key = json_wording["key"]
         db_wording.value = json_wording["value"]
         db_object.wordings.append(db_wording)
-    if json_default_wording is None:
-        db_object.wording = db_object.wordings[0].value
-    else:
+    if json_default_wording:
         db_object.wording = json_default_wording
+    else:
+        db_object.wording = db_object.wordings[0].value
 
 
 def manage_tags(disruption, json):
