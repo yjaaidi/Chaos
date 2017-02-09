@@ -4,7 +4,7 @@ import os
 # postgresql://<user>:<password>@<host>:<port>/<dbname>
 #http://docs.sqlalchemy.org/en/rel_0_9/dialects/postgresql.html#psycopg2
 DATABASE_HOST = str(os.getenv('DATABASE_HOST', 'localhost'))
-SQLALCHEMY_DATABASE_URI = 'postgresql://navitia:navitia@' + DATABASE_HOST + '/chaos_test'
+SQLALCHEMY_DATABASE_URI = 'postgresql://navitia:navitia@' + DATABASE_HOST + '/chaos_testing'
 
 NAVITIA_URL = 'http://navitia2-ws.ctp.customer.canaltp.fr/'
 
