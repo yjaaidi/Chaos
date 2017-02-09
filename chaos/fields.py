@@ -158,7 +158,7 @@ class ComputeDisruptionStatus(fields.Raw):
 class FieldCause(fields.Raw):
     def output(self, key, obj):
         disruption = obj.disruption
-        if hasattr(obj.disruption, 'cause') and hasattr(obj.disruption.cause, 'wordings'):
+        if hasattr(obj.disruption, 'cause'):
             return disruption.cause.wording
         return None
 
