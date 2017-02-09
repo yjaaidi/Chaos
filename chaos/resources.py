@@ -440,6 +440,8 @@ class Cause(flask_restful.Resource):
         cause = models.Cause()
         mapper.fill_from_json(cause, json, mapper.cause_mapping)
         cause.client = client
+        if 'wording' not in json:
+            json["wording"] = None
         try:
             db_helper.manage_wordings(cause, json["wordings"], json["wording"])
         except exceptions.InvalidJson, e:
