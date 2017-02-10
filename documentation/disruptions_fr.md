@@ -2156,11 +2156,12 @@ Retourne une cause existante.
             }
 
 ##Créer une cause [POST]
-###Paramètre
-
-| Nom            | déscription                                      | requis   |  défaut |
+###Paramètres
+| nom           | description                                      | requis | default |
 | -------------- | ------------------------------------------------ | -------- | ------- |
-| wording        | valeur par défaut envoyée à navitia              | non      |         |
+| categoy        | catégorie associée                               | non    |         |
+| wording        | valeur par défaut envoyée à navitia              | non    |         |
+| wordings       | tableau illimité de messages (clef/message) for your cause| oui    |         |
 
 La création d'une cause est réalisée via une requête ```POST``` sur la resource ```cause```.
 Le content-type de la requete doit etre json et le corps de celle ci doit contenir un json correspondant au format d'une cause.
@@ -2184,10 +2185,11 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient la cause cr�
 
     * Body
 
-                {
-                    "category": {"id": "32b07ff8-10e0-11e4-ae39-d4bed99855be"},
-                    "wordings": [{"key": "msg", "value": "accident voyageur"}],
-                }
+            {
+                "category": {"id": "32b07ff8-10e0-11e4-ae39-d4bed99855be"},
+                "wordings": [{"msg_interne": "Bebert a encore laissé une locomotive en double file"}, {"msg_media": "train retardé"}, {"msg_sms": "prenez le bus"}],
+                "wording": "train retardé"
+            }
 
 - response 201 (application/json)
 
@@ -2198,8 +2200,8 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient la cause cr�
                     "id": "3d1f42b2-e8df-11e4-8c3e-0008ca8617ea",
                     "self": {
                         "href": "https://ogv2ws.apiary-mock.com/causes/3d1f42b2-e8df-11e4-8c3e-0008ca8617ea"
-                    }
-                    "wordings": [{"key": "msg", "value": "accident voyageur"}],
+                    },
+                    "wordings": [{"msg_interne": "Bebert a encore laissé une locomotive en double file"}, {"msg_media": "train retardé"}, {"msg_sms": "prenez le bus"}],
                     "category": {"id": "32b07ff8-10e0-11e4-ae39-d4bed99855be", "name": "test"}
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": null
@@ -2218,18 +2220,19 @@ Lors d'un succés une réponse 201 est retourné, celle ci contient la cause cr�
             }
 
 ##Mise à jour d'une cause [PUT]
-###Paramètre
-
-| Nom            | déscription                                      | requis   |  défaut |
+###Paramètres
+| nom           | description                                      | requis | default |
 | -------------- | ------------------------------------------------ | -------- | ------- |
-| wording        | valeur par défaut envoyée à navitia              | non      |         |
+| categoy        | catégorie associée                               | non    |         |
+| wording        | valeur par défaut envoyée à navitia              | non    |         |
+| wordings       | tableau illimité de messages (clef/message) for your cause| oui    |         |
 
 La mise à jour d'une cause est réalisé via une requéte ```PUT``` sur la resource ```causes```.
 Le content-type de la requete doit etre json et le corps de celle ci doit contenir un json correspondant au format d'une cause.
 
-Les contraintes sont les meme que pour la création.
+Les contraintes sont les mêmes que pour la création.
 
-Lors d'un succés une réponse 200 est retourné, celle ci contient la cause modifiée.
+Lors d'un succés une réponse 200 est retournée, celle-ci contient la cause modifiée.
 ###Exemple
 
 
@@ -2244,7 +2247,8 @@ Lors d'un succés une réponse 200 est retourné, celle ci contient la cause mod
 
             {
                 "category": {"id": "32b07ff8-10e0-11e4-ae39-d4bed99855be"},
-                "wordings": [{"msg": "météo"}]
+                "wordings": [{"msg_interne": "Bebert va déplacer sa locomotive"}, {"msg_media": "train retardé"}, {"msg_sms": "le train va arriver"}],
+                "wording": "train retardé"
             }
 
 - Response 200 (application/json)
@@ -2254,11 +2258,8 @@ Lors d'un succés une réponse 200 est retourné, celle ci contient la cause mod
             {
                 "cause": {
                     "id": "3d1f42b3-e8df-11e3-8c3e-0008ca8617ea",
-                    "self": {
-                        "href": "https://ogv2ws.apiary-mock.com/causes/3d1f42b2-e8df-11e4-8c3e-0008ca8617ea"
-                    }
-                    "wordings": [{"key": "msg", "value": "accident voyageur"}],
-                    "category": {"id": "32b07ff8-10e0-11e4-ae39-d4bed99855be", "name": "test"}
+                    "wordings": [{"msg_interne": "Bebert va déplacer sa locomotive"}, {"msg_media": "train retardé"}, {"msg_sms": "le train va arriver"}],
+                    "category": {"id": "32b07ff8-10e0-11e4-ae39-d4bed99855be", "name": "cat-1"}
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": "2014-04-31T16:55:18Z"
                 },

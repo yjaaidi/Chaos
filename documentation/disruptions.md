@@ -2323,10 +2323,11 @@ Retrieve one existing cause:
 
 ##Create a cause [POST]
 ###Parameters
-
 | Name           | description                                      | required | default |
 | -------------- | ------------------------------------------------ | -------- | ------- |
+| categoy        | related category                                 | false    |         |
 | wording        | default wording displayed in navitia             | false    |         |
+| wordings       | unlimited array of wordings (key/text message) for your cause| true    |         |
 
 - request
     + headers
@@ -2336,10 +2337,11 @@ Retrieve one existing cause:
 
     * Body
 
-                {
-                    "wordings": [{"msg": "accident voyageur"}],
-                    "category": {"id": "32b07ff8-10e0-11e4-ae39-d4bed99855be"}
-                }
+            {
+                "category": {"id": "32b07ff8-10e0-11e4-ae39-d4bed99855be"},
+                "wordings": [{"msg_interne": "Bebert a encore laissé une locomotive en double file"}, {"msg_media": "train retardé"}, {"msg_sms": "prenez le bus"}],
+                "wording": "train retardé"
+            }
 
 - response 201 (application/json)
 
@@ -2348,7 +2350,7 @@ Retrieve one existing cause:
             {
                 "cause": {
                     "id": "3d1f42b2-e8df-11e4-8c3e-0008ca8617ea",
-                    "wordings": [{"key": "msg", "value": "accident voyageur"}],
+                    "wordings": [{"msg_interne": "Bebert a encore laissé une locomotive en double file"}, {"msg_media": "train retardé"}, {"msg_sms": "prenez le bus"}],
                     "category": {"id": "32b07ff8-10e0-11e4-ae39-d4bed99855be", "name": "test"}
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": null
@@ -2371,7 +2373,9 @@ Retrieve one existing cause:
 ###Parameters
 | Name           | description                                      | required | default |
 | -------------- | ------------------------------------------------ | -------- | ------- |
+| categoy        | related category                                 | false    |         |
 | wording        | default wording displayed in navitia             | false    |         |
+| wordings       | unlimited array of wordings (key/text message) for your cause| true    |         |
 
 
 - Request
@@ -2384,8 +2388,9 @@ Retrieve one existing cause:
     * Body
 
             {
-                    "wordings": [{"msg": "accident voyageur"}],
-                    "category": {"id": "32b07ff8-10e0-11e4-ae39-d4bed99855be"}
+                "category": {"id": "32b07ff8-10e0-11e4-ae39-d4bed99855be"},
+                "wordings": [{"msg_interne": "Bebert va déplacer sa locomotive"}, {"msg_media": "train retardé"}, {"msg_sms": "le train va arriver"}],
+                "wording": "train retardé"
             }
 
 - Response 200 (application/json)
@@ -2395,7 +2400,7 @@ Retrieve one existing cause:
             {
                 "cause": {
                     "id": "3d1f42b3-e8df-11e3-8c3e-0008ca8617ea",
-                    "wordings": [{"key": "msg", "value": "accident voyageur"}],
+                    "wordings": [{"msg_interne": "Bebert va déplacer sa locomotive"}, {"msg_media": "train retardé"}, {"msg_sms": "le train va arriver"}],
                     "category": {"id": "32b07ff8-10e0-11e4-ae39-d4bed99855be", "name": "cat-1"}
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": "2014-04-31T16:55:18Z"
