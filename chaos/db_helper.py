@@ -89,21 +89,27 @@ def manage_pt_object_without_line_section(navitia, db_objects, json_attribute, j
             db_objects.remove(pt_object_db[ptobject_uri])
 
 
-def manage_wordings(db_object, json_wordings, json_default_wording=None):
+def manage_wordings(db_object, json):
     db_object.delete_wordings()
-    for json_wording in json_wordings:
+
+    #handle wordings
+    wordings = json['wordings']
+
+    for json_wording in wordings:
         db_wording = models.Wording()
         key = json_wording["key"].strip()
         if key == '':
-            raise exceptions.InvalidJson('Json invalid: key is empty, you give : {}'.format(json_wordings))
+            raise exceptions.InvalidJson('Json invalid: key is empty, you give : {}'.format(wordings))
+
         db_wording.key = json_wording["key"]
         db_wording.value = json_wording["value"]
         db_object.wordings.append(db_wording)
-    if json_default_wording:
-        db_object.wording = json_default_wording
-    else:
-        db_object.wording = db_object.wordings[0].value
 
+    #handle wording
+    wording = db_object.wordings[0].value
+    if 'wording' in json:
+        wording = json['wording']
+    db_object.wording = wording
 
 def manage_tags(disruption, json):
     tags_db = dict((tag.id, tag) for tag in disruption.tags)
@@ -185,7 +191,9 @@ def fill_and_add_line_section(navitia, impact_id, all_objects, pt_object_json):
     #"meta":[{"key":"direction", "value": "1234"}, {"key":"direction", "value": "5678"}]
     if 'metas' in line_section_json:
         try:
-            manage_wordings(line_section, line_section_json['metas'])
+            metas = {}
+            metas['wordings'] = line_section_json['metas']
+            manage_wordings(line_section, metas)
         except exceptions.InvalidJson:
             raise
 
