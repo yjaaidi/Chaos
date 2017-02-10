@@ -1871,14 +1871,14 @@ Return all the severities ordered by priority.
 
             {
                 "error": {
-                    "message": "'wording' is a required property"
+                    "message": "'wordings' is a required property"
                 }
             }
 
 #List of causes [/causes]
 
 ##Retrieve the list of all causes [GET]
-##Paramètres
+##Parameters
 
 | Name                 | description                                                                               | required | default                 |
 | -------------------- | ----------------------------------------------------------------------------------------- | -------- | ----------------------- |
@@ -1915,44 +1915,6 @@ Return all the severities ordered by priority.
                 "meta": {}
             }
 
-##Create a cause [POST]
-- request
-    + headers
-
-            Content-Type: application/json
-            X-Customer-Id: [customer id]
-
-    * Body
-
-                {
-                    "wordings": [{"msg": "météo"}],
-                    "category": {"id": "32b07ff8-10e0-11e4-ae39-d4bed99855be"}
-                }
-
-- response 201 (application/json)
-
-    * Body
-
-            {
-                "cause": {
-                    "id": "3d1f42b2-e8df-11e4-8c3e-0008ca8617ea",
-                    "wordings": [{"key": "msg", "value": "accident voyageur"}],
-                    "category": {"id": "32b07ff8-10e0-11e4-ae39-d4bed99855be", "name": "test"}
-                    "created_at": "2014-04-31T16:52:18Z",
-                    "updated_at": null
-                },
-                "meta": {}
-            }
-
-- response 400 (application/json)
-
-    * Body
-
-            {
-                "error": {
-                    "message": "'wording' is a required property"
-                }
-            }
 
 #List of tags [/tags]
 
@@ -2359,8 +2321,61 @@ Retrieve one existing cause:
                 }
             }
 
+##Create a cause [POST]
+###Parameters
+| Name           | description                                      | required | default |
+| -------------- | ------------------------------------------------ | -------- | ------- |
+| categoy        | related category                                 | false    |         |
+| wording        | default wording displayed in navitia             | false    |         |
+| wordings       | unlimited array of wordings (key/text message) for your cause| true    |         |
+
+- request
+    + headers
+
+            Content-Type: application/json
+            X-Customer-Id: [customer id]
+
+    * Body
+
+            {
+                "category": {"id": "32b07ff8-10e0-11e4-ae39-d4bed99855be"},
+                "wordings": [{"msg_interne": "Bebert a encore laissé une locomotive en double file"}, {"msg_media": "train retardé"}, {"msg_sms": "prenez le bus"}],
+                "wording": "train retardé"
+            }
+
+- response 201 (application/json)
+
+    * Body
+
+            {
+                "cause": {
+                    "id": "3d1f42b2-e8df-11e4-8c3e-0008ca8617ea",
+                    "wordings": [{"msg_interne": "Bebert a encore laissé une locomotive en double file"}, {"msg_media": "train retardé"}, {"msg_sms": "prenez le bus"}],
+                    "category": {"id": "32b07ff8-10e0-11e4-ae39-d4bed99855be", "name": "test"}
+                    "created_at": "2014-04-31T16:52:18Z",
+                    "updated_at": null
+                },
+                "meta": {}
+            }
+
+- response 400 (application/json)
+
+    * Body
+
+            {
+                "error": {
+                    "message": "'wordings' is a required property"
+                }
+            }
+
+
 ##Update a cause [PUT]
 ###Parameters
+| Name           | description                                      | required | default |
+| -------------- | ------------------------------------------------ | -------- | ------- |
+| categoy        | related category                                 | false    |         |
+| wording        | default wording displayed in navitia             | false    |         |
+| wordings       | unlimited array of wordings (key/text message) for your cause| true    |         |
 
 
 - Request
@@ -2373,8 +2388,9 @@ Retrieve one existing cause:
     * Body
 
             {
-                    "wordings": [{"msg": "accident voyageur"}],
-                    "category": {"id": "32b07ff8-10e0-11e4-ae39-d4bed99855be"}
+                "category": {"id": "32b07ff8-10e0-11e4-ae39-d4bed99855be"},
+                "wordings": [{"msg_interne": "Bebert va déplacer sa locomotive"}, {"msg_media": "train retardé"}, {"msg_sms": "le train va arriver"}],
+                "wording": "train retardé"
             }
 
 - Response 200 (application/json)
@@ -2384,7 +2400,7 @@ Retrieve one existing cause:
             {
                 "cause": {
                     "id": "3d1f42b3-e8df-11e3-8c3e-0008ca8617ea",
-                    "wordings": [{"key": "msg", "value": "accident voyageur"}],
+                    "wordings": [{"msg_interne": "Bebert va déplacer sa locomotive"}, {"msg_media": "train retardé"}, {"msg_sms": "le train va arriver"}],
                     "category": {"id": "32b07ff8-10e0-11e4-ae39-d4bed99855be", "name": "cat-1"}
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": "2014-04-31T16:55:18Z"
