@@ -1,4 +1,5 @@
 import os
+import json
 # URI for postgresql
 # postgresql://<user>:<password>@<host>:<port>/<dbname>
 # http://docs.sqlalchemy.org/en/rel_0_9/dialects/postgresql.html#psycopg2
@@ -10,6 +11,11 @@ NAVITIA_URL = str(os.getenv('NAVITIA_URL', 'http://navitia2-ws.ctp.dev.canaltp.f
 
 # rabbitmq connections string: http://kombu.readthedocs.org/en/latest/userguide/connections.html#urls
 RABBITMQ_CONNECTION_STRING = str(os.getenv('RABBITMQ_CONNECTION_STRING', 'pyamqp://guest:guest@localhost:5672//?heartbeat=60'))
+#Cache configuration, see https://pythonhosted.org/Flask-Cache/ for more information
+CACHE_CONFIGURATION = {
+    'CACHE_TYPE': 'null',
+    'TIMEOUT_PTOBJECTS': 600,
+}
 
 # amqp exhange used for sending disruptions
 EXCHANGE = str(os.getenv('RABBITMQ_EXCHANGE', 'navitia'))
