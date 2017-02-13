@@ -40,6 +40,7 @@ import logging.config
 import sys
 from chaos.utils import Request
 from chaos.publisher import Publisher
+from chaos import cache
 
 app = Flask(__name__)
 app.config.from_object('chaos.default_settings')
@@ -58,5 +59,6 @@ else:  # Default is std out
 db = SQLAlchemy(app)
 
 publisher = Publisher(app.config['RABBITMQ_CONNECTION_STRING'], app.config['EXCHANGE'], app.config['ENABLE_RABBITMQ'])
+cache = cache(app, config=app.config['CACHE_CONFIGURATION'])
 
 import chaos.api
