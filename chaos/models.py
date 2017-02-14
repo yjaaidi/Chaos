@@ -30,7 +30,7 @@
 # www.navitia.io
 
 import uuid
-from chaos import db, utils
+from chaos import db, utils, exceptions
 from utils import paginate, get_current_time
 from sqlalchemy.dialects.postgresql import UUID, BIT
 from datetime import datetime
@@ -202,12 +202,16 @@ class Severity(TimestampMixin, db.Model):
 
     @classmethod
     def get(cls, id, client_id):
-        return cls.query.filter_by(
-            id=id,
-            client_id=client_id,
-            is_visible=True
-        ).first_or_404()
+        severity = cls.query.filter_by(
+                id=id,
+                client_id=client_id,
+                is_visible=True
+            ).first()
 
+        if severity is None:
+            raise exceptions.ObjectUnknown('The severty with id {} does not exist for this client'.format(id))
+
+        return severity
 
 class Category(TimestampMixin, db.Model):
     """

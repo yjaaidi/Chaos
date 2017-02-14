@@ -1,9 +1,7 @@
-FROM alpine:edge
+FROM navitia/python
 
 WORKDIR /usr/src/app
 COPY . /usr/src/app
-
-RUN echo http://dl-3.alpinelinux.org/alpine/edge/testing  >> /etc/apk/repositories
 
 RUN apk --update --no-cache add \
         g++ \
@@ -16,9 +14,7 @@ RUN apk --update --no-cache add \
         musl-dev \
         git \
         postgresql-dev && \
-    pip install -U pip && \
     pip install --no-cache-dir -r requirements.txt && \
-    pip install --no-cache-dir uwsgi && \
     apk del \
         g++ \
         build-base \
