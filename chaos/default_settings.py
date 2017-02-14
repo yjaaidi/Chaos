@@ -13,8 +13,13 @@ NAVITIA_URL = str(os.getenv('NAVITIA_URL', 'http://navitia2-ws.ctp.dev.canaltp.f
 RABBITMQ_CONNECTION_STRING = str(os.getenv('RABBITMQ_CONNECTION_STRING', 'pyamqp://guest:guest@localhost:5672//?heartbeat=60'))
 #Cache configuration, see https://pythonhosted.org/Flask-Cache/ for more information
 CACHE_CONFIGURATION = {
-    'CACHE_TYPE': 'null',
-    'TIMEOUT_PTOBJECTS': 600,
+    'CACHE_TYPE': 'redis',
+    'CACHE_REDIS_HOST': 'localhost',
+    'CACHE_REDIS_PORT' : 6379,
+    'CACHE_REDIS_PASSWORD' : None,
+    'CACHE_REDIS_DB': 0,
+    'CACHE_DEFAULT_TIMEOUT' : 86400, #in seconds
+    'CACHE_KEY_PREFIX': 'Chaos'
 }
 
 # amqp exhange used for sending disruptions
