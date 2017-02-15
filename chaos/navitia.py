@@ -66,7 +66,7 @@ class Navitia(object):
             query = '{q}/{objects}'.format(q=query, objects=pt_objects)
         return query + '?depth=0'
 
-    @cache.memoize(app.config['CACHE_CONFIGURATION'].get('NAVITIA_CACHE_TIMEOUT', 3600))
+    @cache.memoize(timeout=app.config['CACHE_CONFIGURATION'].get('NAVITIA_CACHE_TIMEOUT', 3600))
     def navitia_caller(self, query):
 
         try:
