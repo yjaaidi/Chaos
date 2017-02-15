@@ -66,7 +66,7 @@ class Navitia(object):
             query = '{q}/{objects}'.format(q=query, objects=pt_objects)
         return query + '?depth=0'
 
-    @cache.memoize(app.config['CACHE_CONFIGURATION'].get('CACHE_DEFAULT_TIMEOUT', 3600))
+    @cache.memoize(app.config['CACHE_CONFIGURATION'].get('NAVITIA_CACHE_TIMEOUT', 3600))
     def navitia_caller(self, query):
 
         try:
@@ -76,7 +76,7 @@ class Navitia(object):
             # currently we reraise the previous exceptions
             raise exceptions.NavitiaError('call to navitia failed, data : {}'.format(query))
 
-    @cache.memoize(timeout=app.config['CACHE_CONFIGURATION'].get('CACHE_DEFAULT_TIMEOUT', 3600))
+    @cache.memoize(timeout=app.config['CACHE_CONFIGURATION'].get('NAVITIA_CACHE_TIMEOUT', 3600))
     def get_pt_object(self, uri, object_type, pt_objects=None):
         try:
             query = self.query_formater(uri, object_type, pt_objects)
@@ -103,7 +103,7 @@ class Navitia(object):
 
     def __repr__(self):
         """
-        Overrides __repr__ method of flask_cache in order to separate cached entities by token, coverage and url
+        Overrides __repr__ method in order to separate cached entities by token, coverage and url
         :return: String
         """
-        return  self.token + self.coverage + self.url
+        return 'chaos.Navitia(url=%s, coverage=%s, token=%s, timeout=%d)' % (self.url, self.coverage, self.token, self.timeout)

@@ -1,5 +1,5 @@
 import os
-import json
+
 # URI for postgresql
 # postgresql://<user>:<password>@<host>:<port>/<dbname>
 # http://docs.sqlalchemy.org/en/rel_0_9/dialects/postgresql.html#psycopg2
@@ -19,6 +19,7 @@ CACHE_CONFIGURATION = {
     'CACHE_REDIS_PASSWORD' : None,
     'CACHE_REDIS_DB': 0,
     'CACHE_DEFAULT_TIMEOUT' : 86400, #in seconds
+    'NAVITIA_CACHE_TIMEOUT' : 86400, #in seconds
     'CACHE_KEY_PREFIX': 'Chaos'
 }
 
