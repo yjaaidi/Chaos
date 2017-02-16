@@ -66,8 +66,7 @@ class Navitia(object):
             query = '{q}/{objects}'.format(q=query, objects=pt_objects)
         return query + '?depth=0'
 
-    @cache.memoize(timeout=app.config['CACHE_CONFIGURATION'].get('NAVITIA_CACHE_TIMEOUT', 3600))
-    def navitia_caller(self, query):
+    def _navitia_caller(self, query):
 
         try:
             return requests.get(query, headers={"Authorization": self.token}, timeout=self.timeout)
@@ -87,7 +86,7 @@ class Navitia(object):
             return None
 
         try:
-            response = self.navitia_caller(query)
+            response = self._navitia_caller(query)
         except exceptions.NavitiaError:
             raise
 
