@@ -310,13 +310,9 @@ def test_field_cause():
     obj = Obj()
     obj.disruption = models.Disruption()
     cause = models.Cause()
-    wording = models.Wording()
-    wording.key = 'external_medium'
-    wording.value = 'external medium'
-    cause.wordings.append(wording)
     obj.disruption.cause = cause
     class_field_cause = fields.FieldCause(Obj())
-    eq_(class_field_cause.output(None, obj), 'external medium')
+    eq_(class_field_cause.output(None, obj), cause.wording)
 
 
 def test_field_cause_none():
@@ -325,7 +321,7 @@ def test_field_cause_none():
     cause = models.Cause()
     wording = models.Wording()
     wording.key = 'external_long'
-    wording.value = 'external medium'
+    wording.value = 'message'
     cause.wordings.append(wording)
     obj.disruption.cause = cause
     class_field_cause = fields.FieldCause(Obj())
