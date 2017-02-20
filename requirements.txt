@@ -32,4 +32,5 @@ kombu==3.0.35
 gevent==1.0.2
 greenlet==0.4.4
 protobuf==2.6.0
+Flask-Cache==0.13.1
 redis==2.9.1
