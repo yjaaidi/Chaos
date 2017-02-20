@@ -196,3 +196,20 @@ def given_i_have_the_relation_in_my_database(step, cls):
             values.append("'{}'".format(value))
         db.session.execute("INSERT INTO {} ({}) VALUES ({})".format(associations[cls], ','.join(keys), ','.join(values)))
     db.session.commit()
+
+
+@step(u'And the field "([^"]*)" should contain all of "(.*)"')
+def and_the_field_group1_should_contain_all_of_group2(step, group1, group2):
+    import json
+    group2_json = json.loads(group2)
+    group2_keys = set(group2_json.keys())
+    for obj in find_field(world.response_json, group1):
+        obj_keys = set(obj.keys())
+        if group2_keys.issubset(obj_keys):
+            exists = True
+            for k in group2_keys:
+                exists = exists and (obj[k] == group2_json[k])
+            if exists:
+                assert True
+        else:
+            assert False

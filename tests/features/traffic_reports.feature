@@ -705,19 +705,13 @@ Feature: traffic report api
         And the header "Content-Type" should be "application/json"
         And the field "disruptions" should have a size of 2
         And the field "traffic_reports" should have a size of 1
-        And the field "disruptions.0.status" should be "past"
-        And the field "disruptions.0.id" should be "7ffab232-3d47-4eea-aa2c-22f8680230b6"
-        And the field "disruptions.0.disruption_id" should be "7ffab230-3d48-4eea-aa2c-22f8680230b6"
-        And the field "disruptions.1.status" should be "future"
-        And the field "disruptions.1.id" should be "7ffab232-3d47-4eea-aa2c-22f8680230b7"
-        And the field "disruptions.1.disruption_id" should be "7ffab230-3d48-4eea-aa2c-22f8680230b6"
+        And the field "disruptions" should contain all of "{"status": "future", "disruption_id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}"
+        And the field "disruptions" should contain all of "{"status": "past", "disruption_id": "7ffab232-3d47-4eea-aa2c-22f8680230b7"}"
         And the field "traffic_reports.0.network.id" should be "network:JDR:1"
         And the field "traffic_reports.0.network.name" should be "RATP"
         And the field "traffic_reports.0.network.links" should have a size of 2
-        And the field "traffic_reports.0.network.links.0.id" should be "7ffab232-3d47-4eea-aa2c-22f8680230b6"
-        And the field "traffic_reports.0.network.links.0.rel" should be "disruptions"
-        And the field "traffic_reports.0.network.links.1.id" should be "7ffab232-3d47-4eea-aa2c-22f8680230b7"
-        And the field "traffic_reports.0.network.links.1.rel" should be "disruptions"
+        And the field "traffic_reports.0.network.links" should contain all of "{"id": "7ffab232-3d47-4eea-aa2c-22f8680230b6", "rel": "disruptions"}"
+        And the field "traffic_reports.0.network.links" should contain all of "{"id": "7ffab232-3d47-4eea-aa2c-22f8680230b7", "rel": "disruptions"}"
 
 
         Scenario: 2 disruptions with an impacts on the same network, current_time between start publication period and end application period
@@ -1177,7 +1171,7 @@ Feature: traffic report api
         Given I have the following applicationperiods in my database:
             | created_at          | updated_at          |id                                   | impact_id                            |start_date                           |end_date            |
             | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab232-3d47-4eea-aa2c-22f8680230b1 | 7ffab232-3d47-4eea-aa2c-22f8680230b6 |2014-01-20 16:52:00                  |2014-01-30 16:52:00 |
-            | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab232-3d47-4eea-aa2c-22f8680230b2 | 7ffab232-3d47-4eea-aa2c-22f8680230b7 |2014-01-20 16:52:00                  |2014-01-30 16:52:00 |
+            | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab232-3d47-4eea-aa2c-22f8680230b2 | 7ffab232-3d47-4eea-aa2c-22f8680230b7 |2014-01-20 16:53:00                  |2014-01-30 16:52:00 |
 
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
@@ -1186,8 +1180,7 @@ Feature: traffic report api
         Then the status code should be "200"
         And the field "disruptions" should have a size of 2
         And the field "traffic_reports" should have a size of 2
-        And the field "disruptions.0.id" should be "7ffab232-3d47-4eea-aa2c-22f8680230b6"
-        And the field "disruptions.0.disruption_id" should be "7ffab230-3d48-4eea-aa2c-22f8680230b6"
+        And the field "disruptions" should contain all of "{"id": "7ffab232-3d47-4eea-aa2c-22f8680230b6", "disruption_id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}"
         And the field "traffic_reports.0.line_sections" should not exist
         And the field "traffic_reports.0.network.id" should be "network:JDR:2"
         And the field "traffic_reports.0.network.name" should be "SNCF"
