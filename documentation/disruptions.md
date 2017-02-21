@@ -2339,7 +2339,7 @@ Retrieve one existing cause:
 
             {
                 "category": {"id": "32b07ff8-10e0-11e4-ae39-d4bed99855be"},
-                "wordings": [{"msg_interne": "Bebert a encore laissé une locomotive en double file"}, {"msg_media": "train retardé"}, {"msg_sms": "prenez le bus"}],
+                "wordings": [{"key": "msg_interne", "value": "Bebert a encore laissé une locomotive en double file"}, {"key": "msg_media", "value": "train retardé"}, {"key": "msg_sms", "value": "prenez le bus"}],
                 "wording": "train retardé"
             }
 
@@ -2349,13 +2349,35 @@ Retrieve one existing cause:
 
             {
                 "cause": {
+                    "category": {
+                        "created_at": "2017-02-21T09:30:09Z",
+                        "id": "32b07ff8-10e0-11e4-ae39-d4bed99855be",
+                        "name": "test",
+                        "self": {
+                            "href": "http://localhost:5000/categories/32b07ff8-10e0-11e4-ae39-d4bed99855be"
+                        },
+                        "updated_at": null
+                    },
+                    "created_at": "2017-02-21T09:38:59Z",
                     "id": "3d1f42b2-e8df-11e4-8c3e-0008ca8617ea",
-                    "wordings": [{"msg_interne": "Bebert a encore laissé une locomotive en double file"}, {"msg_media": "train retardé"}, {"msg_sms": "prenez le bus"}],
-                    "category": {"id": "32b07ff8-10e0-11e4-ae39-d4bed99855be", "name": "test"}
-                    "created_at": "2014-04-31T16:52:18Z",
-                    "updated_at": null
-                },
-                "meta": {}
+                    "self": {
+                        "href": "http://localhost:5000/causes/3d1f42b2-e8df-11e4-8c3e-0008ca8617ea"
+                    },
+                    "wordings": [
+                        {
+                            "key": "msg_interne",
+                            "value": "Bebert a encore laissé une locomotive en double file"
+                        },
+                        {
+                            "key": "msg_media",
+                            "value": "train retardé"
+                        },
+                        {
+                            "key": "msg_sms",
+                            "value": "prenez le bus"
+                        }
+                    ]
+                }
             }
 
 - response 400 (application/json)
@@ -2389,7 +2411,7 @@ Retrieve one existing cause:
 
             {
                 "category": {"id": "32b07ff8-10e0-11e4-ae39-d4bed99855be"},
-                "wordings": [{"msg_interne": "Bebert va déplacer sa locomotive"}, {"msg_media": "train retardé"}, {"msg_sms": "le train va arriver"}],
+                "wordings": [{"key": "msg_interne", "value": "Bebert va déplacer sa locomotive"}, {"key": "msg_media", "value": "train retardé"}, {"key": "msg_sms", "value": "le train va arriver"}],
                 "wording": "train retardé"
             }
 
@@ -2399,13 +2421,35 @@ Retrieve one existing cause:
 
             {
                 "cause": {
-                    "id": "3d1f42b3-e8df-11e3-8c3e-0008ca8617ea",
-                    "wordings": [{"msg_interne": "Bebert va déplacer sa locomotive"}, {"msg_media": "train retardé"}, {"msg_sms": "le train va arriver"}],
-                    "category": {"id": "32b07ff8-10e0-11e4-ae39-d4bed99855be", "name": "cat-1"}
-                    "created_at": "2014-04-31T16:52:18Z",
-                    "updated_at": "2014-04-31T16:55:18Z"
-                },
-                "meta": {}
+                    "category": {
+                        "created_at": "2017-02-21T09:30:09Z",
+                        "id": "32b07ff8-10e0-11e4-ae39-d4bed99855be",
+                        "name": "test",
+                        "self": {
+                            "href": "http://localhost:5000/categories/32b07ff8-10e0-11e4-ae39-d4bed99855be"
+                        },
+                        "updated_at": null
+                    },
+                    "created_at": "2017-02-21T09:38:59Z",
+                    "id": "3d1f42b2-e8df-11e4-8c3e-0008ca8617ea",
+                    "self": {
+                        "href": "http://localhost:5000/causes/3d1f42b2-e8df-11e4-8c3e-0008ca8617ea"
+                    },
+                    "wordings": [
+                        {
+                            "key": "msg_interne",
+                            "value": "Bebert va déplacer sa locomotive"
+                        },
+                        {
+                            "key": "msg_media",
+                            "value": "train retardé"
+                        },
+                        {
+                            "key": "msg_sms",
+                            "value": "le train va arriver"
+                        }
+                    ]
+                }
             }
 
 - response 404 (application/json)
