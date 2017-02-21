@@ -1841,12 +1841,12 @@ Return all the severities ordered by priority.
 
     * Body
 
-                {
-                    "wordings" : [{"key": "msg", "value": "Normal"}],
-                    "color": "#123456",
-                    "priority": 1,
-                    "effect": null
-                }
+            {
+                "wordings" : [{"key": "msg", "value": "Normal"}],
+                "color": "#123456",
+                "priority": 1,
+                "effect": null
+            }
 
 - response 201 (application/json)
 
@@ -1854,15 +1854,23 @@ Return all the severities ordered by priority.
 
             {
                 "severity": {
-                    "id": "3d1f42b3-e8df-11e3-8c3e-0008ca8617ea",
-                    "wordings" : [{"key": "msg", "value": "Normal"}],
-                    "created_at": "2014-04-31T16:52:18Z",
-                    "updated_at": null,
                     "color": "#123456",
+                    "created_at": "2014-04-31T16:52:18Z",
+                    "effect": null,
+                    "id": "3d1f42b3-e8df-11e3-8c3e-0008ca8617ea",
                     "priority": 1,
-                    "effect": null
-                },
-                "meta": {}
+                    "self": {
+                        "href": "http://localhost:5000/severities/3d1f42b3-e8df-11e3-8c3e-0008ca8617ea"
+                    },
+                    "updated_at": null,
+                    "wording": "Normal",
+                    "wordings": [
+                        {
+                            "key": "msg",
+                            "value": "Normal"
+                        }
+                    ]
+                }
             }
 
 - response 400 (application/json)
