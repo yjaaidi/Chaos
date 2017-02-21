@@ -2535,9 +2535,9 @@ Archive a cause.
 
     * Body
 
-                {
-                    "name": "meteo"
-                }
+            {
+                "name": "meteo"
+            }
 
 - response 201 (application/json)
 
@@ -2547,10 +2547,12 @@ Archive a cause.
                 "category": {
                     "id": "3d1f42b2-e8df-11e4-8c3e-0008ca8617ea",
                     "name": "meteo",
+                    "self": {
+                        "href": "http://localhost:5000/categories/3d1f42b2-e8df-11e4-8c3e-0008ca8617ea"
+                    },
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": null
-                },
-                "meta": {}
+                }
             }
 
 # categories [/categories/{id}]
@@ -2617,8 +2619,7 @@ Retrieve one existing category:
                     "name": "rer",
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": "2014-04-31T16:55:18Z"
-                },
-                "meta": {}
+                }
             }
 
 - response 404 (application/json)
