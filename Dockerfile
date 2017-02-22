@@ -7,6 +7,7 @@ RUN apt-get update && \
         libpq5 \
         libprotobuf9 \
         libpython2.7 \
+        netcat \
         && \
     rm -rf /var/lib/apt/lists/*
 
