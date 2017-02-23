@@ -300,10 +300,10 @@ class Disruptions(flask_restful.Resource):
         except exceptions.NavitiaError, e:
             db.session.delete(disruption)
             db.session.commit()
-            return marshal({'error': {'message': '{}'.format(e.message)}}, fields.error_fields), 503
+            return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 503
         except Exception, e:
             db.session.rollback()
-            return marshal({'error': {'message': '{}'.format(e.message)}}, fields.error_fields), 500
+            return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 500
 
 
     @validate_navitia()
