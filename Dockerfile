@@ -1,34 +1,31 @@
-FROM navitia/python
+FROM debian:jessie
 
-WORKDIR /usr/src/app
-COPY . /usr/src/app
+RUN apt-get update && \
+    DEBIAN_FRONTEND=noninteractive apt-get -yq install \
+        wget \
+        python-pip \
+        libpq5 \
+        libprotobuf9 \
+        libpython2.7 \
+        netcat \
+        && \
+    rm -rf /var/lib/apt/lists/*
 
-RUN apk --update --no-cache add \
-        g++ \
-        build-base \
-        python-dev \
-        py2-pip \
-        zlib-dev \
-        linux-headers \
-        musl \
-        musl-dev \
-        git \
-        postgresql-dev && \
-    pip install --no-cache-dir -r requirements.txt && \
-    apk del \
-        g++ \
-        build-base \
-        python-dev \
-        zlib-dev \
-        linux-headers \
-        musl \
-        musl-dev
+COPY . /srv/chaos
+WORKDIR /srv/chaos
+
+RUN set -xe && \
+    buildDeps="libpq-dev python-dev protobuf-compiler git" && \
+    apt-get update && \
+    DEBIAN_FRONTEND=noninteractive apt-get -yq install $buildDeps && \
+    pip install uwsgi && \
+    pip install -r requirements.txt && \
+    python setup.py build_pbf && cd .. && \
+    apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false -o APT::AutoRemove::SuggestsImportant=false $buildDeps && \
+    rm -rf /var/lib/apt/lists/*
 
 EXPOSE 5000
-
-WORKDIR /usr/src/app/
 
 ENV CHAOS_CONFIG_FILE=default_settings.py
 ENV PYTHONPATH=.
 CMD ["uwsgi", "--mount", "/=chaos:app", "--http", "0.0.0.0:5000"]
-
