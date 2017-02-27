@@ -28,7 +28,7 @@
 # www.navitia.io
 
 from flask_restful import fields, url_for
-from flask import current_app, request
+from flask import current_app, request, g
 from utils import make_fake_pager, get_coverage, get_token, get_current_time
 from chaos.navitia import Navitia
 from copy import deepcopy
@@ -62,10 +62,35 @@ class FieldPaginateImpacts(fields.Raw):
     '''
     Pagination of impacts list for one disruption
     '''
-    def output(self, key, disruption):
-        return make_fake_pager(disruption.impacts.count(), 20,
-                          'impact',
-                          disruption_id=disruption.id)
+    def output(self, key, impacts):
+
+        disruption_id = next((i.disruption_id for i in impacts), None)
+        pagination = make_fake_pager(impacts.count(), 20, 'impact', disruption_id=disruption_id)
+
+        return pagination.get('pagination')
+
+class PaginateObjects(fields.Raw):
+
+    def __init__(self, nested, display_null=False, *args, **kwars):
+        super(PaginateObjects, self).__init__(*args, **kwars)
+        self.container = nested
+        self.display_null = display_null
+
+    classmethod
+    def _filter(cls, impacts):
+        return impacts[:10] # todo use the pagination to filter
+
+    def output(self, key, impacts):
+        if not g.display_impacts:
+            return None
+
+        if impacts is None:
+            return self.default
+
+        # we use the pagination to filter the outputed impacts
+        wanted_impacted = self._filter(impacts)
+
+        return [fields.marshal(wanted_impacted, self.container.nested, self.display_null)]
 
 
 class FieldUrlDisruption(fields.Raw):
@@ -271,28 +296,6 @@ categories_fields = {
     'meta': {}
 }
 
-disruption_fields = {
-    'id': fields.Raw,
-    'self': {'href': fields.Url('disruption', absolute=True)},
-    'reference': fields.Raw,
-    'note': fields.Raw,
-    'status': fields.Raw,
-    'version': fields.Raw,
-    'created_at': FieldDateTime,
-    'updated_at': FieldDateTime,
-    'publication_period': {
-        'begin': FieldDateTime(attribute='start_publication_date'),
-        'end': FieldDateTime(attribute='end_publication_date')
-    },
-    'publication_status': fields.Raw,
-    'contributor': FieldContributor,
-    'impacts': FieldPaginateImpacts(attribute='impacts'),
-    'localization': FieldLocalization(attribute='localizations'),
-    'cause': fields.Nested(cause_fields, allow_null=True),
-    'tags': fields.List(fields.Nested(tag_fields)),
-    'properties': FieldAssociatedProperties(attribute='properties')
-}
-
 paginate_fields = {
     "start_page": fields.String,
     "items_on_page": fields.String,
@@ -306,15 +309,6 @@ paginate_fields = {
 
 meta_fields = {
     "pagination": fields.Nested(paginate_fields)
-}
-
-disruptions_fields = {
-    "meta": fields.Nested(meta_fields),
-    "disruptions": fields.List(fields.Nested(disruption_fields))
-}
-
-one_disruption_fields = {
-    'disruption': fields.Nested(disruption_fields)
 }
 
 error_fields = {
@@ -526,4 +520,40 @@ traffic_report_impact_field = {
 traffic_reports_marshaler = {
     'traffic_reports': fields.List(fields.Nested(traffic_report_fields, display_null=False)),
     'disruptions': fields.List(fields.Nested(traffic_report_impact_field, display_null=False))
+}
+
+impacts = {
+    'pagination': FieldPaginateImpacts(),
+    'impacts': PaginateObjects(fields.Nested(impact_fields, display_null=False))
+}
+
+disruption_fields = {
+    'id': fields.Raw,
+    'self': {'href': fields.Url('disruption', absolute=True)},
+    'reference': fields.Raw,
+    'note': fields.Raw,
+    'status': fields.Raw,
+    'version': fields.Raw,
+    'created_at': FieldDateTime,
+    'updated_at': FieldDateTime,
+    'publication_period': {
+        'begin': FieldDateTime(attribute='start_publication_date'),
+        'end': FieldDateTime(attribute='end_publication_date')
+    },
+    'publication_status': fields.Raw,
+    'contributor': FieldContributor,
+    'impacts': fields.Nested(impacts),
+    'localization': FieldLocalization(attribute='localizations'),
+    'cause': fields.Nested(cause_fields, allow_null=True),
+    'tags': fields.List(fields.Nested(tag_fields)),
+    'properties': FieldAssociatedProperties(attribute='properties')
+}
+
+disruptions_fields = {
+    "meta": fields.Nested(meta_fields),
+    "disruptions": fields.List(fields.Nested(disruption_fields))
+}
+
+one_disruption_fields = {
+    'disruption': fields.Nested(disruption_fields)
 }

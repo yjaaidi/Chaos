@@ -180,6 +180,7 @@ class Disruptions(flask_restful.Resource):
             action="append",
             default=disruption_status_values
         )
+        parser_get.add_argument("depth", type=int, default=1)
 
     @validate_navitia()
     @validate_contributor()
@@ -187,36 +188,56 @@ class Disruptions(flask_restful.Resource):
     @validate_id()
     def get(self, contributor, navitia, id=None):
         self.navitia = navitia
-        if id:
-            return marshal(
-                {'disruption': models.Disruption.get(id, contributor.id)},
-                one_disruption_fields
-            )
-        else:
-            args = self.parsers['get'].parse_args()
-            page_index = args['start_page']
-            if page_index == 0:
-                abort(400, message="page_index argument value is not valid")
-            items_per_page = args['items_per_page']
-            if items_per_page == 0:
-                abort(400, message="items_per_page argument value is not valid")
-            publication_status = args['publication_status[]']
-            tags = args['tag[]']
-            uri = args['uri']
-            statuses = args['status[]']
+        args = self.parsers['get'].parse_args()
 
-            g.current_time = args['current_time']
-            result = models.Disruption.all_with_filter(
-                page_index=page_index,
-                items_per_page=items_per_page,
-                contributor_id=contributor.id,
-                publication_status=publication_status,
-                tags=tags,
-                uri=uri,
-                statuses=statuses
-            )
-            response = {'disruptions': result.items, 'meta': make_pager(result, 'disruption')}
-            return marshal(response, disruptions_fields)
+        if id:
+            return self._get_disruption_by_id(id, contributor.id)
+        else:
+            return self._get_disruptions(contributor.id, args)
+
+    def _get_disruption_by_id(self, id, contributor_id):
+        return marshal(
+            {'disruption': models.Disruption.get(id, contributor_id)},
+            one_disruption_fields
+        )
+
+    def _get_disruptions(self, contributor_id, args):
+
+        self._validate_arguments_for_disruption_list(args)
+
+        g.current_time = args['current_time']
+        page_index = args['start_page']
+        items_per_page = args['items_per_page']
+        publication_status = args['publication_status[]']
+        tags = args['tag[]']
+        uri = args['uri']
+        statuses = args['status[]']
+        depth = args['depth']
+
+        result = models.Disruption.all_with_filter(
+            page_index=page_index,
+            items_per_page=items_per_page,
+            contributor_id=contributor_id,
+            publication_status=publication_status,
+            tags=tags,
+            uri=uri,
+            statuses=statuses
+        )
+
+
+#        for d in result.items:
+#            print d.impacts
+        g.display_impacts = depth > 1
+
+        response = {'disruptions': result.items, 'meta': make_pager(result, 'disruption')}
+        return marshal(response, disruptions_fields)
+
+    def _validate_arguments_for_disruption_list(self, args):
+        if args['start_page'] == 0:
+            abort(400, message="page_index argument value is not valid")
+
+        if args['items_per_page'] == 0:
+            abort(400, message="items_per_page argument value is not valid")
 
     def get_post_error_response_and_log(self, exception, status_code):
         return self.get_error_response_and_log('POST', exception, status_code)

@@ -62,6 +62,14 @@ def pythonify(value):
         return True
     return value
 
+def date_is_valid(field):
+    from datetime import datetime
+
+    try:
+        datetime.strptime(field,'%Y-%m-%dT%H:%M:%SZ')
+        return True
+    except ValueError:
+        return False
 
 def find_field(json, fields):
     separated_fields = map(pythonify, fields.split('.'))
@@ -213,3 +221,22 @@ def and_the_field_group1_should_contain_all_of_group2(step, group1, group2):
                 assert True
         else:
             assert False
+
+@step(u'And the field "([^"]*)" is valid impact')
+def and_the_field_group1_is_valid_impact(step, group1):
+    impacts = find_field(world.response_json, group1)
+    assert len(impacts) == 1
+    impact = impacts[0]
+
+    assert(impact.get('id'))
+    assert(date_is_valid(impact.get('created_at')))
+    assert(impact.get('severity'))
+    assert(impact.get('disruption'))
+    assert(impact.get('send_notifications'))
+    if impact.get('updated_at'):
+        assert(date_is_valid(impact.get('updated_at')))
+
+    # list properties
+    for property in ['objects', 'application_periods', 'messages', 'application_period_patterns']:
+        if impact.get(property):
+            assert (type(impact.get(property)) is list)
