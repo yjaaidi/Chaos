@@ -90,7 +90,7 @@ class PaginateObjects(fields.Raw):
         # we use the pagination to filter the outputed impacts
         wanted_impacted = self._filter(impacts)
 
-        return [fields.marshal(wanted_impacted, self.container.nested, self.display_null)]
+        return fields.marshal(wanted_impacted, self.container.nested, self.display_null)
 
 
 class FieldUrlDisruption(fields.Raw):
