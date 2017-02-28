@@ -189,6 +189,8 @@ class Disruptions(flask_restful.Resource):
     def get(self, contributor, navitia, id=None):
         self.navitia = navitia
         args = self.parsers['get'].parse_args()
+        depth = args['depth']
+        g.display_impacts = depth > 1
 
         if id:
             return self._get_disruption_by_id(id, contributor.id)
@@ -212,7 +214,6 @@ class Disruptions(flask_restful.Resource):
         tags = args['tag[]']
         uri = args['uri']
         statuses = args['status[]']
-        depth = args['depth']
 
         result = models.Disruption.all_with_filter(
             page_index=page_index,
@@ -223,11 +224,6 @@ class Disruptions(flask_restful.Resource):
             uri=uri,
             statuses=statuses
         )
-
-
-#        for d in result.items:
-#            print d.impacts
-        g.display_impacts = depth > 1
 
         response = {'disruptions': result.items, 'meta': make_pager(result, 'disruption')}
 
