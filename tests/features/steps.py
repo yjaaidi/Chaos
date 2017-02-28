@@ -224,9 +224,7 @@ def and_the_field_group1_should_contain_all_of_group2(step, group1, group2):
 
 @step(u'And the field "([^"]*)" is valid impact')
 def and_the_field_group1_is_valid_impact(step, group1):
-    impacts = find_field(world.response_json, group1)
-    assert len(impacts) == 1
-    impact = impacts[0]
+    impact = find_field(world.response_json, group1)
 
     assert(impact.get('id'))
     assert(date_is_valid(impact.get('created_at')))
