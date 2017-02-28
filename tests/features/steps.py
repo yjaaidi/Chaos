@@ -211,16 +211,14 @@ def and_the_field_group1_should_contain_all_of_group2(step, group1, group2):
     import json
     group2_json = json.loads(group2)
     group2_keys = set(group2_json.keys())
+    exists = False
     for obj in find_field(world.response_json, group1):
         obj_keys = set(obj.keys())
         if group2_keys.issubset(obj_keys):
-            exists = True
-            for k in group2_keys:
-                exists = exists and (obj[k] == group2_json[k])
-            if exists:
-                assert True
-        else:
-            assert False
+            exists = all((obj[k] == group2_json[k]) for k in group2_keys)
+        if exists:
+            break
+    assert exists
 
 @step(u'And the field "([^"]*)" is valid impact')
 def and_the_field_group1_is_valid_impact(step, group1):

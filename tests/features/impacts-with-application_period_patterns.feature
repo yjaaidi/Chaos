@@ -37,10 +37,8 @@ Feature: Manipulate impacts in a Disruption
         And the field "impact.application_periods" should exist
         And the field "impact.severity.wording" should be "good news"
         And the field "impact.application_periods" should have a size of 5
-        And the field "impact.application_periods.0.begin" should be "2015-02-02T06:45:00Z"
-        And the field "impact.application_periods.0.end" should be "2015-02-02T08:30:00Z"
-        And the field "impact.application_periods.4.begin" should be "2015-02-06T06:45:00Z"
-        And the field "impact.application_periods.4.end" should be "2015-02-06T08:30:00Z"
+        And the field "impact.application_periods" should contain all of "{"begin": "2015-02-02T06:45:00Z", "end": "2015-02-02T08:30:00Z"}"
+        And the field "impact.application_periods" should contain all of "{"begin": "2015-02-06T06:45:00Z", "end": "2015-02-06T08:30:00Z"}"
 
     #If an application_period pattern exist along with application_periods, application_periods is not treated.
     Scenario: Add an impact in a disruption with a application_period pattern having one time_slot and application_periods
@@ -81,10 +79,8 @@ Feature: Manipulate impacts in a Disruption
         And the field "impact.application_period_patterns" should have a size of 1
         And the field "impact.application_period_patterns.0.time_slots" should have a size of 1
         And the field "impact.application_periods" should have a size of 5
-        And the field "impact.application_periods.0.begin" should be "2015-02-02T06:45:00Z"
-        And the field "impact.application_periods.0.end" should be "2015-02-02T08:30:00Z"
-        And the field "impact.application_periods.4.begin" should be "2015-02-06T06:45:00Z"
-        And the field "impact.application_periods.4.end" should be "2015-02-06T08:30:00Z"
+        And the field "impact.application_periods" should contain all of "{"begin": "2015-02-02T06:45:00Z", "end": "2015-02-02T08:30:00Z"}"
+        And the field "impact.application_periods" should contain all of "{"begin": "2015-02-06T06:45:00Z", "end": "2015-02-06T08:30:00Z"}"
 
     Scenario: Add an impact in a disruption with an application_periods
 
@@ -164,14 +160,10 @@ Feature: Manipulate impacts in a Disruption
         And the field "impact.application_period_patterns" should have a size of 1
         And the field "impact.application_period_patterns.0.time_slots" should have a size of 2
         And the field "impact.application_periods" should have a size of 10
-        And the field "impact.application_periods.0.begin" should be "2015-02-02T06:45:00Z"
-        And the field "impact.application_periods.0.end" should be "2015-02-02T08:30:00Z"
-        And the field "impact.application_periods.5.begin" should be "2015-02-02T16:30:00Z"
-        And the field "impact.application_periods.5.end" should be "2015-02-02T18:30:00Z"
-        And the field "impact.application_periods.4.begin" should be "2015-02-06T06:45:00Z"
-        And the field "impact.application_periods.4.end" should be "2015-02-06T08:30:00Z"
-        And the field "impact.application_periods.9.begin" should be "2015-02-06T16:30:00Z"
-        And the field "impact.application_periods.9.end" should be "2015-02-06T18:30:00Z"
+        And the field "impact.application_periods" should contain all of "{"begin": "2015-02-02T06:45:00Z", "end": "2015-02-02T08:30:00Z"}"
+        And the field "impact.application_periods" should contain all of "{"begin": "2015-02-02T16:30:00Z", "end": "2015-02-02T18:30:00Z"}"
+        And the field "impact.application_periods" should contain all of "{"begin": "2015-02-06T06:45:00Z", "end": "2015-02-06T08:30:00Z"}"
+        And the field "impact.application_periods" should contain all of "{"begin": "2015-02-06T16:30:00Z", "end": "2015-02-06T18:30:00Z"}"
 
     Scenario: Add an impact in a disruption with two application_period pattern having one time_slot each
 
@@ -212,13 +204,9 @@ Feature: Manipulate impacts in a Disruption
         And the field "impact.application_period_patterns.0.time_slots" should have a size of 1
         And the field "impact.application_period_patterns.1.time_slots" should have a size of 1
         And the field "impact.application_periods" should have a size of 6
-        And the field "impact.application_periods.0.begin" should be "2015-02-02T06:45:00Z"
-        And the field "impact.application_periods.0.end" should be "2015-02-02T08:30:00Z"
-        And the field "impact.application_periods.1.begin" should be "2015-02-03T06:45:00Z"
-        And the field "impact.application_periods.1.end" should be "2015-02-03T08:30:00Z"
-        And the field "impact.application_periods.5.begin" should be "2015-02-01T09:45:00Z"
-        And the field "impact.application_periods.5.end" should be "2015-02-01T15:30:00Z"
-
+        And the field "impact.application_periods" should contain all of "{"begin": "2015-02-02T06:45:00Z", "end": "2015-02-02T08:30:00Z"}"
+        And the field "impact.application_periods" should contain all of "{"begin": "2015-02-03T06:45:00Z", "end": "2015-02-03T08:30:00Z"}"
+        And the field "impact.application_periods" should contain all of "{"begin": "2015-02-01T09:45:00Z", "end": "2015-02-01T15:30:00Z"}"
 
     Scenario: Update an impact in a disruption having a pattern with two application_period
 
@@ -271,10 +259,8 @@ Feature: Manipulate impacts in a Disruption
         And the field "impact.severity.wording" should be "good news"
         And the field "impact.application_period_patterns" should have a size of 0
         And the field "impact.application_periods" should have a size of 2
-        And the field "impact.application_periods.0.begin" should be "2015-02-05T10:52:00Z"
-        And the field "impact.application_periods.0.end" should be "2015-02-07T23:15:00Z"
-        And the field "impact.application_periods.1.begin" should be "2015-02-08T10:52:00Z"
-        And the field "impact.application_periods.1.end" should be "2015-02-10T23:15:00Z"
+        And the field "impact.application_periods" should contain all of "{"begin": "2015-02-05T10:52:00Z", "end": "2015-02-07T23:15:00Z"}"
+        And the field "impact.application_periods" should contain all of "{"begin": "2015-02-08T10:52:00Z", "end": "2015-02-10T23:15:00Z"}"
 
     Scenario: Update an impact in a disruption having two application_periods with two patterns
 
@@ -333,14 +319,10 @@ Feature: Manipulate impacts in a Disruption
         And the field "impact.application_period_patterns" should have a size of 1
         And the field "impact.application_period_patterns.0.time_slots" should have a size of 2
         And the field "impact.application_periods" should have a size of 10
-        And the field "impact.application_periods.0.begin" should be "2015-02-02T06:45:00Z"
-        And the field "impact.application_periods.0.end" should be "2015-02-02T08:30:00Z"
-        And the field "impact.application_periods.5.begin" should be "2015-02-02T16:30:00Z"
-        And the field "impact.application_periods.5.end" should be "2015-02-02T18:30:00Z"
-        And the field "impact.application_periods.4.begin" should be "2015-02-06T06:45:00Z"
-        And the field "impact.application_periods.4.end" should be "2015-02-06T08:30:00Z"
-        And the field "impact.application_periods.9.begin" should be "2015-02-06T16:30:00Z"
-        And the field "impact.application_periods.9.end" should be "2015-02-06T18:30:00Z"
+        And the field "impact.application_periods" should contain all of "{"begin": "2015-02-02T06:45:00Z", "end": "2015-02-02T08:30:00Z"}"
+        And the field "impact.application_periods" should contain all of "{"begin": "2015-02-02T16:30:00Z", "end": "2015-02-02T18:30:00Z"}"
+        And the field "impact.application_periods" should contain all of "{"begin": "2015-02-06T06:45:00Z", "end": "2015-02-06T08:30:00Z"}"
+        And the field "impact.application_periods" should contain all of "{"begin": "2015-02-06T16:30:00Z", "end": "2015-02-06T18:30:00Z"}"
 
     Scenario: is-1196
 
@@ -419,20 +401,11 @@ Feature: Manipulate impacts in a Disruption
         And the field "impact.application_period_patterns" should have a size of 1
         And the field "impact.application_period_patterns.0.time_slots" should have a size of 1
         And the field "impact.application_periods" should have a size of 6
-        And the field "impact.application_periods.0.begin" should be "2015-03-27T06:45:00Z"
-        And the field "impact.application_periods.0.end" should be "2015-03-27T08:30:00Z"
-        And the field "impact.application_periods.1.begin" should be "2015-03-28T06:45:00Z"
-        And the field "impact.application_periods.1.end" should be "2015-03-28T08:30:00Z"
-        #DST began on Sun 29-Mar-2015 at 02:00:00 A.M. when local clocks were set forward 1 hour
-        And the field "impact.application_periods.2.begin" should be "2015-03-29T05:45:00Z"
-        And the field "impact.application_periods.2.end" should be "2015-03-29T07:30:00Z"
-        And the field "impact.application_periods.3.begin" should be "2015-03-30T05:45:00Z"
-        And the field "impact.application_periods.3.end" should be "2015-03-30T07:30:00Z"
-        And the field "impact.application_periods.4.begin" should be "2015-03-31T05:45:00Z"
-        And the field "impact.application_periods.4.end" should be "2015-03-31T07:30:00Z"
-        And the field "impact.application_periods.5.begin" should be "2015-04-01T05:45:00Z"
-        And the field "impact.application_periods.5.end" should be "2015-04-01T07:30:00Z"
-
+        And the field "impact.application_periods" should contain all of "{"begin": "2015-03-27T06:45:00Z", "end": "2015-03-27T08:30:00Z"}"
+        And the field "impact.application_periods" should contain all of "{"begin": "2015-03-29T05:45:00Z", "end": "2015-03-29T07:30:00Z"}"
+        And the field "impact.application_periods" should contain all of "{"begin": "2015-03-30T05:45:00Z", "end": "2015-03-30T07:30:00Z"}"
+        And the field "impact.application_periods" should contain all of "{"begin": "2015-03-31T05:45:00Z", "end": "2015-03-31T07:30:00Z"}"
+        And the field "impact.application_periods" should contain all of "{"begin": "2015-04-01T05:45:00Z", "end": "2015-04-01T07:30:00Z"}"
 
     Scenario: TR-109 Add an impact with a application_period pattern having DST Transition of Oct
 
@@ -472,19 +445,12 @@ Feature: Manipulate impacts in a Disruption
         And the field "impact.application_period_patterns" should have a size of 1
         And the field "impact.application_period_patterns.0.time_slots" should have a size of 1
         And the field "impact.application_periods" should have a size of 5
-        And the field "impact.application_periods.0.begin" should be "2015-10-23T05:45:00Z"
-        And the field "impact.application_periods.0.end" should be "2015-10-23T07:30:00Z"
-        And the field "impact.application_periods.1.begin" should be "2015-10-24T05:45:00Z"
-        And the field "impact.application_periods.1.end" should be "2015-10-24T07:30:00Z"
-        #DST will end on Sun 25-Oct-2015 at 03:00:00 A.M. when local clocks are set backward 1 hour
-        And the field "impact.application_periods.2.begin" should be "2015-10-25T06:45:00Z"
-        And the field "impact.application_periods.2.end" should be "2015-10-25T08:30:00Z"
-        And the field "impact.application_periods.3.begin" should be "2015-10-26T06:45:00Z"
-        And the field "impact.application_periods.3.end" should be "2015-10-26T08:30:00Z"
-        And the field "impact.application_periods.4.begin" should be "2015-10-27T06:45:00Z"
-        And the field "impact.application_periods.4.end" should be "2015-10-27T08:30:00Z"
-        And the field "impact.application_period_patterns.0.start_date" should be "2015-10-23"
-        And the field "impact.application_period_patterns.0.end_date" should be "2015-10-27"
+        And the field "impact.application_periods" should contain all of "{"begin": "2015-10-23T05:45:00Z", "end": "2015-10-23T07:30:00Z"}"
+        And the field "impact.application_periods" should contain all of "{"begin": "2015-10-24T05:45:00Z", "end": "2015-10-24T07:30:00Z"}"
+        And the field "impact.application_periods" should contain all of "{"begin": "2015-10-25T06:45:00Z", "end": "2015-10-25T08:30:00Z"}"
+        And the field "impact.application_periods" should contain all of "{"begin": "2015-10-26T06:45:00Z", "end": "2015-10-26T08:30:00Z"}"
+        And the field "impact.application_periods" should contain all of "{"begin": "2015-10-27T06:45:00Z", "end": "2015-10-27T08:30:00Z"}"
+        And the field "impact.application_period_patterns" should contain all of "{"start_date": "2015-10-23", "end_date": "2015-10-27"}"
 
     Scenario: Add an impact in a disruption with two different application_period pattern having one time_slot each
 
@@ -525,14 +491,10 @@ Feature: Manipulate impacts in a Disruption
         And the field "impact.application_period_patterns.0.time_slots" should have a size of 1
         And the field "impact.application_period_patterns.1.time_slots" should have a size of 1
         And the field "impact.application_periods" should have a size of 7
-        And the field "impact.application_periods.0.begin" should be "2015-02-02T06:45:00Z"
-        And the field "impact.application_periods.0.end" should be "2015-02-02T08:30:00Z"
-        And the field "impact.application_periods.1.begin" should be "2015-02-03T06:45:00Z"
-        And the field "impact.application_periods.1.end" should be "2015-02-03T08:30:00Z"
-        And the field "impact.application_periods.5.begin" should be "2015-02-07T09:45:00Z"
-        And the field "impact.application_periods.5.end" should be "2015-02-07T15:30:00Z"
-        And the field "impact.application_periods.6.begin" should be "2015-02-08T09:45:00Z"
-        And the field "impact.application_periods.6.end" should be "2015-02-08T15:30:00Z"
+        And the field "impact.application_periods" should contain all of "{"begin": "2015-02-02T06:45:00Z", "end": "2015-02-02T08:30:00Z"}"
+        And the field "impact.application_periods" should contain all of "{"begin": "2015-02-03T06:45:00Z", "end": "2015-02-03T08:30:00Z"}"
+        And the field "impact.application_periods" should contain all of "{"begin": "2015-02-07T09:45:00Z", "end": "2015-02-07T15:30:00Z"}"
+        And the field "impact.application_periods" should contain all of "{"begin": "2015-02-08T09:45:00Z", "end": "2015-02-08T15:30:00Z"}"
 
     Scenario: Add an impact in a disruption with a application_period pattern having one time_slot and application_periods test for error TR-277
 
@@ -793,14 +755,10 @@ Feature: Manipulate impacts in a Disruption
         And the field "impact.application_periods" should exist
         And the field "impact.severity.wording" should be "good news"
         And the field "impact.application_periods" should have a size of 4
-        And the field "impact.application_periods.0.begin" should be "2015-09-21T16:00:00Z"
-        And the field "impact.application_periods.0.end" should be "2015-09-22T01:00:00Z"
-        And the field "impact.application_periods.1.begin" should be "2015-09-22T16:00:00Z"
-        And the field "impact.application_periods.1.end" should be "2015-09-23T01:00:00Z"
-        And the field "impact.application_periods.2.begin" should be "2015-09-24T16:00:00Z"
-        And the field "impact.application_periods.2.end" should be "2015-09-25T01:00:00Z"
-        And the field "impact.application_periods.3.begin" should be "2015-09-26T16:00:00Z"
-        And the field "impact.application_periods.3.end" should be "2015-09-27T01:00:00Z"
+        And the field "impact.application_periods" should contain all of "{"begin": "2015-09-21T16:00:00Z", "end": "2015-09-22T01:00:00Z"}"
+        And the field "impact.application_periods" should contain all of "{"begin": "2015-09-22T16:00:00Z", "end": "2015-09-23T01:00:00Z"}"
+        And the field "impact.application_periods" should contain all of "{"begin": "2015-09-24T16:00:00Z", "end": "2015-09-25T01:00:00Z"}"
+        And the field "impact.application_periods" should contain all of "{"begin": "2015-09-26T16:00:00Z", "end": "2015-09-27T01:00:00Z"}"
         And the field "impact.application_period_patterns" should have a size of 1
         And the field "impact.application_period_patterns.0.time_slots" should have a size of 1
         And the field "impact.application_period_patterns.0.start_date" should be "2015-09-21"
