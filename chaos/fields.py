@@ -91,7 +91,7 @@ class PaginateObjects(fields.Raw):
         impacts = disruption.impacts
 
         if hasattr(g, 'display_impacts') and not g.display_impacts:
-            return None
+            return []
 
         if impacts is None:
             return self.default

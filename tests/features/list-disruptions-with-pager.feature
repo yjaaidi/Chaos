@@ -284,7 +284,7 @@ Feature: list disruptions with pager
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
         And the field "disruptions" should have a size of 1
-        And the field "disruptions.0.impacts.impacts" should be null
+        And the field "disruptions.0.impacts.impacts" should have a size of 0
 
         When I get "/disruptions?depth=2"
         Then the status code should be "200"
@@ -292,3 +292,13 @@ Feature: list disruptions with pager
         And the field "disruptions" should have a size of 1
         And the field "disruptions.0.impacts.impacts" should have a size of 6
         And the field "disruptions.0.impacts.impacts.0" is valid impact
+
+        When I get "/disruptions/7ffab230-3d48-4eea-aa2c-22f8680230b6?depth=1"
+        Then the status code should be "200"
+        And the header "Content-Type" should be "application/json"
+        And the field "disruption.impacts.impacts" should have a size of 0
+
+        When I get "/disruptions/7ffab230-3d48-4eea-aa2c-22f8680230b6?depth=2"
+        Then the status code should be "200"
+        And the header "Content-Type" should be "application/json"
+        And the field "disruption.impacts.impacts" should have a size of 6
