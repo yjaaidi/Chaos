@@ -155,9 +155,8 @@ Feature: Manipulate messages in a impact
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
         And the field "impact.messages" should have a size of 2
-        And the field "impact.messages.0.channel.id" should be "4ffab230-3d48-4eea-aa2c-22f8680230b6"
-        And the field "impact.messages.0.channel.types.0" should be "web"
-        And the field "impact.messages.0.channel.types.1" should be "mobile"
+        And the field "impact.messages" should have "channel" with "{"id": "8ffab230-3d48-4eea-aa2c-22f8680230b6", "name": "short", "types": []}"
+        And the field "impact.messages" should have "channel" with "{"id": "4ffab230-3d48-4eea-aa2c-22f8680230b6", "name": "short", "types": ["web", "mobile"]}"
 
     Scenario: delete one message in a impact (2 messages)
 

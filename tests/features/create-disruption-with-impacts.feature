@@ -75,6 +75,7 @@ Feature: Create Disruption and impacts
         And the header "Content-Type" should be "application/json"
         And the field "disruption.impacts.pagination.total_result" should be 1
         And the field "disruption.version" should be 1
+        And the field "disruption.impacts.impacts" should not exist
 
     Scenario: creation of disruption with one impact and ptobject line_section, metas valid
 
