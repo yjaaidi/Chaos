@@ -236,3 +236,23 @@ def and_the_field_group1_is_valid_impact(step, group1):
     for property in ['objects', 'application_periods', 'messages', 'application_period_patterns']:
         if impact.get(property):
             assert (type(impact.get(property)) is list)
+
+@step(u'And the field "([^"]*)" should have "([^"]*)" with "(.*)"')
+def and_the_field_group1_should_have_obj_with_group2(step, source_field, search_field, group2):
+    import json
+    #search attribut keys
+    group2_json = json.loads(group2)
+    group2_keys = set(group2_json.keys())
+    exists = False
+    #source field
+    source = find_field(world.response_json, source_field)
+    for field in source:
+        field_found = field.get(search_field)
+        if field_found:
+            found_obj_keys = set(field_found.keys())
+            if group2_keys.issubset(found_obj_keys):
+                exists = all((field_found[k] == group2_json[k]) for k in group2_keys)
+
+            if exists:
+                break
+    assert exists
