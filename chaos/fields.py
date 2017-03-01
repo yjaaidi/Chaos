@@ -63,7 +63,7 @@ class CustomImpacts(fields.Raw):
                 'pagination': FieldPaginateImpacts(attribute='impacts'),
                 'impacts': PaginateObjects(fields.Nested(impact_fields, display_null=False,
                                                          attribute='impacts'))
-            })
+            }, display_null=False)
 
 class FieldPaginateImpacts(fields.Raw):
     '''
@@ -91,10 +91,10 @@ class PaginateObjects(fields.Raw):
         impacts = disruption.impacts
 
         if hasattr(g, 'display_impacts') and not g.display_impacts:
-            return []
+            return None
 
         if impacts is None:
-            return self.default
+            return []
 
         # we use the pagination to filter the outputed impacts
         wanted_impacted = self._filter(impacts)
