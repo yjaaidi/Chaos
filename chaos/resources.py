@@ -227,6 +227,11 @@ class Disruptions(flask_restful.Resource):
 
         response = {'disruptions': result.items, 'meta': make_pager(result, 'disruption')}
 
+        '''
+        The purpose is to remove any database-loaded state from all current objects so that the next access of
+        any attribute, or any query execution, will retrieve new state, freshening those objects which are still
+        referenced outside of the session with the most recent available state.
+        '''
         for o in result.items:
             models.db.session.expunge(o)
         return marshal(response, disruptions_fields)
