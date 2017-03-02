@@ -62,6 +62,14 @@ def pythonify(value):
         return True
     return value
 
+def date_is_valid(field):
+    from datetime import datetime
+
+    try:
+        datetime.strptime(field,'%Y-%m-%dT%H:%M:%SZ')
+        return True
+    except ValueError:
+        return False
 
 def find_field(json, fields):
     separated_fields = map(pythonify, fields.split('.'))
@@ -203,13 +211,48 @@ def and_the_field_group1_should_contain_all_of_group2(step, group1, group2):
     import json
     group2_json = json.loads(group2)
     group2_keys = set(group2_json.keys())
+    exists = False
     for obj in find_field(world.response_json, group1):
         obj_keys = set(obj.keys())
         if group2_keys.issubset(obj_keys):
-            exists = True
-            for k in group2_keys:
-                exists = exists and (obj[k] == group2_json[k])
+            exists = all((obj[k] == group2_json[k]) for k in group2_keys)
+        if exists:
+            break
+    assert exists
+
+@step(u'And the field "([^"]*)" is valid impact')
+def and_the_field_group1_is_valid_impact(step, group1):
+    impact = find_field(world.response_json, group1)
+
+    assert(impact.get('id'))
+    assert(date_is_valid(impact.get('created_at')))
+    assert(impact.get('severity'))
+    assert(impact.get('disruption'))
+    assert(impact.get('send_notifications'))
+    if impact.get('updated_at'):
+        assert(date_is_valid(impact.get('updated_at')))
+
+    # list properties
+    for property in ['objects', 'application_periods', 'messages', 'application_period_patterns']:
+        if impact.get(property):
+            assert (type(impact.get(property)) is list)
+
+@step(u'And the field "([^"]*)" should have "([^"]*)" with "(.*)"')
+def and_the_field_group1_should_have_obj_with_group2(step, source_field, search_field, group2):
+    import json
+    #search attribut keys
+    group2_json = json.loads(group2)
+    group2_keys = set(group2_json.keys())
+    exists = False
+    #source field
+    source = find_field(world.response_json, source_field)
+    for field in source:
+        field_found = field.get(search_field)
+        if field_found:
+            found_obj_keys = set(field_found.keys())
+            if group2_keys.issubset(found_obj_keys):
+                exists = all((field_found[k] == group2_json[k]) for k in group2_keys)
+
             if exists:
-                assert True
-        else:
-            assert False
+                break
+    assert exists

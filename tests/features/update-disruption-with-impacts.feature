@@ -43,6 +43,7 @@ Feature: Update Disruption and impacts
         And the field "disruption.impacts.pagination.total_result" should be 1
         And the field "disruption.version" should be 2
         And the field "disruption.reference" should be "new ref"
+        And the field "disruption.impacts.impacts" should not exist
 
     Scenario: update of disruption with one impact in database and new impact
 
@@ -87,6 +88,7 @@ Feature: Update Disruption and impacts
         And the field "disruption.impacts.pagination.total_result" should be 2
         And the field "disruption.version" should be 2
         And the field "disruption.reference" should be "new ref"
+        And the field "disruption.impacts.impacts" should not exist
 
     Scenario: update of disruption with 2 impact in database one impact in json
 

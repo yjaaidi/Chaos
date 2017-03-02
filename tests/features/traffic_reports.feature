@@ -706,7 +706,7 @@ Feature: traffic report api
         And the field "disruptions" should have a size of 2
         And the field "traffic_reports" should have a size of 1
         And the field "disruptions" should contain all of "{"status": "future", "disruption_id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}"
-        And the field "disruptions" should contain all of "{"status": "past", "disruption_id": "7ffab232-3d47-4eea-aa2c-22f8680230b7"}"
+        And the field "disruptions" should contain all of "{"status": "past", "disruption_id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}"
         And the field "traffic_reports.0.network.id" should be "network:JDR:1"
         And the field "traffic_reports.0.network.name" should be "RATP"
         And the field "traffic_reports.0.network.links" should have a size of 2
