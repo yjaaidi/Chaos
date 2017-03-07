@@ -752,14 +752,6 @@ class Impact(TimestampMixin, db.Model):
         query = query.union_all(query_line_section).filter(and_(start_filter, end_filter)).order_by("application_periods_1.start_date")
         return query.all()
 
-    @classmethod
-    def traffic_report_filter(cls, contributor_id):
-        query = cls.query.filter(cls.status == 'published')
-        query = query.join(Disruption)
-        query = query.filter(Disruption.contributor_id == contributor_id)
-        query = query.filter(between(get_current_time(), Disruption.start_publication_date, Disruption.end_publication_date))
-        return query.all()
-
 
 associate_line_section_route_object = db.Table(
     'associate_line_section_route_object',
