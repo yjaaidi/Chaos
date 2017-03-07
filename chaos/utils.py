@@ -567,7 +567,7 @@ def create_line_section(navitia_object, pt_object):
     return line_section
 
 
-def get_traffic_report_objects(impacts, navitia):
+def get_traffic_report_objects(disruptions, navitia):
     """
     :param impacts: Sequence of impact (Database object)
     :return: dict
@@ -601,16 +601,17 @@ def get_traffic_report_objects(impacts, navitia):
     }
 
     result = {'traffic_report': {}, 'impacts_used': []}
-    for impact in impacts:
-        for pt_object in impact.objects:
-            if pt_object.type == 'network':
-                manage_network(result, impact, pt_object, navitia)
-            else:
-                if pt_object.type not in collections:
-                    logging.getLogger(__name__).debug(
-                        'PtObject ignored: {type} [{uri}], not in collections {col}'.
-                        format(type=pt_object.type, uri=pt_object.uri, col=collections)
-                    )
-                    continue
-                manage_other_object(result, impact, pt_object, navitia, collections[pt_object.type])
+    for disruption in disruptions:
+        for impact in disruption.impacts:
+            for pt_object in impact.objects:
+                if pt_object.type == 'network':
+                    manage_network(result, impact, pt_object, navitia)
+                else:
+                    if pt_object.type not in collections:
+                        logging.getLogger(__name__).debug(
+                            'PtObject ignored: {type} [{uri}], not in collections {col}'.
+                            format(type=pt_object.type, uri=pt_object.uri, col=collections)
+                        )
+                        continue
+                    manage_other_object(result, impact, pt_object, navitia, collections[pt_object.type])
     return result

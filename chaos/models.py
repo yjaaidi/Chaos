@@ -562,6 +562,14 @@ class Disruption(TimestampMixin, db.Model):
         if self.start_publication_date > current_time:
             return "coming"
 
+    @classmethod
+    def traffic_report_filter(cls, contributor_id):
+        query = cls.query.filter(cls.status == 'published')
+        query = query.filter(cls.contributor_id == contributor_id)
+        query = query.filter(
+            between(get_current_time(), cls.start_publication_date, cls.end_publication_date))
+        return query.all()
+
 
 associate_impact_pt_object = db.Table(
     'associate_impact_pt_object',
