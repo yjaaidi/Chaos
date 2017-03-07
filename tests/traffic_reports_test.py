@@ -14,8 +14,8 @@ def test_get_traffic_report_objects():
 
 
 def test_get_traffic_report_without_objects():
-    impact = chaos.models.Impact()
-    dd = get_traffic_report_objects([impact], Obj())
+    disruption = chaos.models.Disruption()
+    dd = get_traffic_report_objects([disruption], Obj())
     eq_(len(dd["traffic_report"].items()), 0)
 
 
@@ -49,8 +49,10 @@ def test_get_traffic_report_with_network():
     network = chaos.models.PTobject()
     network.type = 'network'
     network.uri = 'uri1'
+    disruption = chaos.models.Disruption()
     impact = chaos.models.Impact()
     impact.objects.append(network)
+    disruption.impacts.append(impact)
     result = {
         "uri1": {
             "network": {
@@ -60,7 +62,7 @@ def test_get_traffic_report_with_network():
             }
         }
     }
-    dd = get_traffic_report_objects([impact], navitia)
+    dd = get_traffic_report_objects([disruption], navitia)
     eq_(cmp(dd["traffic_report"], result), 0)
 
 
@@ -106,6 +108,7 @@ def get_pt_object(uri, object_type, pt_objects=None):
 def test_get_traffic_report_with_impact_on_lines():
     navitia = chaos.navitia.Navitia('http://api.navitia.io', 'jdr')
     navitia.get_pt_object = get_pt_object
+    disruption = chaos.models.Disruption()
     impact = chaos.models.Impact()
 
     line = chaos.models.PTobject()
@@ -117,6 +120,7 @@ def test_get_traffic_report_with_impact_on_lines():
     line.type = 'line'
     line.uri = 'line:uri2'
     impact.objects.append(line)
+    disruption.impacts.append(impact)
 
     result = {
         "network:uri1": {
@@ -134,13 +138,14 @@ def test_get_traffic_report_with_impact_on_lines():
             "lines": [{'id': 'line:uri2', 'name': 'line 2 name', "impacts": [impact]}]
         }
     }
-    dd = get_traffic_report_objects([impact], navitia)
+    dd = get_traffic_report_objects([disruption], navitia)
     eq_(cmp(dd["traffic_report"], result), 0)
 
 
 def test_get_traffic_report_with_impact_on_networks():
     navitia = chaos.navitia.Navitia('http://api.navitia.io', 'jdr')
     navitia.get_pt_object = get_pt_object
+    disruption = chaos.models.Disruption()
     impact = chaos.models.Impact()
 
     line = chaos.models.PTobject()
@@ -152,6 +157,7 @@ def test_get_traffic_report_with_impact_on_networks():
     line.type = 'network'
     line.uri = 'network:uri2'
     impact.objects.append(line)
+    disruption.impacts.append(impact)
 
     result = {
         "network:uri1": {
@@ -169,7 +175,7 @@ def test_get_traffic_report_with_impact_on_networks():
             }
         }
     }
-    dd = get_traffic_report_objects([impact], navitia)
+    dd = get_traffic_report_objects([disruption], navitia)
 
     eq_(cmp(dd["traffic_report"], result), 0)
 
@@ -177,12 +183,14 @@ def test_get_traffic_report_with_impact_on_networks():
 def test_get_traffic_report_with_impact_on_stop_areas_one_network():
     navitia = chaos.navitia.Navitia('http://api.navitia.io', 'jdr')
     navitia.get_pt_object = get_pt_object
+    disruption = chaos.models.Disruption()
     impact = chaos.models.Impact()
 
     line = chaos.models.PTobject()
     line.type = 'stop_area'
     line.uri = 'stop_area:uri1'
     impact.objects.append(line)
+    disruption.impacts.append(impact)
 
     result = {
         "network:uri3": {
@@ -193,19 +201,21 @@ def test_get_traffic_report_with_impact_on_stop_areas_one_network():
             "stop_areas": [{'id': 'stop_area:uri1', 'name': 'stop area 1 name', "impacts": [impact]}]
         }
     }
-    dd = get_traffic_report_objects([impact], navitia)
+    dd = get_traffic_report_objects([disruption], navitia)
     eq_(cmp(dd["traffic_report"], result), 0)
 
 
 def test_get_traffic_report_with_impact_on_stop_areas_2_networks():
     navitia = chaos.navitia.Navitia('http://api.navitia.io', 'jdr')
     navitia.get_pt_object = get_pt_object
+    disruption = chaos.models.Disruption()
     impact = chaos.models.Impact()
 
     line = chaos.models.PTobject()
     line.type = 'stop_area'
     line.uri = 'stop_area:uri2'
     impact.objects.append(line)
+    disruption.impacts.append(impact)
 
     result = {
         "network:uri4": {
@@ -223,27 +233,34 @@ def test_get_traffic_report_with_impact_on_stop_areas_2_networks():
             "stop_areas": [{'id': 'stop_area:uri2', 'name': 'stop area 2 name', "impacts": [impact]}]
         }
     }
-    dd = get_traffic_report_objects([impact], navitia)
+    dd = get_traffic_report_objects([disruption], navitia)
     eq_(cmp(dd["traffic_report"], result), 0)
 
 
 def test_get_traffic_report_with_2_impact_on_stop_area():
     navitia = chaos.navitia.Navitia('http://api.navitia.io', 'jdr')
     navitia.get_pt_object = get_pt_object
+    disruptions = []
     impacts = []
 
+    disruption = chaos.models.Disruption()
     impact = chaos.models.Impact()
     stop_area = chaos.models.PTobject()
     stop_area.type = 'stop_area'
     stop_area.uri = 'stop_area:uri1'
     impact.objects.append(stop_area)
-
+    disruption.impacts.append(impact)
+    disruptions.append(disruption)
     impacts.append(impact)
+
+    disruption = chaos.models.Disruption()
     impact = chaos.models.Impact()
     stop_area = chaos.models.PTobject()
     stop_area.type = 'stop_area'
     stop_area.uri = 'stop_area:uri1'
     impact.objects.append(stop_area)
+    disruption.impacts.append(impact)
+    disruptions.append(disruption)
     impacts.append(impact)
 
     result = {
@@ -255,13 +272,14 @@ def test_get_traffic_report_with_2_impact_on_stop_area():
             "stop_areas": [{'id': 'stop_area:uri1', 'name': 'stop area 1 name', "impacts": impacts}]
         }
     }
-    dd = get_traffic_report_objects(impacts, navitia)
+    dd = get_traffic_report_objects(disruptions, navitia)
     eq_(cmp(dd["traffic_report"], result), 0)
 
 
 def test_get_traffic_report_with_impact_on_line_sections():
     navitia = chaos.navitia.Navitia('http://api.navitia.io', 'jdr')
     navitia.get_pt_object = get_pt_object
+    disruption = chaos.models.Disruption()
     impact = chaos.models.Impact()
 
     #LineSection
@@ -284,6 +302,7 @@ def test_get_traffic_report_with_impact_on_line_sections():
     ptobject.line_section.end_point.type = 'stop_area'
 
     impact.objects.append(ptobject)
+    disruption.impacts.append(impact)
 
     result = {
         "network:uri1": {
@@ -319,5 +338,5 @@ def test_get_traffic_report_with_impact_on_line_sections():
             ]
         }
     }
-    dd = get_traffic_report_objects([impact], navitia)
+    dd = get_traffic_report_objects([disruption], navitia)
     eq_(cmp(dd["traffic_report"], result), 0)
