@@ -51,6 +51,7 @@ def test_get_traffic_report_with_network():
     network.uri = 'uri1'
     disruption = chaos.models.Disruption()
     impact = chaos.models.Impact()
+    impact.status = 'published'
     impact.objects.append(network)
     disruption.impacts.append(impact)
     result = {
@@ -110,6 +111,7 @@ def test_get_traffic_report_with_impact_on_lines():
     navitia.get_pt_object = get_pt_object
     disruption = chaos.models.Disruption()
     impact = chaos.models.Impact()
+    impact.status = 'published'
 
     line = chaos.models.PTobject()
     line.type = 'line'
@@ -147,6 +149,7 @@ def test_get_traffic_report_with_impact_on_networks():
     navitia.get_pt_object = get_pt_object
     disruption = chaos.models.Disruption()
     impact = chaos.models.Impact()
+    impact.status = 'published'
 
     line = chaos.models.PTobject()
     line.type = 'network'
@@ -185,6 +188,7 @@ def test_get_traffic_report_with_impact_on_stop_areas_one_network():
     navitia.get_pt_object = get_pt_object
     disruption = chaos.models.Disruption()
     impact = chaos.models.Impact()
+    impact.status = 'published'
 
     line = chaos.models.PTobject()
     line.type = 'stop_area'
@@ -210,6 +214,7 @@ def test_get_traffic_report_with_impact_on_stop_areas_2_networks():
     navitia.get_pt_object = get_pt_object
     disruption = chaos.models.Disruption()
     impact = chaos.models.Impact()
+    impact.status = 'published'
 
     line = chaos.models.PTobject()
     line.type = 'stop_area'
@@ -245,6 +250,7 @@ def test_get_traffic_report_with_2_impact_on_stop_area():
 
     disruption = chaos.models.Disruption()
     impact = chaos.models.Impact()
+    impact.status = 'published'
     stop_area = chaos.models.PTobject()
     stop_area.type = 'stop_area'
     stop_area.uri = 'stop_area:uri1'
@@ -255,6 +261,7 @@ def test_get_traffic_report_with_2_impact_on_stop_area():
 
     disruption = chaos.models.Disruption()
     impact = chaos.models.Impact()
+    impact.status = 'published'
     stop_area = chaos.models.PTobject()
     stop_area.type = 'stop_area'
     stop_area.uri = 'stop_area:uri1'
@@ -281,6 +288,7 @@ def test_get_traffic_report_with_impact_on_line_sections():
     navitia.get_pt_object = get_pt_object
     disruption = chaos.models.Disruption()
     impact = chaos.models.Impact()
+    impact.status = 'published'
 
     #LineSection
     ptobject = chaos.models.PTobject()
