@@ -775,19 +775,13 @@ Feature: traffic report api
         And the header "Content-Type" should be "application/json"
         And the field "disruptions" should have a size of 2
         And the field "traffic_reports" should have a size of 1
-        And the field "disruptions.0.status" should be "active"
-        And the field "disruptions.0.id" should be "7ffab232-3d47-4eea-aa2c-22f8680230b6"
-        And the field "disruptions.0.disruption_id" should be "7ffab230-3d48-4eea-aa2c-22f8680230b6"
-        And the field "disruptions.1.status" should be "active"
-        And the field "disruptions.1.id" should be "7ffab232-3d47-4eea-aa2c-22f8680230b7"
-        And the field "disruptions.1.disruption_id" should be "7ffab230-3d48-4eea-aa2c-22f8680230b7"
+        And the field "disruptions" should contain all of "{"status": "active", "id": "7ffab232-3d47-4eea-aa2c-22f8680230b6", "disruption_id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}"
+        And the field "disruptions" should contain all of "{"status": "active", "id": "7ffab232-3d47-4eea-aa2c-22f8680230b7", "disruption_id": "7ffab230-3d48-4eea-aa2c-22f8680230b7"}"
         And the field "traffic_reports.0.network.id" should be "network:JDR:1"
         And the field "traffic_reports.0.network.name" should be "RATP"
         And the field "traffic_reports.0.network.links" should have a size of 2
-        And the field "traffic_reports.0.network.links.0.id" should be "7ffab232-3d47-4eea-aa2c-22f8680230b6"
-        And the field "traffic_reports.0.network.links.0.rel" should be "disruptions"
-        And the field "traffic_reports.0.network.links.1.id" should be "7ffab232-3d47-4eea-aa2c-22f8680230b7"
-        And the field "traffic_reports.0.network.links.1.rel" should be "disruptions"
+        And the field "traffic_reports.0.network.links" should contain all of "{"id": "7ffab232-3d47-4eea-aa2c-22f8680230b6", "rel": "disruptions"}"
+        And the field "traffic_reports.0.network.links" should contain all of "{"id": "7ffab232-3d47-4eea-aa2c-22f8680230b7", "rel": "disruptions"}"
 
 
         Scenario: Impact on 2 networks, current_time between start publication period and end application period
