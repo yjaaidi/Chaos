@@ -562,6 +562,14 @@ class Disruption(TimestampMixin, db.Model):
         if self.start_publication_date > current_time:
             return "coming"
 
+    @classmethod
+    def traffic_report_filter(cls, contributor_id):
+        query = cls.query.filter(cls.status == 'published')
+        query = query.filter(cls.contributor_id == contributor_id)
+        query = query.filter(
+            between(get_current_time(), cls.start_publication_date, cls.end_publication_date))
+        return query.all()
+
 
 associate_impact_pt_object = db.Table(
     'associate_impact_pt_object',
@@ -742,14 +750,6 @@ class Impact(TimestampMixin, db.Model):
         start_filter = "application_periods_1.start_date <= '{end_date}'".format(end_date=end_date)
         end_filter = "application_periods_1.end_date >= '{start_date}'".format(start_date=start_date)
         query = query.union_all(query_line_section).filter(and_(start_filter, end_filter)).order_by("application_periods_1.start_date")
-        return query.all()
-
-    @classmethod
-    def traffic_report_filter(cls, contributor_id):
-        query = cls.query.filter(cls.status == 'published')
-        query = query.join(Disruption)
-        query = query.filter(Disruption.contributor_id == contributor_id)
-        query = query.filter(between(get_current_time(), Disruption.start_publication_date, Disruption.end_publication_date))
         return query.all()
 
 
