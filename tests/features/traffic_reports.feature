@@ -1392,7 +1392,7 @@ Feature: traffic report api
 
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "a9fe6a75-e326-4eb1-9bf5-95727dd1b239"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         When I get "/traffic_reports?current_time=2014-01-21T23:52:12Z"
         Then the status code should be "200"
         And the field "disruptions" should have a size of 5
