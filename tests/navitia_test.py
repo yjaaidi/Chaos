@@ -1,7 +1,6 @@
 from nose.tools import *
 from chaos.navitia import Navitia, exceptions
 import json
-import requests
 
 from httmock import all_requests, HTTMock, response
 
@@ -14,6 +13,10 @@ class NavitiaMock(object):
 
     @all_requests
     def __call__(self, url, request):
+        # Temporary fix for tests to pass (due to first request for publication date)
+        if request.url == 'http://api.navitia.io/v1/coverage/jdr/status':
+            return response(200, json.dumps({'status': {'publication_date': '20170309T143733.933792'}}))
+
         if self.assert_url:
             eq_(self.assert_url, request.url)
         return response(self.response_code, json.dumps(self.json))
@@ -23,14 +26,19 @@ class NavitiaMock(object):
 def navitia_mock_navitia_error(url, request):
     raise exceptions.NavitiaError
 
+
 @all_requests
 def navitia_mock_unknown_object_type(url, request):
+    # Temporary fix for tests to pass (due to first request for publication date)
+    if request.url == 'http://api.navitia.io/v1/coverage/jdr/status':
+        return response(200, json.dumps({'status': {'publication_date': '20170309T143733.933792'}}))
     raise exceptions.ObjectTypeUnknown
+
 
 def test_get_pt_object():
     n = Navitia('http://api.navitia.io', 'jdr')
     mock = NavitiaMock(200, {'networks': [{'id': 'network:foo', 'name': 'reseau foo'}]},
-            assert_url='http://api.navitia.io/v1/coverage/jdr/networks/network:foo?depth=0')
+                       assert_url='http://api.navitia.io/v1/coverage/jdr/networks/network:foo?depth=0')
     with HTTMock(mock):
         eq_(n.get_pt_object('network:foo', 'network'), {'id': 'network:foo', 'name': 'reseau foo'})
 
@@ -48,6 +56,7 @@ def test_navitia_request_error():
     n = Navitia('http://api.navitia.io', 'jdr')
     with HTTMock(navitia_mock_navitia_error):
         n.get_pt_object('network:foo','network')
+
 
 @raises(exceptions.ObjectTypeUnknown)
 def test_navitia_unknown_object_type():
@@ -69,6 +78,7 @@ def test_query_formater_line_section():
 def test_query_formater_all():
     n = Navitia('http://api.navitia.io', 'jdr')
     eq_(n.query_formater('uri', 'network', 'networks'), 'http://api.navitia.io/v1/coverage/jdr/networks/uri/networks?depth=0')
+
 
 @raises(exceptions.ObjectTypeUnknown)
 def test_query_formater_all_objects_invalid():
