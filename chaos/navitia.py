@@ -36,7 +36,7 @@ __all__ = ['Navitia']
 
 
 class Navitia(object):
-    def __init__(self, url, coverage, token=None, timeout=1):
+    def __init__(self, url, coverage, token=None, timeout=2):
         self.url = url
         self.coverage = coverage
         self.token = token
