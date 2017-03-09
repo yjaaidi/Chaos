@@ -17,7 +17,7 @@ CACHE_CONFIGURATION = {
     'CACHE_TYPE': cache_type,
     'CACHE_DEFAULT_TIMEOUT': os.getenv('CACHE_DEFAULT_TIMEOUT', 86400),  # in seconds
     'NAVITIA_CACHE_TIMEOUT': os.getenv('NAVITIA_CACHE_TIMEOUT', 2 * 24 * 3600),  # in seconds
-    'NAVITIA_LASTLOADDATE_CACHE_TIMEOUT': os.getenv('NAVITIA_LASTLOADDATE_CACHE_TIMEOUT', 600),  # in seconds
+    'NAVITIA_PUBDATE_CACHE_TIMEOUT': os.getenv('NAVITIA_PUBDATE_CACHE_TIMEOUT', 600),  # in seconds
 }
 
 if cache_type == 'redis':
