@@ -75,8 +75,16 @@ class Navitia(object):
             # currently we reraise the previous exceptions
             raise exceptions.NavitiaError('call to navitia failed, data : {}'.format(query))
 
-    @cache.memoize(timeout=app.config['CACHE_CONFIGURATION'].get('NAVITIA_CACHE_TIMEOUT', 3600))
     def get_pt_object(self, uri, object_type, pt_objects=None):
+        cache_key = 'Chaos.get_pt_object.{}.{}.{}.{}'.format(self.get_coverage_last_load_date(), uri, object_type, pt_objects)
+        rv = cache.get(cache_key)
+        if rv is not None:
+            logging.getLogger().debug("Cache hit for uri {}".format(uri))
+            return rv
+
+        logging.getLogger().debug("Cache miss for uri {}".format(uri))
+        logging.getLogger().debug("Last load at: {}".format(self.get_coverage_last_load_date()))
+
         try:
             query = self.query_formater(uri, object_type, pt_objects)
         except exceptions.ObjectTypeUnknown:
@@ -93,10 +101,31 @@ class Navitia(object):
         if response:
             json = response.json()
             if pt_objects and json[pt_objects]:
-                return json[pt_objects]
+                rv = json[pt_objects]
+                cache.set(cache_key, rv, app.config['CACHE_CONFIGURATION'].get('NAVITIA_CACHE_TIMEOUT', 3600))
+                return rv
 
             if self.collections[object_type] in json and json[self.collections[object_type]]:
-                return json[self.collections[object_type]][0]
+                rv = json[self.collections[object_type]][0]
+                cache.set(cache_key, rv, app.config['CACHE_CONFIGURATION'].get('NAVITIA_CACHE_TIMEOUT', 3600))
+                return rv
+
+        return None
+
+    @cache.memoize(timeout=app.config['CACHE_CONFIGURATION'].get('NAVITIA_LASTLOADDATE_CACHE_TIMEOUT', 600))
+    def get_coverage_last_load_date(self):
+        logging.getLogger().debug("Cache miss for load_load_at coverage {}".format(self.coverage))
+        uri = '{}/v1/coverage/{}'.format(self.url, self.coverage)
+        try:
+            response = self._navitia_caller(uri)
+        except exceptions.NavitiaError:
+            raise
+
+        if response:
+            json = response.json()
+            for region in json['regions']:
+                if region['id'] == self.coverage:
+                    return region['last_load_at']
 
         return None
 

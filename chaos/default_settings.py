@@ -15,8 +15,9 @@ RABBITMQ_CONNECTION_STRING = str(os.getenv('RABBITMQ_CONNECTION_STRING', 'pyamqp
 cache_type = str(os.getenv('CACHE_TYPE', 'simple'))
 CACHE_CONFIGURATION = {
     'CACHE_TYPE': cache_type,
-    'CACHE_DEFAULT_TIMEOUT': 86400,  # in seconds
-    'NAVITIA_CACHE_TIMEOUT': 86400,  # in seconds
+    'CACHE_DEFAULT_TIMEOUT': os.getenv('CACHE_DEFAULT_TIMEOUT', 86400),  # in seconds
+    'NAVITIA_CACHE_TIMEOUT': os.getenv('NAVITIA_CACHE_TIMEOUT', 2 * 24 * 3600),  # in seconds
+    'NAVITIA_LASTLOADDATE_CACHE_TIMEOUT': os.getenv('NAVITIA_LASTLOADDATE_CACHE_TIMEOUT', 600),  # in seconds
 }
 
 if cache_type == 'redis':
