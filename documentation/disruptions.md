@@ -2,7 +2,8 @@ FORMAT: 1A
 HOST: https://chaos.apiary-mock.com
 
 #Chaos
-It's an api for blabla
+Chaos is the web service which can feed [Navitia](https://github.com/CanalTP/navitia) with real-time [disruptions](http://doc.navitia.io/#traffic-reports).
+It can work together with [Kirin](https://github.com/CanalTP/kirin) which can feed [Navitia](https://github.com/CanalTP/navitia) with real-time delays.
 
 
 # Root [/]
@@ -20,7 +21,7 @@ It's an api for blabla
                 "impactsbyobject": {"href": "https://chaos.apiary-mock.com/impactsbyobject"},
                 "tags": {"href": "https://chaos.apiary-mock.com/tags"},
                 "categories": {"href": "https://chaos.apiary-mock.com/categories"},
-                "channeltypes": {"href": "http://127.0.0.1:5000/channel_types"}
+                "channeltypes": {"href": "https://chaos.apiary-mock.com/channel_types"}
             }
 
 
@@ -49,6 +50,7 @@ Return all visible disruptions.
 | tag[]                | filter by tag (id of tag)                                                      | false    |                         |
 | uri                  | filter by uri of ptobject                                                      | false    |                         |
 | status[]             | filter by status                                                               | false    | [published, draft]      |
+| depth                | with depth=2, you could retrieve the first page of impacts from the disruption | false    | 1                       |
 
 @TODO: search and sort
 
@@ -81,7 +83,7 @@ Return all visible disruptions.
                                 "id": "ad9d80ce-17b8-11e4-a553-d4bed99855be",
                                 "name": "rer",
                                 "self": {
-                                    "href": "http://127.0.0.1:5000/tags/ad9d80ce-17b8-11e4-a553-d4bed99855be"
+                                    "href": "https://chaos.apiary-mock.com/tags/ad9d80ce-17b8-11e4-a553-d4bed99855be"
                                 },
                                 "updated_at": null
                             }
@@ -143,7 +145,7 @@ Return all visible disruptions.
                                 "id": "ad9d80ce-17b8-11e4-a553-d4bed99855be",
                                 "name": "rer",
                                 "self": {
-                                    "href": "http://127.0.0.1:5000/tags/ad9d80ce-17b8-11e4-a553-d4bed99855be"
+                                    "href": "https://chaos.apiary-mock.com/tags/ad9d80ce-17b8-11e4-a553-d4bed99855be"
                                 },
                                 "updated_at": null
                             }
@@ -156,7 +158,7 @@ Return all visible disruptions.
                                         "id": "10216aec-00ad-11e6-9f6d-0050568c8382",
                                         "key": "special",
                                         "self": {
-                                            "href": "http://127.0.0.1:5000/properties/10216aec-00ad-11e6-9f6d-0050568c8382"
+                                            "href": "https://chaos.apiary-mock.com/properties/10216aec-00ad-11e6-9f6d-0050568c8382"
                                         },
                                         "type": "comment",
                                         "updated_at": "2014-04-12T13:00:57Z"
@@ -203,7 +205,7 @@ Return all visible disruptions.
                                 "id": "ad9d80ce-17b8-11e4-a553-d4bed99855be",
                                 "name": "rer",
                                 "self": {
-                                    "href": "http://127.0.0.1:5000/tags/ad9d80ce-17b8-11e4-a553-d4bed99855be"
+                                    "href": "https://chaos.apiary-mock.com/tags/ad9d80ce-17b8-11e4-a553-d4bed99855be"
                                 },
                                 "updated_at": null
                             }
@@ -366,7 +368,7 @@ Create one valid disruption with impacts
                             "id": "ad9d80ce-17b8-11e4-a553-d4bed99855be",
                             "name": "rer",
                             "self": {
-                                "href": "http://127.0.0.1:5000/tags/ad9d80ce-17b8-11e4-a553-d4bed99855be"
+                                "href": "https://chaos.apiary-mock.com/tags/ad9d80ce-17b8-11e4-a553-d4bed99855be"
                             },
                             "updated_at": null
                         }
@@ -414,7 +416,7 @@ Create one valid disruption with impacts
                                     "id": "10216aec-00ad-11e6-9f6d-0050568c8382",
                                     "key": "special",
                                     "self": {
-                                        "href": "http://127.0.0.1:5000/properties/10216aec-00ad-11e6-9f6d-0050568c8382"
+                                        "href": "https://chaos.apiary-mock.com/properties/10216aec-00ad-11e6-9f6d-0050568c8382"
                                     },
                                     "type": "comment",
                                     "updated_at": "2014-04-12T13:00:57Z"
@@ -472,6 +474,10 @@ Create one valid disruption with impacts
 
 ##Parameters
 
+| Name                 | description                                                                    | required | default                 |
+| -------------------- | ------------------------------------------------------------------------------ | -------- | ----------------------- |
+| depth                | with depth=2, you could retrieve the first page of impacts from the disruption | false    | 1                       |
+
 Retrieve one existing disruption:
 
 - response 200 (application/json)
@@ -501,7 +507,7 @@ Retrieve one existing disruption:
                             "id": "ad9d80ce-17b8-11e4-a553-d4bed99855be",
                             "name": "rer",
                             "self": {
-                                "href": "http://127.0.0.1:5000/tags/ad9d80ce-17b8-11e4-a553-d4bed99855be"
+                                "href": "https://chaos.apiary-mock.com/tags/ad9d80ce-17b8-11e4-a553-d4bed99855be"
                             },
                             "updated_at": null
                         }
@@ -661,7 +667,7 @@ Retrieve one existing disruption:
                             "id": "ad9d80ce-17b8-11e4-a553-d4bed99855be",
                             "name": "rer",
                             "self": {
-                                "href": "http://127.0.0.1:5000/tags/ad9d80ce-17b8-11e4-a553-d4bed99855be"
+                                "href": "https://chaos.apiary-mock.com/tags/ad9d80ce-17b8-11e4-a553-d4bed99855be"
                             },
                             "updated_at": null
                         }
@@ -709,7 +715,7 @@ Retrieve one existing disruption:
                                     "id": "10216aec-00ad-11e6-9f6d-0050568c8382",
                                     "key": "special",
                                     "self": {
-                                        "href": "http://127.0.0.1:5000/properties/10216aec-00ad-11e6-9f6d-0050568c8382"
+                                        "href": "https://chaos.apiary-mock.com/properties/10216aec-00ad-11e6-9f6d-0050568c8382"
                                     },
                                     "type": "comment",
                                     "updated_at": "2014-04-12T13:00:57Z"
@@ -832,12 +838,12 @@ Return all impacts by ptobject.
             "meta": {
                 "pagination": {
                         "first": {
-                            "href": "http://127.0.0.1:5000/impacts?start_page=1&items_per_page=20"
+                            "href": "https://chaos.apiary-mock.com/impacts?start_page=1&items_per_page=20"
                         },
                         "items_on_page": "1",
                         "items_per_page": "20",
                         "last": {
-                            "href": "http://127.0.0.1:5000/impacts?start_page=1&items_per_page=20"
+                            "href": "https://chaos.apiary-mock.com/impacts?start_page=1&items_per_page=20"
                         },
                         "next": {
                             "href": null
@@ -2681,7 +2687,7 @@ Archive a category.
                         "id": "10216aec-00ad-11e6-9f6d-0050568c8380",
                         "key": "almost-special",
                         "self": {
-                            "href": "http://127.0.0.1:5000/properties/10216aec-00ad-11e6-9f6d-0050568c8380"
+                            "href": "https://chaos.apiary-mock.com/properties/10216aec-00ad-11e6-9f6d-0050568c8380"
                         },
                         "type": "not_a_comment",
                         "updated_at": "2016-04-12T13:00:00Z"
@@ -2691,7 +2697,7 @@ Archive a category.
                         "id": "10216aec-00ad-11e6-9f6d-0050568c8382",
                         "key": "special",
                         "self": {
-                            "href": "http://127.0.0.1:5000/properties/10216aec-00ad-11e6-9f6d-0050568c8382"
+                            "href": "https://chaos.apiary-mock.com/properties/10216aec-00ad-11e6-9f6d-0050568c8382"
                         },
                         "type": "comment",
                         "updated_at": "2016-04-12T13:01:00Z"
@@ -2719,7 +2725,7 @@ Archive a category.
                     "id": "10216aec-00ad-11e6-9f6d-0050568c8382",
                     "key": "special",
                     "self": {
-                        "href": "http://127.0.0.1:5000/properties/10216aec-00ad-11e6-9f6d-0050568c8382"
+                        "href": "https://chaos.apiary-mock.com/properties/10216aec-00ad-11e6-9f6d-0050568c8382"
                     },
                     "type": "comment",
                     "updated_at": "2016-04-12T13:01:00Z"
@@ -2770,7 +2776,7 @@ Archive a category.
                     "id": "10216aec-00ad-11e6-9f6d-0050568c8383",
                     "key": "really-special",
                     "self": {
-                        "href": "http://127.0.0.1:5000/properties/10216aec-00ad-11e6-9f6d-0050568c8383"
+                        "href": "https://chaos.apiary-mock.com/properties/10216aec-00ad-11e6-9f6d-0050568c8383"
                     },
                     "type": "comment"
                 }
@@ -2851,7 +2857,7 @@ If a property with the same attributes 'key' and 'type' already exists in databa
                     "id": "10216aec-00ad-11e6-9f6d-0050568c8382",
                     "key": "special",
                     "self": {
-                        "href": "http://127.0.0.1:5000/properties/10216aec-00ad-11e6-9f6d-0050568c8382"
+                        "href": "https://chaos.apiary-mock.com/properties/10216aec-00ad-11e6-9f6d-0050568c8382"
                     },
                     "type": "datasource",
                     "updated_at": "2016-04-12T14:01:00Z"
