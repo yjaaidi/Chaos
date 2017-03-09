@@ -7,6 +7,10 @@ services:
       - SQLALCHEMY_DATABASE_URI=postgresql://navitia:navitia@database/chaos
       - RABBITMQ_CONNECTION_STRING=pyamqp://guest:guest@rabbitmq:5672//?heartbeat=60
       - DOMAIN_NAME=chaos-ws.local.canaltp.fr
+      - CACHE_TYPE=redis
+      - CACHE_REDIS_HOST=redis
+      - NAVITIA_CACHE_TIMEOUT=86400
+      - NAVITIA_LASTLOADDATE_CACHE_TIMEOUT=10
     command: /bin/bash /var/www/Chaos/docker/honcho_launcher.sh
     volumes:
       - .:/var/www/Chaos
@@ -26,6 +30,9 @@ services:
     volumes:
       - ./docker/add_uuid_extension.sh:/docker-entrypoint-initdb.d/add_uuid_extension.sh
       - ./docker/add_test_database.sh:/docker-entrypoint-initdb.d/add_test_database.sh
+
+  redis:
+    image: redis
 
 networks:
   default:
