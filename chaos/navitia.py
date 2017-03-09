@@ -83,7 +83,7 @@ class Navitia(object):
             return rv
 
         logging.getLogger().debug("Cache miss for uri {}".format(uri))
-        logging.getLogger().debug("Last load at: {}".format(self.get_coverage_publication_date()))
+        logging.getLogger().debug("Publication date: {}".format(self.get_coverage_publication_date()))
 
         try:
             query = self.query_formater(uri, object_type, pt_objects)
