@@ -114,7 +114,7 @@ class Navitia(object):
 
     @cache.memoize(timeout=app.config['CACHE_CONFIGURATION'].get('NAVITIA_PUBDATE_CACHE_TIMEOUT', 600))
     def get_coverage_publication_date(self):
-        logging.getLogger().debug("Cache miss for publication coverage {}".format(self.coverage))
+        logging.getLogger().debug("Cache miss for publication date coverage {}".format(self.coverage))
         uri = '{}/v1/coverage/{}/status'.format(self.url, self.coverage)
         try:
             response = self._navitia_caller(uri)
