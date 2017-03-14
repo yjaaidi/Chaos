@@ -67,9 +67,8 @@ class Navitia(object):
             query = '{q}/{objects}'.format(q=query, objects=pt_objects)
         return query + '?depth=0'
 
-    @retry(retry_on_exception=requests.exceptions.Timeout, stop_max_attempt_number=3, wait_fixed=100)
+    @retry(retry_on_exception=lambda e: isinstance(e, exceptions.TimeOutError), stop_max_attempt_number=3, wait_fixed=100)
     def _navitia_caller(self, query):
-
         try:
             return requests.get(query, headers={"Authorization": self.token}, timeout=self.timeout)
         except (requests.exceptions.Timeout):
