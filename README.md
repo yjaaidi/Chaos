@@ -52,7 +52,7 @@ To improve its performance Chaos can use [Redis](https://redis.io/).
 [Installing Redis](https://redis.io/topics/quickstart)
 
 ##### Using Chaos without Redis
-For development purpose you can deactivate Redis usage in [default_settings.py](https://github.com/CanalTP/Chaos/blob/master/chaos/default_settings.py#L17 by forcing 'CACHE-TYPE' to 'simple'
+For development purpose you can deactivate Redis usage in [default_settings.py](https://github.com/CanalTP/Chaos/blob/master/chaos/default_settings.py#L17) by forcing 'CACHE-TYPE' to 'simple'
 
 #### Run Chaos with honcho (optional)
 ##### Install honcho
