@@ -1,13 +1,12 @@
-FORMAT: 1A
-HOST: https://chaos.apiary-mock.com
+# Chaos
 
-#Chaos
 Chaos is the web service which can feed [Navitia](https://github.com/CanalTP/navitia) with real-time [disruptions](http://doc.navitia.io/#traffic-reports).
 It can work together with [Kirin](https://github.com/CanalTP/kirin) which can feed [Navitia](https://github.com/CanalTP/navitia) with real-time delays.
 
 
 # Root [/]
-##Retrieve Api [GET]
+
+## Retrieve Api [GET]
 
 - response 200 (application/json)
     * Body
@@ -25,7 +24,7 @@ It can work together with [Kirin](https://github.com/CanalTP/kirin) which can fe
             }
 
 
-##Headers
+## Headers
 
 | Name                 | description                                                                    | required | default                 |
 | -------------------- | ------------------------------------------------------------------------------ | -------- | ----------------------- |
@@ -37,9 +36,10 @@ It can work together with [Kirin](https://github.com/CanalTP/kirin) which can fe
 
 # List of disruptions [/disruptions]
 
-##Retrieve disruptions [GET]
+## Retrieve disruptions [GET]
+
 Return all visible disruptions.
-##Parameters
+## Parameters
 
 | Name                 | description                                                                    | required | default                 |
 | -------------------- | ------------------------------------------------------------------------------ | -------- | ----------------------- |
@@ -253,9 +253,9 @@ Return all visible disruptions.
 
             }
 
-##Create a disruption [POST]
+## Create a disruption [POST]
 
-###Parameters
+### Parameters
 
 Create one valid disruption with impacts
 
@@ -470,9 +470,10 @@ Create one valid disruption with impacts
             }
 
 # Disruptions [/disruptions/{id}]
-##Retrieve one disruption [GET]
 
-##Parameters
+## Retrieve one disruption [GET]
+
+### Parameters
 
 | Name                 | description                                                                    | required | default                 |
 | -------------------- | ------------------------------------------------------------------------------ | -------- | ----------------------- |
@@ -562,9 +563,9 @@ Retrieve one existing disruption:
             }
 
 
-##Update a disruption [PUT]
+## Update a disruption [PUT]
 
-###Parameters
+### Parameters
 
 
 - Request
@@ -801,9 +802,11 @@ But you can't make a 'published' disruption going back to 'draft' status:
             }
         }
 
-##Delete a disruption [DELETE]
+## Delete a disruption [DELETE]
+
 Archive one disruption.
-###Parameters
+
+### Parameters
 
 
 - Response 204
@@ -819,9 +822,11 @@ Archive one disruption.
 
 # List of Impacts by object type [/impacts]
 
-##Retrieve impacts [GET]
+## Retrieve impacts [GET]
+
 Return all impacts by ptobject.
-##Parameters
+
+### Parameters
 
 | Name                 | description                                                                                | required | default                     |
 | -------------------- | ------------------------------------------------------------------------------------------ | -------- | --------------------------- |
@@ -941,9 +946,11 @@ Return all impacts by ptobject.
 
 # List of Impacts [/disruptions/{disruption_id}/impacts]
 
-##Retrieve impacts [GET]
+## Retrieve impacts [GET]
+
 Return all impacts of a impact.
-###Parameters
+
+### Parameters
 
 | Name           | description                                      | required | default |
 | -------------- | ------------------------------------------------ | -------- | ------- |
@@ -1055,9 +1062,11 @@ Return all impacts of a impact.
             }
 
 
-##Create a impact [POST]
+## Create a impact [POST]
+
 Create a new impact.
-###Parameters
+
+### Parameters
 
 - request
     + headers
@@ -1316,9 +1325,9 @@ Create a new impact.
                 }
             }
 
-##Update a impact [PUT]
+## Update a impact [PUT]
 
-###Parameters
+### Parameters
 
 
 - Request
@@ -1660,9 +1669,11 @@ Create a new impact.
                 }
             }
 
-##Delete a impact [DELETE]
+## Delete a impact [DELETE]
+
 Archive one impact.
-###Parameters
+
+### Parameters
 
 
 - Response 204
@@ -1694,9 +1705,11 @@ Archive one impact.
                 }
             }
 
-#Impact [/disruptions/{disruption_id}/impacts/{id}]
-##Retrieve a impact [GET]
-###Parameters
+# Impact [/disruptions/{disruption_id}/impacts/{id}]
+
+## Retrieve a impact [GET]
+
+### Parameters
 
 - response 200 (application/json)
 
@@ -1796,9 +1809,10 @@ Archive one impact.
                 }
             }
 
-#List of severities [/severities]
+# List of severities [/severities]
 
-##Retrieve the list of all severities [GET]
+## Retrieve the list of all severities [GET]
+
 Return all the severities ordered by priority.
 
 - response 200 (application/json)
@@ -1838,7 +1852,8 @@ Return all the severities ordered by priority.
                 "meta": {}
             }
 
-##Create a severity [POST]
+## Create a severity [POST]
+
 - request
     + headers
 
@@ -1889,10 +1904,11 @@ Return all the severities ordered by priority.
                 }
             }
 
-#List of causes [/causes]
+# List of causes [/causes]
 
-##Retrieve the list of all causes [GET]
-##Parameters
+## Retrieve the list of all causes [GET]
+
+### Parameters
 
 | Name                 | description                                                                               | required | default                 |
 | -------------------- | ----------------------------------------------------------------------------------------- | -------- | ----------------------- |
@@ -1930,9 +1946,9 @@ Return all the severities ordered by priority.
             }
 
 
-#List of tags [/tags]
+# List of tags [/tags]
 
-##Retrieve the list of all tags [GET]
+## Retrieve the list of all tags [GET]
 
 - response 200 (application/json)
 
@@ -1962,7 +1978,8 @@ Return all the severities ordered by priority.
                 "meta": {}
             }
 
-##Create a tag [POST]
+## Create a tag [POST]
+
 - request
     + headers
 
@@ -2000,9 +2017,10 @@ Return all the severities ordered by priority.
             }
 
 # tags [/tags/{id}]
-##Retrieve one tag [GET]
 
-##Parameters
+## Retrieve one tag [GET]
+
+### Parameters
 
 Retrieve one existing tag:
 
@@ -2033,9 +2051,9 @@ Retrieve one existing tag:
                 }
             }
 
-##Update a tag [PUT]
+## Update a tag [PUT]
 
-###Parameters
+### Parameters
 
 - Request
 
@@ -2084,9 +2102,11 @@ Retrieve one existing tag:
                 }
             }
 
-##Delete a tag [DELETE]
+## Delete a tag [DELETE]
+
 Archive a tag.
-###Parameters
+
+### Parameters
 
 
 - Response 204
@@ -2101,9 +2121,9 @@ Archive a tag.
             }
 
 
-#List of channel types [/channel_types]
+# List of channel types [/channel_types]
 
-##Retrieve the list of all channel types [GET]
+## Retrieve the list of all channel types [GET]
 
 - response 200 (application/json)
 
@@ -2114,9 +2134,9 @@ Archive a tag.
             }
 
 
-#List of channels [/channels]
+# List of channels [/channels]
 
-##Retrieve the list of all channels [GET]
+## Retrieve the list of all channels [GET]
 
 - response 200 (application/json)
 
@@ -2155,7 +2175,8 @@ Archive a tag.
                 "meta": {}
             }
 
-##Create a channels [POST]
+## Create a channels [POST]
+
 - request
     + headers
 
@@ -2198,9 +2219,10 @@ Archive a tag.
             }
 
 # Severities [/severities/{id}]
-##Retrieve one severity [GET]
 
-##Parameters
+## Retrieve one severity [GET]
+
+### Parameters
 
 Retrieve one existing severity:
 
@@ -2231,9 +2253,9 @@ Retrieve one existing severity:
                 }
             }
 
-##Update a severity [PUT]
+## Update a severity [PUT]
 
-###Parameters
+### Parameters
 
 - Request
 
@@ -2287,9 +2309,11 @@ Retrieve one existing severity:
                 }
             }
 
-##Delete a severity [DELETE]
+## Delete a severity [DELETE]
+
 Archive one severity.
-###Parameters
+
+### Parameters
 
 
 - Response 204
@@ -2304,9 +2328,10 @@ Archive one severity.
             }
 
 # Causes [/causes/{id}]
-##Retrieve one cause [GET]
 
-##Parameters
+## Retrieve one cause [GET]
+
+### Parameters
 
 Retrieve one existing cause:
 
@@ -2335,8 +2360,10 @@ Retrieve one existing cause:
                 }
             }
 
-##Create a cause [POST]
-###Parameters
+## Create a cause [POST]
+
+### Parameters
+
 | Name           | description                                      | required | default |
 | -------------- | ------------------------------------------------ | -------- | ------- |
 | categoy        | related category                                 | false    |         |
@@ -2405,8 +2432,10 @@ Retrieve one existing cause:
             }
 
 
-##Update a cause [PUT]
-###Parameters
+## Update a cause [PUT]
+
+### Parameters
+
 | Name           | description                                      | required | default |
 | -------------- | ------------------------------------------------ | -------- | ------- |
 | categoy        | related category                                 | false    |         |
@@ -2484,9 +2513,11 @@ Retrieve one existing cause:
                 }
             }
 
-##Delete a cause [DELETE]
+## Delete a cause [DELETE]
+
 Archive a cause.
-###Parameters
+
+### Parameters
 
 
 - Response 204
@@ -2500,9 +2531,9 @@ Archive a cause.
                 }
             }
 
-#List of categories [/categories]
+# List of categories [/categories]
 
-##Retrieve the list of all categories [GET]
+## Retrieve the list of all categories [GET]
 
 - response 200 (application/json)
 
@@ -2532,7 +2563,8 @@ Archive a cause.
                 "meta": {}
             }
 
-##Create a category [POST]
+## Create a category [POST]
+
 - request
     + headers
 
@@ -2562,9 +2594,10 @@ Archive a cause.
             }
 
 # categories [/categories/{id}]
-##Retrieve one category [GET]
 
-##Parameters
+## Retrieve one category [GET]
+
+### Parameters
 
 Retrieve one existing category:
 
@@ -2595,9 +2628,9 @@ Retrieve one existing category:
                 }
             }
 
-##Update a category [PUT]
+## Update a category [PUT]
 
-###Parameters
+### Parameters
 
 - Request
 
@@ -2646,9 +2679,11 @@ Retrieve one existing category:
                 }
             }
 
-##Delete a category [DELETE]
+## Delete a category [DELETE]
+
 Archive a category.
-###Parameters
+
+### Parameters
 
 
 - Response 204
@@ -2963,11 +2998,11 @@ If the requested property is linked via associate_disruption_property table:
                 }
             }
 
-#Traffic reports [/traffic_reports]
+# Traffic reports [/traffic_reports]
 
 This service provides the state of public transport traffic.
 
-##Objects
+## Objects
 
 Disruptions is an array of some impact objects.
 
@@ -2993,7 +3028,7 @@ A typical traffic_report object will contain:
 
 It means that if a stop_area is used by many networks, it will appear many times.
 
-##Parameters
+## Parameters
 
 | Name                 | description                                                                    | required | default                 |
 | -------------------- | ------------------------------------------------------------------------------ | -------- | ----------------------- |
