@@ -31,12 +31,13 @@ import requests
 import logging
 from chaos import exceptions
 from chaos import cache, app
+from retrying import retry
 
 __all__ = ['Navitia']
 
 
 class Navitia(object):
-    def __init__(self, url, coverage, token=None, timeout=2):
+    def __init__(self, url, coverage, token=None, timeout=1):
         self.url = url
         self.coverage = coverage
         self.token = token
@@ -66,10 +67,14 @@ class Navitia(object):
             query = '{q}/{objects}'.format(q=query, objects=pt_objects)
         return query + '?depth=0'
 
+    @retry(retry_on_exception=requests.exceptions.Timeout, stop_max_attempt_number=3, wait_fixed=100)
     def _navitia_caller(self, query):
 
         try:
             return requests.get(query, headers={"Authorization": self.token}, timeout=self.timeout)
+        except (requests.exceptions.Timeout):
+            logging.getLogger(__name__).error('call to navitia timeout')
+            raise exceptions.TimeOutError('call to navitia timeout, data : {}'.format(query))
         except (requests.exceptions.RequestException):
             logging.getLogger(__name__).exception('call to navitia failed')
             # currently we reraise the previous exceptions
@@ -96,7 +101,7 @@ class Navitia(object):
 
         try:
             response = self._navitia_caller(query)
-        except exceptions.NavitiaError:
+        except exceptions.NavitiaError, exceptions.TimeOutError:
             raise
 
         if response:
