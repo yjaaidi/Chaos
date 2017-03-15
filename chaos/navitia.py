@@ -67,14 +67,14 @@ class Navitia(object):
             query = '{q}/{objects}'.format(q=query, objects=pt_objects)
         return query + '?depth=0'
 
-    @retry(retry_on_exception=lambda e: isinstance(e, exceptions.TimeOutError), stop_max_attempt_number=3, wait_fixed=100)
+    @retry(retry_on_exception=lambda e: isinstance(e, requests.exceptions.Timeout), stop_max_attempt_number=3, wait_fixed=100)
     def _navitia_caller(self, query):
         try:
             return requests.get(query, headers={"Authorization": self.token}, timeout=self.timeout)
-        except (requests.exceptions.Timeout):
+        except requests.exceptions.Timeout:
             logging.getLogger(__name__).error('call to navitia timeout')
-            raise exceptions.TimeOutError('call to navitia timeout, data : {}'.format(query))
-        except (requests.exceptions.RequestException):
+            raise requests.exceptions.Timeout('call to navitia timeout, data : {}'.format(query))
+        except requests.exceptions.RequestException:
             logging.getLogger(__name__).exception('call to navitia failed')
             # currently we reraise the previous exceptions
             raise exceptions.NavitiaError('call to navitia failed, data : {}'.format(query))
@@ -100,7 +100,7 @@ class Navitia(object):
 
         try:
             response = self._navitia_caller(query)
-        except exceptions.NavitiaError, exceptions.TimeOutError:
+        except (exceptions.NavitiaError, requests.exceptions.Timeout):
             raise
 
         if response:

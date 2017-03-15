@@ -57,9 +57,3 @@ class NavitiaError(Exception):
 
     def __init__(self, message=''):
         self.message = message
-
-
-class TimeOutError(Exception):
-
-    def __init__(self, message=''):
-        self.message = message
