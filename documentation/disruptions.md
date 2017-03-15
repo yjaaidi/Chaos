@@ -629,7 +629,8 @@ Retrieve one existing disruption:
                                 "end": "2014-05-22T02:15:00Z"
                             }
                         ],
-                        "send_notifications": true
+                        "send_notifications": true,
+                        "notification_date": "2014-04-31T17:00:00Z"
                     }
                 ],
                 "properties": [
@@ -873,6 +874,7 @@ Return all impacts by ptobject.
                                     }
                             ],
                             "send_notifications": true,
+                            "notification_date": "2014-04-31T17:00:00Z",
                             "created_at": "2014-04-31T16:52:18Z",
                             "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657ea",
                             "messages": [
@@ -972,6 +974,7 @@ Return all impacts of a impact.
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": "2014-04-31T16:55:18Z",
                     "send_notifications": true,
+                    "notification_date": "2014-04-31T17:00:00Z",
                     "severity": {
                         "id": "3d1f42b2-e8df-11e3-8c3e-0008ca86c7ea",
                         "wordings" : [{"key": "msg", "value": "Bonne nouvelle"}],
@@ -1158,7 +1161,8 @@ Create a new impact.
                         }
                     }
                 ],
-                "send_notifications": true
+                "send_notifications": true,
+                "notification_date": "2014-04-31T17:00:00Z"
             }
 
 - response 201 (application/json)
@@ -1172,6 +1176,7 @@ Create a new impact.
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": "2014-04-31T16:55:18Z",
                     "send_notifications": true,
+                    "notification_date": "2014-04-31T17:00:00Z",
                     "severity": {
                         "id": "3d1f42b2-e8df-11e3-8c3e-0008ca861aea",
                         "wordings" : [{"key": "msg", "value": "Bonne nouvelle"}],
@@ -1349,6 +1354,7 @@ Create a new impact.
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": "2014-04-31T16:55:18Z",
                     "send_notifications": true,
+                    "notification_date": "2014-04-31T17:00:00Z",
                     "severity": {
                         "id": "3d1f42b2-e8df-11e3-8c3e-0008ca861aea",
                         "wordings" : [{"key": "msg", "value": "Bonne nouvelle"}],
@@ -1479,6 +1485,7 @@ Create a new impact.
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": "2014-04-31T16:55:18Z",
                     "send_notifications": true,
+                    "notification_date": "2014-04-31T17:00:00Z",
                     "severity": {
                         "id": "3d1f42b2-e8df-11e3-8c3e-0008ca861aea",
                         "wordings" : [{"key": "msg", "value": "Bonne nouvelle"}],
@@ -1722,6 +1729,7 @@ Archive one impact.
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": "2014-04-31T16:55:18Z",
                     "send_notifications": true,
+                    "notification_date": "2014-04-31T17:00:00Z",
                     "severity": {
                         "id": "3d1f42b2-e8df-11e3-8c3e-0008ca861aea",
                         "wordings" : [{"key": "msg", "value": "Bonne nouvelle"}],
