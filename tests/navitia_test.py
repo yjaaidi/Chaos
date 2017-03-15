@@ -1,6 +1,9 @@
 from nose.tools import *
 from chaos.navitia import Navitia, exceptions
 import json
+import requests
+from retrying import retry
+
 
 from httmock import all_requests, HTTMock, response
 
