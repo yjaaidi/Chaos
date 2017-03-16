@@ -31,6 +31,7 @@ import requests
 import logging
 from chaos import exceptions
 from chaos import cache, app
+from retrying import retry
 
 __all__ = ['Navitia']
 
@@ -66,17 +67,29 @@ class Navitia(object):
             query = '{q}/{objects}'.format(q=query, objects=pt_objects)
         return query + '?depth=0'
 
+    @retry(retry_on_exception=lambda e: isinstance(e, requests.exceptions.Timeout), stop_max_attempt_number=3, wait_fixed=100)
     def _navitia_caller(self, query):
-
         try:
             return requests.get(query, headers={"Authorization": self.token}, timeout=self.timeout)
-        except (requests.exceptions.RequestException):
+        except requests.exceptions.Timeout:
+            logging.getLogger(__name__).error('call to navitia timeout')
+            raise requests.exceptions.Timeout('call to navitia timeout, data : {}'.format(query))
+        except requests.exceptions.RequestException:
             logging.getLogger(__name__).exception('call to navitia failed')
             # currently we reraise the previous exceptions
             raise exceptions.NavitiaError('call to navitia failed, data : {}'.format(query))
 
-    @cache.memoize(timeout=app.config['CACHE_CONFIGURATION'].get('NAVITIA_CACHE_TIMEOUT', 3600))
     def get_pt_object(self, uri, object_type, pt_objects=None):
+        cache_key = 'Chaos.get_pt_object.{}.{}.{}.{}.{}'.format(self.coverage, self.get_coverage_publication_date(),
+                                                                uri, object_type, pt_objects)
+        rv = cache.get(cache_key)
+        if rv is not None:
+            logging.getLogger().debug("Cache hit for coverage/uri: {}/{}".format(self.coverage, uri))
+            return rv
+
+        logging.getLogger().debug("Cache miss for coverage/uri: {}/{}".format(self.coverage, uri))
+        logging.getLogger().debug("Publication date: {}".format(self.get_coverage_publication_date()))
+
         try:
             query = self.query_formater(uri, object_type, pt_objects)
         except exceptions.ObjectTypeUnknown:
@@ -87,16 +100,35 @@ class Navitia(object):
 
         try:
             response = self._navitia_caller(query)
-        except exceptions.NavitiaError:
+        except (exceptions.NavitiaError, requests.exceptions.Timeout):
             raise
 
         if response:
             json = response.json()
             if pt_objects and json[pt_objects]:
-                return json[pt_objects]
+                rv = json[pt_objects]
+                cache.set(cache_key, rv, app.config['CACHE_CONFIGURATION'].get('NAVITIA_CACHE_TIMEOUT', 3600))
+                return rv
 
             if self.collections[object_type] in json and json[self.collections[object_type]]:
-                return json[self.collections[object_type]][0]
+                rv = json[self.collections[object_type]][0]
+                cache.set(cache_key, rv, app.config['CACHE_CONFIGURATION'].get('NAVITIA_CACHE_TIMEOUT', 3600))
+                return rv
+
+        return None
+
+    @cache.memoize(timeout=app.config['CACHE_CONFIGURATION'].get('NAVITIA_PUBDATE_CACHE_TIMEOUT', 600))
+    def get_coverage_publication_date(self):
+        logging.getLogger().debug("Cache miss for publication date coverage {}".format(self.coverage))
+        uri = '{}/v1/coverage/{}/status'.format(self.url, self.coverage)
+        try:
+            response = self._navitia_caller(uri)
+        except exceptions.NavitiaError:
+            raise
+
+        if response:
+            json = response.json()
+            return json['status']['publication_date']
 
         return None
 

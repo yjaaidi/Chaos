@@ -1,12 +1,12 @@
-FORMAT: 1A
-HOST: https://chaos.apiary-mock.com
+# Chaos
 
-#Chaos
-It's an api for blabla
+Chaos is the web service which can feed [Navitia](https://github.com/CanalTP/navitia) with real-time [disruptions](http://doc.navitia.io/#traffic-reports).
+It can work together with [Kirin](https://github.com/CanalTP/kirin) which can feed [Navitia](https://github.com/CanalTP/navitia) with real-time delays.
 
 
 # Root [/]
-##Retrieve Api [GET]
+
+## Retrieve Api [GET]
 
 - response 200 (application/json)
     * Body
@@ -20,11 +20,11 @@ It's an api for blabla
                 "impactsbyobject": {"href": "https://chaos.apiary-mock.com/impactsbyobject"},
                 "tags": {"href": "https://chaos.apiary-mock.com/tags"},
                 "categories": {"href": "https://chaos.apiary-mock.com/categories"},
-                "channeltypes": {"href": "http://127.0.0.1:5000/channel_types"}
+                "channeltypes": {"href": "https://chaos.apiary-mock.com/channel_types"}
             }
 
 
-##Headers
+## Headers
 
 | Name                 | description                                                                    | required | default                 |
 | -------------------- | ------------------------------------------------------------------------------ | -------- | ----------------------- |
@@ -36,9 +36,10 @@ It's an api for blabla
 
 # List of disruptions [/disruptions]
 
-##Retrieve disruptions [GET]
+## Retrieve disruptions [GET]
+
 Return all visible disruptions.
-##Parameters
+## Parameters
 
 | Name                 | description                                                                    | required | default                 |
 | -------------------- | ------------------------------------------------------------------------------ | -------- | ----------------------- |
@@ -49,6 +50,7 @@ Return all visible disruptions.
 | tag[]                | filter by tag (id of tag)                                                      | false    |                         |
 | uri                  | filter by uri of ptobject                                                      | false    |                         |
 | status[]             | filter by status                                                               | false    | [published, draft]      |
+| depth                | with depth=2, you could retrieve the first page of impacts from the disruption | false    | 1                       |
 
 @TODO: search and sort
 
@@ -81,7 +83,7 @@ Return all visible disruptions.
                                 "id": "ad9d80ce-17b8-11e4-a553-d4bed99855be",
                                 "name": "rer",
                                 "self": {
-                                    "href": "http://127.0.0.1:5000/tags/ad9d80ce-17b8-11e4-a553-d4bed99855be"
+                                    "href": "https://chaos.apiary-mock.com/tags/ad9d80ce-17b8-11e4-a553-d4bed99855be"
                                 },
                                 "updated_at": null
                             }
@@ -143,7 +145,7 @@ Return all visible disruptions.
                                 "id": "ad9d80ce-17b8-11e4-a553-d4bed99855be",
                                 "name": "rer",
                                 "self": {
-                                    "href": "http://127.0.0.1:5000/tags/ad9d80ce-17b8-11e4-a553-d4bed99855be"
+                                    "href": "https://chaos.apiary-mock.com/tags/ad9d80ce-17b8-11e4-a553-d4bed99855be"
                                 },
                                 "updated_at": null
                             }
@@ -156,7 +158,7 @@ Return all visible disruptions.
                                         "id": "10216aec-00ad-11e6-9f6d-0050568c8382",
                                         "key": "special",
                                         "self": {
-                                            "href": "http://127.0.0.1:5000/properties/10216aec-00ad-11e6-9f6d-0050568c8382"
+                                            "href": "https://chaos.apiary-mock.com/properties/10216aec-00ad-11e6-9f6d-0050568c8382"
                                         },
                                         "type": "comment",
                                         "updated_at": "2014-04-12T13:00:57Z"
@@ -203,7 +205,7 @@ Return all visible disruptions.
                                 "id": "ad9d80ce-17b8-11e4-a553-d4bed99855be",
                                 "name": "rer",
                                 "self": {
-                                    "href": "http://127.0.0.1:5000/tags/ad9d80ce-17b8-11e4-a553-d4bed99855be"
+                                    "href": "https://chaos.apiary-mock.com/tags/ad9d80ce-17b8-11e4-a553-d4bed99855be"
                                 },
                                 "updated_at": null
                             }
@@ -251,9 +253,9 @@ Return all visible disruptions.
 
             }
 
-##Create a disruption [POST]
+## Create a disruption [POST]
 
-###Parameters
+### Parameters
 
 Create one valid disruption with impacts
 
@@ -366,7 +368,7 @@ Create one valid disruption with impacts
                             "id": "ad9d80ce-17b8-11e4-a553-d4bed99855be",
                             "name": "rer",
                             "self": {
-                                "href": "http://127.0.0.1:5000/tags/ad9d80ce-17b8-11e4-a553-d4bed99855be"
+                                "href": "https://chaos.apiary-mock.com/tags/ad9d80ce-17b8-11e4-a553-d4bed99855be"
                             },
                             "updated_at": null
                         }
@@ -414,7 +416,7 @@ Create one valid disruption with impacts
                                     "id": "10216aec-00ad-11e6-9f6d-0050568c8382",
                                     "key": "special",
                                     "self": {
-                                        "href": "http://127.0.0.1:5000/properties/10216aec-00ad-11e6-9f6d-0050568c8382"
+                                        "href": "https://chaos.apiary-mock.com/properties/10216aec-00ad-11e6-9f6d-0050568c8382"
                                     },
                                     "type": "comment",
                                     "updated_at": "2014-04-12T13:00:57Z"
@@ -468,9 +470,14 @@ Create one valid disruption with impacts
             }
 
 # Disruptions [/disruptions/{id}]
-##Retrieve one disruption [GET]
 
-##Parameters
+## Retrieve one disruption [GET]
+
+### Parameters
+
+| Name                 | description                                                                    | required | default                 |
+| -------------------- | ------------------------------------------------------------------------------ | -------- | ----------------------- |
+| depth                | with depth=2, you could retrieve the first page of impacts from the disruption | false    | 1                       |
 
 Retrieve one existing disruption:
 
@@ -501,7 +508,7 @@ Retrieve one existing disruption:
                             "id": "ad9d80ce-17b8-11e4-a553-d4bed99855be",
                             "name": "rer",
                             "self": {
-                                "href": "http://127.0.0.1:5000/tags/ad9d80ce-17b8-11e4-a553-d4bed99855be"
+                                "href": "https://chaos.apiary-mock.com/tags/ad9d80ce-17b8-11e4-a553-d4bed99855be"
                             },
                             "updated_at": null
                         }
@@ -556,9 +563,9 @@ Retrieve one existing disruption:
             }
 
 
-##Update a disruption [PUT]
+## Update a disruption [PUT]
 
-###Parameters
+### Parameters
 
 
 - Request
@@ -622,7 +629,8 @@ Retrieve one existing disruption:
                                 "end": "2014-05-22T02:15:00Z"
                             }
                         ],
-                        "send_notifications": true
+                        "send_notifications": true,
+                        "notification_date": "2014-04-31T17:00:00Z"
                     }
                 ],
                 "properties": [
@@ -661,7 +669,7 @@ Retrieve one existing disruption:
                             "id": "ad9d80ce-17b8-11e4-a553-d4bed99855be",
                             "name": "rer",
                             "self": {
-                                "href": "http://127.0.0.1:5000/tags/ad9d80ce-17b8-11e4-a553-d4bed99855be"
+                                "href": "https://chaos.apiary-mock.com/tags/ad9d80ce-17b8-11e4-a553-d4bed99855be"
                             },
                             "updated_at": null
                         }
@@ -709,7 +717,7 @@ Retrieve one existing disruption:
                                     "id": "10216aec-00ad-11e6-9f6d-0050568c8382",
                                     "key": "special",
                                     "self": {
-                                        "href": "http://127.0.0.1:5000/properties/10216aec-00ad-11e6-9f6d-0050568c8382"
+                                        "href": "https://chaos.apiary-mock.com/properties/10216aec-00ad-11e6-9f6d-0050568c8382"
                                     },
                                     "type": "comment",
                                     "updated_at": "2014-04-12T13:00:57Z"
@@ -795,9 +803,11 @@ But you can't make a 'published' disruption going back to 'draft' status:
             }
         }
 
-##Delete a disruption [DELETE]
+## Delete a disruption [DELETE]
+
 Archive one disruption.
-###Parameters
+
+### Parameters
 
 
 - Response 204
@@ -813,9 +823,11 @@ Archive one disruption.
 
 # List of Impacts by object type [/impacts]
 
-##Retrieve impacts [GET]
+## Retrieve impacts [GET]
+
 Return all impacts by ptobject.
-##Parameters
+
+### Parameters
 
 | Name                 | description                                                                                | required | default                     |
 | -------------------- | ------------------------------------------------------------------------------------------ | -------- | --------------------------- |
@@ -832,12 +844,12 @@ Return all impacts by ptobject.
             "meta": {
                 "pagination": {
                         "first": {
-                            "href": "http://127.0.0.1:5000/impacts?start_page=1&items_per_page=20"
+                            "href": "https://chaos.apiary-mock.com/impacts?start_page=1&items_per_page=20"
                         },
                         "items_on_page": "1",
                         "items_per_page": "20",
                         "last": {
-                            "href": "http://127.0.0.1:5000/impacts?start_page=1&items_per_page=20"
+                            "href": "https://chaos.apiary-mock.com/impacts?start_page=1&items_per_page=20"
                         },
                         "next": {
                             "href": null
@@ -862,6 +874,7 @@ Return all impacts by ptobject.
                                     }
                             ],
                             "send_notifications": true,
+                            "notification_date": "2014-04-31T17:00:00Z",
                             "created_at": "2014-04-31T16:52:18Z",
                             "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657ea",
                             "messages": [
@@ -935,9 +948,11 @@ Return all impacts by ptobject.
 
 # List of Impacts [/disruptions/{disruption_id}/impacts]
 
-##Retrieve impacts [GET]
+## Retrieve impacts [GET]
+
 Return all impacts of a impact.
-###Parameters
+
+### Parameters
 
 | Name           | description                                      | required | default |
 | -------------- | ------------------------------------------------ | -------- | ------- |
@@ -959,6 +974,7 @@ Return all impacts of a impact.
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": "2014-04-31T16:55:18Z",
                     "send_notifications": true,
+                    "notification_date": "2014-04-31T17:00:00Z",
                     "severity": {
                         "id": "3d1f42b2-e8df-11e3-8c3e-0008ca86c7ea",
                         "wordings" : [{"key": "msg", "value": "Bonne nouvelle"}],
@@ -1049,9 +1065,11 @@ Return all impacts of a impact.
             }
 
 
-##Create a impact [POST]
+## Create a impact [POST]
+
 Create a new impact.
-###Parameters
+
+### Parameters
 
 - request
     + headers
@@ -1143,7 +1161,8 @@ Create a new impact.
                         }
                     }
                 ],
-                "send_notifications": true
+                "send_notifications": true,
+                "notification_date": "2014-04-31T17:00:00Z"
             }
 
 - response 201 (application/json)
@@ -1157,6 +1176,7 @@ Create a new impact.
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": "2014-04-31T16:55:18Z",
                     "send_notifications": true,
+                    "notification_date": "2014-04-31T17:00:00Z",
                     "severity": {
                         "id": "3d1f42b2-e8df-11e3-8c3e-0008ca861aea",
                         "wordings" : [{"key": "msg", "value": "Bonne nouvelle"}],
@@ -1310,9 +1330,9 @@ Create a new impact.
                 }
             }
 
-##Update a impact [PUT]
+## Update a impact [PUT]
 
-###Parameters
+### Parameters
 
 
 - Request
@@ -1334,6 +1354,7 @@ Create a new impact.
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": "2014-04-31T16:55:18Z",
                     "send_notifications": true,
+                    "notification_date": "2014-04-31T17:00:00Z",
                     "severity": {
                         "id": "3d1f42b2-e8df-11e3-8c3e-0008ca861aea",
                         "wordings" : [{"key": "msg", "value": "Bonne nouvelle"}],
@@ -1464,6 +1485,7 @@ Create a new impact.
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": "2014-04-31T16:55:18Z",
                     "send_notifications": true,
+                    "notification_date": "2014-04-31T17:00:00Z",
                     "severity": {
                         "id": "3d1f42b2-e8df-11e3-8c3e-0008ca861aea",
                         "wordings" : [{"key": "msg", "value": "Bonne nouvelle"}],
@@ -1654,9 +1676,11 @@ Create a new impact.
                 }
             }
 
-##Delete a impact [DELETE]
+## Delete a impact [DELETE]
+
 Archive one impact.
-###Parameters
+
+### Parameters
 
 
 - Response 204
@@ -1688,9 +1712,11 @@ Archive one impact.
                 }
             }
 
-#Impact [/disruptions/{disruption_id}/impacts/{id}]
-##Retrieve a impact [GET]
-###Parameters
+# Impact [/disruptions/{disruption_id}/impacts/{id}]
+
+## Retrieve a impact [GET]
+
+### Parameters
 
 - response 200 (application/json)
 
@@ -1703,6 +1729,7 @@ Archive one impact.
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": "2014-04-31T16:55:18Z",
                     "send_notifications": true,
+                    "notification_date": "2014-04-31T17:00:00Z",
                     "severity": {
                         "id": "3d1f42b2-e8df-11e3-8c3e-0008ca861aea",
                         "wordings" : [{"key": "msg", "value": "Bonne nouvelle"}],
@@ -1790,9 +1817,10 @@ Archive one impact.
                 }
             }
 
-#List of severities [/severities]
+# List of severities [/severities]
 
-##Retrieve the list of all severities [GET]
+## Retrieve the list of all severities [GET]
+
 Return all the severities ordered by priority.
 
 - response 200 (application/json)
@@ -1832,7 +1860,8 @@ Return all the severities ordered by priority.
                 "meta": {}
             }
 
-##Create a severity [POST]
+## Create a severity [POST]
+
 - request
     + headers
 
@@ -1883,10 +1912,11 @@ Return all the severities ordered by priority.
                 }
             }
 
-#List of causes [/causes]
+# List of causes [/causes]
 
-##Retrieve the list of all causes [GET]
-##Parameters
+## Retrieve the list of all causes [GET]
+
+### Parameters
 
 | Name                 | description                                                                               | required | default                 |
 | -------------------- | ----------------------------------------------------------------------------------------- | -------- | ----------------------- |
@@ -1924,9 +1954,9 @@ Return all the severities ordered by priority.
             }
 
 
-#List of tags [/tags]
+# List of tags [/tags]
 
-##Retrieve the list of all tags [GET]
+## Retrieve the list of all tags [GET]
 
 - response 200 (application/json)
 
@@ -1956,7 +1986,8 @@ Return all the severities ordered by priority.
                 "meta": {}
             }
 
-##Create a tag [POST]
+## Create a tag [POST]
+
 - request
     + headers
 
@@ -1994,9 +2025,10 @@ Return all the severities ordered by priority.
             }
 
 # tags [/tags/{id}]
-##Retrieve one tag [GET]
 
-##Parameters
+## Retrieve one tag [GET]
+
+### Parameters
 
 Retrieve one existing tag:
 
@@ -2027,9 +2059,9 @@ Retrieve one existing tag:
                 }
             }
 
-##Update a tag [PUT]
+## Update a tag [PUT]
 
-###Parameters
+### Parameters
 
 - Request
 
@@ -2078,9 +2110,11 @@ Retrieve one existing tag:
                 }
             }
 
-##Delete a tag [DELETE]
+## Delete a tag [DELETE]
+
 Archive a tag.
-###Parameters
+
+### Parameters
 
 
 - Response 204
@@ -2095,9 +2129,9 @@ Archive a tag.
             }
 
 
-#List of channel types [/channel_types]
+# List of channel types [/channel_types]
 
-##Retrieve the list of all channel types [GET]
+## Retrieve the list of all channel types [GET]
 
 - response 200 (application/json)
 
@@ -2108,9 +2142,9 @@ Archive a tag.
             }
 
 
-#List of channels [/channels]
+# List of channels [/channels]
 
-##Retrieve the list of all channels [GET]
+## Retrieve the list of all channels [GET]
 
 - response 200 (application/json)
 
@@ -2149,7 +2183,8 @@ Archive a tag.
                 "meta": {}
             }
 
-##Create a channels [POST]
+## Create a channels [POST]
+
 - request
     + headers
 
@@ -2192,9 +2227,10 @@ Archive a tag.
             }
 
 # Severities [/severities/{id}]
-##Retrieve one severity [GET]
 
-##Parameters
+## Retrieve one severity [GET]
+
+### Parameters
 
 Retrieve one existing severity:
 
@@ -2225,9 +2261,9 @@ Retrieve one existing severity:
                 }
             }
 
-##Update a severity [PUT]
+## Update a severity [PUT]
 
-###Parameters
+### Parameters
 
 - Request
 
@@ -2281,9 +2317,11 @@ Retrieve one existing severity:
                 }
             }
 
-##Delete a severity [DELETE]
+## Delete a severity [DELETE]
+
 Archive one severity.
-###Parameters
+
+### Parameters
 
 
 - Response 204
@@ -2298,9 +2336,10 @@ Archive one severity.
             }
 
 # Causes [/causes/{id}]
-##Retrieve one cause [GET]
 
-##Parameters
+## Retrieve one cause [GET]
+
+### Parameters
 
 Retrieve one existing cause:
 
@@ -2329,8 +2368,10 @@ Retrieve one existing cause:
                 }
             }
 
-##Create a cause [POST]
-###Parameters
+## Create a cause [POST]
+
+### Parameters
+
 | Name           | description                                      | required | default |
 | -------------- | ------------------------------------------------ | -------- | ------- |
 | categoy        | related category                                 | false    |         |
@@ -2399,8 +2440,10 @@ Retrieve one existing cause:
             }
 
 
-##Update a cause [PUT]
-###Parameters
+## Update a cause [PUT]
+
+### Parameters
+
 | Name           | description                                      | required | default |
 | -------------- | ------------------------------------------------ | -------- | ------- |
 | categoy        | related category                                 | false    |         |
@@ -2478,9 +2521,11 @@ Retrieve one existing cause:
                 }
             }
 
-##Delete a cause [DELETE]
+## Delete a cause [DELETE]
+
 Archive a cause.
-###Parameters
+
+### Parameters
 
 
 - Response 204
@@ -2494,9 +2539,9 @@ Archive a cause.
                 }
             }
 
-#List of categories [/categories]
+# List of categories [/categories]
 
-##Retrieve the list of all categories [GET]
+## Retrieve the list of all categories [GET]
 
 - response 200 (application/json)
 
@@ -2526,7 +2571,8 @@ Archive a cause.
                 "meta": {}
             }
 
-##Create a category [POST]
+## Create a category [POST]
+
 - request
     + headers
 
@@ -2556,9 +2602,10 @@ Archive a cause.
             }
 
 # categories [/categories/{id}]
-##Retrieve one category [GET]
 
-##Parameters
+## Retrieve one category [GET]
+
+### Parameters
 
 Retrieve one existing category:
 
@@ -2589,9 +2636,9 @@ Retrieve one existing category:
                 }
             }
 
-##Update a category [PUT]
+## Update a category [PUT]
 
-###Parameters
+### Parameters
 
 - Request
 
@@ -2640,9 +2687,11 @@ Retrieve one existing category:
                 }
             }
 
-##Delete a category [DELETE]
+## Delete a category [DELETE]
+
 Archive a category.
-###Parameters
+
+### Parameters
 
 
 - Response 204
@@ -2681,7 +2730,7 @@ Archive a category.
                         "id": "10216aec-00ad-11e6-9f6d-0050568c8380",
                         "key": "almost-special",
                         "self": {
-                            "href": "http://127.0.0.1:5000/properties/10216aec-00ad-11e6-9f6d-0050568c8380"
+                            "href": "https://chaos.apiary-mock.com/properties/10216aec-00ad-11e6-9f6d-0050568c8380"
                         },
                         "type": "not_a_comment",
                         "updated_at": "2016-04-12T13:00:00Z"
@@ -2691,7 +2740,7 @@ Archive a category.
                         "id": "10216aec-00ad-11e6-9f6d-0050568c8382",
                         "key": "special",
                         "self": {
-                            "href": "http://127.0.0.1:5000/properties/10216aec-00ad-11e6-9f6d-0050568c8382"
+                            "href": "https://chaos.apiary-mock.com/properties/10216aec-00ad-11e6-9f6d-0050568c8382"
                         },
                         "type": "comment",
                         "updated_at": "2016-04-12T13:01:00Z"
@@ -2719,7 +2768,7 @@ Archive a category.
                     "id": "10216aec-00ad-11e6-9f6d-0050568c8382",
                     "key": "special",
                     "self": {
-                        "href": "http://127.0.0.1:5000/properties/10216aec-00ad-11e6-9f6d-0050568c8382"
+                        "href": "https://chaos.apiary-mock.com/properties/10216aec-00ad-11e6-9f6d-0050568c8382"
                     },
                     "type": "comment",
                     "updated_at": "2016-04-12T13:01:00Z"
@@ -2770,7 +2819,7 @@ Archive a category.
                     "id": "10216aec-00ad-11e6-9f6d-0050568c8383",
                     "key": "really-special",
                     "self": {
-                        "href": "http://127.0.0.1:5000/properties/10216aec-00ad-11e6-9f6d-0050568c8383"
+                        "href": "https://chaos.apiary-mock.com/properties/10216aec-00ad-11e6-9f6d-0050568c8383"
                     },
                     "type": "comment"
                 }
@@ -2851,7 +2900,7 @@ If a property with the same attributes 'key' and 'type' already exists in databa
                     "id": "10216aec-00ad-11e6-9f6d-0050568c8382",
                     "key": "special",
                     "self": {
-                        "href": "http://127.0.0.1:5000/properties/10216aec-00ad-11e6-9f6d-0050568c8382"
+                        "href": "https://chaos.apiary-mock.com/properties/10216aec-00ad-11e6-9f6d-0050568c8382"
                     },
                     "type": "datasource",
                     "updated_at": "2016-04-12T14:01:00Z"
@@ -2957,11 +3006,11 @@ If the requested property is linked via associate_disruption_property table:
                 }
             }
 
-#Traffic reports [/traffic_reports]
+# Traffic reports [/traffic_reports]
 
 This service provides the state of public transport traffic.
 
-##Objects
+## Objects
 
 Disruptions is an array of some impact objects.
 
@@ -2987,7 +3036,7 @@ A typical traffic_report object will contain:
 
 It means that if a stop_area is used by many networks, it will appear many times.
 
-##Parameters
+## Parameters
 
 | Name                 | description                                                                    | required | default                 |
 | -------------------- | ------------------------------------------------------------------------------ | -------- | ----------------------- |
