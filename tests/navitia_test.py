@@ -1,6 +1,9 @@
 from nose.tools import *
 from chaos.navitia import Navitia, exceptions
 import json
+import requests
+from retrying import retry
+
 
 from httmock import all_requests, HTTMock, response
 
@@ -84,3 +87,17 @@ def test_query_formater_all():
 def test_query_formater_all_objects_invalid():
     n = Navitia('http://api.navitia.io', 'jdr')
     eq_(n.query_formater('uri', 'network', 'stop_areas'), 'http://api.navitia.io/v1/coverage/jdr/networks/uri/networks?depth=0')
+
+
+navitia_timeout_count = 0
+@raises(requests.exceptions.Timeout)
+def test_navitia_retry():
+    n = Navitia('http://api.navitia.io', 'jdr')
+
+    def navitia_timeout_response(*args, **kwargs):
+        global navitia_timeout_count
+        navitia_timeout_count += 1
+        raise requests.exceptions.Timeout
+    requests.get = navitia_timeout_response
+    n._navitia_caller('http://api.navitia.io')
+    eq_(navitia_timeout_count, 3)
