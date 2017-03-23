@@ -241,7 +241,7 @@ Feature: list impacts by ptobject and/or uri(s)
 
 
     #Here we have a disruption with one impact, two objects (one object is present also in a line_section of another disruption/impact)
-    #Another disruption with one impact, one object line_section having route and via, another object (network)
+    #Another disruption with one impact, one object line_section having route, another object (network)
     Scenario: Use uri filter to display disruption with impact having line_section, routes and via
         Given I have the following contributors in my database:
             | contributor_code   | created_at          | updated_at          | id                                   |
@@ -294,11 +294,6 @@ Feature: list impacts by ptobject and/or uri(s)
             | 5ffab200-3d48-4eea-aa2c-22f8680230b6          | 7ffab234-3d49-4eea-aa2c-22f8680230b6 |
             | 6ffab200-3d48-4eea-aa2c-22f8680230b6          | 7ffab234-3d49-4eea-aa2c-22f8680230b6 |
 
-        Given I have the relation associate_line_section_via_object in my database:
-            | stop_area_object_id                           | line_section_id                      |
-            | 7ffab232-3d48-4eea-aa2c-22f8680230b6          | 7ffab234-3d49-4eea-aa2c-22f8680230b6 |
-            | 8ffab232-3d48-4eea-aa2c-22f8680230b6          | 7ffab234-3d49-4eea-aa2c-22f8680230b6 |
-
         Given I have the following applicationperiods in my database:
             | created_at          | updated_at          |id                                   | impact_id                            |start_date                           |end_date            |
             | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab232-3d47-4eea-aa2c-22f8680230b1 | 7ffab232-3d47-4eea-aa2c-22f8680230b6 |2014-01-20 16:52:00                  |2014-01-30 16:52:00 |
@@ -318,11 +313,8 @@ Feature: list impacts by ptobject and/or uri(s)
         When I get "/disruptions?uri=stop_area:JDR:SA:REUIL"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
-        And the field "disruptions" should have a size of 2
-        And the field "disruptions.0.id" should be "7ffab230-3d48-4eea-aa2c-22f8680230b6"
-        And the field "disruptions.1.id" should be "8ffab230-3d48-4eea-aa2c-22f8680230b6"
-
-
+        And the field "disruptions" should have a size of 1
+        And the field "disruptions.0.id" should be "8ffab230-3d48-4eea-aa2c-22f8680230b6"
 
 
 
@@ -390,11 +382,11 @@ Feature: list impacts by ptobject and/or uri(s)
         Given I have the following applicationperiods in my database:
             | created_at          | updated_at          |id                                   | impact_id                            |start_date                           |end_date            |
             | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |affab555-3d47-4eea-aa2c-22f8680230b1 | 1ffab232-3d47-4eea-aa2c-22f8680230b6 |2014-01-20 16:52:00                  |2014-01-30 16:52:00 |
-            | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |bffab555-3d47-4eea-aa2c-22f8680230b1 | 2ffab232-3d47-4eea-aa2c-22f8680230b6 |2014-01-20 16:52:00                  |2014-01-30 16:52:00 |
-            | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |cffab555-3d47-4eea-aa2c-22f8680230b1 | 3ffab232-3d47-4eea-aa2c-22f8680230b6 |2014-01-20 16:52:00                  |2014-01-30 16:52:00 |
-            | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |dffab555-3d47-4eea-aa2c-22f8680230b1 | 4ffab232-3d47-4eea-aa2c-22f8680230b6 |2014-01-20 16:52:00                  |2014-01-30 16:52:00 |
+            | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |bffab555-3d47-4eea-aa2c-22f8680230b1 | 2ffab232-3d47-4eea-aa2c-22f8680230b6 |2014-01-20 16:52:00                  |2014-01-30 17:52:00 |
+            | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |cffab555-3d47-4eea-aa2c-22f8680230b1 | 3ffab232-3d47-4eea-aa2c-22f8680230b6 |2014-01-20 16:52:00                  |2014-01-30 18:52:00 |
+            | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |dffab555-3d47-4eea-aa2c-22f8680230b1 | 4ffab232-3d47-4eea-aa2c-22f8680230b6 |2014-01-20 16:52:00                  |2014-01-30 19:52:00 |
 
-        #Query on object 'stop_area:JDR:SA:ESDEN' present in a disruption
+        #Query on object 'line:JDR:M1' present in a disruption
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
         I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
@@ -403,3 +395,22 @@ Feature: list impacts by ptobject and/or uri(s)
         And the header "Content-Type" should be "application/json"
         And the field "disruptions" should have a size of 1
         And the field "disruptions.0.id" should be "9ffab230-3d48-4eea-aa2c-22f8680230b6"
+
+        #Query on object 'line:JDR:M1&line_section=true' present in a disruption
+        I fill in header "X-Contributors" with "contrib1"
+        I fill in header "X-Coverage" with "jdr"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
+        When I get "/disruptions?uri=line:JDR:M1&line_section=true"
+        Then the status code should be "200"
+        And the header "Content-Type" should be "application/json"
+        And the field "disruptions" should have a size of 2
+
+        #Query on object 'line:JDR:M12' present in a disruption
+        I fill in header "X-Contributors" with "contrib1"
+        I fill in header "X-Coverage" with "jdr"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
+        When I get "/disruptions?uri=line:JDR:M12"
+        Then the status code should be "200"
+        And the header "Content-Type" should be "application/json"
+        And the field "disruptions" should have a size of 1
+        And the field "disruptions.0.id" should be "7ffab230-3d48-4eea-aa2c-22f8680230b6"
