@@ -512,7 +512,7 @@ class Disruption(TimestampMixin, db.Model):
                 query_line_section = query
                 query_line_section = query_line_section.filter(and_(PTobject.type == "line_section", PTobject.uri.like(uri + ":%")))
 
-        query = query.filter(PTobject.uri == uri)
+            query = query.filter(PTobject.uri == uri)
 
         publication_status = set(publication_status)
         if len(publication_status) == len(publication_status_values):
