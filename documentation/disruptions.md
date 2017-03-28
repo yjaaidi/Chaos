@@ -49,6 +49,7 @@ Return all visible disruptions.
 | current_time         | parameter for settings the use by this request, mostly for debugging purpose   | false    | NOW                     |
 | tag[]                | filter by tag (id of tag)                                                      | false    |                         |
 | uri                  | filter by uri of ptobject                                                      | false    |                         |
+| line_section         | if uri is a line id, filter also on related line_section(s)                    | false    | False                   |
 | status[]             | filter by status                                                               | false    | [published, draft]      |
 | depth                | with depth=2, you could retrieve the first page of impacts from the disruption | false    | 1                       |
 
