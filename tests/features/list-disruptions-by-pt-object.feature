@@ -405,6 +405,15 @@ Feature: list impacts by ptobject and/or uri(s)
         And the header "Content-Type" should be "application/json"
         And the field "disruptions" should have a size of 2
 
+        #Query on object 'line:JDR:M1&line_section=false' present in a disruption
+        I fill in header "X-Contributors" with "contrib1"
+        I fill in header "X-Coverage" with "jdr"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
+        When I get "/disruptions?uri=line:JDR:M1&line_section=false"
+        Then the status code should be "200"
+        And the header "Content-Type" should be "application/json"
+        And the field "disruptions" should have a size of 1
+
         #Query on object 'line:JDR:M12' present in a disruption
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
