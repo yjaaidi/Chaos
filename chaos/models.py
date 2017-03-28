@@ -518,7 +518,7 @@ class Disruption(TimestampMixin, db.Model):
         if len(publication_status) == len(publication_status_values):
             #For a query by uri use union with the query for line_section
             if uri and line_section:
-                query = query.union_all(query_line_section)
+                query = query.union(query_line_section)
 
         else:
             filters = [availlable_filters[status] for status in publication_status]
@@ -527,7 +527,7 @@ class Disruption(TimestampMixin, db.Model):
             #For a query by uri use union with the query for line_section
             if uri and line_section:
                 query_line_section = query_line_section.filter(or_(*filters))
-                query = query.union_all(query_line_section)
+                query = query.union(query_line_section)
 
         return query.order_by(cls.end_publication_date, cls.id)
 
