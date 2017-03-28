@@ -28,7 +28,7 @@
 
 from flask import g
 import flask_restful
-from flask_restful import marshal, reqparse
+from flask_restful import marshal, reqparse, types
 from chaos import models, db, publisher
 from jsonschema import validate, ValidationError
 from flask.ext.restful import abort
@@ -174,7 +174,7 @@ class Disruptions(flask_restful.Resource):
                                 action="append")
         parser_get.add_argument("current_time", type=utils.get_datetime)
         parser_get.add_argument("uri", type=str)
-        parser_get.add_argument("line_section", type=boolean, default=False)
+        parser_get.add_argument("line_section", type=types.boolean, default=False)
         parser_get.add_argument(
             "status[]",
             type=option_value(disruption_status_values),
