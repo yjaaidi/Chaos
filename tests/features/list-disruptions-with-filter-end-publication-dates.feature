@@ -23,7 +23,7 @@ Feature: list disruptions with filter on end publication dates
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
         I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
-        When I get "/disruptions?end_publication_startfilter_date=2014-04-08T23:52:12Z&end_publication_endfilter_date=2014-04-15T23:52:12"
+        When I get "/disruptions?ends_after_date=2014-04-08T23:52:12Z&ends_before_date=2014-04-15T23:52:12"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
         And the field "disruptions" should have a size of 1
@@ -52,7 +52,7 @@ Feature: list disruptions with filter on end publication dates
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
         I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
-        When I get "/disruptions?end_publication_startfilter_date=2014-04-08T23:52:12Z&end_publication_endfilter_date=2014-04-22T23:52:12"
+        When I get "/disruptions?ends_after_date=2014-04-08T23:52:12Z&ends_before_date=2014-04-22T23:52:12"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
         And the field "disruptions" should have a size of 2
