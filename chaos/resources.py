@@ -28,7 +28,7 @@
 
 from flask import g
 import flask_restful
-from flask_restful import marshal, reqparse
+from flask_restful import marshal, reqparse, types
 from chaos import models, db, publisher
 from jsonschema import validate, ValidationError
 from flask.ext.restful import abort
@@ -169,11 +169,14 @@ class Disruptions(flask_restful.Resource):
                                 type=option_value(publication_status_values),
                                 action="append",
                                 default=publication_status_values)
+        parser_get.add_argument("ends_after_date", type=utils.get_datetime),
+        parser_get.add_argument("ends_before_date", type=utils.get_datetime),
         parser_get.add_argument("tag[]",
                                 type=utils.get_uuid,
                                 action="append")
         parser_get.add_argument("current_time", type=utils.get_datetime)
         parser_get.add_argument("uri", type=str)
+        parser_get.add_argument("line_section", type=types.boolean, default=False)
         parser_get.add_argument(
             "status[]",
             type=option_value(disruption_status_values),
@@ -206,13 +209,15 @@ class Disruptions(flask_restful.Resource):
     def _get_disruptions(self, contributor_id, args):
 
         self._validate_arguments_for_disruption_list(args)
-
         g.current_time = args['current_time']
         page_index = args['start_page']
         items_per_page = args['items_per_page']
         publication_status = args['publication_status[]']
+        ends_after_date = args['ends_after_date']
+        ends_before_date = args['ends_before_date']
         tags = args['tag[]']
         uri = args['uri']
+        line_section = args['line_section']
         statuses = args['status[]']
 
         result = models.Disruption.all_with_filter(
@@ -220,8 +225,11 @@ class Disruptions(flask_restful.Resource):
             items_per_page=items_per_page,
             contributor_id=contributor_id,
             publication_status=publication_status,
+            ends_after_date=ends_after_date,
+            ends_before_date=ends_before_date,
             tags=tags,
             uri=uri,
+            line_section=line_section,
             statuses=statuses
         )
 

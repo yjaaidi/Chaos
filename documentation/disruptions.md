@@ -46,9 +46,12 @@ Return all visible disruptions.
 | start_page           | index of the first element returned (start at 1)                               | false    | 1                       |
 | items_per_page       | number of items per page                                                       | false    | 20                      |
 | publication_status[] | filter by publication_status, possible value are: past, ongoing, coming        | false    | [past, ongoing, coming] |
+| ends_after_date    | start-date restriction for end_publication date     | false    |                     |
+| ends_before_date      | end-date restriction for end_publication date       | false    |                     |
 | current_time         | parameter for settings the use by this request, mostly for debugging purpose   | false    | NOW                     |
 | tag[]                | filter by tag (id of tag)                                                      | false    |                         |
 | uri                  | filter by uri of ptobject                                                      | false    |                         |
+| line_section         | if uri is a line id, filter also on related line_section(s)                    | false    | False                   |
 | status[]             | filter by status                                                               | false    | [published, draft]      |
 | depth                | with depth=2, you could retrieve the first page of impacts from the disruption | false    | 1                       |
 
