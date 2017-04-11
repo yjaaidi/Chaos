@@ -3,6 +3,7 @@
 # This file is part of Navitia,
 #     the software to build cool stuff with public transport.
 #
+# Hope you'll enjoy and contribute to this project,
 #     powered by Canal TP (www.canaltp.fr).
 # Help us simplify mobility and open public transport:
 #     a non ending quest to the responsive locomotion way of traveling!
@@ -26,7 +27,7 @@
 # https://groups.google.com/d/forum/navitia
 # www.navitia.io
 
-from flask import g
+from flask import g, request
 import flask_restful
 from flask_restful import marshal, reqparse, types
 from chaos import models, db, publisher
@@ -338,7 +339,6 @@ class Disruptions(flask_restful.Resource):
             db.session.rollback()
             return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 500
 
-
     @validate_navitia()
     @validate_client()
     @validate_contributor()
@@ -413,8 +413,9 @@ this disruption to Navitia. Please try again.'}}, error_fields), 503
         return marshal({'disruption': disruption}, one_disruption_fields), 200
 
     @validate_contributor()
+    @validate_client()
     @validate_id(True)
-    def delete(self, contributor, id):
+    def delete(self, client, contributor, id):
         disruption = models.Disruption.get(id, contributor.id)
         disruption.upgrade_version()
         disruption.archive()

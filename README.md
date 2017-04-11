@@ -24,7 +24,9 @@ pip install -r requirements.txt
 ```
 
 #### Build protobufs
-Install [protobuf v2.6.1](https://github.com/google/protobuf/blob/master/src/README.md)
+- Install protoc `sudo apt-get install protobuf-compiler` (or build it from source: [protobuf v2.6.1](https://github.com/google/protobuf/blob/master/src/README.md))
+- Build protobufs
+
 ```
 git submodule init
 git submodule update
@@ -52,10 +54,10 @@ To improve its performance Chaos can use [Redis](https://redis.io/).
 [Installing Redis](https://redis.io/topics/quickstart)
 
 ##### Using Chaos without Redis
-You can deactivate Redis usage in [default_settings.py](https://github.com/CanalTP/Chaos/blob/master/chaos/default_settings.py#L17) by changing 'CACHE-TYPE' to 'simple'
+You can deactivate Redis usage in [default_settings.py](https://github.com/CanalTP/Chaos/blob/master/chaos/default_settings.py#L17) by changing 'CACHE_TYPE' to 'simple'
 
 ##### Using Chaos without cache
-For development purpose you can deactivate cache usage in [default_settings.py](https://github.com/CanalTP/Chaos/blob/master/chaos/default_settings.py#L17) by forcing 'CACHE-TYPE' to 'null'
+For development purpose you can deactivate cache usage in [default_settings.py](https://github.com/CanalTP/Chaos/blob/master/chaos/default_settings.py#L17) by forcing 'CACHE_TYPE' to 'null'
 
 #### Run Chaos with honcho (optional)
 ##### Install honcho
