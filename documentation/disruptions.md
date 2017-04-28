@@ -4,6 +4,44 @@ Chaos is the web service which can feed [Navitia](https://github.com/CanalTP/nav
 It can work together with [Kirin](https://github.com/CanalTP/kirin) which can feed [Navitia](https://github.com/CanalTP/navitia) with real-time delays.
 
 
+## What Chaos does... and does not
+
+Chaos manage disruptions and help you to communicate with your travellers on the best way to avoid them. Chaos can help you to speak to your travellers through email, web, mobile app', SMS, and many other ways. But Chaos is NOT a cheap CRM to send commercial messages. Chaos will NOT replace your tools to speak with rescue teams or police forces in case of really messy disruptions.
+
+## Requirements
+
+Before using Chaos, you will need few things:
+- a Navitia token, allowing you to request navitia on a data coverage
+- a customer ID
+- a contributor ID
+
+Your usual Kisio Digital interlocutor can provide you these elements, and an access to the production or pre-production platform.
+Before using the API in production, you will need to provide:
+- integration specifications
+- expected load your application will generate.
+
+These two points are recquired to help us managing the Chaos platform.
+
+## Concepts description
+Chaos uses some concepts, here are the essentials.
+
+| Nom (fr)                 | Name (en)                                                                    | Name (navitia) | Definition                 |
+| -------------------- | ------------------------------------------------------------------------------ | -------- | ----------------------- |
+ |Perturbation | Disruption | Disruption | The event (planned, or not) you want to communicate to travellers. |
+ |Impact | Impact | Impact | The way an event affects the travellers (by blocking lines, closing station, ...). |
+ |Objet TC | Object | pt_object | The network objects (lines, stop area, stop points, or full network) affected by an impact. |
+ |Champ de saisie | Channel | channel | The way you speak to the traveller (SMS, web, mobile, notification, email, ...). |
+ |Sévérité | Severity | severity | How bad the impact is. |
+ |Cause | Cause | Cause | Description of the cause of the perturbation (strike, accident). |
+ |Localisation | Localisation | Localisation | The Stop Area where the disruption happens. Useful to show it on map. |
+ |Etiquette | Tag | Tag | A tag on a description. |
+ |Effet | Effect | Effect | The effect of a severity. Only "No service" is implemented. |
+ |Couleur | Color | Color | The color of a severity. |
+ |Priorité | Priority | Priority | A number to order severities. |
+ |Créneaux | Pattern | N/A | A combination of days, dates and time to build a time pattern: "from 1 janv. 2016  to 1 janv. 2017 , only monday and tuesday, every day from 08:00 am to 10:00 am". |
+ |Application | Application | Application | The effective duration of an impact. |
+ |Publication | Publication | Publication | The duration of the communication of a disruption to travellers (useful for planned disruptions). |                   
+
 # Root [/]
 
 ## Retrieve Api [GET]
