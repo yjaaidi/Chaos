@@ -45,7 +45,7 @@ def get_disruption(contributor_code, with_via=True, with_routes=True):
     # Impacts
     impact = chaos.models.Impact()
     impact.severity = chaos.models.Severity()
-    impact.severity.wording = "SeverityTest"
+    impact.severity.wording = "Severity_with_priority_NULL"
     impact.severity.color = "#FFFF00"
     impact.severity.effect = "no_service"
     impact.status = "published"
@@ -154,9 +154,10 @@ def get_disruption(contributor_code, with_via=True, with_routes=True):
     # Impacts with send_notifications
     impact = chaos.models.Impact()
     impact.severity = chaos.models.Severity()
-    impact.severity.wording = "SeverityTest"
+    impact.severity.wording = "Severity_with_priority_0"
     impact.severity.color = "#FFFF00"
     impact.severity.effect = "no_service"
+    impact.severity.priority = 0
     impact.status = "published"
     impact.send_notifications = True
     impact.notification_date = parse_datetime("2014-04-12T16:52:00").replace(tzinfo=None)
@@ -178,9 +179,10 @@ def get_disruption(contributor_code, with_via=True, with_routes=True):
     # Impacts with send_notifications false
     impact = chaos.models.Impact()
     impact.severity = chaos.models.Severity()
-    impact.severity.wording = "SeverityTest"
+    impact.severity.wording = "Severity_with_priority_2"
     impact.severity.color = "#FFFF00"
     impact.severity.effect = "no_service"
+    impact.severity.priority = 2
     impact.status = "published"
     impact.send_notifications = False
 
@@ -226,11 +228,15 @@ def test_disruption():
     eq_(disruption_pb.tags[0].name,  disruption.tags[0].name)
     eq_(disruption_pb.tags[1].name,  disruption.tags[1].name)
 
-
     eq_(len(disruption_pb.impacts),  3)
-    eq_(disruption_pb.impacts[0].severity.wording,  "SeverityTest")
+    eq_(disruption_pb.impacts[0].severity.wording,  "Severity_with_priority_NULL")
     eq_(disruption_pb.impacts[0].severity.color,  "#FFFF00")
     eq_(disruption_pb.impacts[0].severity.effect, chaos.gtfs_realtime_pb2.Alert.NO_SERVICE)
+    eq_(disruption_pb.impacts[0].severity.priority,  0)
+    eq_(disruption_pb.impacts[1].severity.wording,  "Severity_with_priority_0")
+    eq_(disruption_pb.impacts[1].severity.priority,  0)
+    eq_(disruption_pb.impacts[2].severity.wording,  "Severity_with_priority_2")
+    eq_(disruption_pb.impacts[2].severity.priority,  2)
 
     eq_(len(disruption_pb.impacts[0].application_periods),  1)
     eq_(len(disruption_pb.impacts[0].informed_entities), 5)
@@ -314,9 +320,8 @@ def test_disruption_without_via():
     eq_(disruption_pb.tags[0].name, disruption.tags[0].name)
     eq_(disruption_pb.tags[1].name, disruption.tags[1].name)
 
-
     eq_(len(disruption_pb.impacts), 3)
-    eq_(disruption_pb.impacts[0].severity.wording, "SeverityTest")
+    eq_(disruption_pb.impacts[0].severity.wording, "Severity_with_priority_NULL")
     eq_(disruption_pb.impacts[0].severity.color, "#FFFF00")
 
     eq_(len(disruption_pb.impacts[0].application_periods), 1)
@@ -400,8 +405,9 @@ def test_disruption_without_routes():
 
 
     eq_(len(disruption_pb.impacts), 1)
-    eq_(disruption_pb.impacts[0].severity.wording, "SeverityTest")
+    eq_(disruption_pb.impacts[0].severity.wording, "Severity_with_priority_NULL")
     eq_(disruption_pb.impacts[0].severity.color, "#FFFF00")
+    eq_(disruption_pb.impacts[0].severity.priority, 0)
 
     eq_(len(disruption_pb.impacts[0].application_periods), 1)
     eq_(len(disruption_pb.impacts[0].informed_entities), 3)
@@ -479,7 +485,7 @@ def test_disruption_without_routes():
 
 
     eq_(len(disruption_pb.impacts), 3)
-    eq_(disruption_pb.impacts[0].severity.wording, "SeverityTest")
+    eq_(disruption_pb.impacts[0].severity.wording, "Severity_with_priority_NULL")
     eq_(disruption_pb.impacts[0].severity.color, "#FFFF00")
 
     eq_(len(disruption_pb.impacts[0].application_periods), 1)

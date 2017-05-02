@@ -98,12 +98,8 @@ def populate_severity(impact_pb, severity):
         impact_pb.severity.color = severity.color
 
     impact_pb.severity.effect = get_severity_effect_value(severity.effect)
-
-
-    # if severity.effect:
-    #     impact_pb.severity.effect = gtfs_realtime_pb2.Alert.NO_SERVICE
-    # else:
-    #     impact_pb.severity.effect = gtfs_realtime_pb2.Alert.UNKNOWN_EFFECT
+    if severity.priority:
+        impact_pb.severity.priority = severity.priority
 
 
 def populate_application_periods(impact, impact_pb):
