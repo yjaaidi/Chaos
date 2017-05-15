@@ -3,10 +3,8 @@
 Chaos is the web service which can feed [Navitia](https://github.com/CanalTP/navitia) with real-time [disruptions](http://doc.navitia.io/#traffic-reports).
 It can work together with [Kirin](https://github.com/CanalTP/kirin) which can feed [Navitia](https://github.com/CanalTP/navitia) with real-time delays.
 
+Chaos manage disruptions and help you to communicate with your travellers on the best way to avoid them. 
 
-## What Chaos does... and does not
-
-Chaos manage disruptions and help you to communicate with your travellers on the best way to avoid them. Chaos can help you to speak to your travellers through email, web, mobile app', SMS, and many other ways. But Chaos is NOT a cheap CRM to send commercial messages. Chaos will NOT replace your tools to speak with rescue teams or police forces in case of really messy disruptions.
 
 ## Requirements
 
