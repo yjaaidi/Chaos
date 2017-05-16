@@ -1386,130 +1386,124 @@ Create a new impact.
 
     * Body
 
+
             {
-                "impact": {
-                    "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8617ea",
-                    "self": {"href": "https://ogv2ws.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-8c3e-0008ca8647ea/impacts/3d1f42b2-e8df-11e3-8c3e-0008ca8617ea"},
+                "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8617ea",
+                "send_notifications": false,
+                "notification_date": "2014-04-31T17:00:00Z",
+                "severity": {
+                    "id": "3d1f42b2-e8df-11e3-8c3e-0008ca861aea",
+                    "wordings" : [{"key": "msg", "value": "Bonne nouvelle"}],
                     "created_at": "2014-04-31T16:52:18Z",
                     "updated_at": "2014-04-31T16:55:18Z",
-                    "send_notifications": true,
-                    "notification_date": "2014-04-31T17:00:00Z",
-                    "severity": {
-                        "id": "3d1f42b2-e8df-11e3-8c3e-0008ca861aea",
-                        "wordings" : [{"key": "msg", "value": "Bonne nouvelle"}],
-                        "created_at": "2014-04-31T16:52:18Z",
-                        "updated_at": "2014-04-31T16:55:18Z",
-                        "color": "#123456",
-                        "effect": null,
-                        "priority": 1
-                    },
-                    "messages": [
-                            {
-                                "channel": {
-                                "content_type": "text/plain",
+                    "color": "#123456",
+                    "effect": null,
+                    "priority": 1
+                },
+                "messages": [
+                        {
+                            "channel": {
+                            "content_type": "text/plain",
+                            "created_at": "2014-04-31T16:52:18Z",
+                            "id": "3d1f42b2-e8df-11e3-8c3e-0002ca8657ea",
+                            "max_size": 140,
+                            "name": "message court",
+                            "updated_at": "2014-04-31T16:55:18Z",
+                            "types": ["web", "mobile"]
+                            },
+                            "created_at": "2014-04-31T16:52:18Z",
+                            "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657ca",
+                            "text": "Messsage modifié",
+                            "updated_at": "2014-04-31T16:55:18Z"
+                        },
+                        {
+                            "channel": {
+                                "content_type": "text/markdown",
                                 "created_at": "2014-04-31T16:52:18Z",
-                                "id": "3d1f42b2-e8df-11e3-8c3e-0002ca8657ea",
-                                "max_size": 140,
-                                "name": "message court",
+                                "id": "3d1f42b2-e8df-11e3-8c3e-0008ca86c7ea",
+                                "max_size": null,
+                                "name": "message long",
                                 "updated_at": "2014-04-31T16:55:18Z",
                                 "types": ["web", "mobile"]
-                                },
-                                "created_at": "2014-04-31T16:52:18Z",
-                                "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657ca",
-                                "text": "Message 1",
-                                "updated_at": "2014-04-31T16:55:18Z"
+                            },
+                            "created_at": "2014-04-31T16:52:18Z",
+                            "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8257ea",
+                            "text": "Message 2",
+                            "updated_at": "2014-04-31T16:55:18Z"
+                        }
+                ],
+                "application_period_patterns": [
+                    {
+                        "end_date": "2015-02-06",
+                        "start_date": "2015-02-01",
+                        "time_slots": [
+                            {
+                                "begin": "07:45",
+                                "end": "09:30"
                             },
                             {
-                                "channel": {
-                                    "content_type": "text/markdown",
-                                    "created_at": "2014-04-31T16:52:18Z",
-                                    "id": "3d1f42b2-e8df-11e3-8c3e-0008ca86c7ea",
-                                    "max_size": null,
-                                    "name": "message long",
-                                    "updated_at": "2014-04-31T16:55:18Z",
-                                    "types": ["web", "mobile"]
-                                },
-                                "created_at": "2014-04-31T16:52:18Z",
-                                "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8257ea",
-                                "text": "Message 2",
-                                "updated_at": "2014-04-31T16:55:18Z"
+                                "begin": "17:30",
+                                "end": "20:30"
                             }
-                    ],
-                    "application_period_patterns": [
-                        {
-                            "end_date": "2015-02-06",
-                            "start_date": "2015-02-01",
-                            "time_slots": [
+                            ],
+                        "weekly_pattern": "1111100",
+                        "time_zone": "Europe/Paris"
+                    }
+                ],
+                "objects": [
+                    {
+                        "id": "network:RTP:3786125",
+                        "name": "RER A",
+                        "type": "network",
+                    },
+                    {
+                        "id": "network:RTP:378",
+                        "name": "RER B",
+                        "type": "network",
+                    },
+                    {
+                        "id": "line:AME:3",
+                        "type": "line_section"
+                        "line_section": {
+                            "line": {
+                                "id":"line:AME:3",
+                                "type":"line"
+                            },
+                            "start_point": {
+                                "id":"stop_area:MTD:SA:154",
+                                "type":"stop_area"
+                            },
+                            "end_point": {
+                                "id":"stop_area:MTD:SA:155",
+                                "type":"stop_area"
+                            },
+                            "sens":0,
+                            "routes":[
+                               {
+                                   "id": "route:MTD:9",
+                                   "name": "corquilleroy",
+                                   "type": "route"
+                               },
+                               {
+                                   "id": "route:MTD:10",
+                                   "name": "corquilleroy",
+                                   "type": "route"
+                               },
+                               {
+                                   "id": "route:MTD:Nav24",
+                                   "name": "pannes",
+                                   "type": "route"
+                               }
+                            ],
+                            "via":[
                                 {
-                                    "begin": "07:45",
-                                    "end": "09:30"
-                                },
-                                {
-                                    "begin": "17:30",
-                                    "end": "20:30"
+                                "id":"stop_area:MTD:SA:154",
+                                "type":"stoparea"
                                 }
-                                ],
-                            "weekly_pattern": "1111100",
-                            "time_zone": "Europe/Paris"
+                            ]
                         }
-                    ],
-                    "objects": [
-                        {
-                            "id": "network:RTP:3786125",
-                            "name": "RER A",
-                            "type": "network",
-                        },
-                        {
-                            "id": "network:RTP:378",
-                            "name": "RER B",
-                            "type": "network",
-                        },
-                        {
-                            "id": "line:AME:3",
-                            "type": "line_section"
-                            "line_section": {
-                                "line": {
-                                    "id":"line:AME:3",
-                                    "type":"line"
-                                },
-                                "start_point": {
-                                    "id":"stop_area:MTD:SA:154",
-                                    "type":"stop_area"
-                                },
-                                "end_point": {
-                                    "id":"stop_area:MTD:SA:155",
-                                    "type":"stop_area"
-                                },
-                                "sens":0,
-                                "routes":[
-                                   {
-                                       "id": "route:MTD:9",
-                                       "name": "corquilleroy",
-                                       "type": "route"
-                                   },
-                                   {
-                                       "id": "route:MTD:10",
-                                       "name": "corquilleroy",
-                                       "type": "route"
-                                   },
-                                   {
-                                       "id": "route:MTD:Nav24",
-                                       "name": "pannes",
-                                       "type": "route"
-                                   }
-                                ],
-                                "via":[
-                                    {
-                                    "id":"stop_area:MTD:SA:154",
-                                    "type":"stoparea"
-                                    }
-                                ]
-                            }
-                        }
-                    ],
-                    "disruption" : {"href": "https://ogv2ws.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-1c3e-0008ca8617ea"}
-                },
-                "meta": {}
+                    }
+                ]
             }
 
 
