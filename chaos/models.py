@@ -175,7 +175,7 @@ class Severity(TimestampMixin, db.Model):
     priority = db.Column(db.Integer, unique=False, nullable=True)
     effect = db.Column(SeverityEffect, nullable=True)
     client_id = db.Column(UUID, db.ForeignKey(Client.id), nullable=False)
-    client = db.relationship('Client', backref='severity', lazy='joined')
+    client = db.relationship('Client', backref='severity')
     wordings = db.relationship(
         "Wording", secondary=associate_wording_severity, backref="severities"
     )
@@ -226,7 +226,7 @@ class Category(TimestampMixin, db.Model):
         db.Boolean, unique=False, nullable=False, default=True
     )
     client_id = db.Column(UUID, db.ForeignKey(Client.id), nullable=False)
-    client = db.relationship('Client', backref='categories', lazy='joined')
+    client = db.relationship('Client', backref='categories')
     __table_args__ = (db.UniqueConstraint(
         'name', 'client_id', name='category_name_client_id_key'
     ),)
@@ -293,7 +293,7 @@ class Cause(TimestampMixin, db.Model):
     wording = db.Column(db.Text, unique=False, nullable=False)
     is_visible = db.Column(db.Boolean, unique=False, nullable=False, default=True)
     client_id = db.Column(UUID, db.ForeignKey(Client.id), nullable=False)
-    client = db.relationship('Client', backref='causes', lazy='joined')
+    client = db.relationship('Client', backref='causes')
     category_id = db.Column(UUID, db.ForeignKey(Category.id), nullable=True)
     category = db.relationship('Category', backref='causes', lazy='joined')
     wordings = db.relationship("Wording", secondary=associate_wording_cause, backref="causes")
@@ -351,7 +351,7 @@ class Tag(TimestampMixin, db.Model):
     name = db.Column(db.Text, unique=False, nullable=False)
     is_visible = db.Column(db.Boolean, unique=False, nullable=False, default=True)
     client_id = db.Column(UUID, db.ForeignKey(Client.id), nullable=False)
-    client = db.relationship('Client', backref='tags', lazy='joined')
+    client = db.relationship('Client', backref='tags')
     __table_args__ = (db.UniqueConstraint('name', 'client_id', name='tag_name_client_id_key'),)
 
     def __init__(self):
@@ -443,7 +443,7 @@ class Disruption(TimestampMixin, db.Model):
     cause = db.relationship('Cause', backref='disruption', lazy='joined')
     tags = db.relationship("Tag", secondary=associate_disruption_tag, backref="disruptions", lazy='joined')
     client_id = db.Column(UUID, db.ForeignKey(Client.id), nullable=False)
-    client = db.relationship('Client', backref='disruptions', lazy='joined')
+    client = db.relationship('Client', backref='disruptions')
     contributor_id = db.Column(UUID, db.ForeignKey(Contributor.id), nullable=False)
     contributor = db.relationship('Contributor', backref='disruptions', lazy='joined')
     version = db.Column(db.Integer, nullable=False, default=1)
@@ -833,7 +833,7 @@ class Channel(TimestampMixin, db.Model):
     content_type = db.Column(db.Text, unique=False, nullable=True)
     is_visible = db.Column(db.Boolean, unique=False, nullable=False, default=True)
     client_id = db.Column(UUID, db.ForeignKey(Client.id), nullable=False)
-    client = db.relationship('Client', backref='channels', lazy='joined')
+    client = db.relationship('Client', backref='channels')
     channel_types = db.relationship('ChannelType', backref='channel', lazy='joined')
 
     def __init__(self):
@@ -918,8 +918,8 @@ class LineSection(TimestampMixin, db.Model):
     line = db.relationship('PTobject', foreign_keys=line_object_id)
     start_point = db.relationship('PTobject', foreign_keys=start_object_id)
     end_point = db.relationship('PTobject', foreign_keys=end_object_id)
-    routes = db.relationship("PTobject", secondary=associate_line_section_route_object, lazy='joined')
-    via = db.relationship("PTobject", secondary=associate_line_section_via_object, lazy='joined')
+    routes = db.relationship("PTobject", secondary=associate_line_section_route_object)
+    via = db.relationship("PTobject", secondary=associate_line_section_via_object)
     wordings = db.relationship("Wording", secondary=associate_wording_line_section, backref="linesections")
 
     def delete_wordings(self):
@@ -1027,7 +1027,7 @@ class Property(TimestampMixin, db.Model):
     )
     id = db.Column(UUID, primary_key=True)
     client_id = db.Column(UUID, db.ForeignKey(Client.id), nullable=False)
-    client = db.relationship('Client', backref='properties', lazy='joined')
+    client = db.relationship('Client', backref='properties')
     key = db.Column(db.Text, nullable=False)
     type = db.Column(db.Text, nullable=False)
     disruptions = db.relationship(
