@@ -10,4 +10,4 @@ do
 done
 echo
 
-/var/www/Chaos/docker/run.sh
+exec /var/www/Chaos/docker/run.sh
