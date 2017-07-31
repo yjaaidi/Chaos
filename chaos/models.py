@@ -101,7 +101,9 @@ ChannelTypeEnum = db.Enum(
     'mobile',
     'notification',
     'twitter',
-    'facebook'
+    'facebook',
+    'title',
+    'beacon'
 )
 
 
