@@ -1,4 +1,4 @@
-"""empty message
+"""Adding 2 new channels types
 
 Revision ID: 2c160dff136a
 Revises: e33962db5d9
