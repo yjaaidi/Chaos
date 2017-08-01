@@ -57,7 +57,9 @@ channel_type_values = [
     "mobile",
     "notification",
     "twitter",
-    "facebook"
+    "facebook",
+    "title",
+    "beacon"
 ]
 disruption_status_values = ["published", "draft"]
 

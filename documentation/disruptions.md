@@ -3,6 +3,42 @@
 Chaos is the web service which can feed [Navitia](https://github.com/CanalTP/navitia) with real-time [disruptions](http://doc.navitia.io/#traffic-reports).
 It can work together with [Kirin](https://github.com/CanalTP/kirin) which can feed [Navitia](https://github.com/CanalTP/navitia) with real-time delays.
 
+Chaos manage disruptions and help you to communicate with your travellers on the best way to avoid them. 
+
+
+## Requirements
+
+Before using Chaos, you will need few things:
+- a Navitia token, allowing you to request navitia on a data coverage
+- a customer ID
+- a contributor ID
+
+Your usual Kisio Digital interlocutor can provide you these elements, and an access to the production or pre-production platform.
+Before using the API in production, you will need to provide:
+- integration specifications
+- expected load your application will generate.
+
+These two points are recquired to help us managing the Chaos platform.
+
+## Concepts description
+Chaos uses some concepts, here are the essentials.
+
+| Nom (fr)                 | Name (en)                                                                    | Name (navitia) | Definition                 |
+| -------------------- | ------------------------------------------------------------------------------ | -------- | ----------------------- |
+ |Perturbation | Disruption | Disruption | The event (planned, or not) you want to communicate to travellers. |
+ |Impact | Impact | Impact | The way an event affects the travellers (by blocking lines, closing station, ...). |
+ |Objet TC | Object | pt_object | The network objects (lines, stop area, stop points, or full network) affected by an impact. |
+ |Champ de saisie | Channel | channel | The way you speak to the traveller (SMS, web, mobile, notification, email, ...). |
+ |Sévérité | Severity | severity | How bad the impact is. |
+ |Cause | Cause | Cause | Description of the cause of the perturbation (strike, accident). |
+ |Localisation | Localisation | Localisation | The Stop Area where the disruption happens. Useful to show it on map. |
+ |Etiquette | Tag | Tag | A tag on a description. |
+ |Effet | Effect | Effect | The effect of a severity. Only "No service" is implemented. |
+ |Couleur | Color | Color | The color of a severity. |
+ |Priorité | Priority | Priority | A number to order severities. |
+ |Créneaux | Pattern | N/A | A combination of days, dates and time to build a time pattern: "from 1 janv. 2016  to 1 janv. 2017 , only monday and tuesday, every day from 08:00 am to 10:00 am". |
+ |Application | Application | Application | The effective duration of an impact. |
+ |Publication | Publication | Publication | The duration of the communication of a disruption to travellers (useful for planned disruptions). |                   
 
 # Root [/]
 
@@ -1350,130 +1386,30 @@ Create a new impact.
 
     * Body
 
+
             {
-                "impact": {
-                    "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8617ea",
-                    "self": {"href": "https://ogv2ws.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-8c3e-0008ca8647ea/impacts/3d1f42b2-e8df-11e3-8c3e-0008ca8617ea"},
-                    "created_at": "2014-04-31T16:52:18Z",
-                    "updated_at": "2014-04-31T16:55:18Z",
-                    "send_notifications": true,
-                    "notification_date": "2014-04-31T17:00:00Z",
-                    "severity": {
-                        "id": "3d1f42b2-e8df-11e3-8c3e-0008ca861aea",
-                        "wordings" : [{"key": "msg", "value": "Bonne nouvelle"}],
-                        "created_at": "2014-04-31T16:52:18Z",
-                        "updated_at": "2014-04-31T16:55:18Z",
-                        "color": "#123456",
-                        "effect": null,
-                        "priority": 1
-                    },
-                    "messages": [
-                            {
-                                "channel": {
-                                "content_type": "text/plain",
-                                "created_at": "2014-04-31T16:52:18Z",
-                                "id": "3d1f42b2-e8df-11e3-8c3e-0002ca8657ea",
-                                "max_size": 140,
-                                "name": "message court",
-                                "updated_at": "2014-04-31T16:55:18Z",
-                                "types": ["web", "mobile"]
-                                },
-                                "created_at": "2014-04-31T16:52:18Z",
-                                "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657ca",
-                                "text": "Message 1",
-                                "updated_at": "2014-04-31T16:55:18Z"
-                            },
-                            {
-                                "channel": {
-                                    "content_type": "text/markdown",
-                                    "created_at": "2014-04-31T16:52:18Z",
-                                    "id": "3d1f42b2-e8df-11e3-8c3e-0008ca86c7ea",
-                                    "max_size": null,
-                                    "name": "message long",
-                                    "updated_at": "2014-04-31T16:55:18Z",
-                                    "types": ["web", "mobile"]
-                                },
-                                "created_at": "2014-04-31T16:52:18Z",
-                                "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8257ea",
-                                "text": "Message 2",
-                                "updated_at": "2014-04-31T16:55:18Z"
-                            }
-                    ],
-                    "application_period_patterns": [
-                        {
-                            "end_date": "2015-02-06",
-                            "start_date": "2015-02-01",
-                            "time_slots": [
-                                {
-                                    "begin": "07:45",
-                                    "end": "09:30"
-                                },
-                                {
-                                    "begin": "17:30",
-                                    "end": "20:30"
-                                }
-                                ],
-                            "weekly_pattern": "1111100",
-                            "time_zone": "Europe/Paris"
-                        }
-                    ],
-                    "objects": [
-                        {
-                            "id": "network:RTP:3786125",
-                            "name": "RER A",
-                            "type": "network",
-                        },
-                        {
-                            "id": "network:RTP:378",
-                            "name": "RER B",
-                            "type": "network",
-                        },
-                        {
-                            "id": "line:AME:3",
-                            "type": "line_section"
-                            "line_section": {
-                                "line": {
-                                    "id":"line:AME:3",
-                                    "type":"line"
-                                },
-                                "start_point": {
-                                    "id":"stop_area:MTD:SA:154",
-                                    "type":"stop_area"
-                                },
-                                "end_point": {
-                                    "id":"stop_area:MTD:SA:155",
-                                    "type":"stop_area"
-                                },
-                                "sens":0,
-                                "routes":[
-                                   {
-                                       "id": "route:MTD:9",
-                                       "name": "corquilleroy",
-                                       "type": "route"
-                                   },
-                                   {
-                                       "id": "route:MTD:10",
-                                       "name": "corquilleroy",
-                                       "type": "route"
-                                   },
-                                   {
-                                       "id": "route:MTD:Nav24",
-                                       "name": "pannes",
-                                       "type": "route"
-                                   }
-                                ],
-                                "via":[
-                                    {
-                                    "id":"stop_area:MTD:SA:154",
-                                    "type":"stoparea"
-                                    }
-                                ]
-                            }
-                        }
-                    ],
-                    "disruption" : {"href": "https://ogv2ws.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-1c3e-0008ca8617ea"}
+                "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8617ea",
+                "send_notifications": false,
+                "notification_date": "2014-04-31T17:00:00Z",
+                "severity": {
+                    "id": "3d1f42b2-e8df-11e3-8c3e-0008ca861aea"
                 },
-                "meta": {}
+                "messages": [
+                        {
+                            "channel": {
+                            "id": "3d1f42b2-e8df-11e3-8c3e-0002ca8657ea",
+                            },
+                            "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657ca",
+                            "text": "Messsage modifié",
+                        },
+                        {
+                            "channel": {
+                                "id": "3d1f42b2-e8df-11e3-8c3e-0008ca86c7ea",
+                            },
+                            "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8257ea",
+                            "text": "Message 2",
+                        }
+                ],
             }
 
 
@@ -1486,7 +1422,7 @@ Create a new impact.
                     "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8617ea",
                     "self": {"href": "https://ogv2ws.apiary-mock.com/disruptions/3d1f42b2-e8df-11e3-8c3e-0008ca8647ea/impacts/3d1f42b2-e8df-11e3-8c3e-0008ca8617ea"},
                     "created_at": "2014-04-31T16:52:18Z",
-                    "updated_at": "2014-04-31T16:55:18Z",
+                    "updated_at": "2014-04-31T17:00:01Z",
                     "send_notifications": true,
                     "notification_date": "2014-04-31T17:00:00Z",
                     "severity": {
@@ -1511,8 +1447,8 @@ Create a new impact.
                                 },
                                 "created_at": "2014-04-31T16:52:18Z",
                                 "id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657ca",
-                                "text": "Message 1",
-                                "updated_at": "2014-04-31T16:55:18Z"
+                                "text": "Messsage modifié",
+                                "updated_at": "2014-04-31T17:00:00Z"
                             },
                             {
                                 "channel": {
