@@ -567,7 +567,7 @@ def create_line_section(navitia_object, line_section_obj):
     return line_section
 
 
-def get_traffic_report_objects(disruptions, navitia):
+def get_traffic_report_objects(disruptions, navitia, line_sections_by_objid):
     """
     :param impacts: Sequence of impact (Database object)
     :return: dict
@@ -601,19 +601,6 @@ def get_traffic_report_objects(disruptions, navitia):
     }
 
     result = {'traffic_report': {}, 'impacts_used': []}
-
-    # Prepare line sections to get them all in once
-    pt_object_ids = []
-    for disruption in disruptions:
-        for impact in disruption.impacts:
-            if impact.status == 'published':
-                for pt_object in impact.objects:
-                    pt_object_ids.append(pt_object.id)
-
-    line_sections = chaos.models.LineSection.get_by_ids(pt_object_ids)
-    line_sections_by_objid = {}
-    for line_section in line_sections:
-        line_sections_by_objid[line_section.object_id] = line_section
 
     for disruption in disruptions:
         for impact in disruption.impacts:
