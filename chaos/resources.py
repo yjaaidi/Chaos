@@ -964,21 +964,7 @@ class TrafficReport(flask_restful.Resource):
         args = self.parsers['get'].parse_args()
         g.current_time = args['current_time']
         disruptions = models.Disruption.traffic_report_filter(contributor.id)
-
-        # Prepare line sections to get them all in once
-        pt_object_ids = []
-        for disruption in disruptions:
-            for impact in disruption.impacts:
-                if impact.status == 'published':
-                    for pt_object in impact.objects:
-                        pt_object_ids.append(pt_object.id)
-
-        line_sections = models.LineSection.get_by_ids(pt_object_ids)
-        line_sections_by_objid = {}
-        for line_section in line_sections:
-            line_sections_by_objid[line_section.object_id] = line_section
-
-        result = utils.get_traffic_report_objects(disruptions, self.navitia, line_sections_by_objid)
+        result = utils.get_traffic_report_objects(disruptions, self.navitia)
         return marshal(
             {
                 'traffic_reports': [value for key, value in result["traffic_report"].items()],
