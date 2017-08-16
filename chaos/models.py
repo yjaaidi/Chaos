@@ -916,11 +916,11 @@ class LineSection(TimestampMixin, db.Model):
     sens = db.Column(db.Integer, unique=False, nullable=True)
     object_id = db.Column(UUID, db.ForeignKey(PTobject.id))
     line = db.relationship('PTobject', foreign_keys=line_object_id)
-    start_point = db.relationship('PTobject', foreign_keys=start_object_id)
-    end_point = db.relationship('PTobject', foreign_keys=end_object_id)
-    routes = db.relationship("PTobject", secondary=associate_line_section_route_object)
-    via = db.relationship("PTobject", secondary=associate_line_section_via_object)
-    wordings = db.relationship("Wording", secondary=associate_wording_line_section, backref="linesections")
+    start_point = db.relationship('PTobject', foreign_keys=start_object_id, lazy="joined")
+    end_point = db.relationship('PTobject', foreign_keys=end_object_id, lazy="joined")
+    routes = db.relationship("PTobject", secondary=associate_line_section_route_object, lazy="joined")
+    via = db.relationship("PTobject", secondary=associate_line_section_via_object, lazy="joined")
+    wordings = db.relationship("Wording", secondary=associate_wording_line_section, backref="linesections", lazy="joined")
 
     def delete_wordings(self):
         index = len(self.wordings) - 1
@@ -944,6 +944,10 @@ class LineSection(TimestampMixin, db.Model):
     @classmethod
     def get_by_object_id(cls, object_id):
         return cls.query.filter_by(object_id=object_id).first()
+
+    @classmethod
+    def get_by_ids(cls, ids):
+        return cls.query.filter(cls.object_id.in_(ids)).all()
 
 
 class Pattern(TimestampMixin, db.Model):

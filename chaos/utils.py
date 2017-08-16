@@ -486,14 +486,14 @@ def get_navitia_networks(result, pt_object, navitia, types):
     return networks
 
 
-def manage_other_object(result, impact, pt_object, navitia, types):
+def manage_other_object(result, impact, pt_object, navitia, types, line_sections_by_objid):
 
     navitia_type = types
     pt_object_for_navitia_research = pt_object
 
     if types == 'line_sections':
         navitia_type = 'lines'
-        pt_object_for_navitia_research = pt_object.line_section.line
+        pt_object_for_navitia_research = line_sections_by_objid[pt_object.id].line
 
     navitia_networks = get_navitia_networks(result, pt_object_for_navitia_research, navitia, navitia_type)
     if navitia_networks:
@@ -511,7 +511,7 @@ def manage_other_object(result, impact, pt_object, navitia, types):
                 navitia_object = navitia.get_pt_object(pt_object_for_navitia_research.uri, pt_object_for_navitia_research.type)
                 if navitia_object:
                     if types == 'line_sections':
-                        navitia_object = create_line_section(navitia_object, pt_object)
+                        navitia_object = create_line_section(navitia_object, line_sections_by_objid[pt_object.id])
 
                     navitia_object["impacts"] = []
                     navitia_object["impacts"].append(impact)
@@ -537,9 +537,9 @@ def manage_other_object(result, impact, pt_object, navitia, types):
         )
 
 
-def create_line_section(navitia_object, pt_object):
+def create_line_section(navitia_object, line_section_obj):
     line_section = {
-        "id": pt_object.line_section.id,
+        "id": line_section_obj.id,
         "type": "line_section",
         "line_section":
             {
@@ -551,23 +551,23 @@ def create_line_section(navitia_object, pt_object):
                 },
                 "start_point":
                     {
-                        "id": pt_object.line_section.start_point.uri,
-                        "type": pt_object.line_section.start_point.type
+                        "id": line_section_obj.start_point.uri,
+                        "type": line_section_obj.start_point.type
                     },
                 "end_point":
                     {
-                        "id": pt_object.line_section.end_point.uri,
-                        "type": pt_object.line_section.end_point.type
+                        "id": line_section_obj.end_point.uri,
+                        "type": line_section_obj.end_point.type
                     },
-                "routes": pt_object.line_section.routes,
-                "via": pt_object.line_section.via,
-                "metas": pt_object.line_section.wordings
+                "routes": line_section_obj.routes,
+                "via": line_section_obj.via,
+                "metas": line_section_obj.wordings
             }
     }
     return line_section
 
 
-def get_traffic_report_objects(disruptions, navitia):
+def get_traffic_report_objects(disruptions, navitia, line_sections_by_objid):
     """
     :param impacts: Sequence of impact (Database object)
     :return: dict
@@ -601,6 +601,7 @@ def get_traffic_report_objects(disruptions, navitia):
     }
 
     result = {'traffic_report': {}, 'impacts_used': []}
+
     for disruption in disruptions:
         for impact in disruption.impacts:
             if impact.status == 'published':
@@ -614,6 +615,6 @@ def get_traffic_report_objects(disruptions, navitia):
                                 format(type=pt_object.type, uri=pt_object.uri, col=collections)
                             )
                             continue
-                        manage_other_object(result, impact, pt_object, navitia, collections[pt_object.type])
+                        manage_other_object(result, impact, pt_object, navitia, collections[pt_object.type], line_sections_by_objid)
 
     return result
