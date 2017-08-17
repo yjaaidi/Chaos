@@ -506,10 +506,8 @@ Feature: Manipulate impacts in a Disruption
         And the field "impact.objects.0.line_section.line.id" should be "line:JDR:M1"
         And the field "impact.objects.0.line_section.start_point.id" should be "stop_area:JDR:SA:PTVIN"
         And the field "impact.objects.0.line_section.end_point.id" should be "stop_area:JDR:SA:BERAU"
-        And the field "impact.objects.0.line_section.routes.0.type" should be "route"
-        And the field "impact.objects.0.line_section.routes.0.id" should be "route:JDR:M1"
-        And the field "impact.objects.0.line_section.routes.1.type" should be "route"
-        And the field "impact.objects.0.line_section.routes.1.id" should be "route:JDR:M14"
+        And the field "impact.objects.0.line_section.routes" should contain all of "{"type": "route", "id": "route:JDR:M1"}"
+        And the field "impact.objects.0.line_section.routes" should contain all of "{"type": "route", "id": "route:JDR:M14"}"
 
     Scenario: Add an impact in a disruption with one object, line_section with routes valid
 
@@ -551,10 +549,8 @@ Feature: Manipulate impacts in a Disruption
         And the field "impact.objects.1.line_section.line.id" should be "line:JDR:M1"
         And the field "impact.objects.1.line_section.start_point.id" should be "stop_area:JDR:SA:PTVIN"
         And the field "impact.objects.1.line_section.end_point.id" should be "stop_area:JDR:SA:BERAU"
-        And the field "impact.objects.1.line_section.routes.0.type" should be "route"
-        And the field "impact.objects.1.line_section.routes.0.id" should be "route:JDR:M1"
-        And the field "impact.objects.1.line_section.routes.1.type" should be "route"
-        And the field "impact.objects.1.line_section.routes.1.id" should be "route:JDR:M14"
+        And the field "impact.objects.1.line_section.routes" should contain all of "{"type": "route", "id": "route:JDR:M1"}"
+        And the field "impact.objects.1.line_section.routes" should contain all of "{"type": "route", "id": "route:JDR:M14"}"
 
     Scenario: Add an impact in a disruption with one object, line_section with routes and via valid
 
@@ -596,10 +592,8 @@ Feature: Manipulate impacts in a Disruption
         And the field "impact.objects.1.line_section.line.id" should be "line:JDR:M1"
         And the field "impact.objects.1.line_section.start_point.id" should be "stop_area:JDR:SA:PTVIN"
         And the field "impact.objects.1.line_section.end_point.id" should be "stop_area:JDR:SA:BERAU"
-        And the field "impact.objects.1.line_section.routes.0.type" should be "route"
-        And the field "impact.objects.1.line_section.routes.0.id" should be "route:JDR:M1"
-        And the field "impact.objects.1.line_section.routes.1.type" should be "route"
-        And the field "impact.objects.1.line_section.routes.1.id" should be "route:JDR:M14"
+        And the field "impact.objects.1.line_section.routes" should contain all of "{"type": "route", "id": "route:JDR:M1"}"
+        And the field "impact.objects.1.line_section.routes" should contain all of "{"type": "route", "id": "route:JDR:M14"}"
         And the field "impact.objects.1.line_section.via" should have a size of 2
 
     Scenario: Put impact with line_section : delete line_section
