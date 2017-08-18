@@ -1,4 +1,24 @@
-# Chaos
+# Table of contents
+
+### Getting Started
+
+* [Description](#description)
+* [Requirements](#requirements)
+* [Concepts description](#concepts)
+
+### API
+
+* [Listing](#listing)
+* [Disruptions](#disruptions)
+* [Impacts](#impacts)
+* [Traffic_reports](#traffic)
+* [Severities](#severities)
+* [Categories](#categories)
+* [Channels](#channels)
+* [Properties](#properties)
+* [Channel Types](#channeltypes)
+
+## <a id="description" name="description"></a>Description
 
 Chaos is the web service which can feed [Navitia](https://github.com/CanalTP/navitia) with real-time [disruptions](http://doc.navitia.io/#traffic-reports).
 It can work together with [Kirin](https://github.com/CanalTP/kirin) which can feed [Navitia](https://github.com/CanalTP/navitia) with real-time delays.
@@ -6,7 +26,7 @@ It can work together with [Kirin](https://github.com/CanalTP/kirin) which can fe
 Chaos manage disruptions and help you to communicate with your travellers on the best way to avoid them.
 
 
-## Requirements
+## <a id="requirements" name="requirements"></a>Requirements
 
 Before using Chaos, you will need few things:
 - a Navitia token, allowing you to request navitia on a data coverage
@@ -20,7 +40,7 @@ Before using the API in production, you will need to provide:
 
 These two points are recquired to help us managing the Chaos platform.
 
-## Concepts description
+## <a id="concepts" name="concepts"></a>Concepts description
 Chaos uses some concepts, here are the essentials.
 
 | Nom (fr)                 | Name (en)                                                                    | Name (navitia) | Definition                 |
@@ -42,7 +62,7 @@ Chaos uses some concepts, here are the essentials.
 
 # Root [/]
 
-## Retrieve Api [GET]
+## <a id="listing" name="listing"></a>List Api [GET]
 
 - Response 200 (application/json)
     * Body
@@ -98,7 +118,7 @@ Chaos uses some concepts, here are the essentials.
 | X-Contributors       | contributor code. A contributor is owner of a disruption                       | true     |                         |
 | X-Coverage           | coverage of navitia services                                                   | true     |                         |
 
-# List of categories [/categories]
+# <a id="categories" name="categories"></a>List of categories [/categories]
 
 ## Retrieve the list of all categories [GET]
 
@@ -552,7 +572,7 @@ None
     }
 }
 ```
-# List of severities [/severities]
+# <a id="severities" name="severities"></a>List of severities [/severities]
 
 ## Retrieve the list of all severities [GET]
 
@@ -778,7 +798,7 @@ None
     }
 }
 ```
-# List of channel types [/channel_types]
+# <a id="channeltypes" name="channeltypes"></a>List of channel types [/channel_types]
 
 ## Retrieve the list of all channel types [GET]
 
@@ -795,7 +815,7 @@ None
 }
 ```
 
-# List of channels [/channels]
+# <a id="channels" name="channels"></a>List of channels [/channels]
 
 ## Retrieve the list of all channels [GET]
 
@@ -1014,7 +1034,7 @@ None
     }
 }
 ```
-# List of properties [/properties]
+# <a id="properties" name="properties"></a>List of properties [/properties]
 
 ## Retrieve the list of all properties [GET]
 
@@ -1427,7 +1447,7 @@ None
     }
 }
 ```
-# List of disruptions [/disruptions]
+# <a id="disruptions" name="disruptions"></a>List of disruptions [/disruptions]
 
 ## Retrieve disruptions [GET]
 
@@ -2228,7 +2248,7 @@ None
     }
 }
 ```
-# List of Impacts [/disruptions/{disruption_id}/impacts]
+# <a id="impacts" name="impacts"></a>List of Impacts [/disruptions/{disruption_id}/impacts]
 
 ## Retrieve impacts [GET]
 
@@ -3143,7 +3163,7 @@ Return all impacts by ptobject (search purpose).
     ]
 }
 ```
-# Traffic reports [/traffic_reports] [GET]
+# <a id="traffic" name="traffic"></a>Traffic reports [/traffic_reports] [GET]
 
 This service provides the state of public transport traffic.
 
