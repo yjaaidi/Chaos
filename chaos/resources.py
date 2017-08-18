@@ -968,10 +968,9 @@ class TrafficReport(flask_restful.Resource):
         # Prepare line sections to get them all in once
         pt_object_ids = []
         for disruption in disruptions:
-            for impact in disruption.impacts:
-                if impact.status == 'published':
-                    for pt_object in impact.objects:
-                        pt_object_ids.append(pt_object.id)
+            for impact in (i for i in disruption.impacts if i.status == 'published'):
+                for pt_object in impact.objects:
+                    pt_object_ids.append(pt_object.id)
 
         line_sections = models.LineSection.get_by_ids(pt_object_ids)
         line_sections_by_objid = {}
