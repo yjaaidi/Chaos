@@ -59,6 +59,7 @@ class FieldDate(fields.Raw):
 
 class CustomImpacts(fields.Raw):
     def output(self, key, val):
+        val.impacts = [impact for impact in val.impacts if impact.status == 'published']
         return marshal(val, {
                 'pagination': FieldPaginateImpacts(attribute='impacts'),
                 'impacts': PaginateObjects(fields.Nested(impact_fields, display_null=False,
@@ -89,7 +90,6 @@ class PaginateObjects(fields.Raw):
 
     def output(self, key, disruption):
         impacts = disruption.impacts
-
         if not hasattr(g, 'display_impacts') or not g.display_impacts:
             return None
 
