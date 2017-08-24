@@ -687,6 +687,7 @@ class ImpactsByObject(flask_restful.Resource):
         parser_get.add_argument("start_date", type=utils.get_datetime, default=default_start_date)
         parser_get.add_argument("end_date", type=utils.get_datetime, default=default_end_date)
         parser_get.add_argument("uri[]", type=str, action="append")
+        parser_get.add_argument("line_section", type=types.boolean, default=False)
         self.navitia = None
 
     @validate_contributor()
@@ -699,11 +700,18 @@ class ImpactsByObject(flask_restful.Resource):
         start_date = args['start_date']
         end_date = args['end_date']
         uris = args['uri[]']
+        line_section = args['line_section']
 
         if not pt_object_type and not uris:
                 return marshal({'error': {'message': "object type or uri object invalid"}},
                                error_fields), 400
-        impacts = models.Impact.all_with_filter(start_date, end_date, pt_object_type, uris, contributor.id)
+        impacts = models.Impact.all_with_filter(
+            start_date,
+            end_date,
+            pt_object_type,
+            uris,
+            contributor.id,
+            line_section)
         result = utils.group_impacts_by_pt_object(impacts, pt_object_type, uris, self.navitia.get_pt_object)
         return marshal({'objects': result}, impacts_by_object_fields)
 

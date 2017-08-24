@@ -698,7 +698,7 @@ class Impact(TimestampMixin, db.Model):
         return query.join(alias, Impact.severity).order_by(alias.priority)
 
     @classmethod
-    def all_with_filter(cls, start_date, end_date, pt_object_type, uris, contributor_id):
+    def all_with_filter(cls, start_date, end_date, pt_object_type, uris, contributor_id, line_section):
         pt_object_alias = aliased(PTobject)
         query = cls.query.filter(cls.status == 'published')
         query = query.join(Disruption)
@@ -707,42 +707,24 @@ class Impact(TimestampMixin, db.Model):
         query = query.filter(Disruption.contributor_id == contributor_id)
         query = query.filter(and_(ApplicationPeriods.start_date <= end_date, ApplicationPeriods.end_date >= start_date))
 
-        if pt_object_type or uris:
-            alias_line = aliased(PTobject)
-            alias_start_point = aliased(PTobject)
-            alias_end_point = aliased(PTobject)
-            alias_route = aliased(PTobject)
-            alias_via = aliased(PTobject)
-
-            query_line_section = query
-            query_line_section = query_line_section.join(pt_object_alias.line_section)
-            query_line_section = query_line_section.join(alias_line, LineSection.line_object_id == alias_line.id)
-            query_line_section = query_line_section.join(alias_start_point, LineSection.start_object_id == alias_start_point.id)
-            query_line_section = query_line_section.join(alias_end_point, LineSection.end_object_id == alias_end_point.id)
-            query_line_section = query_line_section.join(alias_route, LineSection.routes)
-            query_line_section = query_line_section.join(alias_via, LineSection.via)
-
         if pt_object_type:
             query = query.filter(pt_object_alias.type == pt_object_type)
-            type_filters = []
-            type_filters.append(alias_line.type == pt_object_type)
-            type_filters.append(alias_start_point.type == pt_object_type)
-            type_filters.append(alias_end_point.type == pt_object_type)
-            query_line_section = query_line_section.filter(or_(*type_filters))
 
         if uris:
-            uri_filters = []
-            uri_filters.append(alias_line.uri.in_(uris))
-            uri_filters.append(alias_start_point.uri.in_(uris))
-            uri_filters.append(alias_end_point.uri.in_(uris))
-            uri_filters.append(alias_route.uri.in_(uris))
-            uri_filters.append(alias_via.uri.in_(uris))
-            query_line_section = query_line_section.filter(or_(*uri_filters))
+            query_line_section = query
             query = query.filter(pt_object_alias.uri.in_(uris))
+            #Here add a new query to find impacts with line_section having uri as line
+            if line_section:
+                like_uris = []
+                for uri in uris:
+                    like_uris.append(pt_object_alias.uri.like(uri + ":%"))
+                query_line_section = query_line_section.filter(
+                    and_(
+                        pt_object_alias.type == "line_section",
+                        or_(*like_uris)))
+                query = query.union_all(query_line_section)
 
-        start_filter = "application_periods_1.start_date <= '{end_date}'".format(end_date=end_date)
-        end_filter = "application_periods_1.end_date >= '{start_date}'".format(start_date=start_date)
-        query = query.union_all(query_line_section).filter(and_(start_filter, end_filter)).order_by("application_periods_1.start_date")
+        query = query.order_by('application_periods_1.start_date')
         return query.all()
 
 
