@@ -552,7 +552,7 @@ Feature: list impacts by ptobject and/or uri(s)
         And the field "objects.0.impacts.0.objects" should have a size of 2
 
         #Fetch impact by uri of object in via et route of line_section
-        When I get "/impacts?uri[]=stop_area:JDR:SA:NATIO&uri[]=route:JDR:M1_R&start_date=2013-12-02T23:52:12Z&end_date=2014-10-21T23:52:12Z&line_section"
+        When I get "/impacts?uri[]=stop_area:JDR:SA:NATIO&uri[]=route:JDR:M1_R&start_date=2013-12-02T23:52:12Z&end_date=2014-10-21T23:52:12Z&line_section=true"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
         And the field "objects" should have a size of 1

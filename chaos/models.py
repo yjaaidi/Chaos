@@ -706,28 +706,36 @@ class Impact(TimestampMixin, db.Model):
         query = query.join(pt_object_alias, cls.objects)
         query = query.filter(Disruption.contributor_id == contributor_id)
         query = query.filter(and_(ApplicationPeriods.start_date <= end_date, ApplicationPeriods.end_date >= start_date))
+        query_line_section = query
+        if line_section and (pt_object_type or uris):
+            alias_line = aliased(PTobject)
+            alias_start_point = aliased(PTobject)
+            alias_end_point = aliased(PTobject)
+            alias_route = aliased(PTobject)
+            alias_via = aliased(PTobject)
+
+            query_line_section = query_line_section.filter(pt_object_alias.type == 'line_section')
+            query_line_section = query_line_section.join(pt_object_alias.line_section)
+            query_line_section = query_line_section.join(alias_line, LineSection.line_object_id == alias_line.id)
+            query_line_section = query_line_section.join(alias_start_point, LineSection.start_object_id == alias_start_point.id)
+            query_line_section = query_line_section.join(alias_end_point, LineSection.end_object_id == alias_end_point.id)
+            query_line_section = query_line_section.outerjoin(alias_route, LineSection.routes)
+            query_line_section = query_line_section.outerjoin(alias_via, LineSection.via)
 
         if pt_object_type:
             query = query.filter(pt_object_alias.type == pt_object_type)
+            if line_section:
+                pt_object_filters = []
+                pt_object_filters.append(alias_line.type == pt_object_type)
+                pt_object_filters.append(alias_start_point.type == pt_object_type)
+                pt_object_filters.append(alias_end_point.type == pt_object_type)
+                pt_object_filters.append(alias_route.type == pt_object_type)
+                pt_object_filters.append(alias_via.type == pt_object_type)
+                query_line_section = query_line_section.filter(or_(*pt_object_filters))
 
         if uris:
-            query_line_section = query
             query = query.filter(pt_object_alias.uri.in_(uris))
             if line_section:
-                alias_line = aliased(PTobject)
-                alias_start_point = aliased(PTobject)
-                alias_end_point = aliased(PTobject)
-                alias_route = aliased(PTobject)
-                alias_via = aliased(PTobject)
-
-                query_line_section = query_line_section.filter(pt_object_alias.type == 'line_section')
-                query_line_section = query_line_section.join(pt_object_alias.line_section)
-                query_line_section = query_line_section.join(alias_line, LineSection.line_object_id == alias_line.id)
-                query_line_section = query_line_section.join(alias_start_point, LineSection.start_object_id == alias_start_point.id)
-                query_line_section = query_line_section.join(alias_end_point, LineSection.end_object_id == alias_end_point.id)
-                query_line_section = query_line_section.outerjoin(alias_route, LineSection.routes)
-                query_line_section = query_line_section.outerjoin(alias_via, LineSection.via)
-
                 uri_filters = []
                 uri_filters.append(alias_line.uri.in_(uris))
                 uri_filters.append(alias_start_point.uri.in_(uris))
@@ -735,8 +743,9 @@ class Impact(TimestampMixin, db.Model):
                 uri_filters.append(alias_route.uri.in_(uris))
                 uri_filters.append(alias_via.uri.in_(uris))
                 query_line_section = query_line_section.filter(or_(*uri_filters))
-                query = query.union_all(query_line_section)
 
+        if line_section:
+            query = query.union_all(query_line_section)
         query = query.order_by("application_periods_1.start_date")
         return query.all()
 

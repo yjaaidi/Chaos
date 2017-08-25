@@ -654,7 +654,7 @@ Feature: list impacts by ptobject
         I fill in header "X-Coverage" with "jdr"
         I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         #Fetch impact by type of object in start_point, end_point and line of line_section
-        When I get "/impacts?pt_object_type=stop_area&start_date=2013-12-02T23:52:12Z&end_date=2014-10-21T23:52:12Z"
+        When I get "/impacts?pt_object_type=stop_area&start_date=2013-12-02T23:52:12Z&end_date=2014-10-21T23:52:12Z&line_section=true"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
         And the field "objects" should have a size of 1
@@ -664,7 +664,7 @@ Feature: list impacts by ptobject
         And the field "objects.0.impacts.0.objects.0.line_section.start_point.id" should be "stop_area:JDR:SA:BASTI"
 
         #Fetch impact by type of object in start_point, end_point and line of line_section
-        When I get "/impacts?pt_object_type=network&start_date=2013-12-02T23:52:12Z&end_date=2014-10-21T23:52:12Z"
+        When I get "/impacts?pt_object_type=network&start_date=2013-12-02T23:52:12Z&end_date=2014-10-21T23:52:12Z&line_section=true"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
         And the field "objects" should have a size of 0
