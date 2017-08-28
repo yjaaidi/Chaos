@@ -23,7 +23,7 @@
 Chaos is the web service which can feed [Navitia](https://github.com/CanalTP/navitia) with real-time [disruptions](http://doc.navitia.io/#traffic-reports).
 It can work together with [Kirin](https://github.com/CanalTP/kirin) which can feed [Navitia](https://github.com/CanalTP/navitia) with real-time delays.
 
-Chaos manage disruptions and help you to communicate with your travellers on the best way to avoid them.
+Chaos manage disruptions and help you to communicate with your travellers on the best.
 
 
 ## <a id="requirements" name="requirements"></a>Requirements
@@ -43,22 +43,22 @@ These two points are recquired to help us managing the Chaos platform.
 ## <a id="concepts" name="concepts"></a>Concepts description
 Chaos uses some concepts, here are the essentials.
 
-| Nom (fr)                 | Name (en)                                                                    | Name (navitia) | Definition                 |
-| -------------------- | ------------------------------------------------------------------------------ | -------- | ----------------------- |
- |Perturbation | Disruption | Disruption | The event (planned, or not) you want to communicate to travellers. |
- |Impact | Impact | Impact | The way an event affects the travellers (by blocking lines, closing station, ...). |
- |Objet TC | Object | pt_object | The network objects (lines, stop area, stop points, or full network) affected by an impact. |
- |Champ de saisie | Channel | channel | The way you speak to the traveller (SMS, web, mobile, notification, email, ...). |
- |Sévérité | Severity | severity | How bad the impact is. |
- |Cause | Cause | Cause | Description of the cause of the perturbation (strike, accident). |
- |Localisation | Localisation | Localisation | The Stop Area where the disruption happens. Useful to show it on map. |
- |Etiquette | Tag | Tag | A tag on a description. |
- |Effet | Effect | Effect | The effect of a severity. Only "No service" is implemented. |
- |Couleur | Color | Color | The color of a severity. |
- |Priorité | Priority | Priority | A number to order severities. |
- |Créneaux | Pattern | N/A | A combination of days, dates and time to build a time pattern: "from 1 janv. 2016  to 1 janv. 2017 , only monday and tuesday, every day from 08:00 am to 10:00 am". |
- |Application | Application | Application | The effective duration of an impact. |
- |Publication | Publication | Publication | The duration of the communication of a disruption to travellers (useful for planned disruptions). |                   
+| Name                                                                   | Name (navitia) | Definition                 |
+------------------------------------------------------------------------------ | -------- | ----------------------- |
+| Disruption | Disruption | The event (planned, or not) you want to communicate to travellers. |
+| Impact | Impact | The way an event affects the travellers (by blocking lines, closing station, ...). |
+| Object | pt_object | The network objects (lines, stop area, stop points, or full network) affected by an impact. |
+| Channel | channel | The way you speak to the traveller (SMS, web, mobile, notification, email, ...). |
+| Severity | severity | How bad the impact is. |
+| Cause | Cause | Description of the cause of the perturbation (strike, accident). |
+| Localisation | Localisation | The Stop Area where the disruption happens. Useful to show it on map. |
+| Tag | Tag | A tag on a description. |
+| Effect | Effect | The effect of a severity. Only "No service" is implemented. |
+| Color | Color | The color of a severity. |
+| Priority | Priority | A number to order severities. |
+| Pattern | N/A | A combination of days, dates and time to build a time pattern: "from 1 janv. 2016  to 1 janv. 2017 , only monday and tuesday, every day from 08:00 am to 10:00 am". |
+| Application | Application | The effective duration of an impact. |
+| Publication | Publication | The duration of the communication of a disruption to travellers (useful for planned disruptions). |
 
 # Root [/]
 
@@ -169,9 +169,8 @@ None
 
 ### Request (application/json) -> __Delete comments before POST__
 - Body
-```javascript
+```json
 {
-    // REQUIRED. string. maxLength 250.
     "name": "meteo"
 }
 ```
@@ -194,7 +193,7 @@ None
 
 ## Retrieve one category [GET]
 
-Retrieve one existing category.
+Retrieve an existing category.
 
 ### Headers ([here](#headers))
 
@@ -378,7 +377,7 @@ None
             // REQUIRED. string. minLength 1. maxLength 250.
             "key": "msg_media",
             // REQUIRED. string. maxLength 250.
-            "value": "train retardé"
+            "value": "train is delayed"
         },
         {
             // REQUIRED. string. minLength 1. maxLength 250.
@@ -388,7 +387,7 @@ None
         }
     ],
     // OPTIONAL. string. default wording displayed in navitia.
-    "wording": "train retardé"
+    "wording": "train is delayed"
 }
 ```
 - Response 201 (application/json)
@@ -417,11 +416,11 @@ None
             },
             {
                 "key": "msg_media",
-                "value": "train retardé"
+                "value": "train is delayed"
             },
             {
                 "key": "msg_sms",
-                "value": "prenez le bus"
+                "value": "take the bus"
             }
         ]
     }
@@ -494,8 +493,8 @@ None
     * Body
         {
             "category": {"id": "32b07ff8-10e0-11e4-ae39-d4bed99855be"},
-            "wordings": [{"key": "msg_interne", "value": "Bebert va déplacer sa locomotive"}, {"key": "msg_media", "value": "train retardé"}, {"key": "msg_sms", "value": "le train va arriver"}],
-            "wording": "train retardé"
+            "wordings": [{"key": "msg_interne", "value": "Bebert va déplacer sa locomotive"}, {"key": "msg_media", "value": "train is delayed"}, {"key": "msg_sms", "value": "le train va arriver"}],
+            "wording": "train is delayed"
         }
 ```
 - Response 200 (application/json)
@@ -524,7 +523,7 @@ None
             },
             {
                 "key": "msg_media",
-                "value": "train retardé"
+                "value": "train is delayed"
             },
             {
                 "key": "msg_sms",
