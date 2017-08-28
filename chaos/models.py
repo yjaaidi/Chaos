@@ -37,7 +37,6 @@ from datetime import datetime
 from formats import publication_status_values
 from sqlalchemy import or_, and_, between
 from sqlalchemy.orm import aliased
-import logging
 
 
 # force the server to use UTC time for each connection
@@ -699,7 +698,8 @@ class Impact(TimestampMixin, db.Model):
         return query.join(alias, Impact.severity).order_by(alias.priority)
 
     @classmethod
-    def all_with_filter(cls, start_date, end_date, pt_object_type, uris, contributor_id, line_section):
+    def all_with_filter(cls, start_date, end_date, pt_object_type, uris, contributor_id):
+        filter_with_line_section = True
         pt_object_alias = aliased(PTobject)
         query = cls.query.filter(cls.status == 'published')
         query = query.join(Disruption)
@@ -708,7 +708,7 @@ class Impact(TimestampMixin, db.Model):
         query = query.filter(Disruption.contributor_id == contributor_id)
         query = query.filter(and_(ApplicationPeriods.start_date <= end_date, ApplicationPeriods.end_date >= start_date))
         query_line_section = query
-        if line_section and (pt_object_type or uris):
+        if pt_object_type or uris:
             alias_line = aliased(PTobject)
             alias_start_point = aliased(PTobject)
             alias_end_point = aliased(PTobject)
@@ -722,26 +722,27 @@ class Impact(TimestampMixin, db.Model):
             query_line_section = query_line_section.join(alias_end_point, LineSection.end_object_id == alias_end_point.id)
             query_line_section = query_line_section.outerjoin(alias_route, LineSection.routes)
             query_line_section = query_line_section.outerjoin(alias_via, LineSection.via)
+        else:
+            filter_with_line_section = False
 
         if pt_object_type:
             query = query.filter(pt_object_alias.type == pt_object_type)
-            if line_section and pt_object_type == 'route':
+            if pt_object_type == 'route':
                 query_line_section = query_line_section.filter(alias_route.type == pt_object_type)
             elif pt_object_type not in ['line_section', 'line', 'stop_area']:
-                line_section = False
+                filter_with_line_section = False
 
         if uris:
             query = query.filter(pt_object_alias.uri.in_(uris))
-            if line_section:
-                uri_filters = []
-                uri_filters.append(alias_line.uri.in_(uris))
-                uri_filters.append(alias_start_point.uri.in_(uris))
-                uri_filters.append(alias_end_point.uri.in_(uris))
-                uri_filters.append(alias_route.uri.in_(uris))
-                uri_filters.append(alias_via.uri.in_(uris))
-                query_line_section = query_line_section.filter(or_(*uri_filters))
+            uri_filters = []
+            uri_filters.append(alias_line.uri.in_(uris))
+            uri_filters.append(alias_start_point.uri.in_(uris))
+            uri_filters.append(alias_end_point.uri.in_(uris))
+            uri_filters.append(alias_route.uri.in_(uris))
+            uri_filters.append(alias_via.uri.in_(uris))
+            query_line_section = query_line_section.filter(or_(*uri_filters))
 
-        if line_section:
+        if filter_with_line_section:
             query = query.union_all(query_line_section)
         query = query.order_by("application_periods_1.start_date")
         return query.all()

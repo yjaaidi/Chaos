@@ -520,7 +520,7 @@ Feature: list impacts by ptobject and/or uri(s)
         I fill in header "X-Coverage" with "jdr"
         I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         #Fetch impact by uri of object in start_point of line_section
-        When I get "/impacts?uri[]=stop_area:JDR:SA:BASTI&start_date=2013-12-02T23:52:12Z&end_date=2014-10-21T23:52:12Z&line_section=true"
+        When I get "/impacts?uri[]=stop_area:JDR:SA:BASTI&start_date=2013-12-02T23:52:12Z&end_date=2014-10-21T23:52:12Z"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
         And the field "objects" should have a size of 1
@@ -528,7 +528,7 @@ Feature: list impacts by ptobject and/or uri(s)
         And the field "objects.0.impacts.0.objects" should have a size of 2
 
         #Fetch impact by uri of object in line of line_section
-        When I get "/impacts?uri[]=line:JDR:M1&start_date=2013-12-02T23:52:12Z&end_date=2014-10-21T23:52:12Z&line_section=true"
+        When I get "/impacts?uri[]=line:JDR:M1&start_date=2013-12-02T23:52:12Z&end_date=2014-10-21T23:52:12Z"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
         And the field "objects" should have a size of 1
@@ -536,7 +536,7 @@ Feature: list impacts by ptobject and/or uri(s)
         And the field "objects.0.impacts.0.objects" should have a size of 2
 
         #Fetch impact by uri of object in route of line_section
-        When I get "/impacts?uri[]=route:JDR:M14&start_date=2013-12-02T23:52:12Z&end_date=2014-10-21T23:52:12Z&line_section=true"
+        When I get "/impacts?uri[]=route:JDR:M14&start_date=2013-12-02T23:52:12Z&end_date=2014-10-21T23:52:12Z"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
         And the field "objects" should have a size of 1
@@ -544,7 +544,7 @@ Feature: list impacts by ptobject and/or uri(s)
         And the field "objects.0.impacts.0.objects" should have a size of 2
 
         #Fetch impact by uri of object in via of line_section
-        When I get "/impacts?uri[]=stop_area:JDR:SA:REUIL&start_date=2013-12-02T23:52:12Z&end_date=2014-10-21T23:52:12Z&line_section=true"
+        When I get "/impacts?uri[]=stop_area:JDR:SA:REUIL&start_date=2013-12-02T23:52:12Z&end_date=2014-10-21T23:52:12Z"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
         And the field "objects" should have a size of 1
@@ -552,7 +552,7 @@ Feature: list impacts by ptobject and/or uri(s)
         And the field "objects.0.impacts.0.objects" should have a size of 2
 
         #Fetch impact by uri of object in via et route of line_section
-        When I get "/impacts?uri[]=stop_area:JDR:SA:NATIO&uri[]=route:JDR:M1_R&start_date=2013-12-02T23:52:12Z&end_date=2014-10-21T23:52:12Z&line_section=true"
+        When I get "/impacts?uri[]=stop_area:JDR:SA:NATIO&uri[]=route:JDR:M1_R&start_date=2013-12-02T23:52:12Z&end_date=2014-10-21T23:52:12Z"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
         And the field "objects" should have a size of 1
@@ -622,7 +622,7 @@ Feature: list impacts by ptobject and/or uri(s)
         I fill in header "X-Coverage" with "jdr"
         I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         #Fetch impact by uri of object in start_point of line_section
-        When I get "/impacts?uri[]=stop_area:JDR:SA:NATIO&start_date=2013-12-02T23:52:12Z&end_date=2014-10-21T23:52:12Z&line_section=true"
+        When I get "/impacts?uri[]=stop_area:JDR:SA:NATIO&start_date=2013-12-02T23:52:12Z&end_date=2014-10-21T23:52:12Z"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
         And the field "objects" should have a size of 1
@@ -689,7 +689,7 @@ Feature: list impacts by ptobject and/or uri(s)
         I fill in header "X-Coverage" with "jdr"
         I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         #Fetch impact by uri of object in start_point of line_section
-        When I get "/impacts?uri[]=line:JDR:M1&start_date=2013-12-02T23:52:12Z&end_date=2014-10-21T23:52:12Z&line_section=true"
+        When I get "/impacts?uri[]=line:JDR:M1&start_date=2013-12-02T23:52:12Z&end_date=2014-10-21T23:52:12Z"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
         And the field "objects" should have a size of 1
