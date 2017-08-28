@@ -271,6 +271,8 @@ def get_object_in_line_section_by_type(pt_object, object_type):
             return object.start_point
         if object.end_point.type == object_type:
             return object.end_point
+        if object.routes and object.routes[0].type == object_type:
+            return object.routes[0]
     return None
 
 

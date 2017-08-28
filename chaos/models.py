@@ -37,6 +37,7 @@ from datetime import datetime
 from formats import publication_status_values
 from sqlalchemy import or_, and_, between
 from sqlalchemy.orm import aliased
+import logging
 
 
 # force the server to use UTC time for each connection
@@ -724,14 +725,10 @@ class Impact(TimestampMixin, db.Model):
 
         if pt_object_type:
             query = query.filter(pt_object_alias.type == pt_object_type)
-            if line_section:
-                pt_object_filters = []
-                pt_object_filters.append(alias_line.type == pt_object_type)
-                pt_object_filters.append(alias_start_point.type == pt_object_type)
-                pt_object_filters.append(alias_end_point.type == pt_object_type)
-                pt_object_filters.append(alias_route.type == pt_object_type)
-                pt_object_filters.append(alias_via.type == pt_object_type)
-                query_line_section = query_line_section.filter(or_(*pt_object_filters))
+            if line_section and pt_object_type == 'route':
+                query_line_section = query_line_section.filter(alias_route.type == pt_object_type)
+            elif pt_object_type not in ['line_section', 'line', 'stop_area']:
+                line_section = False
 
         if uris:
             query = query.filter(pt_object_alias.uri.in_(uris))
