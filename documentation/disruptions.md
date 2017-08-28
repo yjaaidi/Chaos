@@ -169,8 +169,9 @@ None
 
 ### Request (application/json) -> __Delete comments before POST__
 - Body
-```json
+```javascript
 {
+    // REQUIRED. string. maxLength 250.
     "name": "meteo"
 }
 ```
@@ -377,7 +378,7 @@ None
             // REQUIRED. string. minLength 1. maxLength 250.
             "key": "msg_media",
             // REQUIRED. string. maxLength 250.
-            "value": "train is delayed"
+            "value": "train delayed"
         },
         {
             // REQUIRED. string. minLength 1. maxLength 250.
@@ -387,7 +388,7 @@ None
         }
     ],
     // OPTIONAL. string. default wording displayed in navitia.
-    "wording": "train is delayed"
+    "wording": "train delayed"
 }
 ```
 - Response 201 (application/json)
@@ -416,7 +417,7 @@ None
             },
             {
                 "key": "msg_media",
-                "value": "train is delayed"
+                "value": "train delayed"
             },
             {
                 "key": "msg_sms",
@@ -493,8 +494,8 @@ None
     * Body
         {
             "category": {"id": "32b07ff8-10e0-11e4-ae39-d4bed99855be"},
-            "wordings": [{"key": "msg_interne", "value": "Bebert va déplacer sa locomotive"}, {"key": "msg_media", "value": "train is delayed"}, {"key": "msg_sms", "value": "le train va arriver"}],
-            "wording": "train is delayed"
+            "wordings": [{"key": "msg_interne", "value": "Bebert va déplacer sa locomotive"}, {"key": "msg_media", "value": "train delayed"}, {"key": "msg_sms", "value": "le train va arriver"}],
+            "wording": "train delayed"
         }
 ```
 - Response 200 (application/json)
@@ -523,7 +524,7 @@ None
             },
             {
                 "key": "msg_media",
-                "value": "train is delayed"
+                "value": "train delayed"
             },
             {
                 "key": "msg_sms",
