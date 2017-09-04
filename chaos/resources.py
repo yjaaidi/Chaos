@@ -703,7 +703,12 @@ class ImpactsByObject(flask_restful.Resource):
         if not pt_object_type and not uris:
                 return marshal({'error': {'message': "object type or uri object invalid"}},
                                error_fields), 400
-        impacts = models.Impact.all_with_filter(start_date, end_date, pt_object_type, uris, contributor.id)
+        impacts = models.Impact.all_with_filter(
+            start_date,
+            end_date,
+            pt_object_type,
+            uris,
+            contributor.id)
         result = utils.group_impacts_by_pt_object(impacts, pt_object_type, uris, self.navitia.get_pt_object)
         return marshal({'objects': result}, impacts_by_object_fields)
 
@@ -964,7 +969,20 @@ class TrafficReport(flask_restful.Resource):
         args = self.parsers['get'].parse_args()
         g.current_time = args['current_time']
         disruptions = models.Disruption.traffic_report_filter(contributor.id)
-        result = utils.get_traffic_report_objects(disruptions, self.navitia)
+
+        # Prepare line sections to get them all in once
+        pt_object_ids = []
+        for disruption in disruptions:
+            for impact in (i for i in disruption.impacts if i.status == 'published'):
+                for pt_object in impact.objects:
+                    pt_object_ids.append(pt_object.id)
+
+        line_sections = models.LineSection.get_by_ids(pt_object_ids)
+        line_sections_by_objid = {}
+        for line_section in line_sections:
+            line_sections_by_objid[line_section.object_id] = line_section
+
+        result = utils.get_traffic_report_objects(disruptions, self.navitia, line_sections_by_objid)
         return marshal(
             {
                 'traffic_reports': [value for key, value in result["traffic_report"].items()],

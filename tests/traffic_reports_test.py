@@ -9,13 +9,13 @@ class Obj(object):
 
 
 def test_get_traffic_report_objects():
-    dd = get_traffic_report_objects([], Obj())
+    dd = get_traffic_report_objects([], Obj(), {})
     eq_(len(dd["traffic_report"].items()), 0)
 
 
 def test_get_traffic_report_without_objects():
     disruption = chaos.models.Disruption()
-    dd = get_traffic_report_objects([disruption], Obj())
+    dd = get_traffic_report_objects([disruption], Obj(), {})
     eq_(len(dd["traffic_report"].items()), 0)
 
 
@@ -63,7 +63,7 @@ def test_get_traffic_report_with_network():
             }
         }
     }
-    dd = get_traffic_report_objects([disruption], navitia)
+    dd = get_traffic_report_objects([disruption], navitia, {})
     eq_(cmp(dd["traffic_report"], result), 0)
 
 
@@ -140,7 +140,7 @@ def test_get_traffic_report_with_impact_on_lines():
             "lines": [{'id': 'line:uri2', 'name': 'line 2 name', "impacts": [impact]}]
         }
     }
-    dd = get_traffic_report_objects([disruption], navitia)
+    dd = get_traffic_report_objects([disruption], navitia, {})
     eq_(cmp(dd["traffic_report"], result), 0)
 
 
@@ -178,7 +178,7 @@ def test_get_traffic_report_with_impact_on_networks():
             }
         }
     }
-    dd = get_traffic_report_objects([disruption], navitia)
+    dd = get_traffic_report_objects([disruption], navitia, {})
 
     eq_(cmp(dd["traffic_report"], result), 0)
 
@@ -205,7 +205,7 @@ def test_get_traffic_report_with_impact_on_stop_areas_one_network():
             "stop_areas": [{'id': 'stop_area:uri1', 'name': 'stop area 1 name', "impacts": [impact]}]
         }
     }
-    dd = get_traffic_report_objects([disruption], navitia)
+    dd = get_traffic_report_objects([disruption], navitia, {})
     eq_(cmp(dd["traffic_report"], result), 0)
 
 
@@ -238,7 +238,7 @@ def test_get_traffic_report_with_impact_on_stop_areas_2_networks():
             "stop_areas": [{'id': 'stop_area:uri2', 'name': 'stop area 2 name', "impacts": [impact]}]
         }
     }
-    dd = get_traffic_report_objects([disruption], navitia)
+    dd = get_traffic_report_objects([disruption], navitia, {})
     eq_(cmp(dd["traffic_report"], result), 0)
 
 
@@ -279,7 +279,7 @@ def test_get_traffic_report_with_2_impact_on_stop_area():
             "stop_areas": [{'id': 'stop_area:uri1', 'name': 'stop area 1 name', "impacts": impacts}]
         }
     }
-    dd = get_traffic_report_objects(disruptions, navitia)
+    dd = get_traffic_report_objects(disruptions, navitia, {})
     eq_(cmp(dd["traffic_report"], result), 0)
 
 
@@ -346,5 +346,5 @@ def test_get_traffic_report_with_impact_on_line_sections():
             ]
         }
     }
-    dd = get_traffic_report_objects([disruption], navitia)
+    dd = get_traffic_report_objects([disruption], navitia, { ptobject.id: ptobject.line_section })
     eq_(cmp(dd["traffic_report"], result), 0)
