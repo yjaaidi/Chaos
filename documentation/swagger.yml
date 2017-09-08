@@ -54,8 +54,7 @@ tags:
 paths:
   /severities:
     get:
-      summary: Retrieve the list of all severities
-      description: Return all the severities ordered by priority
+      description: Retrieves all the severities ordered by priority
       parameters:
       - $ref: "#/parameters/header_authorization"
       - $ref: "#/parameters/header_coverage"
@@ -75,7 +74,48 @@ paths:
                 type: array
                 items:
                   $ref: "#/definitions/severity"
+    post:
+      description: Creates a severity
+      parameters:
+      - $ref: "#/parameters/header_authorization"
+      - $ref: "#/parameters/header_coverage"
+      - $ref: "#/parameters/header_customer_id"
+      - $ref: "#/parameters/header_contributors"
+      tags:
+        - Severity
+      responses:
+        200:
+          description: Severity entity
+          schema:
+            type: object
+            properties:
+              severity:
+                $ref: "#/definitions/severity"
+  /severities/{id}:
+    get:
+      description: Retrieve the severity identified by ID
+      parameters:
+      - $ref: "#/parameters/header_authorization"
+      - $ref: "#/parameters/header_coverage"
+      - $ref: "#/parameters/header_customer_id"
+      - $ref: "#/parameters/header_contributors"
+      - $ref: "#/parameters/entity_id"
+      tags:
+        - Severity
+      responses:
+        200:
+          description: Severity entity
+          schema:
+            type: object
+            properties:
+              severity:
+                $ref: "#/definitions/severity"
 
+
+
+################################################################################
+#                                 Parameters                                  #
+################################################################################
 parameters:
   header_customer_id:
     in: header
@@ -101,6 +141,12 @@ parameters:
     description: Contributor code. A contributor is owner of a disruption
     name: X-Contributors
     in: header
+  entity_id:
+    required: true
+    type: string
+    description: Entity identifier
+    name: id
+    in: path
 
 ################################################################################
 #                                 Definitions                                  #
