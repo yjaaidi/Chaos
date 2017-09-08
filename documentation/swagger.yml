@@ -1,0 +1,129 @@
+---
+swagger: '2.0'
+
+################################################################################
+#                              API Information                                 #
+################################################################################
+info:
+  version: v1
+  title: Documentation of API Chaos
+  description: |
+    Chaos is the web service which can feed [Navitia](https://github.com/CanalTP/navitia) with real-time [disruptions](http://doc.navitia.io/#traffic-reports).
+
+    It can work together with [Kirin](https://github.com/CanalTP/kirin) which can feed [Navitia](https://github.com/CanalTP/navitia) with real-time delays.
+
+    Chaos manage disruptions and help you to communicate with your travellers on the best.
+
+    ** Requirements **
+
+    Before using Chaos, you will need few things:
+     * a Navitia token, allowing you to request navitia on a data coverage
+     * a customer ID
+     * a contributor ID
+
+    Your usual Kisio Digital interlocutor can provide you these elements, and an access to the production or pre-production platform.
+    Before using the API in production, you will need to provide:
+     * integration specifications
+     * expected load your application will generate.
+
+    These two points are recquired to help us managing the Chaos platform.
+  license:
+    name: AGPL
+    url: "http://www.gnu.org/licenses/agpl-3.0.html"
+
+################################################################################
+#                  Host, Base Path, Schemes and Content Types                  #
+################################################################################
+host: 127.0.0.1:5000
+basePath: /
+schemes:
+  - http
+produces:
+  - application/json
+consumes:
+  - application/json
+
+################################################################################
+#                                   Tags                                       #
+################################################################################
+tags:
+  - name: Severity
+  - name: Disruption
+  - name: Impact
+
+paths:
+  /severities:
+    get:
+      summary: Retrieve the list of all severities
+      description: Return all the severities ordered by priority
+      parameters:
+      - required: true
+        type: string
+        description: Client code. A client is owner of cause, channel, severity and tag
+        name: X-Customer-Id
+        in: header
+      - required: true
+        type: string
+        description: Coverage of navitia services
+        name: X-Coverage
+        in: header
+      - required: true
+        type: string
+        description: Token for navitia services
+        name: Authorization
+        in: header
+      - required: true
+        type: string
+        description: Contributor code. A contributor is owner of a disruption
+        name: X-Contributors
+        in: header
+      tags:
+        - Severity
+      responses:
+        200:
+          description: List of severities
+          schema:
+            type: object
+            properties:
+              meta:
+                type: object
+              severities:
+                type: array
+                items:
+                  $ref: "#/definitions/severity"
+
+################################################################################
+#                                 Definitions                                  #
+################################################################################
+definitions:
+  wording:
+    type: "object"
+    properties:
+      key:
+        type: "string"
+      value:
+        type: "string"
+  severity:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        format: "uuid"
+      color:
+        type: "string"
+      created_at:
+        type: "string"
+        format: "date-time"
+      effect:
+        type: "string"
+      priority:
+        type: "integer"
+      updated_at:
+        type: "string"
+        format: "date-time"
+      wording:
+        type: "string"
+      wordings:
+        type: "array"
+        items:
+          $ref: "#/definitions/wording"
