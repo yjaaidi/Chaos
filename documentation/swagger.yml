@@ -57,26 +57,10 @@ paths:
       summary: Retrieve the list of all severities
       description: Return all the severities ordered by priority
       parameters:
-      - required: true
-        type: string
-        description: Client code. A client is owner of cause, channel, severity and tag
-        name: X-Customer-Id
-        in: header
-      - required: true
-        type: string
-        description: Coverage of navitia services
-        name: X-Coverage
-        in: header
-      - required: true
-        type: string
-        description: Token for navitia services
-        name: Authorization
-        in: header
-      - required: true
-        type: string
-        description: Contributor code. A contributor is owner of a disruption
-        name: X-Contributors
-        in: header
+      - $ref: "#/parameters/header_authorization"
+      - $ref: "#/parameters/header_coverage"
+      - $ref: "#/parameters/header_customer_id"
+      - $ref: "#/parameters/header_contributors"
       tags:
         - Severity
       responses:
@@ -91,6 +75,32 @@ paths:
                 type: array
                 items:
                   $ref: "#/definitions/severity"
+
+parameters:
+  header_customer_id:
+    in: header
+    required: true
+    type: string
+    description: Client code. A client is owner of cause, channel, severity and tag
+    name: X-Customer-Id
+  header_coverage:
+    in: header
+    required: true
+    type: string
+    description: Coverage of navitia services
+    name: X-Coverage
+  header_authorization:
+    in: header
+    required: true
+    type: string
+    description: Token for navitia services
+    name: Authorization
+  header_contributors:
+    required: true
+    type: string
+    description: Contributor code. A contributor is owner of a disruption
+    name: X-Contributors
+    in: header
 
 ################################################################################
 #                                 Definitions                                  #
