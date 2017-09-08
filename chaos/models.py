@@ -699,6 +699,7 @@ class Impact(TimestampMixin, db.Model):
 
     @classmethod
     def all_with_filter(cls, start_date, end_date, pt_object_type, uris, contributor_id):
+        filter_with_line_section = True
         pt_object_alias = aliased(PTobject)
         query = cls.query.filter(cls.status == 'published')
         query = query.join(Disruption)
@@ -706,7 +707,7 @@ class Impact(TimestampMixin, db.Model):
         query = query.join(pt_object_alias, cls.objects)
         query = query.filter(Disruption.contributor_id == contributor_id)
         query = query.filter(and_(ApplicationPeriods.start_date <= end_date, ApplicationPeriods.end_date >= start_date))
-
+        query_line_section = query
         if pt_object_type or uris:
             alias_line = aliased(PTobject)
             alias_start_point = aliased(PTobject)
@@ -714,23 +715,25 @@ class Impact(TimestampMixin, db.Model):
             alias_route = aliased(PTobject)
             alias_via = aliased(PTobject)
 
-            query_line_section = query
+            query_line_section = query_line_section.filter(pt_object_alias.type == 'line_section')
             query_line_section = query_line_section.join(pt_object_alias.line_section)
             query_line_section = query_line_section.join(alias_line, LineSection.line_object_id == alias_line.id)
             query_line_section = query_line_section.join(alias_start_point, LineSection.start_object_id == alias_start_point.id)
             query_line_section = query_line_section.join(alias_end_point, LineSection.end_object_id == alias_end_point.id)
-            query_line_section = query_line_section.join(alias_route, LineSection.routes)
-            query_line_section = query_line_section.join(alias_via, LineSection.via)
+            query_line_section = query_line_section.outerjoin(alias_route, LineSection.routes)
+            query_line_section = query_line_section.outerjoin(alias_via, LineSection.via)
+        else:
+            filter_with_line_section = False
 
         if pt_object_type:
             query = query.filter(pt_object_alias.type == pt_object_type)
-            type_filters = []
-            type_filters.append(alias_line.type == pt_object_type)
-            type_filters.append(alias_start_point.type == pt_object_type)
-            type_filters.append(alias_end_point.type == pt_object_type)
-            query_line_section = query_line_section.filter(or_(*type_filters))
+            if pt_object_type == 'route':
+                query_line_section = query_line_section.filter(alias_route.type == pt_object_type)
+            elif pt_object_type not in ['line_section', 'line', 'stop_area']:
+                filter_with_line_section = False
 
         if uris:
+            query = query.filter(pt_object_alias.uri.in_(uris))
             uri_filters = []
             uri_filters.append(alias_line.uri.in_(uris))
             uri_filters.append(alias_start_point.uri.in_(uris))
@@ -738,11 +741,10 @@ class Impact(TimestampMixin, db.Model):
             uri_filters.append(alias_route.uri.in_(uris))
             uri_filters.append(alias_via.uri.in_(uris))
             query_line_section = query_line_section.filter(or_(*uri_filters))
-            query = query.filter(pt_object_alias.uri.in_(uris))
 
-        start_filter = "application_periods_1.start_date <= '{end_date}'".format(end_date=end_date)
-        end_filter = "application_periods_1.end_date >= '{start_date}'".format(start_date=start_date)
-        query = query.union_all(query_line_section).filter(and_(start_filter, end_filter)).order_by("application_periods_1.start_date")
+        if filter_with_line_section:
+            query = query.union_all(query_line_section)
+        query = query.order_by("application_periods_1.start_date")
         return query.all()
 
 
@@ -805,7 +807,6 @@ class PTobject(TimestampMixin, db.Model):
     def get_pt_object_by_uri(cls, uri):
         return cls.query.filter_by(uri=uri).first()
 
-
 class ApplicationPeriods(TimestampMixin, db.Model):
     """
     represents the application periods of an impact
@@ -862,7 +863,7 @@ class Channel(TimestampMixin, db.Model):
 
     @classmethod
     def all(cls, client_id):
-        return cls.query.filter_by(client_id=client_id, is_visible=True).order_by(cls.name). all()
+        return cls.query.filter_by(client_id=client_id, is_visible=True).order_by(cls.name).all()
 
     @classmethod
     def get(cls, id, client_id):
@@ -948,7 +949,6 @@ class LineSection(TimestampMixin, db.Model):
     @classmethod
     def get_by_ids(cls, ids):
         return cls.query.filter(cls.object_id.in_(ids)).all()
-
 
 class Pattern(TimestampMixin, db.Model):
     """

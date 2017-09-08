@@ -703,7 +703,12 @@ class ImpactsByObject(flask_restful.Resource):
         if not pt_object_type and not uris:
                 return marshal({'error': {'message': "object type or uri object invalid"}},
                                error_fields), 400
-        impacts = models.Impact.all_with_filter(start_date, end_date, pt_object_type, uris, contributor.id)
+        impacts = models.Impact.all_with_filter(
+            start_date,
+            end_date,
+            pt_object_type,
+            uris,
+            contributor.id)
         result = utils.group_impacts_by_pt_object(impacts, pt_object_type, uris, self.navitia.get_pt_object)
         return marshal({'objects': result}, impacts_by_object_fields)
 
