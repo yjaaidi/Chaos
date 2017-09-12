@@ -48,8 +48,7 @@ consumes:
 ################################################################################
 tags:
   - name: Severity
-  - name: Disruption
-  - name: Impact
+  - name: Category
 
 paths:
   /severities:
@@ -76,21 +75,35 @@ paths:
                   $ref: "#/definitions/severity"
     post:
       description: Creates a severity
+      consumes:
+        - application/json
       parameters:
       - $ref: "#/parameters/header_authorization"
       - $ref: "#/parameters/header_coverage"
       - $ref: "#/parameters/header_customer_id"
       - $ref: "#/parameters/header_contributors"
+      - in: body
+        name: body
+        description: Severity that needs to be stored
+        schema:
+          $ref: "#/definitions/severity_creation"
       tags:
         - Severity
       responses:
-        200:
-          description: Severity entity
+        201:
+          description: Created severity
           schema:
             type: object
             properties:
               severity:
                 $ref: "#/definitions/severity"
+        400:
+          description: Bad Request
+          schema:
+            type: object
+            properties:
+              severity:
+                $ref: "#/definitions/severity_error_required_property"
   /severities/{id}:
     get:
       description: Retrieve the severity identified by ID
@@ -110,7 +123,75 @@ paths:
             properties:
               severity:
                 $ref: "#/definitions/severity"
+    put:
+      description: Update a severity
+      parameters:
+      - $ref: "#/parameters/header_authorization"
+      - $ref: "#/parameters/header_coverage"
+      - $ref: "#/parameters/header_customer_id"
+      - $ref: "#/parameters/header_contributors"
+      - $ref: "#/parameters/entity_id"
+      tags:
+        - Severity
+      responses:
+        200:
+          description: Severity entity
+          schema:
+            type: object
+            properties:
+              severity:
+                $ref: "#/definitions/severity"
+        400:
+          description: Bad Request
+          schema:
+            type: object
+            properties:
+              severity:
+                $ref: "#/definitions/severity_error_required_property"
+    delete:
+      description: remove a severity
+      parameters:
+      - $ref: "#/parameters/header_authorization"
+      - $ref: "#/parameters/header_coverage"
+      - $ref: "#/parameters/header_customer_id"
+      - $ref: "#/parameters/header_contributors"
+      - $ref: "#/parameters/entity_id"
+      tags:
+        - Severity
+      responses:
+        204:
+          description: Severity has been removed
+        400:
+          description: BAD REQUEST
+          schema:
+            type: object
+            properties:
+              error:
+                $ref: "#/definitions/bad_id"
 
+  /categories:
+    get:
+      description: Retrieve the list of all categories
+      parameters:
+      - $ref: "#/parameters/header_authorization"
+      - $ref: "#/parameters/header_coverage"
+      - $ref: "#/parameters/header_customer_id"
+      - $ref: "#/parameters/header_contributors"
+      tags:
+        - Category
+      responses:
+        200:
+          description: List of categories
+          schema:
+            type: object
+            properties:
+              meta:
+                type: object
+              severities:
+              categories:
+                type: array
+                items:
+                  $ref: "#/definitions/category"
 
 
 ################################################################################
@@ -152,6 +233,16 @@ parameters:
 #                                 Definitions                                  #
 ################################################################################
 definitions:
+  bad_id:
+    type: "object"
+    properties:
+      message:
+        type: "string"
+  href:
+    type: "object"
+    properties:
+      href:
+        type: "string"
   wording:
     type: "object"
     properties:
@@ -165,6 +256,9 @@ definitions:
       id:
         type: "string"
         format: "uuid"
+      self:
+        type: "object"
+        $ref: "#/definitions/href"
       color:
         type: "string"
       created_at:
@@ -183,3 +277,41 @@ definitions:
         type: "array"
         items:
           $ref: "#/definitions/wording"
+  severity_creation:
+    type: "object"
+    properties:
+      color:
+        type: "string"
+      effect:
+        type: "string"
+      priority:
+        type: "integer"
+      wordings:
+        type: "array"
+        items:
+          $ref: "#/definitions/wording"
+  severity_error_required_property:
+    type: "object"
+    properties:
+      error:
+        type: "object"
+        properties:
+          message :
+            type: "string"
+  category:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        format: "uuid"
+      self:
+        type: "object"
+        $ref: "#/definitions/href"
+      name:
+        type: "string"
+      created_at:
+        type: "string"
+        format: "date-time"
+      updated_at:
+        type: "string"
+        format: "date-time"
