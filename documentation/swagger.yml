@@ -49,6 +49,7 @@ consumes:
 tags:
   - name: Severity
   - name: Category
+  - name: Channel
 
 paths:
   /severities:
@@ -123,6 +124,13 @@ paths:
             properties:
               severity:
                 $ref: "#/definitions/severity"
+        400:
+          description: Wrong ID
+          schema:
+            type: object
+            properties:
+              error:
+                $ref: "#/definitions/bad_id"
     put:
       description: Update a severity
       parameters:
@@ -245,6 +253,13 @@ paths:
             properties:
               severity:
                 $ref: "#/definitions/category"
+        400:
+          description: Wrong ID
+          schema:
+            type: object
+            properties:
+              error:
+                $ref: "#/definitions/bad_id"
     put:
       description: Update a category
       parameters:
@@ -289,7 +304,136 @@ paths:
         204:
           description: Category has been removed
         400:
-          description: BAD REQUEST
+          description: Wrong ID
+          schema:
+            type: object
+            properties:
+              error:
+                $ref: "#/definitions/bad_id"
+  /channels:
+    get:
+      description: Retrieves all the channels
+      parameters:
+      - $ref: "#/parameters/header_authorization"
+      - $ref: "#/parameters/header_coverage"
+      - $ref: "#/parameters/header_customer_id"
+      - $ref: "#/parameters/header_contributors"
+      tags:
+        - Channel
+      responses:
+        200:
+          description: List of channels
+          schema:
+            type: object
+            properties:
+              meta:
+                type: object
+              channels:
+                type: array
+                items:
+                  $ref: "#/definitions/channel"
+    post:
+      description: Creates a channel
+      consumes:
+        - application/json
+      parameters:
+      - $ref: "#/parameters/header_authorization"
+      - $ref: "#/parameters/header_coverage"
+      - $ref: "#/parameters/header_customer_id"
+      - $ref: "#/parameters/header_contributors"
+      - in: body
+        name: body
+        description: Channel that needs to be stored
+        schema:
+          $ref: "#/definitions/channel_creation"
+      tags:
+        - Channel
+      responses:
+        201:
+          description: Created channel
+          schema:
+            type: object
+            properties:
+              channel:
+                $ref: "#/definitions/channel"
+        400:
+          description: Bad Request
+          schema:
+            type: object
+            properties:
+              channel:
+                $ref: "#/definitions/channel_error_required_property"
+  /channels/{id}:
+    get:
+      description: Retrieve the channel identified by ID
+      parameters:
+      - $ref: "#/parameters/header_authorization"
+      - $ref: "#/parameters/header_coverage"
+      - $ref: "#/parameters/header_customer_id"
+      - $ref: "#/parameters/header_contributors"
+      - $ref: "#/parameters/entity_id"
+      tags:
+        - Channel
+      responses:
+        200:
+          description: Channel entity
+          schema:
+            type: object
+            properties:
+              channel:
+                $ref: "#/definitions/channel"
+        400:
+          description: ID is wrong
+          schema:
+            type: object
+            properties:
+              channel:
+                $ref: "#/definitions/bad_id"
+    put:
+      description: Update a channel
+      parameters:
+      - $ref: "#/parameters/header_authorization"
+      - $ref: "#/parameters/header_coverage"
+      - $ref: "#/parameters/header_customer_id"
+      - $ref: "#/parameters/header_contributors"
+      - $ref: "#/parameters/entity_id"
+      - in: body
+        name: body
+        description: Category that needs to be stored
+        schema:
+          $ref: "#/definitions/channel_creation"
+      tags:
+        - Channel
+      responses:
+        200:
+          description: Channel entity
+          schema:
+            type: object
+            properties:
+              channel:
+                $ref: "#/definitions/channel"
+        400:
+          description: Bad Request
+          schema:
+            type: object
+            properties:
+              channel:
+                $ref: "#/definitions/channel_error_required_property"
+    delete:
+      description: remove a channel
+      parameters:
+      - $ref: "#/parameters/header_authorization"
+      - $ref: "#/parameters/header_coverage"
+      - $ref: "#/parameters/header_customer_id"
+      - $ref: "#/parameters/header_contributors"
+      - $ref: "#/parameters/entity_id"
+      tags:
+        - Channel
+      responses:
+        204:
+          description: Channel has been removed
+        400:
+          description: Wrong ID
           schema:
             type: object
             properties:
@@ -430,3 +574,49 @@ definitions:
     properties:
       name:
         type: "string"
+  channel:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        format: "uuid"
+      self:
+        type: "object"
+        $ref: "#/definitions/href"
+      name:
+        type: "string"
+      content_type:
+        type: "string"
+      max_size:
+        type: "integer"
+      created_at:
+        type: "string"
+        format: "date-time"
+      updated_at:
+        type: "string"
+        format: "date-time"
+      types:
+        type: "array"
+        items:
+          type: "string"
+  channel_creation:
+    type: "object"
+    properties:
+      color:
+        type: "string"
+      effect:
+        type: "string"
+      priority:
+        type: "integer"
+      wordings:
+        type: "array"
+        items:
+          type: "string"
+  channel_error_required_property:
+    type: "object"
+    properties:
+      error:
+        type: "object"
+        properties:
+          message :
+            type: "string"
