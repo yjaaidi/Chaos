@@ -50,7 +50,7 @@ tags:
   - name: Severity
   - name: Category
   - name: Channel
-
+  - name: Channel type
 paths:
   /severities:
     get:
@@ -439,6 +439,26 @@ paths:
             properties:
               error:
                 $ref: "#/definitions/bad_id"
+  /channel_types:
+    get:
+      description: Retrieve the list of channel types
+      parameters:
+      - $ref: "#/parameters/header_authorization"
+      - $ref: "#/parameters/header_coverage"
+      - $ref: "#/parameters/header_customer_id"
+      - $ref: "#/parameters/header_contributors"
+      tags:
+        - Channel type
+      responses:
+        200:
+          description: List of channel types
+          schema:
+            type: object
+            properties:
+              channel_types:
+                type: array
+                items:
+                  type: "string"
 
 ################################################################################
 #                                 Parameters                                  #
