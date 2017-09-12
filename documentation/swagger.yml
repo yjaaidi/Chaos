@@ -131,6 +131,11 @@ paths:
       - $ref: "#/parameters/header_customer_id"
       - $ref: "#/parameters/header_contributors"
       - $ref: "#/parameters/entity_id"
+      - in: body
+        name: body
+        description: Category that needs to be stored
+        schema:
+          $ref: "#/definitions/severity_creation"
       tags:
         - Severity
       responses:
@@ -168,7 +173,6 @@ paths:
             properties:
               error:
                 $ref: "#/definitions/bad_id"
-
   /categories:
     get:
       description: Retrieve the list of all categories
@@ -187,12 +191,110 @@ paths:
             properties:
               meta:
                 type: object
-              severities:
               categories:
                 type: array
                 items:
                   $ref: "#/definitions/category"
-
+    post:
+      description: Creates a category
+      consumes:
+        - application/json
+      parameters:
+      - $ref: "#/parameters/header_authorization"
+      - $ref: "#/parameters/header_coverage"
+      - $ref: "#/parameters/header_customer_id"
+      - $ref: "#/parameters/header_contributors"
+      - in: body
+        name: body
+        description: Category that needs to be stored
+        schema:
+          $ref: "#/definitions/category_creation"
+      tags:
+        - Category
+      responses:
+        201:
+          description: Created category
+          schema:
+            type: object
+            properties:
+              severity:
+                $ref: "#/definitions/category"
+        400:
+          description: Bad Request
+          schema:
+            type: object
+            properties:
+              severity:
+                $ref: "#/definitions/category_name_is_required_property"
+  /categories/{id}:
+    get:
+      description: Retrieve the category identified by ID
+      parameters:
+      - $ref: "#/parameters/header_authorization"
+      - $ref: "#/parameters/header_coverage"
+      - $ref: "#/parameters/header_customer_id"
+      - $ref: "#/parameters/header_contributors"
+      - $ref: "#/parameters/entity_id"
+      tags:
+        - Category
+      responses:
+        200:
+          description: Category entity
+          schema:
+            type: object
+            properties:
+              severity:
+                $ref: "#/definitions/category"
+    put:
+      description: Update a category
+      parameters:
+      - $ref: "#/parameters/header_authorization"
+      - $ref: "#/parameters/header_coverage"
+      - $ref: "#/parameters/header_customer_id"
+      - $ref: "#/parameters/header_contributors"
+      - $ref: "#/parameters/entity_id"
+      - in: body
+        name: body
+        description: Category that needs to be stored
+        schema:
+          $ref: "#/definitions/category_creation"
+      tags:
+        - Category
+      responses:
+        200:
+          description: Category entity
+          schema:
+            type: object
+            properties:
+              severity:
+                $ref: "#/definitions/category"
+        400:
+          description: Bad Request
+          schema:
+            type: object
+            properties:
+              severity:
+                $ref: "#/definitions/category_name_is_required_property"
+    delete:
+      description: remove a severity
+      parameters:
+      - $ref: "#/parameters/header_authorization"
+      - $ref: "#/parameters/header_coverage"
+      - $ref: "#/parameters/header_customer_id"
+      - $ref: "#/parameters/header_contributors"
+      - $ref: "#/parameters/entity_id"
+      tags:
+        - Category
+      responses:
+        204:
+          description: Category has been removed
+        400:
+          description: BAD REQUEST
+          schema:
+            type: object
+            properties:
+              error:
+                $ref: "#/definitions/bad_id"
 
 ################################################################################
 #                                 Parameters                                  #
@@ -315,3 +417,16 @@ definitions:
       updated_at:
         type: "string"
         format: "date-time"
+  category_name_is_required_property:
+    type: "object"
+    properties:
+      error:
+        type: "object"
+        properties:
+          message :
+            type: "string"
+  category_creation:
+    type: "object"
+    properties:
+      name:
+        type: "string"
