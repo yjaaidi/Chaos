@@ -104,7 +104,7 @@ paths:
             type: object
             properties:
               severity:
-                $ref: "#/definitions/severity_error_required_property"
+                $ref: "#/definitions/error_occured"
   /severities/{id}:
     get:
       description: Retrieve the severity identified by ID
@@ -160,7 +160,7 @@ paths:
             type: object
             properties:
               severity:
-                $ref: "#/definitions/severity_error_required_property"
+                $ref: "#/definitions/error_occured"
     delete:
       description: remove a severity
       parameters:
@@ -233,7 +233,7 @@ paths:
             type: object
             properties:
               severity:
-                $ref: "#/definitions/category_name_is_required_property"
+                $ref: "#/definitions/error_occured"
   /categories/{id}:
     get:
       description: Retrieve the category identified by ID
@@ -289,7 +289,7 @@ paths:
             type: object
             properties:
               severity:
-                $ref: "#/definitions/category_name_is_required_property"
+                $ref: "#/definitions/error_occured"
     delete:
       description: remove a severity
       parameters:
@@ -362,7 +362,7 @@ paths:
             type: object
             properties:
               channel:
-                $ref: "#/definitions/channel_error_required_property"
+                $ref: "#/definitions/error_occured"
   /channels/{id}:
     get:
       description: Retrieve the channel identified by ID
@@ -418,7 +418,7 @@ paths:
             type: object
             properties:
               channel:
-                $ref: "#/definitions/channel_error_required_property"
+                $ref: "#/definitions/error_occured"
     delete:
       description: remove a channel
       parameters:
@@ -459,6 +459,135 @@ paths:
                 type: array
                 items:
                   type: "string"
+  /properties:
+    get:
+      description: Retrieve the list of all properties
+      parameters:
+      - $ref: "#/parameters/header_authorization"
+      - $ref: "#/parameters/header_coverage"
+      - $ref: "#/parameters/header_customer_id"
+      - $ref: "#/parameters/header_contributors"
+      tags:
+        - Property
+      responses:
+        200:
+          description: List of properties
+          schema:
+            type: object
+            properties:
+              meta:
+                type: object
+              properties:
+                type: array
+                items:
+                  $ref: "#/definitions/property"
+    post:
+      description: Creates a property
+      consumes:
+        - application/json
+      parameters:
+      - $ref: "#/parameters/header_authorization"
+      - $ref: "#/parameters/header_coverage"
+      - $ref: "#/parameters/header_customer_id"
+      - $ref: "#/parameters/header_contributors"
+      - in: body
+        name: body
+        description: Property that needs to be stored
+        schema:
+          $ref: "#/definitions/property_creation"
+      tags:
+        - Property
+      responses:
+        201:
+          description: Created
+          schema:
+            type: object
+            properties:
+              property:
+                $ref: "#/definitions/property"
+        400:
+          description: Bad Request
+          schema:
+            type: object
+            properties:
+              property:
+                $ref: "#/definitions/error_occured"
+  /properties/{id}:
+    get:
+      description: Retrieve the property identified by ID
+      parameters:
+      - $ref: "#/parameters/header_authorization"
+      - $ref: "#/parameters/header_coverage"
+      - $ref: "#/parameters/header_customer_id"
+      - $ref: "#/parameters/header_contributors"
+      - $ref: "#/parameters/entity_id"
+      tags:
+        - Property
+      responses:
+        200:
+          description: Property entity
+          schema:
+            type: object
+            properties:
+              property:
+                $ref: "#/definitions/property"
+        404:
+          description: Wrong ID
+          schema:
+            type: object
+            properties:
+              error:
+                $ref: "#/definitions/error_occured"
+    put:
+      description: Update a property
+      parameters:
+      - $ref: "#/parameters/header_authorization"
+      - $ref: "#/parameters/header_coverage"
+      - $ref: "#/parameters/header_customer_id"
+      - $ref: "#/parameters/header_contributors"
+      - $ref: "#/parameters/entity_id"
+      - in: body
+        name: body
+        description: Property that needs to be stored
+        schema:
+          $ref: "#/definitions/property_creation"
+      tags:
+        - Property
+      responses:
+        200:
+          description: Property entity
+          schema:
+            type: object
+            properties:
+              property:
+                $ref: "#/definitions/property"
+        400:
+          description: Bad Request
+          schema:
+            type: object
+            properties:
+              property:
+                $ref: "#/definitions/error_occured"
+    delete:
+      description: remove a property
+      parameters:
+      - $ref: "#/parameters/header_authorization"
+      - $ref: "#/parameters/header_coverage"
+      - $ref: "#/parameters/header_customer_id"
+      - $ref: "#/parameters/header_contributors"
+      - $ref: "#/parameters/entity_id"
+      tags:
+        - Property
+      responses:
+        204:
+          description: Property has been removed
+        404:
+          description: Wrong ID
+          schema:
+            type: object
+            properties:
+              error:
+                $ref: "#/definitions/error_occured"
 
 ################################################################################
 #                                 Parameters                                  #
@@ -504,6 +633,14 @@ definitions:
     properties:
       message:
         type: "string"
+  error_occured:
+    type: "object"
+    properties:
+      error:
+        type: "object"
+        properties:
+          message :
+            type: "string"
   href:
     type: "object"
     properties:
@@ -556,14 +693,6 @@ definitions:
         type: "array"
         items:
           $ref: "#/definitions/wording"
-  severity_error_required_property:
-    type: "object"
-    properties:
-      error:
-        type: "object"
-        properties:
-          message :
-            type: "string"
   category:
     type: "object"
     properties:
@@ -581,14 +710,6 @@ definitions:
       updated_at:
         type: "string"
         format: "date-time"
-  category_name_is_required_property:
-    type: "object"
-    properties:
-      error:
-        type: "object"
-        properties:
-          message :
-            type: "string"
   category_creation:
     type: "object"
     properties:
@@ -632,11 +753,29 @@ definitions:
         type: "array"
         items:
           type: "string"
-  channel_error_required_property:
+  property:
     type: "object"
     properties:
-      error:
+      id:
+        type: "string"
+        format: "uuid"
+      self:
         type: "object"
-        properties:
-          message :
-            type: "string"
+        $ref: "#/definitions/href"
+      key:
+        type: "string"
+      type:
+        type: "string"
+      created_at:
+        type: "string"
+        format: "date-time"
+      updated_at:
+        type: "string"
+        format: "date-time"
+  property_creation:
+    type: "object"
+    properties:
+      key:
+        type: "string"
+      type:
+        type: "string"
