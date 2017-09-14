@@ -54,6 +54,7 @@ tags:
   - name: Property
   - name: Severity
   - name: Status
+  - name: Tag
 paths:
   /categories:
     get:
@@ -777,6 +778,135 @@ paths:
                     type: string
                   virtual_host:
                     type: string
+  /tags:
+    get:
+      description: Retrieve the list of all tags
+      parameters:
+      - $ref: "#/parameters/header_authorization"
+      - $ref: "#/parameters/header_coverage"
+      - $ref: "#/parameters/header_customer_id"
+      - $ref: "#/parameters/header_contributors"
+      tags:
+        - Tag
+      responses:
+        200:
+          description: List of tags
+          schema:
+            type: object
+            properties:
+              meta:
+                type: object
+              tags:
+                type: array
+                items:
+                  $ref: "#/definitions/tag"
+    post:
+      description: Creates a tag
+      consumes:
+        - application/json
+      parameters:
+      - $ref: "#/parameters/header_authorization"
+      - $ref: "#/parameters/header_coverage"
+      - $ref: "#/parameters/header_customer_id"
+      - $ref: "#/parameters/header_contributors"
+      - in: body
+        name: body
+        description: Tag that needs to be stored
+        schema:
+          $ref: "#/definitions/tag_creation"
+      tags:
+        - Tag
+      responses:
+        201:
+          description: Created tag
+          schema:
+            type: object
+            properties:
+              tag:
+                $ref: "#/definitions/tag"
+        400:
+          description: Bad Request
+          schema:
+            type: object
+            properties:
+              tag:
+                $ref: "#/definitions/error_occured"
+  /tags/{id}:
+    get:
+      description: Retrieve the tag identified by ID
+      parameters:
+      - $ref: "#/parameters/header_authorization"
+      - $ref: "#/parameters/header_coverage"
+      - $ref: "#/parameters/header_customer_id"
+      - $ref: "#/parameters/header_contributors"
+      - $ref: "#/parameters/entity_id"
+      tags:
+        - Tag
+      responses:
+        201:
+          description: Tag could be find
+          schema:
+            type: object
+            properties:
+              tag:
+                $ref: "#/definitions/tag"
+        400:
+          description: Wrong ID
+          schema:
+            type: object
+            properties:
+              error:
+                $ref: "#/definitions/bad_id"
+    put:
+      description: Update a tag
+      parameters:
+      - $ref: "#/parameters/header_authorization"
+      - $ref: "#/parameters/header_coverage"
+      - $ref: "#/parameters/header_customer_id"
+      - $ref: "#/parameters/header_contributors"
+      - $ref: "#/parameters/entity_id"
+      - in: body
+        name: body
+        description: Category that needs to be stored
+        schema:
+          $ref: "#/definitions/tag_creation"
+      tags:
+        - Tag
+      responses:
+        200:
+          description: Tag entity
+          schema:
+            type: object
+            properties:
+              tag:
+                $ref: "#/definitions/tag"
+        400:
+          description: Bad Request
+          schema:
+            type: object
+            properties:
+              tag:
+                $ref: "#/definitions/error_occured"
+    delete:
+      description: remove a tag
+      parameters:
+      - $ref: "#/parameters/header_authorization"
+      - $ref: "#/parameters/header_coverage"
+      - $ref: "#/parameters/header_customer_id"
+      - $ref: "#/parameters/header_contributors"
+      - $ref: "#/parameters/entity_id"
+      tags:
+        - Tag
+      responses:
+        204:
+          description: Tag has been removed
+        400:
+          description: BAD REQUEST
+          schema:
+            type: object
+            properties:
+              error:
+                $ref: "#/definitions/bad_id"
 
 ################################################################################
 #                                 Parameters                                  #
@@ -1004,4 +1134,26 @@ definitions:
       key:
         type: "string"
       type:
+        type: "string"
+  tag:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        format: "uuid"
+      self:
+        type: "object"
+        $ref: "#/definitions/href"
+      name:
+        type: "string"
+      created_at:
+        type: "string"
+        format: "date-time"
+      updated_at:
+        type: "string"
+        format: "date-time"
+  tag_creation:
+    type: "object"
+    properties:
+      name:
         type: "string"
