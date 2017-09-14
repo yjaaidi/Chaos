@@ -47,140 +47,14 @@ consumes:
 #                                   Tags                                       #
 ################################################################################
 tags:
-  - name: Severity
   - name: Category
   - name: Channel
   - name: Channel type
+  - name: Cause
+  - name: Property
+  - name: Severity
+  - name: Status
 paths:
-  /severities:
-    get:
-      description: Retrieves all the severities ordered by priority
-      parameters:
-      - $ref: "#/parameters/header_authorization"
-      - $ref: "#/parameters/header_coverage"
-      - $ref: "#/parameters/header_customer_id"
-      - $ref: "#/parameters/header_contributors"
-      tags:
-        - Severity
-      responses:
-        200:
-          description: List of severities
-          schema:
-            type: object
-            properties:
-              meta:
-                type: object
-              severities:
-                type: array
-                items:
-                  $ref: "#/definitions/severity"
-    post:
-      description: Creates a severity
-      consumes:
-        - application/json
-      parameters:
-      - $ref: "#/parameters/header_authorization"
-      - $ref: "#/parameters/header_coverage"
-      - $ref: "#/parameters/header_customer_id"
-      - $ref: "#/parameters/header_contributors"
-      - in: body
-        name: body
-        description: Severity that needs to be stored
-        schema:
-          $ref: "#/definitions/severity_creation"
-      tags:
-        - Severity
-      responses:
-        201:
-          description: Created severity
-          schema:
-            type: object
-            properties:
-              severity:
-                $ref: "#/definitions/severity"
-        400:
-          description: Bad Request
-          schema:
-            type: object
-            properties:
-              severity:
-                $ref: "#/definitions/error_occured"
-  /severities/{id}:
-    get:
-      description: Retrieve the severity identified by ID
-      parameters:
-      - $ref: "#/parameters/header_authorization"
-      - $ref: "#/parameters/header_coverage"
-      - $ref: "#/parameters/header_customer_id"
-      - $ref: "#/parameters/header_contributors"
-      - $ref: "#/parameters/entity_id"
-      tags:
-        - Severity
-      responses:
-        200:
-          description: Severity entity
-          schema:
-            type: object
-            properties:
-              severity:
-                $ref: "#/definitions/severity"
-        400:
-          description: Wrong ID
-          schema:
-            type: object
-            properties:
-              error:
-                $ref: "#/definitions/bad_id"
-    put:
-      description: Update a severity
-      parameters:
-      - $ref: "#/parameters/header_authorization"
-      - $ref: "#/parameters/header_coverage"
-      - $ref: "#/parameters/header_customer_id"
-      - $ref: "#/parameters/header_contributors"
-      - $ref: "#/parameters/entity_id"
-      - in: body
-        name: body
-        description: Category that needs to be stored
-        schema:
-          $ref: "#/definitions/severity_creation"
-      tags:
-        - Severity
-      responses:
-        200:
-          description: Severity entity
-          schema:
-            type: object
-            properties:
-              severity:
-                $ref: "#/definitions/severity"
-        400:
-          description: Bad Request
-          schema:
-            type: object
-            properties:
-              severity:
-                $ref: "#/definitions/error_occured"
-    delete:
-      description: remove a severity
-      parameters:
-      - $ref: "#/parameters/header_authorization"
-      - $ref: "#/parameters/header_coverage"
-      - $ref: "#/parameters/header_customer_id"
-      - $ref: "#/parameters/header_contributors"
-      - $ref: "#/parameters/entity_id"
-      tags:
-        - Severity
-      responses:
-        204:
-          description: Severity has been removed
-        400:
-          description: BAD REQUEST
-          schema:
-            type: object
-            properties:
-              error:
-                $ref: "#/definitions/bad_id"
   /categories:
     get:
       description: Retrieve the list of all categories
@@ -303,6 +177,135 @@ paths:
       responses:
         204:
           description: Category has been removed
+        400:
+          description: Wrong ID
+          schema:
+            type: object
+            properties:
+              error:
+                $ref: "#/definitions/bad_id"
+  /causes:
+    get:
+      description: Retrieve the list of all causes
+      parameters:
+      - $ref: "#/parameters/header_authorization"
+      - $ref: "#/parameters/header_coverage"
+      - $ref: "#/parameters/header_customer_id"
+      - $ref: "#/parameters/header_contributors"
+      tags:
+        - Cause
+      responses:
+        200:
+          description: List of causes
+          schema:
+            type: object
+            properties:
+              meta:
+                type: object
+              causes:
+                type: array
+                items:
+                  $ref: "#/definitions/cause"
+    post:
+      description: Creates a cause
+      consumes:
+        - application/json
+      parameters:
+      - $ref: "#/parameters/header_authorization"
+      - $ref: "#/parameters/header_coverage"
+      - $ref: "#/parameters/header_customer_id"
+      - $ref: "#/parameters/header_contributors"
+      - in: body
+        name: body
+        description: Cause that needs to be stored
+        schema:
+          $ref: "#/definitions/cause_creation"
+      tags:
+        - Cause
+      responses:
+        201:
+          description: Created cause
+          schema:
+            type: object
+            properties:
+              severity:
+                $ref: "#/definitions/cause"
+        400:
+          description: Bad Request
+          schema:
+            type: object
+            properties:
+              severity:
+                $ref: "#/definitions/error_occured"
+  /causes/{id}:
+    get:
+      description: Retrieve the cause identified by ID
+      parameters:
+      - $ref: "#/parameters/header_authorization"
+      - $ref: "#/parameters/header_coverage"
+      - $ref: "#/parameters/header_customer_id"
+      - $ref: "#/parameters/header_contributors"
+      - $ref: "#/parameters/entity_id"
+      tags:
+        - Cause
+      responses:
+        200:
+          description: Cause entity
+          schema:
+            type: object
+            properties:
+              severity:
+                $ref: "#/definitions/cause"
+        400:
+          description: Wrong ID
+          schema:
+            type: object
+            properties:
+              error:
+                $ref: "#/definitions/bad_id"
+    put:
+      description: Update a cause
+      parameters:
+      - $ref: "#/parameters/header_authorization"
+      - $ref: "#/parameters/header_coverage"
+      - $ref: "#/parameters/header_customer_id"
+      - $ref: "#/parameters/header_contributors"
+      - $ref: "#/parameters/entity_id"
+      - in: body
+        name: body
+        description: Cause that needs to be stored
+        schema:
+          $ref: "#/definitions/cause_creation"
+      tags:
+        - Cause
+      responses:
+        200:
+          description: Cause entity
+          schema:
+            type: object
+            properties:
+              severity:
+                $ref: "#/definitions/cause"
+        400:
+          description: Bad Request
+          schema:
+            type: object
+            properties:
+              severity:
+                $ref: "#/definitions/error_occured"
+    delete:
+      description: remove a severity
+      parameters:
+      - $ref: "#/parameters/header_authorization"
+      - $ref: "#/parameters/header_coverage"
+      - $ref: "#/parameters/header_customer_id"
+      - $ref: "#/parameters/header_contributors"
+      - $ref: "#/parameters/entity_id"
+      tags:
+        - Cause
+      responses:
+        204:
+          description: Cause has been removed
         400:
           description: Wrong ID
           schema:
@@ -588,6 +591,192 @@ paths:
             properties:
               error:
                 $ref: "#/definitions/error_occured"
+  /severities:
+    get:
+      description: Retrieves all the severities ordered by priority
+      parameters:
+      - $ref: "#/parameters/header_authorization"
+      - $ref: "#/parameters/header_coverage"
+      - $ref: "#/parameters/header_customer_id"
+      - $ref: "#/parameters/header_contributors"
+      tags:
+        - Severity
+      responses:
+        200:
+          description: List of severities
+          schema:
+            type: object
+            properties:
+              meta:
+                type: object
+              severities:
+                type: array
+                items:
+                  $ref: "#/definitions/severity"
+    post:
+      description: Creates a severity
+      consumes:
+        - application/json
+      parameters:
+      - $ref: "#/parameters/header_authorization"
+      - $ref: "#/parameters/header_coverage"
+      - $ref: "#/parameters/header_customer_id"
+      - $ref: "#/parameters/header_contributors"
+      - in: body
+        name: body
+        description: Severity that needs to be stored
+        schema:
+          $ref: "#/definitions/severity_creation"
+      tags:
+        - Severity
+      responses:
+        201:
+          description: Created severity
+          schema:
+            type: object
+            properties:
+              severity:
+                $ref: "#/definitions/severity"
+        400:
+          description: Bad Request
+          schema:
+            type: object
+            properties:
+              severity:
+                $ref: "#/definitions/error_occured"
+  /severities/{id}:
+    get:
+      description: Retrieve the severity identified by ID
+      parameters:
+      - $ref: "#/parameters/header_authorization"
+      - $ref: "#/parameters/header_coverage"
+      - $ref: "#/parameters/header_customer_id"
+      - $ref: "#/parameters/header_contributors"
+      - $ref: "#/parameters/entity_id"
+      tags:
+        - Severity
+      responses:
+        200:
+          description: Severity entity
+          schema:
+            type: object
+            properties:
+              severity:
+                $ref: "#/definitions/severity"
+        400:
+          description: Wrong ID
+          schema:
+            type: object
+            properties:
+              error:
+                $ref: "#/definitions/bad_id"
+    put:
+      description: Update a severity
+      parameters:
+      - $ref: "#/parameters/header_authorization"
+      - $ref: "#/parameters/header_coverage"
+      - $ref: "#/parameters/header_customer_id"
+      - $ref: "#/parameters/header_contributors"
+      - $ref: "#/parameters/entity_id"
+      - in: body
+        name: body
+        description: Category that needs to be stored
+        schema:
+          $ref: "#/definitions/severity_creation"
+      tags:
+        - Severity
+      responses:
+        200:
+          description: Severity entity
+          schema:
+            type: object
+            properties:
+              severity:
+                $ref: "#/definitions/severity"
+        400:
+          description: Bad Request
+          schema:
+            type: object
+            properties:
+              severity:
+                $ref: "#/definitions/error_occured"
+    delete:
+      description: remove a severity
+      parameters:
+      - $ref: "#/parameters/header_authorization"
+      - $ref: "#/parameters/header_coverage"
+      - $ref: "#/parameters/header_customer_id"
+      - $ref: "#/parameters/header_contributors"
+      - $ref: "#/parameters/entity_id"
+      tags:
+        - Severity
+      responses:
+        204:
+          description: Severity has been removed
+        400:
+          description: BAD REQUEST
+          schema:
+            type: object
+            properties:
+              error:
+                $ref: "#/definitions/bad_id"
+  /status:
+    get:
+      description: Renders state of application
+      tags:
+        - Status
+      responses:
+        200:
+          description: Renders information about configuration of different components
+          schema:
+            type: object
+            properties:
+              version:
+                type: string
+                description: version of application
+              db_pool_status:
+                type: string
+              db_version:
+                type: string
+                description: version of db migration
+              navitia_url:
+                type: string
+                description: URL of navitia Web Service
+              rabbitmq_info:
+                type: object
+                description: Information about configuration of RabbitMQ
+                properties:
+                  alternates:
+                    type: array
+                    description: Information about usage of RabbitMQ
+                  connect_timeout:
+                    type: integer
+                  heartbeat:
+                    type: integer
+                  hostname:
+                    type: string
+                  insist:
+                    type: boolean
+                  is_active:
+                    type: boolean
+                  is_connected:
+                    type: boolean
+                  login_method:
+                    type: string
+                  port:
+                    type: integer
+                  ssl:
+                    type: boolean
+                  transport:
+                    type: string
+                  transport_options:
+                    type: object
+                  uri_prefix:
+                    type: string
+                  userid:
+                    type: string
+                  virtual_host:
+                    type: string
 
 ################################################################################
 #                                 Parameters                                  #
@@ -715,6 +904,43 @@ definitions:
     properties:
       name:
         type: "string"
+  cause:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        format: "uuid"
+      wordings:
+        type: "array"
+        items:
+          $ref: "#/definitions/wording"
+      category:
+        type: "object"
+        $ref: "#/definitions/category"
+      self:
+        type: "object"
+        $ref: "#/definitions/href"
+      created_at:
+        type: "string"
+        format: "date-time"
+      updated_at:
+        type: "string"
+        format: "date-time"
+  cause_creation:
+    type: "object"
+    properties:
+      wording:
+        type: "string"
+      wordings:
+        type: "array"
+        items:
+          $ref: "#/definitions/wording"
+      category:
+        type: "object"
+        properties:
+          id:
+            type: "string"
+            format: "uuid"
   channel:
     type: "object"
     properties:
