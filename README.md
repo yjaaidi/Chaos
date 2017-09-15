@@ -108,8 +108,7 @@ docker-compose logs -f
 ``` 
 
 Chaos will be accessible on http://chaos_ws_1.docker if you are using the [docker-gen-hosts tool](https://github.com/vincentlepot/docker-gen-hosts), it will also be accessible on http://chaos-ws.local.canaltp.fr 
-
-In the same way , the database will be accessible at 'chaos_database_1.docker'.
+The database will be accessible at 'chaos_database_1.docker' and default RabbitMQ interface at 'http://chaos_rabbitmq_1.docker:15672'.
 
 ## Tests
 
