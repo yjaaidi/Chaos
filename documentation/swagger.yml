@@ -51,6 +51,7 @@ tags:
   - name: Channel
   - name: Channel type
   - name: Cause
+  - name: Disruption
   - name: Property
   - name: Severity
   - name: Status
@@ -932,6 +933,31 @@ paths:
                 type: array
                 items:
                   $ref: "#/definitions/traffic_report"
+  /disruptions:
+    get:
+      description: Return all visible disruptions
+      parameters:
+      - $ref: "#/parameters/header_authorization"
+      - $ref: "#/parameters/header_coverage"
+      - $ref: "#/parameters/header_customer_id"
+      - $ref: "#/parameters/header_contributors"
+      tags:
+        - Disruption
+      responses:
+        200:
+          description: List of disruption
+          schema:
+            type: object
+            properties:
+              disruptions:
+                type: array
+                items:
+                  $ref: "#/definitions/disruption"
+              meta:
+                type: object
+                properties:
+                  pagination:
+                    $ref: "#/definitions/pagination"
 
 ################################################################################
 #                                 Parameters                                  #
@@ -958,7 +984,7 @@ parameters:
   header_contributors:
     required: true
     type: string
-    description: Contributor code. A contributor is owner of a disruption
+    description: Contributor code
     name: X-Contributors
     in: header
   entity_id:
@@ -1391,3 +1417,116 @@ definitions:
         type: "array"
         items:
           $ref: "#/definitions/traffic_report_message"
+  disruption:
+    type: "object"
+    properties:
+      cause:
+        type: "object"
+        $ref: "#/definitions/cause"
+      contributor:
+        type: "string"
+        description: "Contributor code"
+      created_at:
+        type: "string"
+        format: "date-time"
+      id:
+        type: "string"
+        format: uuid
+        description: "Disruption ID"
+      impacts:
+        type: "object"
+        description: "Links to impacts of this disruption"
+        properties:
+          pagination:
+            type: "object"
+            properties:
+              start_page:
+                type: "integer"
+              items_per_page:
+                type: "integer"
+              items_on_page:
+                type: "integer"
+              total_results:
+                type: "integer"
+              prev:
+                type: "string"
+                $ref: "#/definitions/href"
+              next:
+                type: "string"
+                $ref: "#/definitions/href"
+              first:
+                type: "string"
+                description: "link to first impact of disruption"
+                $ref: "#/definitions/href"
+              last:
+                type: "string"
+                description: "link to last impact of disruption"
+                $ref: "#/definitions/href"
+      localization:
+        type: "object"
+        description: "List of stop areas"
+      note:
+        type: "string"
+        description: "Service note of disruption"
+      properties:
+        type: "string"
+        description: "Associated properties"
+      publication_period:
+        type: "object"
+        description: "Dates whithin disruption is active"
+        $ref: "#/definitions/appalication_period"
+      publication_status:
+        type: "string"
+        description: |
+          Status of publication.
+          past when publication end date is in past
+          ongoing when publication start date is in past and end date is in future
+          comming when publication start date is in future
+        enum:
+         - "past"
+         - "ongoing"
+         - "coming"
+      reference:
+        type: "string"
+        description: "Publication reference label"
+      self:
+        type: "object"
+        $ref: "#/definitions/href"
+      status:
+        type: "string"
+        enum:
+         - "archived"
+         - "published"
+         - "draft"
+      tags:
+        type: "array"
+        description: "List of associated tags"
+        items:
+          $ref: "#/definitions/tag"
+      updated_at:
+        type: "string"
+        format: "date-time"
+      version:
+        type: "integer"
+        description: "Number of how many time this disruption has been changed"
+  pagination:
+    type: "object"
+    properties:
+      start_page:
+        type: "integer"
+      items_per_page:
+        type: "integer"
+      total_results:
+        type: "integer"
+      prev:
+        type: "string"
+        $ref: "#/definitions/href"
+      next:
+        type: "string"
+        $ref: "#/definitions/href"
+      first:
+        type: "string"
+        $ref: "#/definitions/href"
+      last:
+        type: "string"
+        $ref: "#/definitions/href"
