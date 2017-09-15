@@ -109,6 +109,8 @@ docker-compose logs -f
 
 Chaos will be accessible on http://chaos_ws_1.docker if you are using the [docker-gen-hosts tool](https://github.com/vincentlepot/docker-gen-hosts), it will also be accessible on http://chaos-ws.local.canaltp.fr 
 
+In the same way , the database will be accessible at 'chaos_database_1.docker'.
+
 ## Tests
 
 The following commands for tests are also working in Docker environment, you just have to run before: 
