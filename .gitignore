@@ -4,3 +4,6 @@ chaos/chaos_pb2.py
 chaos/kirin_pb2.py
 chaos/gtfs_realtime_pb2.py
 
+# IDE / text editor
+.idea
+*~
