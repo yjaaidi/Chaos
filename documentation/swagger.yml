@@ -958,6 +958,130 @@ paths:
                 properties:
                   pagination:
                     $ref: "#/definitions/pagination"
+    post:
+      description: Create one valid disruption with impacts
+      parameters:
+      - $ref: "#/parameters/header_authorization"
+      - $ref: "#/parameters/header_coverage"
+      - $ref: "#/parameters/header_customer_id"
+      - $ref: "#/parameters/header_contributors"
+      - in: body
+        name: body
+        description: Category that needs to be stored
+        schema:
+          $ref: "#/definitions/disruption_creation"
+      tags:
+        - Disruption
+      responses:
+        201:
+          description: Created disruption
+          schema:
+            type: object
+            $ref: "#/definitions/disruption"
+        400:
+          description: Bad Request
+          schema:
+            type: object
+            properties:
+              tag:
+                $ref: "#/definitions/error_occured"
+        404:
+          description: Not found
+          schema:
+            type: object
+            properties:
+              tag:
+                $ref: "#/definitions/error_occured"
+        500:
+          description: "Server error"
+          schema:
+            type: object
+            properties:
+              tag:
+                $ref: "#/definitions/error_occured"
+        503:
+          description: "Error during transferring of disruption to Navitia"
+          schema:
+            type: object
+            properties:
+              tag:
+                $ref: "#/definitions/error_occured"
+  /disruptions/{id}:
+    get:
+      description: Retrieve the disruption identified by ID
+      parameters:
+      - $ref: "#/parameters/header_authorization"
+      - $ref: "#/parameters/header_coverage"
+      - $ref: "#/parameters/header_customer_id"
+      - $ref: "#/parameters/header_contributors"
+      - $ref: "#/parameters/entity_id"
+      tags:
+        - Disruption
+      responses:
+        201:
+          description: Disruption could be find
+          schema:
+            type: object
+            properties:
+              tag:
+                $ref: "#/definitions/disruption"
+        400:
+          description: "Disruption couldn't be found"
+          schema:
+            type: object
+            properties:
+              error:
+                $ref: "#/definitions/bad_id"
+    put:
+      description: Update the disruption identified by ID
+      parameters:
+      - $ref: "#/parameters/header_authorization"
+      - $ref: "#/parameters/header_coverage"
+      - $ref: "#/parameters/header_customer_id"
+      - $ref: "#/parameters/header_contributors"
+      - $ref: "#/parameters/entity_id"
+      - in: body
+        name: body
+        description: Category that needs to be stored
+        schema:
+          $ref: "#/definitions/disruption_creation"
+      tags:
+        - Disruption
+      responses:
+        201:
+          description: Disruption could be find
+          schema:
+            type: object
+            properties:
+              tag:
+                $ref: "#/definitions/disruption"
+        400:
+          description: "Disruption couldn't be found"
+          schema:
+            type: object
+            properties:
+              error:
+                $ref: "#/definitions/bad_id"
+    delete:
+      description: Remove a disruption
+      parameters:
+      - $ref: "#/parameters/header_authorization"
+      - $ref: "#/parameters/header_coverage"
+      - $ref: "#/parameters/header_customer_id"
+      - $ref: "#/parameters/header_contributors"
+      - $ref: "#/parameters/entity_id"
+      tags:
+        - Tag
+      responses:
+        204:
+          description: Disruption has been removed
+        400:
+          description: BAD REQUEST
+          schema:
+            type: object
+            properties:
+              error:
+                $ref: "#/definitions/bad_id"
 
 ################################################################################
 #                                 Parameters                                  #
@@ -1509,6 +1633,116 @@ definitions:
       version:
         type: "integer"
         description: "Number of how many time this disruption has been changed"
+  disruption_creation:
+    type: "object"
+    properties:
+      reference:
+        type: "string"
+        description: "Publication reference label"
+      note:
+        type: "string"
+        description: "Service note of disruption"
+      contributor:
+        type: "string"
+        description: "Contributor code"
+      status:
+        type: "string"
+        enum:
+         - "archived"
+         - "published"
+         - "draft"
+      cause:
+        type: "object"
+        properties:
+          id:
+            type: "string"
+            format: uuid
+            description: "Cause ID"
+      tags:
+        description: "List with Tag IDs"
+        type: array
+        items:
+          type: "string"
+          format: uuid
+      localization:
+        description: "List with IDs of stop areas"
+        type: array
+        items:
+          type: "string"
+      publication_period:
+        type: "object"
+        description: "Dates whithin disruption is active"
+        $ref: "#/definitions/appalication_period"
+      impacts:
+        type: "array"
+        description: "List of associated impacts"
+        items:
+          $ref: "#/definitions/disruption_impact"
+      properties:
+        description: "List with property IDs"
+        type: array
+        items:
+          type: "object"
+          properties:
+            property_id:
+              description: "Property ID"
+              type: "string"
+            value:
+              description: "Value of a property"
+              type: "string"
+  disruption_impact:
+    type: "object"
+    properties:
+      severity:
+        type: "object"
+        properties:
+          id:
+            description: "Severity ID"
+            type: "string"
+            format: "uuid"
+      application_periods:
+        type: "array"
+        description: "Array with dates of application periods"
+        items:
+          $ref: "#/definitions/appalication_period"
+      send_notifications:
+        type: "boolean"
+        description: "If notification on impact should be send"
+      notification_date:
+        description: "Date of notification"
+        type: "string"
+        format: "date-time"
+      messages:
+        type: "array"
+        description: "List with messages by channel"
+        items:
+          $ref: "#/definitions/disruption_impact_message"
+      objects:
+        type: "array"
+        description: "List with impacted PT objects"
+        items:
+          type: "object"
+          properties:
+            id:
+              description: "Impacted PT object ID in navitia"
+              type: "string"
+            type:
+              description: "Impacted PT object type in navitia"
+              type: "string"
+  disruption_impact_message:
+    type: "object"
+    properties:
+      text:
+        description: "Message for given channel"
+        type: "string"
+      channel:
+        description: "Channel for given message"
+        type: "object"
+        properties:
+          id:
+            description: "Channel ID"
+            type: "string"
+            format: "uuid"
   pagination:
     type: "object"
     properties:
