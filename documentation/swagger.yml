@@ -52,11 +52,16 @@ tags:
   - name: Channel type
   - name: Cause
   - name: Disruption
+  - name: Impact
   - name: Property
   - name: Severity
   - name: Status
   - name: Tag
   - name: Traffic Report
+
+################################################################################
+#                                   Paths                                      #
+################################################################################
 paths:
   /categories:
     get:
@@ -1082,6 +1087,116 @@ paths:
             properties:
               error:
                 $ref: "#/definitions/bad_id"
+  /disruptions/{id}/impacts:
+    get:
+      description: Return all impacts of a disruption
+      parameters:
+      - $ref: "#/parameters/header_authorization"
+      - $ref: "#/parameters/header_coverage"
+      - $ref: "#/parameters/header_customer_id"
+      - $ref: "#/parameters/header_contributors"
+      - $ref: "#/parameters/entity_id"
+      tags:
+        - Impact
+      responses:
+        200:
+          description: List of impacts for given disruption
+          schema:
+            type: object
+            properties:
+              impacts:
+                type: array
+                items:
+                  $ref: "#/definitions/impact"
+              meta:
+                type: object
+                properties:
+                  pagination:
+                    $ref: "#/definitions/pagination"
+    post:
+      description: Create a new impact on a disruption
+      parameters:
+      - $ref: "#/parameters/header_authorization"
+      - $ref: "#/parameters/header_coverage"
+      - $ref: "#/parameters/header_customer_id"
+      - $ref: "#/parameters/header_contributors"
+      - $ref: "#/parameters/entity_id"
+      - in: body
+        name: body
+        description: Impact that needs to be stored
+        schema:
+          $ref: "#/definitions/impact_creation"
+      tags:
+        - Impact
+      responses:
+        201:
+          description: "Created impact"
+          schema:
+            type: object
+            properties:
+              impact:
+                type: "object"
+                $ref: "#/definitions/impact"
+  /disruptions/{id}/impacts/{impact_id}:
+    get:
+      description: Get an impact by id
+      parameters:
+      - $ref: "#/parameters/header_authorization"
+      - $ref: "#/parameters/header_coverage"
+      - $ref: "#/parameters/header_customer_id"
+      - $ref: "#/parameters/header_contributors"
+      - $ref: "#/parameters/entity_id"
+      - $ref: "#/parameters/impact_id"
+      tags:
+        - Impact
+      responses:
+        200:
+          description: Impact identified by ID and disruption ID
+          schema:
+            type: object
+            properties:
+              impact:
+                type: "object"
+                $ref: "#/definitions/impact"
+    put:
+      description: Update an impact identified by ID and disruption ID
+      parameters:
+      - $ref: "#/parameters/header_authorization"
+      - $ref: "#/parameters/header_coverage"
+      - $ref: "#/parameters/header_customer_id"
+      - $ref: "#/parameters/header_contributors"
+      - $ref: "#/parameters/entity_id"
+      - $ref: "#/parameters/impact_id"
+      - in: body
+        name: body
+        description: "Impact data to be updated"
+        schema:
+          $ref: "#/definitions/impact_creation"
+      tags:
+        - Impact
+      responses:
+        200:
+          description: Impact identified by ID and disruption ID
+          schema:
+            type: object
+            properties:
+              impact:
+                type: "object"
+                $ref: "#/definitions/impact"
+    delete:
+      description: Remove an impact identified by ID and disruption ID
+      parameters:
+      - $ref: "#/parameters/header_authorization"
+      - $ref: "#/parameters/header_coverage"
+      - $ref: "#/parameters/header_customer_id"
+      - $ref: "#/parameters/header_contributors"
+      - $ref: "#/parameters/entity_id"
+      - $ref: "#/parameters/impact_id"
+      tags:
+        - Impact
+      responses:
+        204:
+          description: Impact has been removed
 
 ################################################################################
 #                                 Parameters                                  #
@@ -1117,12 +1232,19 @@ parameters:
     description: Entity identifier
     name: id
     in: path
+  impact_id:
+    in: path
+    name: impact_id
+    description: Imact identifier
+    required: true
+    type: "string"
+    format: "uuid"
 
 ################################################################################
 #                                 Definitions                                  #
 ################################################################################
 definitions:
-  appalication_period:
+  application_period:
     type: "object"
     properties:
       begin:
@@ -1131,6 +1253,32 @@ definitions:
       end:
         type: "string"
         format: "date-time"
+  application_period_pattern:
+    type: "object"
+    properties:
+      end_date:
+        type: "string"
+        format: "date"
+      start_date:
+        type: "string"
+        format: "date"
+      weekly_pattern:
+        description: |
+          Days of week beginning at monday. If notification on given day is active,
+          it should be marked with 1, otherwise 0
+        type: "string"
+      time_slots:
+        description: "List with time slots whitin impact is active"
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            begin:
+              type: "string"
+              description: "Start time (Format HH:MM)"
+            end:
+              type: "string"
+              description: "Start time (Format HH:MM)"
   bad_id:
     type: "object"
     properties:
@@ -1536,7 +1684,7 @@ definitions:
       application_periods:
         type: "array"
         items:
-          $ref: "#/definitions/appalication_period"
+          $ref: "#/definitions/application_period"
       messages:
         type: "array"
         items:
@@ -1598,7 +1746,7 @@ definitions:
       publication_period:
         type: "object"
         description: "Dates whithin disruption is active"
-        $ref: "#/definitions/appalication_period"
+        $ref: "#/definitions/application_period"
       publication_status:
         type: "string"
         description: |
@@ -1672,7 +1820,7 @@ definitions:
       publication_period:
         type: "object"
         description: "Dates whithin disruption is active"
-        $ref: "#/definitions/appalication_period"
+        $ref: "#/definitions/application_period"
       impacts:
         type: "array"
         description: "List of associated impacts"
@@ -1704,7 +1852,7 @@ definitions:
         type: "array"
         description: "Array with dates of application periods"
         items:
-          $ref: "#/definitions/appalication_period"
+          $ref: "#/definitions/application_period"
       send_notifications:
         type: "boolean"
         description: "If notification on impact should be send"
@@ -1743,6 +1891,152 @@ definitions:
             description: "Channel ID"
             type: "string"
             format: "uuid"
+  impact:
+    type: "object"
+    properties:
+      application_period_patterns:
+        type: "array"
+        items:
+          $ref: "#/definitions/application_period_pattern"
+      application_periods:
+        type: "array"
+        items:
+          $ref: "#/definitions/application_period"
+      created_at:
+        type: "string"
+        format: "date-time"
+      disruption:
+        description: "Link to disruption of impact"
+        type: "object"
+        $ref: "#/definitions/href"
+      id:
+        description: "Impact ID"
+        type: "string"
+        format: "uuid"
+      messages:
+        type: "array"
+        items:
+          $ref: "#/definitions/impact_message"
+      notification_date:
+        description: "Date of notification"
+        type: "string"
+        format: "date-time"
+      objects:
+        type: "array"
+        description: "List with impacted PT objects"
+        items:
+          type: "object"
+          properties:
+            id:
+              description: "Impacted PT object ID in navitia"
+              type: "string"
+            name:
+              description: "Name of impacted PT object in navitia"
+              type: "string"
+            type:
+              description: "Impacted PT object type in navitia"
+              type: "string"
+      self:
+        type: "object"
+        $ref: "#/definitions/href"
+      send_notifications:
+        description: "If notification should be send or not"
+        type: "boolean"
+      severity:
+        description: "Related severity"
+        type: "object"
+        $ref: "#/definitions/severity"
+      updated_at:
+        type: "string"
+        format: "date-time"
+  impact_message:
+    type: "object"
+    properties:
+      created_at:
+        type: "string"
+        format: "date-time"
+      updated_at:
+        type: "string"
+        format: "date-time"
+      text:
+        description: "Message for given channel"
+        type: "string"
+      channel:
+        description: "Channel for given message"
+        type: "object"
+        $ref: "#/definitions/impact_message_channel"
+  impact_message_channel:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        format: "uuid"
+      name:
+        type: "string"
+      content_type:
+        type: "string"
+      max_size:
+        type: "integer"
+      created_at:
+        type: "string"
+        format: "date-time"
+      updated_at:
+        type: "string"
+        format: "date-time"
+      types:
+        type: "array"
+        items:
+          type: "string"
+  impact_creation:
+    type: "object"
+    properties:
+      application_period_patterns:
+        type: "array"
+        items:
+          $ref: "#/definitions/application_period_pattern"
+      application_periods:
+        type: "array"
+        items:
+          $ref: "#/definitions/application_period"
+      severity:
+        type: "object"
+        properties:
+          id:
+            description: "Severity ID"
+            type: "string"
+            format: "uuid"
+      messages:
+        description: "List with messages by Channel"
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            text:
+              type: "string"
+            channel:
+              type: "object"
+              properties:
+                id:
+                  type: "string"
+      objects:
+        type: "array"
+        description: "List with impacted PT objects"
+        items:
+          type: "object"
+          properties:
+            id:
+              description: "Impacted PT object ID in navitia"
+              type: "string"
+            type:
+              description: "Impacted PT object type in navitia"
+              type: "string"
+      send_notifications:
+        description: "If notification should be send or not"
+        type: "boolean"
+      notification_date:
+        description: "Date of notification"
+        type: "string"
+        format: "date-time"
   pagination:
     type: "object"
     properties:
