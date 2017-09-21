@@ -120,6 +120,7 @@ cd tests
 
 ### Unit tests
 ```
+cd tests
 honcho run nosetests
 ```
 
@@ -130,6 +131,7 @@ honcho run lettuce
 ```
 To stop directly on faulty test
 ```
+cd tests
 honcho run lettuce --failfast
 ```
 
