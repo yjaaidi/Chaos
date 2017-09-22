@@ -12,7 +12,7 @@ info:
 
     It can work together with [Kirin](https://github.com/CanalTP/kirin) which can feed [Navitia](https://github.com/CanalTP/navitia) with real-time delays.
 
-    Chaos manage disruptions and help you to communicate with your travellers on the best.
+    Chaos manage disruptions and help you to communicate with your travelers on the best.
 
     ** Requirements **
 
@@ -26,7 +26,7 @@ info:
      * integration specifications
      * expected load your application will generate.
 
-    These two points are recquired to help us managing the Chaos platform.
+    These two points are recquired to manage the Chaos platform.
   license:
     name: AGPL
     url: "http://www.gnu.org/licenses/agpl-3.0.html"
@@ -757,6 +757,8 @@ paths:
                   alternates:
                     type: array
                     description: Information about usage of RabbitMQ
+                    items:
+                      type: "string"
                   connect_timeout:
                     type: integer
                   heartbeat:
