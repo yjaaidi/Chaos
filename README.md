@@ -108,6 +108,7 @@ docker-compose logs -f
 ``` 
 
 Chaos will be accessible on http://chaos_ws_1.docker if you are using the [docker-gen-hosts tool](https://github.com/vincentlepot/docker-gen-hosts), it will also be accessible on http://chaos-ws.local.canaltp.fr 
+The database will be accessible at 'chaos_database_1.docker' and default RabbitMQ interface at 'http://chaos_rabbitmq_1.docker:15672'.
 
 ## Tests
 
@@ -119,6 +120,7 @@ cd tests
 
 ### Unit tests
 ```
+cd tests
 honcho run nosetests
 ```
 
@@ -129,6 +131,7 @@ honcho run lettuce
 ```
 To stop directly on faulty test
 ```
+cd tests
 honcho run lettuce --failfast
 ```
 
