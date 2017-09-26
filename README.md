@@ -2,6 +2,11 @@
 Chaos is the web service which can feed [Navitia](https://github.com/CanalTP/navitia) with real-time [disruptions](http://doc.navitia.io/#traffic-reports).
 It can work together with [Kirin](https://github.com/CanalTP/kirin) which can feed [Navitia](https://github.com/CanalTP/navitia) with real-time delays.
 
+
+## API Documentation
+
+[Swagger](http://petstore.swagger.io/?url=https://raw.githubusercontent.com/CanalTP/Chaos/master/documentation/swagger.yml)
+
 ## Installation
 
 ### The hard way
