@@ -27,6 +27,9 @@ info:
      * expected load your application will generate.
 
     These two points are recquired to manage the Chaos platform.
+
+    **The values of hostname and port number should be updated depending on the configuration of WebService**
+
   license:
     name: AGPL
     url: "http://www.gnu.org/licenses/agpl-3.0.html"
