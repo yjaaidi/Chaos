@@ -208,6 +208,15 @@ def populate_cause(cause, cause_pb):
         populate_category(cause.category, cause_pb.category)
 
 
+def populate_property(disruption, disruption_pb):
+    if disruption.properties:
+        for prop in disruption.properties:
+            d_property = disruption_pb.properties.add()
+            d_property.key = prop.property.key
+            d_property.type = prop.property.type
+            d_property.value = prop.value
+
+
 def populate_disruption(disruption, disruption_pb):
     disruption_pb.id = disruption.id
     disruption_pb.reference = disruption.reference
@@ -226,6 +235,7 @@ def populate_disruption(disruption, disruption_pb):
     populate_localization(disruption, disruption_pb)
     populate_tag(disruption, disruption_pb)
     populate_impact(disruption, disruption_pb)
+    populate_property(disruption, disruption_pb)
 
 
 def populate_pb(disruption):
