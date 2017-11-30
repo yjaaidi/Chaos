@@ -42,6 +42,18 @@ def get_disruption(contributor_code, with_via=True, with_routes=True):
     tag.name = "metro"
     disruption.tags.append(tag)
 
+    # Property
+    _property = chaos.models.Property()
+    _property.key = 'key'
+    _property.type = 'type'
+
+    # AssociateDisruptionProperty
+    adp = chaos.models.AssociateDisruptionProperty()
+    adp.property = _property
+    adp.value = '42'
+
+    disruption.properties.append(adp)
+
     # Impacts
     impact = chaos.models.Impact()
     impact.severity = chaos.models.Severity()
@@ -227,6 +239,11 @@ def test_disruption():
     eq_(len(disruption_pb.tags),  2)
     eq_(disruption_pb.tags[0].name,  disruption.tags[0].name)
     eq_(disruption_pb.tags[1].name,  disruption.tags[1].name)
+
+    eq_(len(disruption_pb.properties), 1)
+    eq_(disruption_pb.properties[0].key, 'key')
+    eq_(disruption_pb.properties[0].type, 'type')
+    eq_(disruption_pb.properties[0].value, '42')
 
     eq_(len(disruption_pb.impacts),  3)
     eq_(disruption_pb.impacts[0].severity.wording,  "Severity_with_priority_NULL")
