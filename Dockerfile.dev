@@ -13,8 +13,8 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 ADD requirements.txt /tmp/requirements.txt
-RUN pip install -qr /tmp/requirements.txt
-RUN pip install -q honcho
+RUN pip install -qr /tmp/requirements.txt -i https://pypi.python.org/simple/
+RUN pip install -q honcho -i https://pypi.python.org/simple/
 
 RUN wget -qP /tmp https://github.com/google/protobuf/releases/download/v2.6.1/protobuf-2.6.1.tar.gz
 RUN tar -xf /tmp/protobuf-2.6.1.tar.gz -C /var/lib/

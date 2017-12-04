@@ -18,8 +18,8 @@ RUN set -xe && \
     buildDeps="libpq-dev python-dev protobuf-compiler git" && \
     apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get -yq install $buildDeps && \
-    pip install uwsgi && \
-    pip install -r requirements.txt && \
+    pip install uwsgi -i https://pypi.python.org/simple/ && \
+    pip install -r requirements.txt -i https://pypi.python.org/simple/ && \
     python setup.py build_pbf && cd .. && \
     apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false -o APT::AutoRemove::SuggestsImportant=false $buildDeps && \
     rm -rf /var/lib/apt/lists/*
