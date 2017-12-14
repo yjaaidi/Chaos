@@ -133,6 +133,7 @@ class validate_id(object):
             return func(*args, **kwargs)
         return wrapper
 
+
 class validate_client_token(object):
     def __call__(self, func):
         @wraps(func)

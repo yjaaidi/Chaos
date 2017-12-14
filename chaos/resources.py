@@ -46,7 +46,7 @@ from sqlalchemy.exc import IntegrityError
 import logging
 from utils import make_pager, option_value
 from chaos.validate_params import validate_client, validate_contributor, validate_navitia, \
-    manage_navitia_error, validate_id
+    manage_navitia_error, validate_id, validate_client_token
 
 __all__ = ['Disruptions', 'Index', 'Severity', 'Cause']
 
@@ -74,6 +74,7 @@ class Index(flask_restful.Resource):
 
 class Severity(flask_restful.Resource):
 
+    @validate_client_token()
     @validate_client()
     @validate_id()
     def get(self, client, id=None):
@@ -88,6 +89,7 @@ class Severity(flask_restful.Resource):
             response = {'severities': models.Severity.all(client.id), 'meta': {}}
             return marshal(response, severities_fields)
 
+    @validate_client_token()
     @validate_client(True)
     def post(self, client):
         json = request.get_json(silent=True)
@@ -113,6 +115,7 @@ class Severity(flask_restful.Resource):
         db.session.refresh(severity)
         return marshal({'severity': severity}, one_severity_fields), 201
 
+    @validate_client_token()
     @validate_client()
     @validate_id(True)
     def put(self, client, id):
@@ -143,6 +146,7 @@ class Severity(flask_restful.Resource):
         db.session.refresh(severity)
         return marshal({'severity': severity}, one_severity_fields), 200
 
+    @validate_client_token()
     @validate_client()
     @validate_id(True)
     def delete(self, client, id):
@@ -186,6 +190,7 @@ class Disruptions(flask_restful.Resource):
         )
         parser_get.add_argument("depth", type=int, default=1)
 
+    @validate_client_token()
     @validate_navitia()
     @validate_contributor()
     @manage_navitia_error()
@@ -274,6 +279,7 @@ class Disruptions(flask_restful.Resource):
         )
         return response_content
 
+    @validate_client_token()
     @validate_navitia()
     @validate_client(True)
     @manage_navitia_error()
@@ -339,6 +345,7 @@ class Disruptions(flask_restful.Resource):
             db.session.rollback()
             return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 500
 
+    @validate_client_token()
     @validate_navitia()
     @validate_client()
     @validate_contributor()
@@ -412,6 +419,7 @@ this disruption to Navitia. Please try again.'}}, error_fields), 503
                 ), 500
         return marshal({'disruption': disruption}, one_disruption_fields), 200
 
+    @validate_client_token()
     @validate_contributor()
     @validate_client()
     @validate_id(True)
@@ -447,6 +455,7 @@ class Cause(flask_restful.Resource):
             type=utils.get_uuid
         )
 
+    @validate_client_token()
     @validate_client()
     @validate_id()
     def get(self, client, id=None):
@@ -459,6 +468,7 @@ class Cause(flask_restful.Resource):
             response = {'causes': models.Cause.all(client.id, category_id), 'meta': {}}
             return marshal(response, causes_fields)
 
+    @validate_client_token()
     @validate_client(True)
     def post(self, client):
         json = request.get_json(silent=True)
@@ -484,6 +494,7 @@ class Cause(flask_restful.Resource):
         db.session.refresh(cause)
         return marshal({'cause': cause}, one_cause_fields), 201
 
+    @validate_client_token()
     @validate_client()
     @validate_id(True)
     def put(self, client, id):
@@ -509,6 +520,7 @@ class Cause(flask_restful.Resource):
         db.session.refresh(cause)
         return marshal({'cause': cause}, one_cause_fields), 200
 
+    @validate_client_token()
     @validate_client()
     @validate_id(True)
     def delete(self, client, id):
@@ -520,6 +532,7 @@ class Cause(flask_restful.Resource):
 
 class Tag(flask_restful.Resource):
 
+    @validate_client_token()
     @validate_client()
     @validate_id()
     def get(self, client, id=None):
@@ -530,6 +543,7 @@ class Tag(flask_restful.Resource):
             response = {'tags': models.Tag.all(client.id), 'meta': {}}
             return marshal(response, tags_fields)
 
+    @validate_client_token()
     @validate_client(True)
     def post(self, client):
         json = request.get_json(silent=True)
@@ -563,6 +577,7 @@ class Tag(flask_restful.Resource):
                            error_fields), 400
         return marshal({'tag': tag}, one_tag_fields), 201
 
+    @validate_client_token()
     @validate_client()
     @validate_id(True)
     def put(self, client, id):
@@ -588,6 +603,7 @@ class Tag(flask_restful.Resource):
                            error_fields), 400
         return marshal({'tag': tag}, one_tag_fields), 200
 
+    @validate_client_token()
     @validate_client()
     @validate_id(True)
     def delete(self, client, id):
@@ -599,6 +615,7 @@ class Tag(flask_restful.Resource):
 
 class Category(flask_restful.Resource):
 
+    @validate_client_token()
     @validate_client()
     @validate_id()
     def get(self, client, id=None):
@@ -609,6 +626,7 @@ class Category(flask_restful.Resource):
             response = {'categories': models.Category.all(client.id), 'meta': {}}
             return marshal(response, categories_fields)
 
+    @validate_client_token()
     @validate_client(True)
     def post(self, client):
         json = request.get_json(silent=True)
@@ -641,6 +659,7 @@ class Category(flask_restful.Resource):
                            error_fields), 400
         return marshal({'category': category}, one_category_fields), 201
 
+    @validate_client_token()
     @validate_client()
     @validate_id(True)
     def put(self, client, id):
@@ -666,6 +685,7 @@ class Category(flask_restful.Resource):
                            error_fields), 400
         return marshal({'category': category}, one_category_fields), 200
 
+    @validate_client_token()
     @validate_client()
     @validate_id(True)
     def delete(self, client, id):
@@ -689,6 +709,7 @@ class ImpactsByObject(flask_restful.Resource):
         parser_get.add_argument("uri[]", type=str, action="append")
         self.navitia = None
 
+    @validate_client_token()
     @validate_contributor()
     @validate_navitia()
     @manage_navitia_error()
@@ -868,6 +889,7 @@ this impact to Navitia. Please try again.'}}, error_fields), 503
 
 
 class Channel(flask_restful.Resource):
+    @validate_client_token()
     @validate_client()
     @validate_id()
     def get(self, client, id=None):
@@ -878,6 +900,7 @@ class Channel(flask_restful.Resource):
             response = {'channels': models.Channel.all(client.id), 'meta': {}}
             return marshal(response, channels_fields)
 
+    @validate_client_token()
     @validate_client(True)
     def post(self, client):
         json = request.get_json(silent=True)
@@ -903,6 +926,7 @@ class Channel(flask_restful.Resource):
         db.session.refresh(channel)
         return marshal({'channel': channel}, one_channel_fields), 201
 
+    @validate_client_token()
     @validate_client()
     @validate_id(True)
     def put(self, client, id):
@@ -928,6 +952,7 @@ class Channel(flask_restful.Resource):
         db.session.refresh(channel)
         return marshal({'channel': channel}, one_channel_fields), 200
 
+    @validate_client_token()
     @validate_client()
     @validate_id(True)
     def delete(self, client, id):
@@ -938,6 +963,8 @@ class Channel(flask_restful.Resource):
 
 
 class ChannelType(flask_restful.Resource):
+
+    @validate_client_token()
     def get(self):
         return {'channel_types': [type for type in channel_type_values]}, 200
 
@@ -961,6 +988,7 @@ class TrafficReport(flask_restful.Resource):
         parser_get.add_argument("current_time", type=utils.get_datetime, default=utils.get_current_time())
         self.navitia = None
 
+    @validate_client_token()
     @validate_contributor()
     @validate_navitia()
     @manage_navitia_error()
@@ -997,6 +1025,7 @@ class Property(flask_restful.Resource):
         self.parsers = {'get': reqparse.RequestParser()}
         self.parsers['get'].add_argument('key').add_argument('type')
 
+    @validate_client_token()
     @validate_client()
     @validate_id()
     def get(self, client, id=None):
@@ -1019,6 +1048,7 @@ class Property(flask_restful.Resource):
             }
             return marshal(response, properties_fields)
 
+    @validate_client_token()
     @validate_client(True)
     def post(self, client):
         json = request.get_json(silent=True)
@@ -1044,6 +1074,7 @@ class Property(flask_restful.Resource):
 
         return marshal({'property': property}, one_property_fields), 201
 
+    @validate_client_token()
     @validate_client()
     @validate_id(True)
     def put(self, client, id):
@@ -1074,6 +1105,7 @@ class Property(flask_restful.Resource):
 
         return marshal({'property': property}, one_property_fields), 200
 
+    @validate_client_token()
     @validate_client()
     @validate_id(True)
     def delete(self, client, id):

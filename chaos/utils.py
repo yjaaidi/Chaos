@@ -633,7 +633,7 @@ def client_token_is_allowed(client_code, token):
         :param token: Navitia token
         :type token: str
 
-        :return True if the configuration file doesn't exists (backward compatibility)
+        :return True if the configuration file doesn't exist (backward compatibility)
                 or the pair of client / token is allowed
         :rtype: bool
 
@@ -642,11 +642,13 @@ def client_token_is_allowed(client_code, token):
 
     file_name = path.abspath('chaos/clients_tokens.json')
 
-    # If the configuration doesn't exists, allow the action (backward compatibility)
+    # If the configuration doesn't exist, allow the action (backward compatibility)
     if not path.exists(file_name):
         return True
 
-    clients_tokens = json.load(open(file_name))
+    with open(file_name, 'r') as f:
+        clients_tokens = json.load(f)
+
     client_tokens = clients_tokens.get(client_code)
 
     # check if client configuration exists
