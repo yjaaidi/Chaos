@@ -141,7 +141,7 @@ class validate_client_token(object):
             try:
                 token = get_token(request)
                 client_code = get_client_code(request)
-                client_token_is_allowed(client_code, token)
+                client_token_is_allowed(client_code, token, 'chaos/clients_tokens.json')
             except exceptions.HeaderAbsent, e:
                 return marshal(
                     {'error': {'message': utils.parse_error(e)}},

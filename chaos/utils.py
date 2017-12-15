@@ -624,7 +624,7 @@ def get_traffic_report_objects(disruptions, navitia, line_sections_by_objid):
     return result
 
 
-def client_token_is_allowed(client_code, token):
+def client_token_is_allowed(client_code, token, file_name):
     """
         Validates that the pair of client / token is allowed in configuration file
 
@@ -632,6 +632,8 @@ def client_token_is_allowed(client_code, token):
         :type client_code: str
         :param token: Navitia token
         :type token: str
+        :param file_name: Client token file path
+        :type file_name: str
 
         :return True if the configuration file doesn't exist (backward compatibility)
                 or the pair of client / token is allowed
@@ -640,7 +642,6 @@ def client_token_is_allowed(client_code, token):
         :raise ValueError: When the pair of client / token isn't allowed
     """
 
-    file_name = path.abspath('chaos/clients_tokens.json')
 
     # If the configuration doesn't exist, allow the action (backward compatibility)
     if not path.exists(file_name):
