@@ -1,9 +1,10 @@
+from os import path
 from nose.tools import *
 from nose import with_setup
 from chaos.utils import client_token_is_allowed
 
-correct_file =  '../tests/fixtures/clients_tokens.json'
-wrong_file =  '../tests/fixtures/foo.json'
+correct_file =  path.dirname(path.realpath(__file__)) + '/fixtures/clients_tokens.json'
+wrong_file =  path.dirname(path.realpath(__file__)) + '/fixtures/foo.json'
 
 def test_client_token_file_doesnt_exist():
     assert client_token_is_allowed('transilien', '9bf6', wrong_file)
