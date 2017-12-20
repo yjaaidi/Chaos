@@ -5,6 +5,7 @@ Feature: list channel
 
     Scenario: list without client in the database fails
         I fill in header "X-Customer-Id" with "5"
+        I fill in header "Authorization" with "1"
         When I get "/channels"
         Then the status code should be "404"
 
@@ -14,6 +15,7 @@ Feature: list channel
             | 5             | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
 
         I fill in header "X-Customer-Id" with "5"
+        I fill in header "Authorization" with "1"
         When I get "/channels"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
@@ -28,6 +30,7 @@ Feature: list channel
             | short  | 140        | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | text/plain  | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
             | email  | 520        | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | text/plain  | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
         I fill in header "X-Customer-Id" with "5"
+        I fill in header "Authorization" with "1"
         When I get "/channels"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
@@ -47,6 +50,7 @@ Feature: list channel
             | short                 | 140        | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | text/plain  | 7ffab230-3d48-4eea-aa2c-22f8680230b9 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
             | long                  | 140        | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | text/plain  | 7ffab230-3d48-4eea-aa2c-22f8680230b5 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
         I fill in header "X-Customer-Id" with "5"
+        I fill in header "Authorization" with "1"
         When I get "/channels"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
@@ -65,6 +69,7 @@ Feature: list channel
             | short  | 140        | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | text/plain  | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
             | email  | 520        | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | text/plain  | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
         I fill in header "X-Customer-Id" with "5"
+        I fill in header "Authorization" with "1"
         When I get "/channels/7ffab230-3d48a-a2c-22f8680230b6"
         Then the status code should be "400"
 
@@ -77,6 +82,7 @@ Feature: list channel
             | short  | 140        | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | text/plain  | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
             | email  | 520        | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | text/plain  | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
         I fill in header "X-Customer-Id" with "5"
+        I fill in header "Authorization" with "1"
         When I get "/channels/7ffab232-3d48-4eea-aa2c-22f8680230b6"
         Then the status code should be "200"
         And the field "channel.name" should be "email"

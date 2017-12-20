@@ -35,6 +35,7 @@ Feature: Cause can be deleted
             |bb        | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | True       | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
 
         I fill in header "X-Customer-Id" with "5"
+        I fill in header "Authorization" with "1"
         When I delete "/causes/7ffab230-3d48-4eea-aa2c-22f8680230b6"
         Then the status code should be "204"
         And in the database for the cause "7ffab230-3d48-4eea-aa2c-22f8680230b6" the field "is_visible" should be "False"
@@ -49,6 +50,7 @@ Feature: Cause can be deleted
             | weather   | #123456 | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | True       | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
             | strike    | #654321 | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | True       | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
         I fill in header "X-Customer-Id" with "5"
+        I fill in header "Authorization" with "1"
         When I delete "/causes/7ffab240-3d48-4eea-aa2c-22f8680230b6"
         Then the status code should be "404"
 
@@ -62,6 +64,7 @@ Feature: Cause can be deleted
             | weather   | #123456 | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | True       | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
             | strike    | #654321 | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | False      | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
         I fill in header "X-Customer-Id" with "5"
+        I fill in header "Authorization" with "1"
         When I delete "/causes/7ffab232-3d48-4eea-aa2c-22f8680230b6"
         Then the status code should be "404"
 
@@ -75,6 +78,7 @@ Feature: Cause can be deleted
             | weather   | #123456 | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | True       | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
             | strike    |#654321 | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | True       | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
         I fill in header "X-Customer-Id" with "5"
+        I fill in header "Authorization" with "1"
         And I delete "/causes/7ffab232-3d48-4eea-aa2c-22f8680230b6"
         When I get "/causes"
         Then the status code should be "200"

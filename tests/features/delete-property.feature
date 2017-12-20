@@ -12,6 +12,7 @@ Feature: Delete property
         | client_code | created_at          | updated_at          | id                                   |
         | test        | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
         I fill in header "X-Customer-Id" with "test"
+        I fill in header "Authorization" with "1"
         When I delete to "/properties":
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
@@ -34,6 +35,7 @@ Feature: Delete property
         | client_code | created_at          | updated_at          | id                                   |
         | test        | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
         I fill in header "X-Customer-Id" with "test"
+        I fill in header "Authorization" with "1"
         When I delete to "/properties/e408adec-0243-11e6-954b-0050568c8382"
         Then the status code should be "404"
         And the header "Content-Type" should be "application/json"
@@ -60,6 +62,7 @@ Feature: Delete property
         | value | disruption_id                        | property_id                          |
         | test  | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | e408adec-0243-11e6-954b-0050568c8382 |
         I fill in header "X-Customer-Id" with "test"
+        I fill in header "Authorization" with "1"
         When I delete to "/properties/e408adec-0243-11e6-954b-0050568c8382"
         Then the status code should be "409"
         And the header "Content-Type" should be "application/json"
@@ -74,6 +77,7 @@ Feature: Delete property
         | created_at          |id                                    | client_id                            | key    | type   |
         | 2014-04-02T23:52:12 | e408adec-0243-11e6-954b-0050568c8382 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | test   | test   |
         I fill in header "X-Customer-Id" with "test"
+        I fill in header "Authorization" with "1"
         When I delete to "/properties/e408adec-0243-11e6-954b-0050568c8382"
         Then the status code should be "204"
 
@@ -98,5 +102,6 @@ Feature: Delete property
         | value | disruption_id                        | property_id                          |
         | test  | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | e408adec-0243-11e6-954b-0050568c8382 |
         I fill in header "X-Customer-Id" with "test"
+        I fill in header "Authorization" with "1"
         When I delete to "/properties/e408adec-0243-11e6-954b-0050568c8382"
         Then the status code should be "204"

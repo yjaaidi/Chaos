@@ -10,6 +10,7 @@ Feature: Severity can be deleted
             | blocking  | #123456 | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | True       | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
             | good news | #654321 | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | True       | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
         I fill in header "X-Customer-Id" with "5"
+        I fill in header "Authorization" with "1"
         When I delete "/severities/7ffab230-3d48-4eea-aa2c-22f8680230b6"
         Then the status code should be "204"
         And in the database for the severity "7ffab230-3d48-4eea-aa2c-22f8680230b6" the field "is_visible" should be "False"
@@ -24,6 +25,7 @@ Feature: Severity can be deleted
             | blocking  | #123456 | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | True       | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
             | good news | #654321 | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | True       | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
         I fill in header "X-Customer-Id" with "5"
+        I fill in header "Authorization" with "1"
         When I delete "/severities/7ffab240-3d48-4eea-aa2c-22f8680230b6"
         Then the status code should be "404"
 
@@ -37,6 +39,7 @@ Feature: Severity can be deleted
             | blocking  | #123456 | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | True       | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
             | good news | #654321 | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | False      | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
         I fill in header "X-Customer-Id" with "5"
+        I fill in header "Authorization" with "1"
         When I delete "/severities/7ffab232-3d48-4eea-aa2c-22f8680230b6"
         Then the status code should be "404"
 
@@ -77,6 +80,7 @@ Feature: Severity can be deleted
             | blocking  | #123456 | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | True       | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
             | good news | #654321 | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | True       | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
         I fill in header "X-Customer-Id" with "5"
+        I fill in header "Authorization" with "1"
         And I delete "/severities/7ffab232-3d48-4eea-aa2c-22f8680230b6"
         When I get "/severities"
         Then the status code should be "200"
@@ -133,6 +137,7 @@ Feature: Severity can be deleted
         | severity_for_client_8  | #ffffff | 2017-01-30T00:00:00 | 2017-01-30T00:00:00 | True       | 6ffab229-3d48-4eea-aa2c-22f8680230b6 | 6ffab229-3d48-4eea-aa2c-22f8680230b6 |
 
         I fill in header "X-Customer-Id" with "8"
+        I fill in header "Authorization" with "1"
 
         #when client_8 trys to remove a severity created by client_7 an arror should be created
         When I delete to "/severities/7ffab230-3d48-4eea-aa2c-22f8680230b6":

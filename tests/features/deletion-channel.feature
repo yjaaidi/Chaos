@@ -35,6 +35,7 @@ Feature: channel can be deleted
             | short  | 140        | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | text/plain  | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
             | email  | 520        | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | text/plain  | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
         I fill in header "X-Customer-Id" with "5"
+        I fill in header "Authorization" with "1"
         When I delete "/channels/7ffab230-3d48-4eea-aa2c-22f8680230b6"
         Then the status code should be "204"
         And in the database for the channel "7ffab230-3d48-4eea-aa2c-22f8680230b6" the field "is_visible" should be "False"
@@ -49,6 +50,7 @@ Feature: channel can be deleted
             | short  | 140        | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | text/plain  | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
             | email  | 520        | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | text/plain  | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
         I fill in header "X-Customer-Id" with "5"
+        I fill in header "Authorization" with "1"
         When I delete "/channels/7ffab240-3d48-4eea-aa2c-22f8680230b6"
         Then the status code should be "404"
 
@@ -62,6 +64,7 @@ Feature: channel can be deleted
             | short  | 140        | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | text/plain  |True      | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
             | email  | 520        | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | text/plain  |False     | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
         I fill in header "X-Customer-Id" with "5"
+        I fill in header "Authorization" with "1"
         When I delete "/channels/7ffab232-3d48-4eea-aa2c-22f8680230b6"
         Then the status code should be "404"
 
@@ -75,6 +78,7 @@ Feature: channel can be deleted
             | short  | 140        | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | text/plain  |True      | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
             | email  | 520        | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | text/plain  |True      | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
         I fill in header "X-Customer-Id" with "5"
+        I fill in header "Authorization" with "1"
         And I delete "/channels/7ffab230-3d48-4eea-aa2c-22f8680230b6"
         When I get "/channels"
         Then the status code should be "200"
@@ -93,6 +97,7 @@ Feature: channel can be deleted
             | short  | 140        | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | text/plain  |True      | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
             | email  | 520        | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | text/plain  |False     | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
         I fill in header "X-Customer-Id" with "5"
+        I fill in header "Authorization" with "1"
         When I delete "/channels/AA"
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
@@ -108,6 +113,7 @@ Feature: channel can be deleted
             | short  | 140        | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | text/plain  |True      | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
             | email  | 520        | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | text/plain  |False     | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
         I fill in header "X-Customer-Id" with "5"
+        I fill in header "Authorization" with "1"
         When I delete "/channels"
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"

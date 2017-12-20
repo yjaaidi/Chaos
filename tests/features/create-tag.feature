@@ -8,6 +8,7 @@ Feature: Create tag
 
     Scenario: name is required
         I fill in header "X-Customer-Id" with "5"
+    I fill in header "Authorization" with "1"
         When I post to "/tags"
         """
         {"nameaa": "foo"}
@@ -18,6 +19,7 @@ Feature: Create tag
 
     Scenario: creation of tag
         I fill in header "X-Customer-Id" with "5"
+    I fill in header "Authorization" with "1"
         When I post to "/tags" with:
         """
         {"name": "foo"}
@@ -32,6 +34,7 @@ Feature: Create tag
             | 5             | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
 
         I fill in header "X-Customer-Id" with "5"
+    I fill in header "Authorization" with "1"
         When I post to "/tags" with:
         """
         {"name": "foo"}
@@ -42,6 +45,7 @@ Feature: Create tag
 
     Scenario: Tag are created
         I fill in header "X-Customer-Id" with "5"
+    I fill in header "Authorization" with "1"
         Given I post to "/tags" with:
         """
         {"name": "foo"}
@@ -54,6 +58,7 @@ Feature: Create tag
 
     Scenario: We don't accept two tags with the same name
         I fill in header "X-Customer-Id" with "5"
+    I fill in header "Authorization" with "1"
         Given I post to "/tags" with:
         """
         {"name": "foo"}
@@ -77,6 +82,7 @@ Feature: Create tag
             | weather| 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | True       | 2ffab230-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
 
         I fill in header "X-Customer-Id" with "5"
+    I fill in header "Authorization" with "1"
         When I get "/tags/7ffab230-3d48-4eea-aa2c-22f8680230b6"
         Then the status code should be "404"
         Given I post to "/tags" with:

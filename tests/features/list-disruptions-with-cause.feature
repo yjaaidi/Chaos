@@ -12,6 +12,7 @@ Feature: list disruptions with cause
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Coverage" with "jdr"
         I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
+        I fill in header "X-Customer-Id" with "5"
 
         When I post to "/disruptions" with:
         """
@@ -43,6 +44,7 @@ Feature: list disruptions with cause
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
         I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
+        I fill in header "X-Customer-Id" with "5"
         When I get "/disruptions"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"

@@ -9,12 +9,14 @@ Feature: Create severity
 
     Scenario: wordings is required
     I fill in header "X-Customer-Id" with "5"
+        I fill in header "Authorization" with "1"
         When I post to "/severities"
         Then the status code should be "400"
 
 
     Scenario: creation of severity
         I fill in header "X-Customer-Id" with "5"
+        I fill in header "Authorization" with "1"
         When I post to "/severities" with:
         """
         {"wordings": [{"key": "test", "value": "foo"}]}
@@ -27,6 +29,7 @@ Feature: Create severity
 
     Scenario: Severity are created
         I fill in header "X-Customer-Id" with "5"
+        I fill in header "Authorization" with "1"
         Given I post to "/severities" with:
         """
         {"wordings": [{"key": "test", "value": "foo"}]}
@@ -41,6 +44,7 @@ Feature: Create severity
 
     Scenario: We can create a severity with a color
         I fill in header "X-Customer-Id" with "5"
+        I fill in header "Authorization" with "1"
         When I post to "/severities" with:
         """
         {"wordings": [{"key": "test", "value": "foo"}], "color": "#123456"}
@@ -53,6 +57,7 @@ Feature: Create severity
 
     Scenario: We can create a severity with a priority
         I fill in header "X-Customer-Id" with "5"
+        I fill in header "Authorization" with "1"
         When I post to "/severities" with:
         """
         {"wordings": [{"key": "test", "value": "foo"}], "color": "#123456", "priority": 2, "effect": null}
@@ -80,6 +85,7 @@ Feature: Create severity
 
     Scenario: We can create a no_service severity
         I fill in header "X-Customer-Id" with "5"
+        I fill in header "Authorization" with "1"
         When I post to "/severities" with:
         """
         {"wordings": [{"key": "test", "value": "foo"}], "color": "#123456", "priority": 1, "effect": "no_service"}
@@ -93,6 +99,7 @@ Feature: Create severity
 
     Scenario: We can create a reduced_service severity
         I fill in header "X-Customer-Id" with "5"
+        I fill in header "Authorization" with "1"
         When I post to "/severities" with:
         """
         {"wordings": [{"key": "test", "value": "foo"}], "color": "#123456", "priority": 2, "effect": "reduced_service"}
@@ -106,6 +113,7 @@ Feature: Create severity
 
     Scenario: We can create a significant_delays severity
         I fill in header "X-Customer-Id" with "5"
+        I fill in header "Authorization" with "1"
         When I post to "/severities" with:
         """
         {"wordings": [{"key": "test", "value": "foo"}], "color": "#123456", "priority": 3, "effect": "significant_delays"}
@@ -119,6 +127,7 @@ Feature: Create severity
 
     Scenario: We can create a detour severity
         I fill in header "X-Customer-Id" with "5"
+        I fill in header "Authorization" with "1"
         When I post to "/severities" with:
         """
         {"wordings": [{"key": "test", "value": "foo"}], "color": "#123456", "priority": 4, "effect": "detour"}
@@ -132,6 +141,7 @@ Feature: Create severity
 
     Scenario: We can create a additional_service severity
         I fill in header "X-Customer-Id" with "5"
+        I fill in header "Authorization" with "1"
         When I post to "/severities" with:
         """
         {"wordings": [{"key": "test", "value": "foo"}], "color": "#123456", "priority": 5, "effect": "additional_service"}
@@ -145,6 +155,7 @@ Feature: Create severity
 
     Scenario: We can create a modified_service severity
         I fill in header "X-Customer-Id" with "5"
+        I fill in header "Authorization" with "1"
         When I post to "/severities" with:
         """
         {"wordings": [{"key": "test", "value": "foo"}], "color": "#123456", "priority": 6, "effect": "modified_service"}
@@ -158,6 +169,7 @@ Feature: Create severity
 
     Scenario: We can create a other_effect severity
         I fill in header "X-Customer-Id" with "5"
+        I fill in header "Authorization" with "1"
         When I post to "/severities" with:
         """
         {"wordings": [{"key": "test", "value": "foo"}], "color": "#123456", "priority": 7, "effect": "other_effect"}
@@ -171,6 +183,7 @@ Feature: Create severity
 
     Scenario: We can create a unknown_effect severity
         I fill in header "X-Customer-Id" with "5"
+        I fill in header "Authorization" with "1"
         When I post to "/severities" with:
         """
         {"wordings": [{"key": "test", "value": "foo"}], "color": "#123456", "priority": 8, "effect": "unknown_effect"}
@@ -184,6 +197,7 @@ Feature: Create severity
 
     Scenario: We can create a stop_moved severity
         I fill in header "X-Customer-Id" with "5"
+        I fill in header "Authorization" with "1"
         When I post to "/severities" with:
         """
         {"wordings": [{"key": "test", "value": "foo"}], "color": "#123456", "priority": 9, "effect": "stop_moved"}

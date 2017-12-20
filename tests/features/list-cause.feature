@@ -9,6 +9,7 @@ Feature: list cause
             | 5             | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
 
             I fill in header "X-Customer-Id" with "5"
+            I fill in header "Authorization" with "1"
             When I get "/causes"
             Then the status code should be "200"
             And the header "Content-Type" should be "application/json"
@@ -24,6 +25,7 @@ Feature: list cause
                 | weather   |  2014-04-02T23:52:12 | 2014-04-02T23:55:12 | True       | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
                 | strike    |  2014-04-04T23:52:12 | 2014-04-06T22:52:12 | True       | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
             I fill in header "X-Customer-Id" with "5"
+            I fill in header "Authorization" with "1"
             When I get "/causes"
             Then the status code should be "200"
             And the header "Content-Type" should be "application/json"
@@ -40,6 +42,7 @@ Feature: list cause
                 | strike    | #654321 | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | True       | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
                 | invisible | #123321 | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | False      | 7ffab233-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
             I fill in header "X-Customer-Id" with "5"
+            I fill in header "Authorization" with "1"
             When I get "/causes"
             Then the status code should be "200"
             And the header "Content-Type" should be "application/json"
@@ -55,6 +58,7 @@ Feature: list cause
                 | weather   | #123456 | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | True       | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
                 | strike    | #654321 | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | True       | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
             I fill in header "X-Customer-Id" with "5"
+            I fill in header "Authorization" with "1"
             When I get "/causes/7ffab230-3d48-4eea-aa2c-22f8680230b6"
             Then the status code should be "200"
             And the header "Content-Type" should be "application/json"
@@ -69,6 +73,7 @@ Feature: list cause
                 | weather   | #123456 | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | True       | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
                 | strike    | #654321 | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | True       | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
             I fill in header "X-Customer-Id" with "5"
+            I fill in header "Authorization" with "1"
             When I get "/causes/7ffab230-3d48a-a2c-22f8680230b6"
             Then the status code should be "400"
 
@@ -98,6 +103,7 @@ Feature: list cause
                 | weather   |  2014-04-02T23:52:12 | 2014-04-02T23:55:12 | True       | None                                | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
                 | strike    |  2014-04-04T23:52:12 | 2014-04-06T22:52:12 | True       |7ffab230-3d48-4eea-aa2c-22f8680230b6 |7ffab232-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
             I fill in header "X-Customer-Id" with "5"
+            I fill in header "Authorization" with "1"
             When I get "/causes"
             Then the status code should be "200"
             And the header "Content-Type" should be "application/json"
@@ -115,6 +121,7 @@ Feature: list cause
                 | weather   |  2014-04-02T23:52:12 | 2014-04-02T23:55:12 | True       | None                                | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
                 | strike    |  2014-04-04T23:52:12 | 2014-04-06T22:52:12 | True       |7ffab230-3d48-4eea-aa2c-22f8680230b6 |7ffab232-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
             I fill in header "X-Customer-Id" with "5"
+            I fill in header "Authorization" with "1"
             When I get "/causes?category=7ffab230-3d48-4eea-aa2c-22f8680230b6"
             Then the status code should be "200"
             And the header "Content-Type" should be "application/json"

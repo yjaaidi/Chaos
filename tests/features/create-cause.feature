@@ -10,6 +10,7 @@ Feature: Create cause
 
     Scenario: wordings is required
         I fill in header "X-Customer-Id" with "5"
+        I fill in header "Authorization" with "1"
         When I post to "/causes"
         """
         {"category":{"id": "7ffab555-3d48-4eea-aa2c-22f8680230b6"}}
@@ -20,6 +21,7 @@ Feature: Create cause
 
     Scenario: wordings empty
         I fill in header "X-Customer-Id" with "5"
+        I fill in header "Authorization" with "1"
         When I post to "/causes"
         """
         {"wordings": [], "category":{"id": "7ffab555-3d48-4eea-aa2c-22f8680230b6"}}
@@ -39,6 +41,7 @@ Feature: Create cause
             | foo       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
 
         I fill in header "X-Customer-Id" with "5"
+        I fill in header "Authorization" with "1"
         When I post to "/causes" with:
         """
         {"wordings": [{"key": "aa", "value": "bb"}, {"key": "dd", "value": "cc"}], "category":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}}
@@ -57,6 +60,7 @@ Feature: Create cause
             | foo       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
 
         I fill in header "X-Customer-Id" with "5"
+        I fill in header "Authorization" with "1"
         When I post to "/causes" with:
         """
         {"wordings": [{"key": "aa", "value": "bb"}, {"key": "dd", "value": "cc"}], "category":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}}
@@ -77,6 +81,7 @@ Feature: Create cause
             | foo       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
 
         I fill in header "X-Customer-Id" with "5"
+        I fill in header "Authorization" with "1"
         When I post to "/causes" with:
         """
         {"wordings": [{"key": "aa", "value": "bb"}, {"key": "dd", "value": "cc"}], "category":{"id": "6ffab230-3d48-4eea-aa2c-22f8680230b6"}}
@@ -90,6 +95,7 @@ Feature: Create cause
             | 5             | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
 
         I fill in header "X-Customer-Id" with "5"
+        I fill in header "Authorization" with "1"
         When I post to "/causes" with:
         """
         {"wordings": [{"key": "  ", "value": "bb"}]}
@@ -108,6 +114,7 @@ Feature: Create cause
             | foo       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
 
         I fill in header "X-Customer-Id" with "5"
+        I fill in header "Authorization" with "1"
         When I post to "/causes" with:
         """
         {"wording": "mm", "wordings": [{"key": "aa", "value": "bb"}, {"key": "dd", "value": "cc"}, {"key": "pp", "value": "mm"}], "category":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}}
