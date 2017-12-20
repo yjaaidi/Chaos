@@ -8,7 +8,7 @@ Feature: Create severity
         Then the status code should be "400"
 
     Scenario: wordings is required
-        I fill in header "X-Customer-Id" with "5"
+    I fill in header "X-Customer-Id" with "5"
         When I post to "/severities"
         Then the status code should be "400"
 

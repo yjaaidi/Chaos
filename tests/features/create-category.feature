@@ -10,6 +10,7 @@ Feature: Create category
 
     Scenario: name is required
         I fill in header "X-Customer-Id" with "5"
+        I fill in header "Authorization" with "1"
         When I post to "/categories"
         """
         {"wording": "foo"}
@@ -20,6 +21,7 @@ Feature: Create category
 
     Scenario: creation of category
         I fill in header "X-Customer-Id" with "5"
+        I fill in header "Authorization" with "1"
         When I post to "/categories" with:
         """
         {"name": "foo"}
@@ -30,6 +32,7 @@ Feature: Create category
 
     Scenario: Category are created
         I fill in header "X-Customer-Id" with "5"
+        I fill in header "Authorization" with "1"
         Given I post to "/categories" with:
         """
         {"name": "foo"}
@@ -46,6 +49,7 @@ Feature: Create category
         | 5             | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
 
         I fill in header "X-Customer-Id" with "5"
+        I fill in header "Authorization" with "1"
         Given I post to "/categories" with:
         """
         {"name": "foo"}
@@ -66,6 +70,7 @@ Feature: Create category
             | weather   | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | True       | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
 
         I fill in header "X-Customer-Id" with "5"
+        I fill in header "Authorization" with "1"
         Given I post to "/categories" with:
         """
         {"name": "weather"}
@@ -83,6 +88,7 @@ Feature: Create category
             | weather   | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | False      | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
 
         I fill in header "X-Customer-Id" with "5"
+        I fill in header "Authorization" with "1"
         Given I post to "/categories" with:
         """
         {"name": "weather"}
