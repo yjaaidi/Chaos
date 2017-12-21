@@ -27,6 +27,8 @@
 # www.navitia.io
 
 
+from os import path
+import json
 from functools import wraps
 from chaos.navitia import Navitia
 from utils import get_client_code, get_contributor_code, get_token, get_coverage, client_token_is_allowed
@@ -139,9 +141,15 @@ class validate_client_token(object):
         @wraps(func)
         def wrapper(*args, **kwargs):
             try:
-                token = get_token(request)
-                client_code = get_client_code(request)
-                client_token_is_allowed(client_code, token, 'chaos/clients_tokens.json')
+                file_name = 'chaos/clients_tokens.json'
+                # If the configuration doesn't exist, allow the action (backward compatibility)
+                if path.exists(file_name):
+                    with open(file_name, 'r') as f:
+                        clients_tokens = json.load(f)
+
+                    token = get_token(request)
+                    client_code = get_client_code(request)
+                    client_token_is_allowed(client_code, token, clients_tokens)
             except exceptions.HeaderAbsent, e:
                 return marshal(
                     {'error': {'message': utils.parse_error(e)}},
