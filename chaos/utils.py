@@ -676,5 +676,5 @@ def raise_client_token_error(message):
         :rtype: Void
     """
 
-    logging.getLogger(__name__).debug(message)
+    logging.getLogger(__name__).info(message)
     raise ValueError(message)
