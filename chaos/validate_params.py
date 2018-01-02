@@ -29,7 +29,7 @@
 
 from functools import wraps
 from chaos.navitia import Navitia
-from utils import get_client_code, get_contributor_code, get_token, get_coverage, client_token_is_allowed
+from utils import get_client_code, get_contributor_code, get_token, get_coverage, get_clients_tokens, client_token_is_allowed
 from chaos import exceptions, models, utils, fields
 from flask_restful import marshal
 from flask import request, current_app
@@ -135,14 +135,17 @@ class validate_id(object):
 
 
 class validate_client_token(object):
+    def __init__(self, file_path='chaos/clients_tokens.json'):
+        self.clients_tokens = get_clients_tokens(file_path)
+
     def __call__(self, func):
         @wraps(func)
         def wrapper(*args, **kwargs):
             try:
                 token = get_token(request)
                 client_code = get_client_code(request)
-                client_token_is_allowed(client_code, token, 'chaos/clients_tokens.json')
-            except exceptions.HeaderAbsent, e:
+                client_token_is_allowed(self.clients_tokens, client_code, token)
+            except (exceptions.HeaderAbsent, exceptions.Unauthorized), e:
                 return marshal(
                     {'error': {'message': utils.parse_error(e)}},
                     fields.error_fields
