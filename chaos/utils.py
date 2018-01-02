@@ -38,7 +38,7 @@ import json
 from chaos.formats import id_format
 from jsonschema import ValidationError
 from chaos.populate_pb import populate_pb
-from chaos.exceptions import HeaderAbsent
+from chaos.exceptions import HeaderAbsent, Unauthorized
 import chaos
 import pytz
 import logging
@@ -623,32 +623,49 @@ def get_traffic_report_objects(disruptions, navitia, line_sections_by_objid):
 
     return result
 
+def get_clients_tokens(file_path):
+    """
+        Load clients and tokens from configuration file
 
-def client_token_is_allowed(client_code, token, file_name):
+        :param file_path: Client token file path
+        :type file_path: str
+
+        :return None if the configuration file doesn't exist (backward compatibility)
+                or Object with all tokens for each client
+        :rtype: object
+    """
+
+    # If the configuration doesn't exist, allow the action (backward compatibility)
+    if not path.exists(file_path):
+        return None
+
+    with open(file_path, 'r') as f:
+        clients_tokens = json.load(f)
+
+    return clients_tokens
+
+def client_token_is_allowed(clients_tokens, client_code, token):
     """
         Validates that the pair of client / token is allowed in configuration file
 
+        :param clients_tokens: All information of tokens for each client
+        :type file_name: object
         :param client_code: client code
         :type client_code: str
         :param token: Navitia token
         :type token: str
-        :param file_name: Client token file path
-        :type file_name: str
 
         :return True if the configuration file doesn't exist (backward compatibility)
                 or the pair of client / token is allowed
         :rtype: bool
 
-        :raise ValueError: When the pair of client / token isn't allowed
+        :raise Unauthorized: When the pair of client / token isn't allowed
     """
 
 
     # If the configuration doesn't exist, allow the action (backward compatibility)
-    if not path.exists(file_name):
+    if clients_tokens is None:
         return True
-
-    with open(file_name, 'r') as f:
-        clients_tokens = json.load(f)
 
     client_tokens = clients_tokens.get(client_code)
 
@@ -677,4 +694,4 @@ def raise_client_token_error(message):
     """
 
     logging.getLogger(__name__).info(message)
-    raise ValueError(message)
+    raise Unauthorized(message)
