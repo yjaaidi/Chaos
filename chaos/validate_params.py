@@ -145,12 +145,7 @@ class validate_client_token(object):
                 token = get_token(request)
                 client_code = get_client_code(request)
                 client_token_is_allowed(self.clients_tokens, client_code, token)
-            except exceptions.HeaderAbsent, e:
-                return marshal(
-                    {'error': {'message': utils.parse_error(e)}},
-                    fields.error_fields
-                ), 401
-            except exceptions.Unauthorized, e:
+            except (exceptions.HeaderAbsent, exceptions.Unauthorized), e:
                 return marshal(
                     {'error': {'message': utils.parse_error(e)}},
                     fields.error_fields
