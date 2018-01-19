@@ -176,7 +176,7 @@ paths:
               category:
                 $ref: "#/definitions/error_occured"
     delete:
-      description: remove a severity
+      description: remove a category
       parameters:
       - $ref: "#/parameters/header_authorization"
       - $ref: "#/parameters/header_coverage"
@@ -302,10 +302,10 @@ paths:
           schema:
             type: object
             properties:
-              severity:
+              cause:
                 $ref: "#/definitions/error_occured"
     delete:
-      description: remove a severity
+      description: remove a cause
       parameters:
       - $ref: "#/parameters/header_authorization"
       - $ref: "#/parameters/header_coverage"
