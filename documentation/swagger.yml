@@ -1436,16 +1436,26 @@ definitions:
   channel_creation:
     type: "object"
     properties:
-      color:
+      name:
         type: "string"
-      effect:
-        type: "string"
-      priority:
+      max_size:
         type: "integer"
-      wordings:
+      content_type:
+        type: "string"
+      type:
         type: "array"
         items:
           type: "string"
+          enum:
+            - "web"
+            - "sms"
+            - "email"
+            - "mobile"
+            - "notification"
+            - "twitter"
+            - "facebook"
+            - "title"
+            - "beacon"
   property:
     type: "object"
     properties:
