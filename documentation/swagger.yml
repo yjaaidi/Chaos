@@ -110,14 +110,14 @@ paths:
           schema:
             type: object
             properties:
-              severity:
+              category:
                 $ref: "#/definitions/category"
         400:
           description: Bad Request
           schema:
             type: object
             properties:
-              severity:
+              category:
                 $ref: "#/definitions/error_occured"
   /categories/{id}:
     get:
@@ -136,7 +136,7 @@ paths:
           schema:
             type: object
             properties:
-              severity:
+              category:
                 $ref: "#/definitions/category"
         400:
           description: Wrong ID
@@ -166,17 +166,17 @@ paths:
           schema:
             type: object
             properties:
-              severity:
+              category:
                 $ref: "#/definitions/category"
         400:
           description: Bad Request
           schema:
             type: object
             properties:
-              severity:
+              category:
                 $ref: "#/definitions/error_occured"
     delete:
-      description: remove a severity
+      description: remove a category
       parameters:
       - $ref: "#/parameters/header_authorization"
       - $ref: "#/parameters/header_coverage"
@@ -239,14 +239,14 @@ paths:
           schema:
             type: object
             properties:
-              severity:
+              cause:
                 $ref: "#/definitions/cause"
         400:
           description: Bad Request
           schema:
             type: object
             properties:
-              severity:
+              cause:
                 $ref: "#/definitions/error_occured"
   /causes/{id}:
     get:
@@ -265,7 +265,7 @@ paths:
           schema:
             type: object
             properties:
-              severity:
+              cause:
                 $ref: "#/definitions/cause"
         400:
           description: Wrong ID
@@ -295,17 +295,17 @@ paths:
           schema:
             type: object
             properties:
-              severity:
+              cause:
                 $ref: "#/definitions/cause"
         400:
           description: Bad Request
           schema:
             type: object
             properties:
-              severity:
+              cause:
                 $ref: "#/definitions/error_occured"
     delete:
-      description: remove a severity
+      description: remove a cause
       parameters:
       - $ref: "#/parameters/header_authorization"
       - $ref: "#/parameters/header_coverage"
@@ -1436,16 +1436,26 @@ definitions:
   channel_creation:
     type: "object"
     properties:
-      color:
+      name:
         type: "string"
-      effect:
-        type: "string"
-      priority:
+      max_size:
         type: "integer"
-      wordings:
+      content_type:
+        type: "string"
+      type:
         type: "array"
         items:
           type: "string"
+          enum:
+            - "web"
+            - "sms"
+            - "email"
+            - "mobile"
+            - "notification"
+            - "twitter"
+            - "facebook"
+            - "title"
+            - "beacon"
   property:
     type: "object"
     properties:
