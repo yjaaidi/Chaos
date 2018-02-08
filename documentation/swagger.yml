@@ -274,7 +274,7 @@ paths:
         404:
           description: Not Found
           schema:
-            $ref: "#/definitions/error_occured"
+            $ref: "#/definitions/error_404"
     put:
       description: Update a cause
       parameters:
@@ -305,7 +305,7 @@ paths:
         404:
           description: Not Found
           schema:
-            $ref: "#/definitions/error_occured"
+            $ref: "#/definitions/error_404"
     delete:
       description: remove a cause
       parameters:
@@ -329,7 +329,7 @@ paths:
         404:
           description: Not Found
           schema:
-            $ref: "#/definitions/error_occured"
+            $ref: "#/definitions/error_404"
   /channels:
     get:
       description: Retrieves all the channels
@@ -1303,6 +1303,13 @@ definitions:
         properties:
           message :
             type: "string"
+  error_404:
+    type: "object"
+    properties:
+      status:
+        type: "number"
+      message :
+        type: "string"
   href:
     type: "object"
     properties:
