@@ -244,10 +244,7 @@ paths:
         400:
           description: Bad Request
           schema:
-            type: object
-            properties:
-              cause:
-                $ref: "#/definitions/error_occured"
+            $ref: "#/definitions/error_occured"
   /causes/{id}:
     get:
       description: Retrieve the cause identified by ID
@@ -300,10 +297,7 @@ paths:
         400:
           description: Bad Request
           schema:
-            type: object
-            properties:
-              cause:
-                $ref: "#/definitions/error_occured"
+            $ref: "#/definitions/error_occured"
     delete:
       description: remove a cause
       parameters:
@@ -1396,8 +1390,6 @@ definitions:
   cause_creation:
     type: "object"
     properties:
-      wording:
-        type: "string"
       wordings:
         type: "array"
         items:
