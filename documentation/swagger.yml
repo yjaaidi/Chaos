@@ -245,6 +245,10 @@ paths:
           description: Bad Request
           schema:
             $ref: "#/definitions/error_occured"
+        409:
+          description: Conflict
+          schema:
+            $ref: "#/definitions/error_occured"
   /causes/{id}:
     get:
       description: Retrieve the cause identified by ID
@@ -271,6 +275,10 @@ paths:
             properties:
               error:
                 $ref: "#/definitions/bad_id"
+        404:
+          description: Not Found
+          schema:
+            $ref: "#/definitions/error_occured"
     put:
       description: Update a cause
       parameters:
@@ -298,6 +306,14 @@ paths:
           description: Bad Request
           schema:
             $ref: "#/definitions/error_occured"
+        404:
+          description: Not Found
+          schema:
+            $ref: "#/definitions/error_occured"
+        409:
+          description: Conflict
+          schema:
+            $ref: "#/definitions/error_occured"
     delete:
       description: remove a cause
       parameters:
@@ -318,6 +334,10 @@ paths:
             properties:
               error:
                 $ref: "#/definitions/bad_id"
+        404:
+          description: Not Found
+          schema:
+            $ref: "#/definitions/error_occured"
   /channels:
     get:
       description: Retrieves all the channels
