@@ -1356,6 +1356,7 @@ parameters:
     items:
       type: string
       enum:
+        - archived
         - published
         - draft
   depth:
@@ -1864,207 +1865,255 @@ definitions:
         items:
           $ref: "#/definitions/traffic_report_message"
   disruption:
-    type: "object"
+    type: object
     properties:
       cause:
-        type: "object"
+        type: object
         $ref: "#/definitions/cause"
       contributor:
-        type: "string"
-        description: "Contributor code"
+        type: string
+        description: Contributor code
       created_at:
-        type: "string"
-        format: "date-time"
+        type: string
+        format: date-time
       id:
-        type: "string"
+        type: string
         format: uuid
-        description: "Disruption ID"
+        description: Disruption ID
       impacts:
-        type: "object"
-        description: "Links to impacts of this disruption"
+        type: object
+        description: Links to impacts of this disruption
         properties:
           pagination:
-            type: "object"
-            properties:
-              start_page:
-                type: "integer"
-              items_per_page:
-                type: "integer"
-              items_on_page:
-                type: "integer"
-              total_results:
-                type: "integer"
-              prev:
-                type: "string"
-                $ref: "#/definitions/href"
-              next:
-                type: "string"
-                $ref: "#/definitions/href"
-              first:
-                type: "string"
-                description: "link to first impact of disruption"
-                $ref: "#/definitions/href"
-              last:
-                type: "string"
-                description: "link to last impact of disruption"
-                $ref: "#/definitions/href"
+            type: object
+            $ref: "#/definitions/pagination"
       localization:
-        type: "object"
-        description: "List of stop areas"
+        type: array
+        description: List of stop areas
+        items:
+          type: object
+          required:
+            - id
+            - type
+          properties:
+            id:
+              type: string
+              format: uuid
+              description: Stop area ID
+            type:
+              type: string
+              enum:
+                - stop_area
       note:
-        type: "string"
-        description: "Service note of disruption"
+        type: string
+        description: Service note of disruption
       properties:
-        type: "string"
-        description: "Associated properties"
+        type: object
+        description: Associated properties
       publication_period:
-        type: "object"
-        description: "Dates whithin disruption is active"
+        type: object
+        description: Dates whithin disruption is active
         $ref: "#/definitions/application_period"
       publication_status:
-        type: "string"
+        type: string
         description: |
           Status of publication.
           past when publication end date is in past
           ongoing when publication start date is in past and end date is in future
           comming when publication start date is in future
         enum:
-         - "past"
-         - "ongoing"
-         - "coming"
+         - past
+         - ongoing
+         - coming
       reference:
-        type: "string"
-        description: "Publication reference label"
+        type: string
+        description: Publication reference label
       self:
-        type: "object"
+        type: object
         $ref: "#/definitions/href"
       status:
-        type: "string"
+        type: string
         enum:
-         - "archived"
-         - "published"
-         - "draft"
+         - archived
+         - published
+         - draft
       tags:
-        type: "array"
-        description: "List of associated tags"
+        type: array
+        description: List of associated tags
         items:
           $ref: "#/definitions/tag"
       updated_at:
-        type: "string"
-        format: "date-time"
+        type: string
+        format: date-time
       version:
-        type: "integer"
-        description: "Number of how many time this disruption has been changed"
+        type: integer
+        description: Number of how many time this disruption has been changed
   disruption_creation:
-    type: "object"
+    type: object
+    required:
+      - reference
+      - contributor
+      - cause
     properties:
       reference:
-        type: "string"
-        description: "Publication reference label"
+        type: string
+        maxLength: 250
+        description: Publication reference label
       note:
-        type: "string"
-        description: "Service note of disruption"
+        type: string
+        description: Service note of disruption
       contributor:
-        type: "string"
-        description: "Contributor code"
+        type: string
+        description: Contributor code
       status:
-        type: "string"
+        type: string
         enum:
-         - "archived"
-         - "published"
-         - "draft"
+         - archived
+         - published
+         - draft
       cause:
-        type: "object"
+        type: object
+        required:
+          - id
         properties:
           id:
-            type: "string"
+            type: string
             format: uuid
-            description: "Cause ID"
+            description: Cause ID
       tags:
-        description: "List with Tag IDs"
+        description: List with Tag IDs
         type: array
         items:
-          type: "string"
-          format: uuid
+          type: object
+          required:
+            - id
+          properties:
+            id:
+              type: string
+              format: uuid
+              description: Tag ID
       localization:
-        description: "List with IDs of stop areas"
+        description: List with IDs of stop areas
         type: array
         items:
-          type: "string"
+          type: object
+          required:
+            - id
+            - type
+          properties:
+            id:
+              type: string
+              format: uuid
+              description: Stop area ID
+            type:
+              type: string
+              enum:
+                - stop_area
+        uniqueItems: true
       publication_period:
-        type: "object"
-        description: "Dates whithin disruption is active"
+        type: object
+        description: Dates whithin disruption is active
         $ref: "#/definitions/application_period"
       impacts:
-        type: "array"
-        description: "List of associated impacts"
+        type: array
+        description: List of associated impacts
         items:
           $ref: "#/definitions/disruption_impact"
+        uniqueItems: true
       properties:
-        description: "List with property IDs"
+        description: List with property IDs
         type: array
         items:
-          type: "object"
+          type: object
+          required:
+            - property_id
+            - value
           properties:
             property_id:
-              description: "Property ID"
-              type: "string"
+              description: Property ID
+              type: string
+              format: uuid
             value:
-              description: "Value of a property"
-              type: "string"
+              description: Value of a property
+              type: string
+              minLength: 1
+              maxLength: 250
   disruption_impact:
-    type: "object"
+    type: object
+    required:
+      - severity
+
     properties:
       severity:
-        type: "object"
+        type: object
+        required:
+          - id
         properties:
           id:
-            description: "Severity ID"
-            type: "string"
-            format: "uuid"
+            description: Severity ID
+            type: string
+            format: uuid
       application_periods:
-        type: "array"
-        description: "Array with dates of application periods"
+        type: array
+        description: Array with dates of application periods
         items:
           $ref: "#/definitions/application_period"
       send_notifications:
-        type: "boolean"
-        description: "If notification on impact should be send"
+        type: boolean
+        description: If notification sms, mail, push on impact should be send
       notification_date:
-        description: "Date of notification"
-        type: "string"
-        format: "date-time"
+        description: Date of notification
+        type: string
+        format: date-time
       messages:
-        type: "array"
-        description: "List with messages by channel"
+        type: array
+        description: List with messages by channel
         items:
           $ref: "#/definitions/disruption_impact_message"
+        uniqueItems: true
       objects:
-        type: "array"
-        description: "List with impacted PT objects"
+        type: array
+        description: List of impacted PT objects
         items:
-          type: "object"
+          type: object
+          required:
+            - id
+            - type
           properties:
             id:
-              description: "Impacted PT object ID in navitia"
-              type: "string"
+              description: Impacted PT object ID in navitia
+              type: string
+              maxLength: 250
             type:
-              description: "Impacted PT object type in navitia"
-              type: "string"
+              description: Impacted PT object type in navitia
+              type: string
+              enum:
+                - network
+                - stop_area
+                - line
+                - line_section
+                - route
+                - stop_point
+        uniqueItems: true
   disruption_impact_message:
-    type: "object"
+    type: object
+    required:
+      - text
+      - channel
     properties:
       text:
-        description: "Message for given channel"
-        type: "string"
+        description: Message for given channel
+        type: string
       channel:
-        description: "Channel for given message"
-        type: "object"
+        description: Channel for given message
+        type: object
+        required:
+          - id
         properties:
           id:
-            description: "Channel ID"
-            type: "string"
-            format: "uuid"
+            description: Channel ID
+            type: string
+            format: uuid
   impact:
     type: "object"
     properties:
