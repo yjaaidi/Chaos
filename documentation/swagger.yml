@@ -678,7 +678,7 @@ paths:
         404:
           description: Not Found
           schema:
-            $ref: "#/definitions/bad_id"
+            $ref: "#/definitions/error_404"
     put:
       description: Update a severity
       parameters:
@@ -709,7 +709,7 @@ paths:
         404:
           description: Not Found
           schema:
-            $ref: "#/definitions/bad_id"
+            $ref: "#/definitions/error_404"
     delete:
       description: remove a severity
       parameters:
@@ -730,7 +730,7 @@ paths:
         404:
           description: Not Found
           schema:
-            $ref: "#/definitions/bad_id"
+            $ref: "#/definitions/error_404"
   /status:
     get:
       description: Renders state of application
