@@ -973,6 +973,17 @@ paths:
       - $ref: "#/parameters/header_coverage"
       - $ref: "#/parameters/header_customer_id"
       - $ref: "#/parameters/header_contributors"
+      - $ref: "#/parameters/start_page"
+      - $ref: "#/parameters/items_per_page"
+      - $ref: "#/parameters/publication_status"
+      - $ref: "#/parameters/ends_after_date"
+      - $ref: "#/parameters/ends_before_date"
+      - $ref: "#/parameters/current_time"
+      - $ref: "#/parameters/tag"
+      - $ref: "#/parameters/uri"
+      - $ref: "#/parameters/line_section"
+      - $ref: "#/parameters/status"
+      - $ref: "#/parameters/depth"
       tags:
         - Disruption
       responses:
@@ -1262,10 +1273,98 @@ parameters:
   impact_id:
     in: path
     name: impact_id
-    description: Imact identifier
+    description: Impact identifier
     required: true
     type: "string"
     format: "uuid"
+  start_page:
+    in: query
+    name: start_page
+    description: Index of the first element returned (start at 1)
+    required: false
+    type: integer
+    default: 1
+    minimum: 1
+  items_per_page:
+    in: query
+    name: items_per_page
+    description: Number of items per page
+    required: false
+    type: integer
+    default: 20
+  publication_status:
+    in: query
+    name: publication_status
+    description: Filter by publication_status
+    required: false
+    type: array
+    items:
+      type: string
+      enum:
+        - past
+        - ongoing
+        - coming
+  ends_after_date:
+    in: query
+    name: ends_after_date
+    description: Start-date restriction for end_publication date
+    required: false
+    type: string
+    format: date-time
+  ends_before_date:
+    in: query
+    name: ends_before_date
+    description: End-date restriction for end_publication date
+    required: false
+    type: string
+    format: date-time
+  current_time:
+    in: query
+    name: current_time
+    description: Parameter for settings the current time, mostly for debugging purpose
+    required: false
+    type: string
+    format: date-time
+  tag:
+    in: query
+    name: tag
+    description: Filter by tag (id of tag)
+    required: false
+    type: array
+    items:
+      type: string
+      format: uuid
+  uri:
+    in: query
+    name: uri
+    description: Filter by uri of ptobject
+    required: false
+    type: string
+  line_section:
+    in: query
+    name: line_section
+    description: If uri is a line id, filter also on related line_section(s)
+    required: false
+    type: boolean
+    default: false
+  status:
+    in: query
+    name: status
+    description: Filter by status
+    required: false
+    type: array
+    items:
+      type: string
+      enum:
+        - published
+        - draft
+  depth:
+    in: query
+    name: depth
+    description: With depth=2, you could retrieve the first page of impacts from the disruption
+    required: false
+    type: integer
+    default: 1
 
 ################################################################################
 #                                 Definitions                                  #
