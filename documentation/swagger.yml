@@ -238,10 +238,7 @@ paths:
         400:
           description: Bad Request
           schema:
-            type: object
-            properties:
-              cause:
-                $ref: "#/definitions/error_occured"
+            $ref: "#/definitions/error_occured"
   /causes/{id}:
     get:
       description: Retrieve the cause identified by ID
@@ -268,6 +265,10 @@ paths:
             properties:
               error:
                 $ref: "#/definitions/bad_id"
+        404:
+          description: Not Found
+          schema:
+            $ref: "#/definitions/error_404"
     put:
       description: Update a cause
       parameters:
@@ -294,10 +295,11 @@ paths:
         400:
           description: Bad Request
           schema:
-            type: object
-            properties:
-              cause:
-                $ref: "#/definitions/error_occured"
+            $ref: "#/definitions/error_occured"
+        404:
+          description: Not Found
+          schema:
+            $ref: "#/definitions/error_404"
     delete:
       description: remove a cause
       parameters:
@@ -318,6 +320,10 @@ paths:
             properties:
               error:
                 $ref: "#/definitions/bad_id"
+        404:
+          description: Not Found
+          schema:
+            $ref: "#/definitions/error_404"
   /channels:
     get:
       description: Retrieves all the channels
@@ -1291,6 +1297,13 @@ definitions:
         properties:
           message :
             type: "string"
+  error_404:
+    type: "object"
+    properties:
+      status:
+        type: "number"
+      message :
+        type: "string"
   href:
     type: "object"
     properties:
@@ -1390,8 +1403,6 @@ definitions:
   cause_creation:
     type: "object"
     properties:
-      wording:
-        type: "string"
       wordings:
         type: "array"
         items:
