@@ -549,7 +549,7 @@ paths:
         404:
           description: Not Found
           schema:
-            $ref: "#/definitions/error_occured"
+            $ref: "#/definitions/error_404"
         400:
           description: Bad request
           schema:
@@ -585,7 +585,7 @@ paths:
         404:
           description: Not Found
           schema:
-            $ref: "#/definitions/error_occured"
+            $ref: "#/definitions/error_404"
         409:
           description: Conflict
           schema:
@@ -606,7 +606,7 @@ paths:
         404:
           description: Not Found
           schema:
-            $ref: "#/definitions/error_occured"
+            $ref: "#/definitions/error_404"
   /severities:
     get:
       description: Retrieves all the severities ordered by priority
