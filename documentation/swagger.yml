@@ -245,10 +245,6 @@ paths:
           description: Bad Request
           schema:
             $ref: "#/definitions/error_occured"
-        409:
-          description: Conflict
-          schema:
-            $ref: "#/definitions/error_occured"
   /causes/{id}:
     get:
       description: Retrieve the cause identified by ID
@@ -308,10 +304,6 @@ paths:
             $ref: "#/definitions/error_occured"
         404:
           description: Not Found
-          schema:
-            $ref: "#/definitions/error_occured"
-        409:
-          description: Conflict
           schema:
             $ref: "#/definitions/error_occured"
     delete:
