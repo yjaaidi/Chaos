@@ -815,6 +815,13 @@ paths:
                 type: array
                 items:
                   $ref: "#/definitions/tag"
+        400:
+          description: Bad Request
+          schema:
+            type: object
+            properties:
+              severity:
+                $ref: "#/definitions/error_occured"
     post:
       description: Creates a tag
       consumes:
@@ -872,6 +879,10 @@ paths:
             properties:
               error:
                 $ref: "#/definitions/bad_id"
+        404:
+          description: Not Found
+          schema:
+            $ref: "#/definitions/error_404"
     put:
       description: Update a tag
       parameters:
@@ -902,6 +913,10 @@ paths:
             properties:
               tag:
                 $ref: "#/definitions/error_occured"
+        404:
+          description: Not Found
+          schema:
+            $ref: "#/definitions/error_404"
     delete:
       description: remove a tag
       parameters:
@@ -922,6 +937,10 @@ paths:
             properties:
               error:
                 $ref: "#/definitions/bad_id"
+        404:
+          description: Not Found
+          schema:
+            $ref: "#/definitions/error_404"
   /traffic_reports:
     get:
       description: This service provides the state of public transport traffic
