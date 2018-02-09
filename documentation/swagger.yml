@@ -1019,27 +1019,22 @@ paths:
         201:
           description: Created disruption
           schema:
-            type: object
             $ref: "#/definitions/disruption"
         400:
           description: Bad Request
           schema:
-            type: object
             $ref: "#/definitions/error_occured"
         404:
           description: Not found
           schema:
-            type: object
             $ref: "#/definitions/error_404"
         500:
           description: "Server error"
           schema:
-            type: object
             $ref: "#/definitions/error_occured"
         503:
           description: "Error during transferring of disruption to Navitia"
           schema:
-            type: object
             $ref: "#/definitions/error_occured"
   /disruptions/{id}:
     get:
@@ -1056,17 +1051,14 @@ paths:
         201:
           description: Disruption could be find
           schema:
-            type: object
             $ref: "#/definitions/disruption"
         400:
           description: Disruption bad id
           schema:
-            type: object
             $ref: "#/definitions/error_occured"
         404:
           description: Not found
           schema:
-            type: object
             $ref: "#/definitions/error_404"
     put:
       description: Update the disruption identified by ID
@@ -1087,22 +1079,18 @@ paths:
         201:
           description: Disruption could be find
           schema:
-            type: object
             $ref: "#/definitions/disruption"
         400:
           description: Bad request
           schema:
-            type: object
             $ref: "#/definitions/error_occured"
         404:
           description: Not found
           schema:
-            type: object
             $ref: "#/definitions/error_404"
         409:
           description: Conflict
           schema:
-            type: object
             $ref: "#/definitions/error_occured"
     delete:
       description: Remove a disruption
@@ -1120,12 +1108,10 @@ paths:
         500:
           description: Internal server error
           schema:
-            type: object
             $ref: "#/definitions/error_occured"
         503:
           description: Service unavailable
           schema:
-            type: object
             $ref: "#/definitions/error_occured"
   /disruptions/{id}/impacts:
     get:
@@ -1175,7 +1161,6 @@ paths:
             type: object
             properties:
               impact:
-                type: "object"
                 $ref: "#/definitions/impact"
   /disruptions/{id}/impacts/{impact_id}:
     get:
@@ -1196,7 +1181,6 @@ paths:
             type: object
             properties:
               impact:
-                type: "object"
                 $ref: "#/definitions/impact"
     put:
       description: Update an impact identified by ID and disruption ID
@@ -1221,7 +1205,6 @@ paths:
             type: object
             properties:
               impact:
-                type: "object"
                 $ref: "#/definitions/impact"
     delete:
       description: Remove an impact identified by ID and disruption ID
