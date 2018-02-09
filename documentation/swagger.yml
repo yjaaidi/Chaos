@@ -489,8 +489,6 @@ paths:
           schema:
             type: object
             properties:
-              meta:
-                type: object
               properties:
                 type: array
                 items:
@@ -549,13 +547,9 @@ paths:
         404:
           description: Not Found
           schema:
-            $ref: "#/definitions/error_404"
+            $ref: "#/definitions/error_occured"
         400:
           description: Bad request
-          schema:
-            $ref: "#/definitions/error_occured"
-        409:
-          description: Conflict
           schema:
             $ref: "#/definitions/error_occured"
     put:
@@ -585,7 +579,7 @@ paths:
         404:
           description: Not Found
           schema:
-            $ref: "#/definitions/error_404"
+            $ref: "#/definitions/error_occured"
         409:
           description: Conflict
           schema:
@@ -606,7 +600,11 @@ paths:
         404:
           description: Not Found
           schema:
-            $ref: "#/definitions/error_404"
+            $ref: "#/definitions/error_occured"
+        400:
+          description: Bad request
+          schema:
+            $ref: "#/definitions/error_occured"
   /severities:
     get:
       description: Retrieves all the severities ordered by priority
