@@ -373,10 +373,7 @@ paths:
         400:
           description: Bad Request
           schema:
-            type: object
-            properties:
-              channel:
-                $ref: "#/definitions/error_occured"
+            $ref: "#/definitions/error_occured"
   /channels/{id}:
     get:
       description: Retrieve the channel identified by ID
@@ -399,10 +396,11 @@ paths:
         400:
           description: ID is wrong
           schema:
-            type: object
-            properties:
-              channel:
-                $ref: "#/definitions/bad_id"
+            $ref: "#/definitions/error_occured"
+        404:
+          description: Not Found
+          schema:
+            $ref: "#/definitions/error_404"
     put:
       description: Update a channel
       parameters:
@@ -429,10 +427,11 @@ paths:
         400:
           description: Bad Request
           schema:
-            type: object
-            properties:
-              channel:
-                $ref: "#/definitions/error_occured"
+            $ref: "#/definitions/error_occured"
+        404:
+          description: Not Found
+          schema:
+            $ref: "#/definitions/error_404"
     delete:
       description: remove a channel
       parameters:
@@ -449,10 +448,11 @@ paths:
         400:
           description: Wrong ID
           schema:
-            type: object
-            properties:
-              error:
-                $ref: "#/definitions/bad_id"
+            $ref: "#/definitions/error_occured"
+        404:
+          description: Not Found
+          schema:
+            $ref: "#/definitions/error_404"
   /channel_types:
     get:
       description: Retrieve the list of channel types
@@ -1491,7 +1491,7 @@ definitions:
         type: "integer"
       content_type:
         type: "string"
-      type:
+      types:
         type: "array"
         items:
           type: "string"
