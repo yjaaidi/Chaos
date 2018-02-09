@@ -489,8 +489,6 @@ paths:
           schema:
             type: object
             properties:
-              meta:
-                type: object
               properties:
                 type: array
                 items:
@@ -522,10 +520,11 @@ paths:
         400:
           description: Bad Request
           schema:
-            type: object
-            properties:
-              property:
-                $ref: "#/definitions/error_occured"
+            $ref: "#/definitions/error_occured"
+        409:
+          description: Conflict
+          schema:
+            $ref: "#/definitions/error_occured"
   /properties/{id}:
     get:
       description: Retrieve the property identified by ID
@@ -546,12 +545,13 @@ paths:
               property:
                 $ref: "#/definitions/property"
         404:
-          description: Wrong ID
+          description: Not Found
           schema:
-            type: object
-            properties:
-              error:
-                $ref: "#/definitions/error_occured"
+            $ref: "#/definitions/error_occured"
+        400:
+          description: Bad request
+          schema:
+            $ref: "#/definitions/error_occured"
     put:
       description: Update a property
       parameters:
@@ -571,17 +571,19 @@ paths:
         200:
           description: Property entity
           schema:
-            type: object
-            properties:
-              property:
-                $ref: "#/definitions/property"
+            $ref: "#/definitions/property"
         400:
           description: Bad Request
           schema:
-            type: object
-            properties:
-              property:
-                $ref: "#/definitions/error_occured"
+            $ref: "#/definitions/error_occured"
+        404:
+          description: Not Found
+          schema:
+            $ref: "#/definitions/error_occured"
+        409:
+          description: Conflict
+          schema:
+            $ref: "#/definitions/error_occured"
     delete:
       description: remove a property
       parameters:
@@ -596,12 +598,13 @@ paths:
         204:
           description: Property has been removed
         404:
-          description: Wrong ID
+          description: Not Found
           schema:
-            type: object
-            properties:
-              error:
-                $ref: "#/definitions/error_occured"
+            $ref: "#/definitions/error_occured"
+        400:
+          description: Bad request
+          schema:
+            $ref: "#/definitions/error_occured"
   /severities:
     get:
       description: Retrieves all the severities ordered by priority
