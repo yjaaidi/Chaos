@@ -654,10 +654,7 @@ paths:
         400:
           description: Bad Request
           schema:
-            type: object
-            properties:
-              severity:
-                $ref: "#/definitions/error_occured"
+            $ref: "#/definitions/error_occured"
   /severities/{id}:
     get:
       description: Retrieve the severity identified by ID
@@ -678,12 +675,13 @@ paths:
               severity:
                 $ref: "#/definitions/severity"
         400:
-          description: Wrong ID
+          description: Bad Request
           schema:
-            type: object
-            properties:
-              error:
-                $ref: "#/definitions/bad_id"
+            $ref: "#/definitions/bad_id"
+        404:
+          description: Not Found
+          schema:
+            $ref: "#/definitions/error_occured"
     put:
       description: Update a severity
       parameters:
@@ -710,10 +708,11 @@ paths:
         400:
           description: Bad Request
           schema:
-            type: object
-            properties:
-              severity:
-                $ref: "#/definitions/error_occured"
+            $ref: "#/definitions/bad_id"
+        404:
+          description: Not Found
+          schema:
+            $ref: "#/definitions/error_occured"
     delete:
       description: remove a severity
       parameters:
@@ -728,12 +727,13 @@ paths:
         204:
           description: Severity has been removed
         400:
-          description: BAD REQUEST
+          description: Bad Request
           schema:
-            type: object
-            properties:
-              error:
-                $ref: "#/definitions/bad_id"
+            $ref: "#/definitions/bad_id"
+        404:
+          description: Not Found
+          schema:
+            $ref: "#/definitions/error_occured"
   /status:
     get:
       description: Renders state of application
@@ -1354,6 +1354,17 @@ definitions:
         format: "date-time"
       effect:
         type: "string"
+        enum:
+          - "no_service"
+          - "reduced_service"
+          - "significant_delays"
+          - "detour"
+          - "additional_service"
+          - "modified_service"
+          - "other_effect"
+          - "unknown_effect"
+          - "stop_moved"
+          - "None"
       priority:
         type: "integer"
       updated_at:
@@ -1372,6 +1383,17 @@ definitions:
         type: "string"
       effect:
         type: "string"
+        enum:
+          - "no_service"
+          - "reduced_service"
+          - "significant_delays"
+          - "detour"
+          - "additional_service"
+          - "modified_service"
+          - "other_effect"
+          - "unknown_effect"
+          - "stop_moved"
+          - "None"
       priority:
         type: "integer"
       wordings:
@@ -1718,6 +1740,17 @@ definitions:
           effect:
             type: "string"
             description: "One of allowed severity effect"
+            enum:
+              - "no_service"
+              - "reduced_service"
+              - "significant_delays"
+              - "detour"
+              - "additional_service"
+              - "modified_service"
+              - "other_effect"
+              - "unknown_effect"
+              - "stop_moved"
+              - "None"
           color:
             type: "string"
             description: "Hexadecimal color code"
