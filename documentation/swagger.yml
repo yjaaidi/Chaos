@@ -1300,6 +1300,10 @@
       name: publication_status
       description: Filter by publication_status
       required: false
+      default:
+        - past
+        - ongoing
+        - coming
       type: array
       items:
         type: string
@@ -1325,6 +1329,7 @@
       in: query
       name: current_time
       description: Parameter for settings the current time, mostly for debugging purpose
+      default: now
       required: false
       type: string
       format: date-time
@@ -1355,6 +1360,9 @@
       name: status
       description: Filter by status
       required: false
+      default:
+        - published
+        - draft
       type: array
       items:
         type: string
