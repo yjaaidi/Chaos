@@ -167,9 +167,9 @@ def get_utc_datetime_by_zone(value, time_zone):
         :return: DateTime in UTC
     """
     try:
-        tz = pytz.timezone(time_zone)
+        current_tz = pytz.timezone(time_zone)
 
-        return tz.localize(value).astimezone(pytz.utc).replace(tzinfo=None)
+        return current_tz.localize(value).astimezone(pytz.utc).replace(tzinfo=None)
     except:
         raise ValueError("The {} argument value is not valid, you gave: {}"
                          .format(value, time_zone))
@@ -182,8 +182,7 @@ def get_current_time():
     """
     if 'current_time' in g and g.current_time:
         return g.current_time
-    else:
-        return datetime.utcnow()
+    return datetime.utcnow()
 
 
 def option_value(values):
@@ -217,12 +216,10 @@ def is_pt_object_valid(pt_object, object_type, uris):
         if uris:
             return ((pt_object.type == object_type) and
                     (pt_object.uri in uris))
-        else:
-            return (pt_object.type == object_type)
+        return (pt_object.type == object_type)
     elif uris:
         return (pt_object.uri in uris)
-    else:
-        return False
+    return False
 
 
 def get_object_in_line_section_by_uri(pt_object, uris):
@@ -486,7 +483,7 @@ def get_navitia_networks(result, pt_object, navitia, types):
                     if navitia_object['id'] == pt_object.uri:
                         if objects['network'] not in networks:
                             networks.append(objects['network'])
-    if len(networks) == 0:
+    if not networks:
         networks = navitia.get_pt_object(pt_object.uri, pt_object.type, 'networks')
     return networks
 
@@ -513,7 +510,8 @@ def manage_other_object(result, impact, pt_object, navitia, types, line_sections
                 list_objects = []
             navitia_object = get_pt_object_from_list(pt_object, list_objects)
             if not navitia_object:
-                navitia_object = navitia.get_pt_object(pt_object_for_navitia_research.uri, pt_object_for_navitia_research.type)
+                navitia_object = navitia.get_pt_object(pt_object_for_navitia_research.uri,
+                                                       pt_object_for_navitia_research.type)
                 if navitia_object:
                     if types == 'line_sections':
                         navitia_object = create_line_section(navitia_object, line_sections_by_objid[pt_object.id])
@@ -618,7 +616,8 @@ def get_traffic_report_objects(disruptions, navitia, line_sections_by_objid):
                                 pt_object.type, pt_object.uri, collections
                             )
                             continue
-                        manage_other_object(result, impact, pt_object, navitia, collections[pt_object.type], line_sections_by_objid)
+                        manage_other_object(result, impact, pt_object, navitia, collections[pt_object.type],
+                                            line_sections_by_objid)
 
     return result
 
@@ -638,8 +637,8 @@ def get_clients_tokens(file_path):
     if not path.exists(file_path):
         return None
 
-    with open(file_path, 'r') as f:
-        clients_tokens = json.load(f)
+    with open(file_path, 'r') as tokens_file:
+        clients_tokens = json.load(tokens_file)
 
     return clients_tokens
 
