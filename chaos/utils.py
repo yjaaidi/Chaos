@@ -27,16 +27,18 @@
 # https://groups.google.com/d/forum/navitia
 # www.navitia.io
 
+from os import path
 from flask import url_for, g
 from functools import wraps
 from datetime import datetime, timedelta
 from aniso8601 import parse_datetime, parse_time, parse_date
 import uuid
 import flask
+import json
 from chaos.formats import id_format
 from jsonschema import ValidationError
 from chaos.populate_pb import populate_pb
-from chaos.exceptions import HeaderAbsent
+from chaos.exceptions import HeaderAbsent, Unauthorized
 import chaos
 import pytz
 import logging
@@ -620,3 +622,76 @@ def get_traffic_report_objects(disruptions, navitia, line_sections_by_objid):
                         manage_other_object(result, impact, pt_object, navitia, collections[pt_object.type], line_sections_by_objid)
 
     return result
+
+def get_clients_tokens(file_path):
+    """
+        Load clients and tokens from configuration file
+
+        :param file_path: Client token file path
+        :type file_path: str
+
+        :return None if the configuration file doesn't exist (backward compatibility)
+                or Object with all tokens for each client
+        :rtype: object
+    """
+
+    # If the configuration doesn't exist, allow the action (backward compatibility)
+    if not path.exists(file_path):
+        return None
+
+    with open(file_path, 'r') as f:
+        clients_tokens = json.load(f)
+
+    return clients_tokens
+
+def client_token_is_allowed(clients_tokens, client_code, token):
+    """
+        Validates that the pair of client / token is allowed in configuration file
+
+        :param clients_tokens: All information of tokens for each client
+        :type file_name: object
+        :param client_code: client code
+        :type client_code: str
+        :param token: Navitia token
+        :type token: str
+
+        :return True if the configuration file doesn't exist (backward compatibility)
+                or the pair of client / token is allowed
+        :rtype: bool
+
+        :raise Unauthorized: When the pair of client / token isn't allowed
+    """
+
+
+    # If the configuration doesn't exist, allow the action (backward compatibility)
+    if clients_tokens is None:
+        return True
+
+    client_tokens = clients_tokens.get(client_code)
+
+    # check if client configuration exists
+    if client_tokens is None:
+        error = "There is no configuration for this client. Provided client code : {}". format(client_code)
+        raise_client_token_error(error)
+
+    # check if token for this client exists
+    if token not in client_tokens:
+        error = "The client is not permited for this operation with this token. Provided client code : {}, token : {}".\
+            format(client_code, token)
+        raise_client_token_error(error)
+
+    return True
+
+
+def raise_client_token_error(message):
+    """
+        Logs message and raises an exception with this message
+
+        :param message: An error message
+        :type message: str
+        :return: Nothing
+        :rtype: Void
+    """
+
+    logging.getLogger(__name__).info(message)
+    raise Unauthorized(message)
