@@ -28,21 +28,23 @@
 # www.navitia.io
 
 from os import path
-from flask import url_for, g
 from functools import wraps
 from datetime import datetime, timedelta
-from aniso8601 import parse_datetime, parse_time, parse_date
 import uuid
-import flask
 import json
-from chaos.formats import id_format
+import logging
+from math import ceil
+from flask import url_for, g
+import flask
+from aniso8601 import parse_datetime, parse_time, parse_date
+
+import pytz
 from jsonschema import ValidationError
+
+from chaos.formats import id_format
 from chaos.populate_pb import populate_pb
 from chaos.exceptions import HeaderAbsent, Unauthorized
 import chaos
-import pytz
-import logging
-from math import ceil
 
 
 def make_pager(resultset, endpoint, **kwargs):
