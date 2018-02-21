@@ -216,9 +216,9 @@ def is_pt_object_valid(pt_object, object_type, uris):
         if uris:
             return ((pt_object.type == object_type) and
                     (pt_object.uri in uris))
-        return (pt_object.type == object_type)
+        return pt_object.type == object_type
     elif uris:
-        return (pt_object.uri in uris)
+        return pt_object.uri in uris
     return False
 
 
@@ -480,9 +480,8 @@ def get_navitia_networks(result, pt_object, navitia, types):
         for key, value in objects.items():
             if key == types:
                 for navitia_object in value:
-                    if navitia_object['id'] == pt_object.uri:
-                        if objects['network'] not in networks:
-                            networks.append(objects['network'])
+                    if navitia_object['id'] == pt_object.uri and objects['network'] not in networks:
+                        networks.append(objects['network'])
     if not networks:
         networks = navitia.get_pt_object(pt_object.uri, pt_object.type, 'networks')
     return networks
