@@ -81,7 +81,7 @@ class Severity(flask_restful.Resource):
         if id:
             try:
                 severity = models.Severity.get(id, client.id)
-            except exceptions.ObjectUnknown, e:
+            except exceptions.ObjectUnknown as e:
                 return marshal({'error': {'message': utils.parse_error(e)}},
                                error_fields), 404
             return marshal({'severity': severity}, one_severity_fields)
@@ -96,7 +96,7 @@ class Severity(flask_restful.Resource):
         logging.getLogger(__name__).debug('Post severity: %s', json)
         try:
             validate(json, severity_input_format)
-        except ValidationError, e:
+        except ValidationError as e:
             logging.debug(str(e))
             # TODO: generate good error messages
             return marshal({'error': {'message': utils.parse_error(e)}},
@@ -107,7 +107,7 @@ class Severity(flask_restful.Resource):
         severity.client = client
         try:
             db_helper.manage_wordings(severity, json)
-        except exceptions.InvalidJson, e:
+        except exceptions.InvalidJson as e:
             return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 400
         db.session.add(severity)
@@ -122,7 +122,7 @@ class Severity(flask_restful.Resource):
 
         try:
             severity = models.Severity.get(id, client.id)
-        except exceptions.ObjectUnknown, e:
+        except exceptions.ObjectUnknown as e:
             return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 404
         json = request.get_json(silent=True)
@@ -130,7 +130,7 @@ class Severity(flask_restful.Resource):
 
         try:
             validate(json, severity_input_format)
-        except ValidationError, e:
+        except ValidationError as e:
             logging.debug(str(e))
             # TODO: generate good error messages
             return marshal({'error': {'message': utils.parse_error(e)}},
@@ -139,7 +139,7 @@ class Severity(flask_restful.Resource):
         mapper.fill_from_json(severity, json, mapper.severity_mapping)
         try:
             db_helper.manage_wordings(severity, json)
-        except exceptions.InvalidJson, e:
+        except exceptions.InvalidJson as e:
             return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 400
         db.session.commit()
@@ -153,7 +153,7 @@ class Severity(flask_restful.Resource):
 
         try:
             severity = models.Severity.get(id, client.id)
-        except exceptions.ObjectUnknown, e:
+        except exceptions.ObjectUnknown as e:
             return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 404
         severity.is_visible = False
@@ -273,10 +273,11 @@ class Disruptions(flask_restful.Resource):
             request.headers.get('X-Coverage'),
             request.headers.get('X-Contributors'),
             request.headers.get('Authorization'),
-            json.dumps(request.get_json(silent=True)),
+            json.dumps(
+                request.get_json(
+                    silent=True)),
             status_code,
-            json.dumps(response_content)
-        )
+            json.dumps(response_content))
         return response_content
 
     @validate_navitia()
@@ -289,7 +290,7 @@ class Disruptions(flask_restful.Resource):
 
         try:
             validate(json, disruptions_input_format)
-        except ValidationError, e:
+        except ValidationError as e:
             response = self.get_post_error_response_and_log(e, 400)
             return response, 400
         disruption = models.Disruption()
@@ -302,8 +303,9 @@ class Disruptions(flask_restful.Resource):
 
         # Add localization present in Json
         try:
-            db_helper.manage_pt_object_without_line_section(self.navitia, disruption.localizations, 'localization', json)
-        except exceptions.ObjectUnknown, e:
+            db_helper.manage_pt_object_without_line_section(
+                self.navitia, disruption.localizations, 'localization', json)
+        except exceptions.ObjectUnknown as e:
             response = self.get_post_error_response_and_log(e, 404)
             return response, 404
 
@@ -312,18 +314,18 @@ class Disruptions(flask_restful.Resource):
         # Add all impacts present in Json
         try:
             db_helper.manage_impacts(disruption, json, self.navitia)
-        except exceptions.ObjectUnknown, e:
+        except exceptions.ObjectUnknown as e:
             response = self.get_post_error_response_and_log(e, 404)
             return response, 404
 
         # Add all properties present in Json
         try:
             db_helper.manage_properties(disruption, json)
-        except exceptions.ObjectUnknown, e:
+        except exceptions.ObjectUnknown as e:
             response = self.get_post_error_response_and_log(e, 404)
             return response, 404
 
-        except exceptions.InvalidJson, e:
+        except exceptions.InvalidJson as e:
             response = self.get_post_error_response_and_log(e, 404)
             return response, 400
 
@@ -337,11 +339,11 @@ class Disruptions(flask_restful.Resource):
                 raise exceptions.NavitiaError(ex_msg)
 
             return marshal({'disruption': disruption}, one_disruption_fields), 201
-        except exceptions.NavitiaError, e:
+        except exceptions.NavitiaError as e:
             db.session.delete(disruption)
             db.session.commit()
             return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 503
-        except Exception, e:
+        except Exception as e:
             db.session.rollback()
             return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 500
 
@@ -358,14 +360,14 @@ class Disruptions(flask_restful.Resource):
 
         try:
             validate(json, disruptions_input_format)
-        except ValidationError, e:
+        except ValidationError as e:
             response = self.get_put_error_response_and_log(e, 400)
             return response, 400
 
         if disruption.is_published() and 'status' in json\
            and json['status'] == 'draft':
-                return marshal(
-                    {'error': {'message': 'The current disruption is already\
+            return marshal(
+                {'error': {'message': 'The current disruption is already\
  published and cannot get back to the \'draft\' status.'}}, error_fields), 409
 
         mapper.fill_from_json(disruption, json, mapper.disruption_mapping)
@@ -376,8 +378,9 @@ class Disruptions(flask_restful.Resource):
 
         # Add localization present in Json
         try:
-            db_helper.manage_pt_object_without_line_section(self.navitia, disruption.localizations, 'localization', json)
-        except exceptions.ObjectUnknown, e:
+            db_helper.manage_pt_object_without_line_section(
+                self.navitia, disruption.localizations, 'localization', json)
+        except exceptions.ObjectUnknown as e:
             response = self.get_put_error_response_and_log(e, 404)
             return response, 404
 
@@ -387,11 +390,11 @@ class Disruptions(flask_restful.Resource):
         # Add all impacts present in Json
         try:
             db_helper.manage_impacts(disruption, json, self.navitia)
-        except exceptions.ObjectUnknown, e:
+        except exceptions.ObjectUnknown as e:
             response = self.get_put_error_response_and_log(e, 404)
             return response, 404
 
-        except exceptions.InvalidJson, e:
+        except exceptions.InvalidJson as e:
             response = self.get_put_error_response_and_log(e, 404)
             return response, 404
 
@@ -411,12 +414,12 @@ class Disruptions(flask_restful.Resource):
                 return marshal(
                     {'error': {'message': 'An error occurred during transferring\
 this disruption to Navitia. Please try again.'}}, error_fields), 503
-        except Exception, e:
+        except Exception as e:
             db.session.rollback()
             return marshal(
                 {'error': {'message': '{}'.format(e.message)}},
                 error_fields
-                ), 500
+            ), 500
         return marshal({'disruption': disruption}, one_disruption_fields), 200
 
     @validate_contributor()
@@ -435,12 +438,12 @@ this disruption to Navitia. Please try again.'}}, error_fields), 503
             else:
                 db.session.rollback()
                 return marshal(
-                {'error': {'message': 'An error occurred during transferring\
+                    {'error': {'message': 'An error occurred during transferring\
 this disruption to Navitia. Please try again.'}}, error_fields), 503
-        except:
+        except BaseException:
             db.session.rollback()
         return marshal(
-                {'error': {'message': 'An error occurred during deletion\
+            {'error': {'message': 'An error occurred during deletion\
 . Please try again.'}}, error_fields), 500
 
 
@@ -475,7 +478,7 @@ class Cause(flask_restful.Resource):
         logging.getLogger(__name__).debug('Post cause: %s', json)
         try:
             validate(json, cause_input_format)
-        except ValidationError, e:
+        except ValidationError as e:
             logging.debug(str(e))
             # TODO: generate good error messages
             return marshal({'error': {'message': utils.parse_error(e)}},
@@ -486,7 +489,7 @@ class Cause(flask_restful.Resource):
         cause.client = client
         try:
             db_helper.manage_wordings(cause, json)
-        except exceptions.InvalidJson, e:
+        except exceptions.InvalidJson as e:
             return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 400
         db.session.add(cause)
@@ -504,7 +507,7 @@ class Cause(flask_restful.Resource):
 
         try:
             validate(json, cause_input_format)
-        except ValidationError, e:
+        except ValidationError as e:
             logging.debug(str(e))
             # TODO: generate good error messages
             return marshal({'error': {'message': utils.parse_error(e)}},
@@ -513,7 +516,7 @@ class Cause(flask_restful.Resource):
         mapper.fill_from_json(cause, json, mapper.cause_mapping)
         try:
             db_helper.manage_wordings(cause, json)
-        except exceptions.InvalidJson, e:
+        except exceptions.InvalidJson as e:
             return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 400
         db.session.commit()
@@ -550,7 +553,7 @@ class Tag(flask_restful.Resource):
         logging.getLogger(__name__).debug('Post tag: %s', json)
         try:
             validate(json, tag_input_format)
-        except ValidationError, e:
+        except ValidationError as e:
             logging.debug(str(e))
             # TODO: generate good error messages
             return marshal({'error': {'message': utils.parse_error(e)}},
@@ -571,7 +574,7 @@ class Tag(flask_restful.Resource):
         try:
             db.session.commit()
             db.session.refresh(tag)
-        except IntegrityError, e:
+        except IntegrityError as e:
             logging.debug(str(e))
             return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 400
@@ -587,7 +590,7 @@ class Tag(flask_restful.Resource):
 
         try:
             validate(json, tag_input_format)
-        except ValidationError, e:
+        except ValidationError as e:
             logging.debug(str(e))
             # TODO: generate good error messages
             return marshal({'error': {'message': utils.parse_error(e)}},
@@ -597,7 +600,7 @@ class Tag(flask_restful.Resource):
         try:
             db.session.commit()
             db.session.refresh(tag)
-        except IntegrityError, e:
+        except IntegrityError as e:
             logging.debug(str(e))
             return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 400
@@ -633,7 +636,7 @@ class Category(flask_restful.Resource):
         logging.getLogger(__name__).debug('Post category: %s', json)
         try:
             validate(json, category_input_format)
-        except ValidationError, e:
+        except ValidationError as e:
             logging.debug(str(e))
             # TODO: generate good error messages
             return marshal({'error': {'message': utils.parse_error(e)}},
@@ -653,7 +656,7 @@ class Category(flask_restful.Resource):
         try:
             db.session.commit()
             db.session.refresh(category)
-        except IntegrityError, e:
+        except IntegrityError as e:
             logging.debug(str(e))
             return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 400
@@ -669,7 +672,7 @@ class Category(flask_restful.Resource):
 
         try:
             validate(json, category_input_format)
-        except ValidationError, e:
+        except ValidationError as e:
             logging.debug(str(e))
             # TODO: generate good error messages
             return marshal({'error': {'message': utils.parse_error(e)}},
@@ -679,7 +682,7 @@ class Category(flask_restful.Resource):
         try:
             db.session.commit()
             db.session.refresh(category)
-        except IntegrityError, e:
+        except IntegrityError as e:
             logging.debug(str(e))
             return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 400
@@ -722,8 +725,8 @@ class ImpactsByObject(flask_restful.Resource):
         uris = args['uri[]']
 
         if not pt_object_type and not uris:
-                return marshal({'error': {'message': "object type or uri object invalid"}},
-                               error_fields), 400
+            return marshal({'error': {'message': "object type or uri object invalid"}},
+                           error_fields), 400
         impacts = models.Impact.all_with_filter(
             start_date,
             end_date,
@@ -756,7 +759,7 @@ class Impacts(flask_restful.Resource):
         else:
             if not id_format.match(disruption_id):
                 return marshal({'error': {'message': "disruption_id invalid"}},
-                           error_fields), 400
+                               error_fields), 400
             args = self.parsers['get'].parse_args()
             page_index = args['start_page']
             if page_index == 0:
@@ -787,7 +790,7 @@ class Impacts(flask_restful.Resource):
 
         try:
             validate(json, impact_input_format)
-        except ValidationError, e:
+        except ValidationError as e:
             logging.debug(str(e))
             # TODO: generate good error messages
             return marshal({'error': {'message': utils.parse_error(e)}},
@@ -796,10 +799,10 @@ class Impacts(flask_restful.Resource):
         disruption = models.Disruption.get(disruption_id, contributor.id)
         try:
             impact = db_helper.create_or_update_impact(disruption, json, self.navitia)
-        except exceptions.ObjectUnknown, e:
+        except exceptions.ObjectUnknown as e:
             return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 404
-        except exceptions.InvalidJson, e:
+        except exceptions.InvalidJson as e:
             return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 400
 
         disruption.upgrade_version()
@@ -810,16 +813,16 @@ class Impacts(flask_restful.Resource):
                 ex_msg = 'An error occurred during transferring this impact to Navitia. Please try again'
                 raise exceptions.NavitiaError(ex_msg)
             return marshal({'impact': impact}, one_impact_fields), 201
-        except exceptions.NavitiaError, e:
+        except exceptions.NavitiaError as e:
             db.session.delete(impact)
             db.session.commit()
             return marshal({'error': {'message': '{}'.format(e.message)}}, fields.error_fields), 503
-        except Exception, e:
+        except Exception as e:
             db.session.rollback()
             return marshal(
                 {'error': {'message': '{}'.format(e.message)}},
                 error_fields
-                ), 500
+            ), 500
 
     @validate_client()
     @validate_contributor()
@@ -833,7 +836,7 @@ class Impacts(flask_restful.Resource):
 
         try:
             validate(json, impact_input_format)
-        except ValidationError, e:
+        except ValidationError as e:
             logging.debug(str(e))
             # TODO: generate good error messages
             return marshal({'error': {'message': utils.parse_error(e)}},
@@ -842,10 +845,10 @@ class Impacts(flask_restful.Resource):
         disruption = models.Disruption.get(disruption_id, contributor.id)
         try:
             impact = db_helper.create_or_update_impact(disruption, json, self.navitia, id)
-        except exceptions.ObjectUnknown, e:
+        except exceptions.ObjectUnknown as e:
             return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 404
-        except exceptions.InvalidJson, e:
+        except exceptions.InvalidJson as e:
             return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 400
         disruption = models.Disruption.get(disruption_id, contributor.id)
         disruption.upgrade_version()
@@ -856,12 +859,12 @@ class Impacts(flask_restful.Resource):
                 return marshal(
                     {'error': {'message': 'An error occurred during transferring\
 this impact to Navitia. Please try again.'}}, error_fields), 503
-        except Exception, e:
+        except Exception as e:
             db.session.rollback()
             return marshal(
                 {'error': {'message': '{}'.format(e.message)}},
                 error_fields
-                ), 500
+            ), 500
         return marshal({'impact': impact}, one_impact_fields), 200
 
     @validate_contributor()
@@ -879,12 +882,12 @@ this impact to Navitia. Please try again.'}}, error_fields), 503
             else:
                 db.session.rollback()
                 return marshal(
-                {'error': {'message': 'An error occurred during transferring\
+                    {'error': {'message': 'An error occurred during transferring\
 this impact to Navitia. Please try again.'}}, error_fields), 503
-        except:
+        except BaseException:
             db.session.rollback()
         return marshal(
-                {'error': {'message': 'An error occurred during deletion\
+            {'error': {'message': 'An error occurred during deletion\
 . Please try again.'}}, error_fields), 500
 
 
@@ -907,7 +910,7 @@ class Channel(flask_restful.Resource):
         logging.getLogger(__name__).debug('Post channel: %s', json)
         try:
             validate(json, channel_input_format)
-        except ValidationError, e:
+        except ValidationError as e:
             logging.debug(str(e))
             # TODO: generate good error messages
             return marshal({'error': {'message': utils.parse_error(e)}},
@@ -918,7 +921,7 @@ class Channel(flask_restful.Resource):
         channel.client = client
         try:
             db_helper.manage_channel_types(channel, json["types"])
-        except exceptions.InvalidJson, e:
+        except exceptions.InvalidJson as e:
             return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 400
         db.session.add(channel)
@@ -936,7 +939,7 @@ class Channel(flask_restful.Resource):
 
         try:
             validate(json, channel_input_format)
-        except ValidationError, e:
+        except ValidationError as e:
             logging.debug(str(e))
             # TODO: generate good error messages
             return marshal({'error': {'message': utils.parse_error(e)}},
@@ -945,7 +948,7 @@ class Channel(flask_restful.Resource):
         mapper.fill_from_json(channel, json, mapper.channel_mapping)
         try:
             db_helper.manage_channel_types(channel, json["types"])
-        except exceptions.InvalidJson, e:
+        except exceptions.InvalidJson as e:
             return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 400
         db.session.commit()
@@ -1056,7 +1059,7 @@ class Property(flask_restful.Resource):
 
         try:
             validate(json, property_input_format)
-        except ValidationError, e:
+        except ValidationError as e:
             return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 400
 
@@ -1068,7 +1071,7 @@ class Property(flask_restful.Resource):
         try:
             db.session.commit()
             db.session.refresh(property)
-        except IntegrityError, e:
+        except IntegrityError as e:
             return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 409
 
@@ -1090,7 +1093,7 @@ class Property(flask_restful.Resource):
 
         try:
             validate(json, property_input_format)
-        except ValidationError, e:
+        except ValidationError as e:
             return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 400
 
@@ -1099,7 +1102,7 @@ class Property(flask_restful.Resource):
         try:
             db.session.commit()
             db.session.refresh(property)
-        except IntegrityError, e:
+        except IntegrityError as e:
             return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 409
 

@@ -9,7 +9,10 @@ DEBUG = (os.getenv('DEBUG', 1) == 1)
 NAVITIA_URL = str(os.getenv('NAVITIA_URL', 'http://navitia2-ws.ctp.dev.canaltp.fr'))
 
 # rabbitmq connections string: http://kombu.readthedocs.org/en/latest/userguide/connections.html#urls
-RABBITMQ_CONNECTION_STRING = str(os.getenv('RABBITMQ_CONNECTION_STRING', 'pyamqp://guest:guest@localhost:5672//?heartbeat=60'))
+RABBITMQ_CONNECTION_STRING = str(
+    os.getenv(
+        'RABBITMQ_CONNECTION_STRING',
+        'pyamqp://guest:guest@localhost:5672//?heartbeat=60'))
 
 # Cache configuration, see https://pythonhosted.org/Flask-Cache/ for more information
 cache_type = str(os.getenv('CACHE_TYPE', 'simple'))

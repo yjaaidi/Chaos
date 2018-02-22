@@ -129,6 +129,7 @@ def make_fake_pager(resultcount, per_page, endpoint, **kwargs):
     }
     return result
 
+
 class paginate(object):
     def __call__(self, func):
         @wraps(func)
@@ -154,7 +155,7 @@ def get_datetime(value, name):
     """
     try:
         return parse_datetime(value).replace(tzinfo=None)
-    except:
+    except BaseException:
         raise ValueError("The {} argument value is not valid, you gave: {}"
                          .format(name, value))
 
@@ -170,7 +171,7 @@ def get_utc_datetime_by_zone(value, time_zone):
         current_tz = pytz.timezone(time_zone)
 
         return current_tz.localize(value).astimezone(pytz.utc).replace(tzinfo=None)
-    except:
+    except BaseException:
         raise ValueError("The {} argument value is not valid, you gave: {}"
                          .format(value, time_zone))
 
@@ -199,6 +200,7 @@ class Request(flask.Request):
     """
     override the request of flask to add an id on all request
     """
+
     def __init__(self, *args, **kwargs):
         super(Request, self).__init__(*args, **kwargs)
         self.id = str(uuid.uuid4())
@@ -549,16 +551,14 @@ def create_line_section(navitia_object, line_section_obj):
                     "type": 'line',
                     "code": navitia_object["code"]
                 },
-                "start_point":
-                    {
-                        "id": line_section_obj.start_point.uri,
-                        "type": line_section_obj.start_point.type
-                    },
-                "end_point":
-                    {
-                        "id": line_section_obj.end_point.uri,
-                        "type": line_section_obj.end_point.type
-                    },
+                "start_point": {
+                    "id": line_section_obj.start_point.uri,
+                    "type": line_section_obj.start_point.type
+                },
+                "end_point": {
+                    "id": line_section_obj.end_point.uri,
+                    "type": line_section_obj.end_point.type
+                },
                 "routes": line_section_obj.routes,
                 "via": line_section_obj.via,
                 "metas": line_section_obj.wordings
@@ -620,6 +620,7 @@ def get_traffic_report_objects(disruptions, navitia, line_sections_by_objid):
 
     return result
 
+
 def get_clients_tokens(file_path):
     """
         Load clients and tokens from configuration file
@@ -641,6 +642,7 @@ def get_clients_tokens(file_path):
 
     return clients_tokens
 
+
 def client_token_is_allowed(clients_tokens, client_code, token):
     """
         Validates that the pair of client / token is allowed in configuration file
@@ -658,7 +660,6 @@ def client_token_is_allowed(clients_tokens, client_code, token):
 
         :raise Unauthorized: When the pair of client / token isn't allowed
     """
-
 
     # If the configuration doesn't exist, allow the action (backward compatibility)
     if clients_tokens is None:

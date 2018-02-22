@@ -35,7 +35,7 @@ class Publisher(object):
                 publish = producer.connection.ensure(producer, producer.publish, max_retries=3)
                 publish(item, exchange=self._exchange, routing_key=contributor, declare=[self._exchange])
                 logging.getLogger(__name__).info('Publishing message on exchange %s', self._exchange.name)
-            except:
+            except BaseException:
                 self.is_connected = False
                 logging.exception("Impossible to publish message to rabbitmq")
             finally:
