@@ -35,6 +35,7 @@ from chaos import cache, app
 
 __all__ = ['Navitia']
 
+
 class Navitia(object):
     def __init__(self, url, coverage, token=None, timeout=1):
         self.url = url

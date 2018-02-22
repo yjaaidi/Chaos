@@ -37,6 +37,7 @@ try:
 except ImportError:
     pass
 
+
 class cache(object):
 
     def __init__(self, host='localhost', port=6379, db=0, password=None,
@@ -48,7 +49,7 @@ class cache(object):
         self.logger = logging.getLogger(__name__)
         if not disabled:
             self.logger.info('connection to redis://{host}:{port}/{db}'.format(
-                        host=host, port=port, db=db))
+                host=host, port=port, db=db))
             from redis import Redis
             self._redis = Redis(host=host, port=port, db=db, password=password)
         else:
@@ -57,7 +58,6 @@ class cache(object):
     def _build_key(self, key, prefix):
         return '{0}{1}{2}'.format(prefix, self.separator, key)
 
-
     def get(self, prefix, key):
         if self._disabled:
             return None
@@ -65,7 +65,7 @@ class cache(object):
         self.logger.debug('get %s from redis', full_key)
         try:
             cached = self._redis.get(full_key)
-        except ConnectionError, e:
+        except ConnectionError as e:
             self.logger.error('Redis is down, cache is disabled: %s', e)
             return None
         if cached:
@@ -80,7 +80,7 @@ class cache(object):
         self.logger.debug('set %s to redis with %s ttl', full_key, ttl)
         try:
             self._redis.set(full_key, cPickle.dumps(obj))
-        except ConnectionError, e:
+        except ConnectionError as e:
             self.logger.error('Redis is down, cache is disabled: %s', e)
             return
         ttl = (ttl or self._default_ttl)
@@ -90,8 +90,10 @@ class cache(object):
 
 cache = cache(disabled=True)
 
+
 def get_cache():
     return cache
+
 
 def init_cache(host='localhost', port=6379, db=0, password=None,
                default_ttl=None):

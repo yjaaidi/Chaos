@@ -69,7 +69,7 @@ def manage_pt_object_without_line_section(navitia, db_objects, json_attribute, j
     '''
     pt_object_db = dict()
     for ptobject in db_objects:
-            pt_object_db[ptobject.uri] = ptobject
+        pt_object_db[ptobject.uri] = ptobject
 
     pt_object_dict = dict()
     if json_attribute in json_data:
@@ -92,7 +92,7 @@ def manage_pt_object_without_line_section(navitia, db_objects, json_attribute, j
 def manage_wordings(db_object, json):
     db_object.delete_wordings()
 
-    #handle wordings
+    # handle wordings
     wordings = json['wordings']
 
     for json_wording in wordings:
@@ -105,11 +105,12 @@ def manage_wordings(db_object, json):
         db_wording.value = json_wording["value"]
         db_object.wordings.append(db_wording)
 
-    #handle wording
+    # handle wording
     wording = db_object.wordings[0].value
     if 'wording' in json:
         wording = json['wording']
     db_object.wording = wording
+
 
 def manage_tags(disruption, json):
     tags_db = dict((tag.id, tag) for tag in disruption.tags)
@@ -137,7 +138,7 @@ def fill_and_add_line_section(navitia, impact_id, all_objects, pt_object_json):
     ptobject = models.PTobject()
     mapper.fill_from_json(ptobject, pt_object_json, mapper.object_mapping)
 
-    #Here we treat all the objects in line_section like line, start_point, end_point
+    # Here we treat all the objects in line_section like line, start_point, end_point
     line_section_json = pt_object_json['line_section']
 
     ptobject.uri = ":".join((line_section_json['line']['id'], ptobject.id))
@@ -147,23 +148,32 @@ def fill_and_add_line_section(navitia, impact_id, all_objects, pt_object_json):
     try:
         line_object = fill_and_get_pt_object(navitia, all_objects, line_section_json['line'])
     except exceptions.ObjectUnknown:
-        raise exceptions.ObjectUnknown('{} {} doesn\'t exist'.format(line_section_json['line']['type'], line_section_json['line']['id']))
+        raise exceptions.ObjectUnknown(
+            '{} {} doesn\'t exist'.format(
+                line_section_json['line']['type'],
+                line_section_json['line']['id']))
 
     line_section.line = line_object
 
     try:
         start_object = fill_and_get_pt_object(navitia, all_objects, line_section_json['start_point'])
     except exceptions.ObjectUnknown:
-        raise exceptions.ObjectUnknown('{} {} doesn\'t exist'.format(line_section_json['line']['type'], line_section_json['line']['id']))
+        raise exceptions.ObjectUnknown(
+            '{} {} doesn\'t exist'.format(
+                line_section_json['line']['type'],
+                line_section_json['line']['id']))
     line_section.start_point = start_object
 
     try:
         end_object = fill_and_get_pt_object(navitia, all_objects, line_section_json['end_point'])
     except exceptions.ObjectUnknown:
-        raise exceptions.ObjectUnknown('{} {} doesn\'t exist'.format(line_section_json['line']['type'], line_section_json['line']['id']))
+        raise exceptions.ObjectUnknown(
+            '{} {} doesn\'t exist'.format(
+                line_section_json['line']['type'],
+                line_section_json['line']['id']))
     line_section.end_point = end_object
 
-    #Here we manage routes in line_section
+    # Here we manage routes in line_section
     #"routes":[{"id":"route:MTD:9", "type": "route"}, {"id":"route:MTD:Nav23", "type": "route"}]
     if 'routes' in line_section_json:
         for route in line_section_json["routes"]:
@@ -173,7 +183,7 @@ def fill_and_add_line_section(navitia, impact_id, all_objects, pt_object_json):
             except exceptions.ObjectUnknown:
                 raise exceptions.ObjectUnknown('{} {} doesn\'t exist'.format(route['type'], route['id']))
 
-    #Here we manage via in line_section
+    # Here we manage via in line_section
     #"via":[{"id":"stop_area:MTD:9", "type": "stop_area"}, {"id":"stop_area:MTD:Nav23", "type": "stop_area"}]
     if 'via' in line_section_json:
         for via in line_section_json["via"]:
@@ -183,11 +193,11 @@ def fill_and_add_line_section(navitia, impact_id, all_objects, pt_object_json):
             except exceptions.ObjectUnknown:
                 raise exceptions.ObjectUnknown('{} {} doesn\'t exist'.format(via['type'], via['id']))
 
-    #Fill sens from json
+    # Fill sens from json
     if 'sens' in line_section_json:
         line_section.sens = line_section_json["sens"]
 
-    #Fill wordings from json
+    # Fill wordings from json
     #"meta":[{"key":"direction", "value": "1234"}, {"key":"direction", "value": "5678"}]
     if 'metas' in line_section_json:
         try:
@@ -264,9 +274,9 @@ def create_or_update_impact(disruption, json_impact, navitia, impact_id=None):
         impact_bd.notification_date = json_impact['notification_date']
 
     db.session.add(impact_bd)
-    #The ptobject is not added in the database before commit. If we have duplicate ptobject
-    #in the json we have to handle it by using a dictionary. Each time we add a ptobject, we also
-    #add it in the dictionary
+    # The ptobject is not added in the database before commit. If we have duplicate ptobject
+    # in the json we have to handle it by using a dictionary. Each time we add a ptobject, we also
+    # add it in the dictionary
     try:
         manage_pt_object_without_line_section(navitia, impact_bd.objects, 'objects', json_impact)
     except exceptions.ObjectUnknown:
@@ -274,12 +284,13 @@ def create_or_update_impact(disruption, json_impact, navitia, impact_id=None):
     all_objects = dict()
     if 'objects' in json_impact:
         for pt_object_json in json_impact['objects']:
-            #For an pt_objects of the type 'line_section' we format uri : uri:impact_id
+            # For an pt_objects of the type 'line_section' we format uri : uri:impact_id
             # we insert this object in the table pt_object
             if pt_object_json["type"] == 'line_section':
                 try:
                     ptobject = fill_and_add_line_section(navitia, impact_bd.id, all_objects, pt_object_json)
-                except exceptions.ObjectUnknown, exceptions.InvalidJson:
+                except exceptions.ObjectUnknown as xxx_todo_changeme:
+                    exceptions.InvalidJson = xxx_todo_changeme
                     raise
                 impact_bd.objects.append(ptobject)
      # Severity
@@ -288,9 +299,9 @@ def create_or_update_impact(disruption, json_impact, navitia, impact_id=None):
         impact_bd.severity_id = severity_json['id']
         impact_bd.severity = models.Severity.get(impact_bd.severity_id, disruption.client.id)
 
-    #For each object application_period_patterns create and fill a pattern and time_slots
+    # For each object application_period_patterns create and fill a pattern and time_slots
     manage_patterns(impact_bd, json_impact)
-    #This method creates a list of application periods either from application_period_patterns
+    # This method creates a list of application periods either from application_period_patterns
     # or from apllication_periods in the data json
     app_periods_by_pattern = get_application_periods(json_impact)
     manage_application_periods(impact_bd, app_periods_by_pattern)

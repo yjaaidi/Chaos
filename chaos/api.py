@@ -101,6 +101,7 @@ def error_handler(exception):
     """
     app.logger.exception('')
 
+
 if api.app.config.get('ACTIVATE_PROFILING'):
     api.app.logger.warning('=======================================================')
     api.app.logger.warning('activation of the profiling, all query will be slow !')

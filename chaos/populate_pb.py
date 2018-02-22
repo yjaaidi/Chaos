@@ -75,15 +75,15 @@ def created_upated_at(src, dest):
 
 def get_severity_effect_value(effect):
     available_effects = {
-        'no_service':           gtfs_realtime_pb2.Alert.NO_SERVICE,
-        'reduced_service':      gtfs_realtime_pb2.Alert.REDUCED_SERVICE,
-        'significant_delays':   gtfs_realtime_pb2.Alert.SIGNIFICANT_DELAYS,
-        'detour':               gtfs_realtime_pb2.Alert.DETOUR,
-        'additional_service':   gtfs_realtime_pb2.Alert.ADDITIONAL_SERVICE,
-        'modified_service':     gtfs_realtime_pb2.Alert.MODIFIED_SERVICE,
-        'other_effect':         gtfs_realtime_pb2.Alert.OTHER_EFFECT,
-        'unknown_effect':       gtfs_realtime_pb2.Alert.UNKNOWN_EFFECT,
-        'stop_moved':           gtfs_realtime_pb2.Alert.STOP_MOVED
+        'no_service': gtfs_realtime_pb2.Alert.NO_SERVICE,
+        'reduced_service': gtfs_realtime_pb2.Alert.REDUCED_SERVICE,
+        'significant_delays': gtfs_realtime_pb2.Alert.SIGNIFICANT_DELAYS,
+        'detour': gtfs_realtime_pb2.Alert.DETOUR,
+        'additional_service': gtfs_realtime_pb2.Alert.ADDITIONAL_SERVICE,
+        'modified_service': gtfs_realtime_pb2.Alert.MODIFIED_SERVICE,
+        'other_effect': gtfs_realtime_pb2.Alert.OTHER_EFFECT,
+        'unknown_effect': gtfs_realtime_pb2.Alert.UNKNOWN_EFFECT,
+        'stop_moved': gtfs_realtime_pb2.Alert.STOP_MOVED
     }
     if effect in available_effects.keys():
         return available_effects[effect]
@@ -165,7 +165,7 @@ def populate_impact(disruption, disruption_pb):
         if impact.status == "published":
             impact_pb = disruption_pb.impacts.add()
             impact_pb.id = impact.id
-            if hasattr(impact, 'send_notifications') and impact.send_notifications == True:
+            if hasattr(impact, 'send_notifications') and impact.send_notifications:
                 impact_pb.send_notifications = impact.send_notifications
             if hasattr(impact, 'notification_date') and impact.notification_date:
                 impact_pb.notification_date = get_pos_time(impact.notification_date)
@@ -243,7 +243,6 @@ def populate_pb(disruption):
     feed_message.header.gtfs_realtime_version = '1.0'
     feed_message.header.incrementality = gtfs_realtime_pb2.FeedHeader.DIFFERENTIAL
     feed_message.header.timestamp = get_pos_time(datetime.datetime.utcnow())
-
 
     feed_entity = feed_message.entity.add()
     feed_entity.id = disruption.id

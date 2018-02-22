@@ -45,7 +45,7 @@ class validate_client(object):
         def wrapper(*args, **kwargs):
             try:
                 client_code = get_client_code(request)
-            except exceptions.HeaderAbsent, e:
+            except exceptions.HeaderAbsent as e:
                 return marshal({'error': {'message': utils.parse_error(e)}},
                                fields.error_fields), 400
             if self.create_client:
@@ -67,7 +67,7 @@ class validate_contributor(object):
         def wrapper(*args, **kwargs):
             try:
                 contributor_code = get_contributor_code(request)
-            except exceptions.HeaderAbsent, e:
+            except exceptions.HeaderAbsent as e:
                 return marshal({'error': {'message': utils.parse_error(e)}},
                                fields.error_fields), 400
             contributor = models.Contributor.get_by_code(contributor_code)
@@ -87,7 +87,7 @@ class validate_navitia(object):
             try:
                 coverage = get_coverage(request)
                 token = get_token(request)
-            except exceptions.HeaderAbsent, e:
+            except exceptions.HeaderAbsent as e:
                 return marshal(
                     {'error': {'message': utils.parse_error(e)}},
                     fields.error_fields
@@ -103,7 +103,7 @@ class manage_navitia_error(object):
         def wrapper(*args, **kwargs):
             try:
                 return func(*args, **kwargs)
-            except exceptions.NavitiaError, e:
+            except exceptions.NavitiaError as e:
                 return marshal(
                     {'error': {'message': '{}'.format(e.message)}},
                     fields.error_fields
@@ -145,7 +145,7 @@ class validate_client_token(object):
                 token = get_token(request)
                 client_code = get_client_code(request)
                 client_token_is_allowed(self.clients_tokens, client_code, token)
-            except (exceptions.HeaderAbsent, exceptions.Unauthorized), e:
+            except (exceptions.HeaderAbsent, exceptions.Unauthorized) as e:
                 return marshal(
                     {'error': {'message': utils.parse_error(e)}},
                     fields.error_fields
