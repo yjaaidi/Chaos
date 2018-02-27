@@ -34,7 +34,6 @@ from chaos import exceptions, models, utils, fields
 from flask_restful import marshal
 from flask import request, current_app
 from formats import id_format
-import logging
 from os import path
 
 
