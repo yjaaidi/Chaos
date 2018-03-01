@@ -63,6 +63,7 @@ channel_type_values = [
 ]
 disruption_status_values = ["published", "draft"]
 
+
 def get_object_format(object_type):
     return {
         'type': 'object',
@@ -72,6 +73,7 @@ def get_object_format(object_type):
         },
         'required': ['id', 'type']
     }
+
 
 key_value_input_format = {
     'type': 'object',
@@ -241,7 +243,7 @@ channel_input_format = {
         'content_type': {'type': 'string', 'maxLength': 250},
         'types': {
             'type': 'array',
-            'items':   channel_type_input_format,
+            'items': channel_type_input_format,
             'uniqueItems': True,
             'minItems': 1
         }

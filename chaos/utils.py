@@ -28,21 +28,23 @@
 # www.navitia.io
 
 from os import path
-from flask import url_for, g
 from functools import wraps
 from datetime import datetime, timedelta
-from aniso8601 import parse_datetime, parse_time, parse_date
 import uuid
-import flask
 import json
-from chaos.formats import id_format
+import logging
+from math import ceil
+from flask import url_for, g
+import flask
+from aniso8601 import parse_datetime, parse_time, parse_date
+
+import pytz
 from jsonschema import ValidationError
+
+from chaos.formats import id_format
 from chaos.populate_pb import populate_pb
 from chaos.exceptions import HeaderAbsent, Unauthorized
 import chaos
-import pytz
-import logging
-from math import ceil
 
 
 def make_pager(resultset, endpoint, **kwargs):
@@ -127,6 +129,7 @@ def make_fake_pager(resultcount, per_page, endpoint, **kwargs):
     }
     return result
 
+
 class paginate(object):
     def __call__(self, func):
         @wraps(func)
@@ -152,7 +155,7 @@ def get_datetime(value, name):
     """
     try:
         return parse_datetime(value).replace(tzinfo=None)
-    except:
+    except BaseException:
         raise ValueError("The {} argument value is not valid, you gave: {}"
                          .format(name, value))
 
@@ -165,10 +168,10 @@ def get_utc_datetime_by_zone(value, time_zone):
         :return: DateTime in UTC
     """
     try:
-        tz = pytz.timezone(time_zone)
+        current_tz = pytz.timezone(time_zone)
 
-        return tz.localize(value).astimezone(pytz.utc).replace(tzinfo=None)
-    except:
+        return current_tz.localize(value).astimezone(pytz.utc).replace(tzinfo=None)
+    except BaseException:
         raise ValueError("The {} argument value is not valid, you gave: {}"
                          .format(value, time_zone))
 
@@ -180,8 +183,7 @@ def get_current_time():
     """
     if 'current_time' in g and g.current_time:
         return g.current_time
-    else:
-        return datetime.utcnow()
+    return datetime.utcnow()
 
 
 def option_value(values):
@@ -198,6 +200,7 @@ class Request(flask.Request):
     """
     override the request of flask to add an id on all request
     """
+
     def __init__(self, *args, **kwargs):
         super(Request, self).__init__(*args, **kwargs)
         self.id = str(uuid.uuid4())
@@ -215,12 +218,10 @@ def is_pt_object_valid(pt_object, object_type, uris):
         if uris:
             return ((pt_object.type == object_type) and
                     (pt_object.uri in uris))
-        else:
-            return (pt_object.type == object_type)
+        return pt_object.type == object_type
     elif uris:
-        return (pt_object.uri in uris)
-    else:
-        return False
+        return pt_object.uri in uris
+    return False
 
 
 def get_object_in_line_section_by_uri(pt_object, uris):
@@ -311,7 +312,7 @@ def group_impacts_by_pt_object(impacts, object_type, uris, get_pt_object):
                 if not result:
                     pt_object = None
             else:
-                pt_object = get_object_in_line_section(pt_object,  object_type, uris)
+                pt_object = get_object_in_line_section(pt_object, object_type, uris)
             if pt_object:
                 if pt_object.uri in dictionary:
                     resp = dictionary[pt_object.uri]
@@ -468,8 +469,7 @@ def manage_network(result, impact, pt_object, navitia):
             add_network(result, navitia_network)
         else:
             logging.getLogger(__name__).debug(
-                'PtObject ignored : {type} [{uri}].'.
-                format(type=pt_object.type, uri=pt_object.uri)
+                'PtObject ignored : %s [%s].', pt_object.type, pt_object.uri
             )
     if navitia_network:
         navitia_network["impacts"].append(impact)
@@ -482,10 +482,9 @@ def get_navitia_networks(result, pt_object, navitia, types):
         for key, value in objects.items():
             if key == types:
                 for navitia_object in value:
-                    if navitia_object['id'] == pt_object.uri:
-                        if objects['network'] not in networks:
-                            networks.append(objects['network'])
-    if len(networks) == 0:
+                    if navitia_object['id'] == pt_object.uri and objects['network'] not in networks:
+                        networks.append(objects['network'])
+    if not networks:
         networks = navitia.get_pt_object(pt_object.uri, pt_object.type, 'networks')
     return networks
 
@@ -512,7 +511,8 @@ def manage_other_object(result, impact, pt_object, navitia, types, line_sections
                 list_objects = []
             navitia_object = get_pt_object_from_list(pt_object, list_objects)
             if not navitia_object:
-                navitia_object = navitia.get_pt_object(pt_object_for_navitia_research.uri, pt_object_for_navitia_research.type)
+                navitia_object = navitia.get_pt_object(pt_object_for_navitia_research.uri,
+                                                       pt_object_for_navitia_research.type)
                 if navitia_object:
                     if types == 'line_sections':
                         navitia_object = create_line_section(navitia_object, line_sections_by_objid[pt_object.id])
@@ -526,18 +526,16 @@ def manage_other_object(result, impact, pt_object, navitia, types, line_sections
                         append(navitia_object)
                 else:
                     logging.getLogger(__name__).debug(
-                        'PtObject ignored : {type} [{uri}], '
-                        'not found in navitia.'.
-                        format(type=pt_object.type, uri=pt_object.uri)
+                        'PtObject ignored : %s [%s], '
+                        'not found in navitia.', pt_object.type, pt_object.uri
                     )
             else:
                 navitia_object["impacts"].append(impact)
                 fill_impacts_used(result, impact)
     else:
         logging.getLogger(__name__).debug(
-            'PtObject ignored : {type} [{uri}], '
-            'not found network in navitia.'.
-            format(type=pt_object.type, uri=pt_object.uri)
+            'PtObject ignored : %s [%s], '
+            'not found network in navitia.', pt_object.type, pt_object.uri
         )
 
 
@@ -553,16 +551,14 @@ def create_line_section(navitia_object, line_section_obj):
                     "type": 'line',
                     "code": navitia_object["code"]
                 },
-                "start_point":
-                    {
-                        "id": line_section_obj.start_point.uri,
-                        "type": line_section_obj.start_point.type
-                    },
-                "end_point":
-                    {
-                        "id": line_section_obj.end_point.uri,
-                        "type": line_section_obj.end_point.type
-                    },
+                "start_point": {
+                    "id": line_section_obj.start_point.uri,
+                    "type": line_section_obj.start_point.type
+                },
+                "end_point": {
+                    "id": line_section_obj.end_point.uri,
+                    "type": line_section_obj.end_point.type
+                },
                 "routes": line_section_obj.routes,
                 "via": line_section_obj.via,
                 "metas": line_section_obj.wordings
@@ -615,13 +611,15 @@ def get_traffic_report_objects(disruptions, navitia, line_sections_by_objid):
                     else:
                         if pt_object.type not in collections:
                             logging.getLogger(__name__).debug(
-                                'PtObject ignored: {type} [{uri}], not in collections {col}'.
-                                format(type=pt_object.type, uri=pt_object.uri, col=collections)
+                                'PtObject ignored: %s [%s], not in collections %s',
+                                pt_object.type, pt_object.uri, collections
                             )
                             continue
-                        manage_other_object(result, impact, pt_object, navitia, collections[pt_object.type], line_sections_by_objid)
+                        manage_other_object(result, impact, pt_object, navitia, collections[pt_object.type],
+                                            line_sections_by_objid)
 
     return result
+
 
 def get_clients_tokens(file_path):
     """
@@ -639,10 +637,11 @@ def get_clients_tokens(file_path):
     if not path.exists(file_path):
         return None
 
-    with open(file_path, 'r') as f:
-        clients_tokens = json.load(f)
+    with open(file_path, 'r') as tokens_file:
+        clients_tokens = json.load(tokens_file)
 
     return clients_tokens
+
 
 def client_token_is_allowed(clients_tokens, client_code, token):
     """
@@ -661,7 +660,6 @@ def client_token_is_allowed(clients_tokens, client_code, token):
 
         :raise Unauthorized: When the pair of client / token isn't allowed
     """
-
 
     # If the configuration doesn't exist, allow the action (backward compatibility)
     if clients_tokens is None:

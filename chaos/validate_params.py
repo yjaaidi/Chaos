@@ -34,6 +34,7 @@ from chaos import exceptions, models, utils, fields
 from flask_restful import marshal
 from flask import request, current_app
 from formats import id_format
+from os import path
 
 
 class validate_client(object):
@@ -45,7 +46,7 @@ class validate_client(object):
         def wrapper(*args, **kwargs):
             try:
                 client_code = get_client_code(request)
-            except exceptions.HeaderAbsent, e:
+            except exceptions.HeaderAbsent as e:
                 return marshal({'error': {'message': utils.parse_error(e)}},
                                fields.error_fields), 400
             if self.create_client:
@@ -67,7 +68,7 @@ class validate_contributor(object):
         def wrapper(*args, **kwargs):
             try:
                 contributor_code = get_contributor_code(request)
-            except exceptions.HeaderAbsent, e:
+            except exceptions.HeaderAbsent as e:
                 return marshal({'error': {'message': utils.parse_error(e)}},
                                fields.error_fields), 400
             contributor = models.Contributor.get_by_code(contributor_code)
@@ -87,7 +88,7 @@ class validate_navitia(object):
             try:
                 coverage = get_coverage(request)
                 token = get_token(request)
-            except exceptions.HeaderAbsent, e:
+            except exceptions.HeaderAbsent as e:
                 return marshal(
                     {'error': {'message': utils.parse_error(e)}},
                     fields.error_fields
@@ -103,7 +104,7 @@ class manage_navitia_error(object):
         def wrapper(*args, **kwargs):
             try:
                 return func(*args, **kwargs)
-            except exceptions.NavitiaError, e:
+            except exceptions.NavitiaError as e:
                 return marshal(
                     {'error': {'message': '{}'.format(e.message)}},
                     fields.error_fields
@@ -135,7 +136,11 @@ class validate_id(object):
 
 
 class validate_client_token(object):
-    def __init__(self, file_path='chaos/clients_tokens.json'):
+    def __init__(self, file_name='clients_tokens.json'):
+
+        current_dir_path = path.dirname(path.realpath(__file__))
+        file_path = path.join(current_dir_path, file_name)
+
         self.clients_tokens = get_clients_tokens(file_path)
 
     def __call__(self, func):
@@ -145,7 +150,7 @@ class validate_client_token(object):
                 token = get_token(request)
                 client_code = get_client_code(request)
                 client_token_is_allowed(self.clients_tokens, client_code, token)
-            except (exceptions.HeaderAbsent, exceptions.Unauthorized), e:
+            except (exceptions.HeaderAbsent, exceptions.Unauthorized) as e:
                 return marshal(
                     {'error': {'message': utils.parse_error(e)}},
                     fields.error_fields

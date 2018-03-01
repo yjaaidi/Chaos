@@ -46,7 +46,7 @@ class FieldTime(fields.Raw):
     def format(self, value):
         try:
             return value.strftime('%H:%M')
-        except:
+        except BaseException:
             return None
 
 
@@ -57,25 +57,29 @@ class FieldDate(fields.Raw):
         else:
             return None
 
+
 class CustomImpacts(fields.Raw):
     def output(self, key, val):
         val.impacts = [impact for impact in val.impacts if impact.status == 'published']
         return marshal(val, {
-                'pagination': FieldPaginateImpacts(attribute='impacts'),
-                'impacts': PaginateObjects(fields.Nested(impact_fields, display_null=False,
-                                                         attribute='impacts'))
-            }, display_null=False)
+            'pagination': FieldPaginateImpacts(attribute='impacts'),
+            'impacts': PaginateObjects(fields.Nested(impact_fields, display_null=False,
+                                                     attribute='impacts'))
+        }, display_null=False)
+
 
 class FieldPaginateImpacts(fields.Raw):
     '''
     Pagination of impacts list for one disruption
     '''
+
     def output(self, key, disruption):
         impacts = disruption.impacts
         disruption_id = next((i.disruption_id for i in impacts), None)
         pagination = make_fake_pager(len(impacts), 20, 'impact', disruption_id=disruption_id)
 
         return pagination.get('pagination')
+
 
 class PaginateObjects(fields.Raw):
 
@@ -85,8 +89,9 @@ class PaginateObjects(fields.Raw):
         self.display_null = display_null
 
     classmethod
+
     def _filter(cls, impacts):
-        return impacts[:10] # todo use the pagination to filter
+        return impacts[:10]  # todo use the pagination to filter
 
     def output(self, key, disruption):
         impacts = disruption.impacts
@@ -226,6 +231,7 @@ class FieldAssociatedProperties(fields.Raw):
                     }
                 )
         return properties
+
 
 href_field = {
     "href": fields.String
@@ -506,7 +512,7 @@ line_sections_fields = {
     "id": fields.String(),
     "type": fields.String(),
     "line_section": fields.Nested(line_section_for_traffic_report_fields, display_null=False),
-    "links":FieldLinks()
+    "links": FieldLinks()
 }
 
 traffic_report_fields = {
