@@ -989,6 +989,7 @@ class TrafficReport(flask_restful.Resource):
         self.parsers["get"] = reqparse.RequestParser()
         parser_get = self.parsers["get"]
         parser_get.add_argument("current_time", type=utils.get_datetime, default=utils.get_current_time())
+        parser_get.add_argument("ptObjectFilter", location='json')
         self.navitia = None
 
     @validate_contributor()
@@ -1000,6 +1001,9 @@ class TrafficReport(flask_restful.Resource):
         args = self.parsers['get'].parse_args()
         g.current_time = args['current_time']
         disruptions = models.Disruption.traffic_report_filter(contributor.id)
+
+        # Filter disruptions by PtObject
+        utils.filter_disruptions_by_ptobjects(disruptions, args['ptObjectFilter'])
 
         # Prepare line sections to get them all in once
         pt_object_ids = []

@@ -693,3 +693,34 @@ def raise_client_token_error(message):
 
     logging.getLogger(__name__).info(message)
     raise Unauthorized(message)
+
+def filter_disruptions_by_ptobjects(disruptions, filter):
+    """
+        Logs message and raises an exception with this message
+
+        :param disruptions: Sequence of disruption (Database object)
+        :param filter: json
+        :return: Nothing
+        :rtype: Void
+    """
+
+    if filter is not None:
+        for disruption in disruptions[:]:
+            disruption_is_deleted = False
+            for impact in (i for i in disruption.impacts if i.status == 'published'):
+                for pt_object in impact.objects:
+                    if hasattr(filter, pt_object.type + 's'):
+                        if pt_object.uri not in filter[pt_object.type + 's']:
+                            disruption_is_deleted = True
+                            break
+                    elif pt_object.type == 'line_section' and hasattr(filter, 'lines'):
+                        if pt_object.uri[:-36] not in filter['lines']:
+                            disruption_is_deleted = True
+                            break
+                    else:
+                        disruption_is_deleted = True
+                        break
+                if disruption_is_deleted:
+                    break
+            if disruption_is_deleted:
+                disruptions.remove(disruption)
