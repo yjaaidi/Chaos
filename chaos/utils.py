@@ -696,15 +696,13 @@ def raise_client_token_error(message):
 
 def filter_disruptions_by_ptobjects(disruptions, filter):
     """
-        Logs message and raises an exception with this message
+        Do filter in disruptions.
 
         :param disruptions: Sequence of disruption (Database object)
         :param filter: json
         :return: Nothing
         :rtype: Void
     """
-    if filter is None:
-        return
     for disruption in disruptions[:]:
         disruption_is_deleted = False
         for impact in (i for i in disruption.impacts if i.status == 'published'):
@@ -721,6 +719,5 @@ def filter_disruptions_by_ptobjects(disruptions, filter):
                     disruption_is_deleted = True
                     break
             if disruption_is_deleted:
+                disruptions.remove(disruption)
                 break
-        if disruption_is_deleted:
-            disruptions.remove(disruption)
