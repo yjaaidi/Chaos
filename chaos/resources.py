@@ -998,8 +998,13 @@ class TrafficReport(flask_restful.Resource):
     def get(self, contributor, navitia):
         self.navitia = navitia
         args = self.parsers['get'].parse_args()
+        body = (json.loads(request.data) if request.data else None)
         g.current_time = args['current_time']
         disruptions = models.Disruption.traffic_report_filter(contributor.id)
+
+        # Filter disruptions by PtObject
+        if body and body.get('ptObjectFilter', []):
+            utils.filter_disruptions_by_ptobjects(disruptions, body['ptObjectFilter'])
 
         # Prepare line sections to get them all in once
         pt_object_ids = []
