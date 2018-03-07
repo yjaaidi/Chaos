@@ -996,15 +996,26 @@ class TrafficReport(flask_restful.Resource):
     @manage_navitia_error()
     @validate_client_token()
     def get(self, contributor, navitia):
+        return self._get_traffic_report(contributor.id, navitia)
+
+    @validate_contributor()
+    @validate_navitia()
+    @manage_navitia_error()
+    @validate_client_token()
+    def post(self, contributor, navitia):
+        json = (request.get_json(silent=True) or {})
+        return self._get_traffic_report(contributor.id, navitia, json)
+
+    def _get_traffic_report(self, contributor_id, navitia, json={}):
         self.navitia = navitia
         args = self.parsers['get'].parse_args()
-        body = (json.loads(request.data) if request.data else None)
-        g.current_time = args['current_time']
-        disruptions = models.Disruption.traffic_report_filter(contributor.id)
+        g.current_time = (utils.get_datetime(json.get('current_time'), 'current_time') if json.get('current_time')
+            else args['current_time'])
+        disruptions = models.Disruption.traffic_report_filter(contributor_id)
 
         # Filter disruptions by PtObject
-        if body and body.get('ptObjectFilter', []):
-            utils.filter_disruptions_by_ptobjects(disruptions, body['ptObjectFilter'])
+        if json.get('ptObjectFilter', []):
+            utils.filter_disruptions_by_ptobjects(disruptions, json['ptObjectFilter'])
 
         # Prepare line sections to get them all in once
         pt_object_ids = []
@@ -1026,7 +1037,6 @@ class TrafficReport(flask_restful.Resource):
             },
             traffic_reports_marshaler
         ), 200
-
 
 class Property(flask_restful.Resource):
     def __init__(self):

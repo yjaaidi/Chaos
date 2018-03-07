@@ -8,7 +8,7 @@ Feature: traffic report api
 
     Scenario: response of traffic report api without "X-Contributors"
         I remove header "X-Contributors"
-        When I get "/traffic_reports"
+        When I post to "/traffic_reports"
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
         And the field "error.message" should be "The parameter X-Contributors does not exist in the header"
@@ -18,7 +18,7 @@ Feature: traffic report api
             | contributor_code   | created_at          | updated_at          | id                                   |
             | contrib1           | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
         I remove header "X-Coverage"
-        When I get "/traffic_reports"
+        When I post to "/traffic_reports"
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
         And the field "error.message" should be "The parameter X-Coverage does not exist in the header"
@@ -28,7 +28,7 @@ Feature: traffic report api
             | contributor_code   | created_at          | updated_at          | id                                   |
             | contrib1           | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
         I remove header "Authorization"
-        When I get "/traffic_reports"
+        When I post to "/traffic_reports"
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
         And the field "error.message" should be "The parameter Authorization does not exist in the header"
@@ -37,7 +37,7 @@ Feature: traffic report api
         Given I have the following contributors in my database:
             | contributor_code   | created_at          | updated_at          | id                                   |
             | contrib1           | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
-        When I get "/traffic_reports"
+        When I post to "/traffic_reports"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
 
@@ -85,7 +85,10 @@ Feature: traffic report api
             | created_at          | updated_at          |id                                   | impact_id                            |start_date                           |end_date            |
             | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab232-3d47-4eea-aa2c-22f8680230b1 | 7ffab232-3d47-4eea-aa2c-22f8680230b6 |2014-01-20 16:52:00                  |2014-01-30 16:52:00 |
 
-        When I get "/traffic_reports?current_time=2013-12-15T23:52:12Z"
+        When I post to "/traffic_reports" with:
+        """
+        {"current_time": "2013-12-15T23:52:12Z"}
+        """
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
         And the field "disruptions" should have a size of 0
@@ -135,7 +138,10 @@ Feature: traffic report api
             | created_at          | updated_at          |id                                   | impact_id                            |start_date                           |end_date            |
             | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab232-3d47-4eea-aa2c-22f8680230b1 | 7ffab232-3d47-4eea-aa2c-22f8680230b6 |2014-01-20 16:52:00                  |2014-01-30 16:52:00 |
 
-        When I get "/traffic_reports?current_time=2014-01-15T23:52:12Z"
+        When I post to "/traffic_reports" with:
+        """
+        {"current_time": "2014-01-15T23:52:12Z"}
+        """
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
         And the field "disruptions" should have a size of 1
@@ -193,7 +199,10 @@ Feature: traffic report api
             | created_at          | updated_at          |id                                   | impact_id                            |start_date                           |end_date            |
             | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab232-3d47-4eea-aa2c-22f8680230b1 | 7ffab232-3d47-4eea-aa2c-22f8680230b6 |2014-01-20 16:52:00                  |2014-01-30 16:52:00 |
 
-        When I get "/traffic_reports?current_time=2014-01-23T23:52:12Z"
+        When I post to "/traffic_reports" with:
+        """
+        {"current_time": "2014-01-23T23:52:12Z"}
+        """
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
         And the field "disruptions" should have a size of 1
@@ -251,7 +260,10 @@ Feature: traffic report api
             | created_at          | updated_at          |id                                   | impact_id                            |start_date                           |end_date            |
             | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab232-3d47-4eea-aa2c-22f8680230b1 | 7ffab232-3d47-4eea-aa2c-22f8680230b6 |2014-01-20 16:52:00                  |2014-01-30 16:52:00 |
 
-        When I get "/traffic_reports?current_time=2014-02-01T23:52:12Z"
+        When I post to "/traffic_reports" with:
+        """
+        {"current_time": "2014-02-01T23:52:12Z"}
+        """
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
         And the field "disruptions" should have a size of 1
@@ -309,7 +321,10 @@ Feature: traffic report api
             | created_at          | updated_at          |id                                   | impact_id                            |start_date                           |end_date            |
             | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab232-3d47-4eea-aa2c-22f8680230b1 | 7ffab232-3d47-4eea-aa2c-22f8680230b6 |2014-01-20 16:52:00                  |2014-01-30 16:52:00 |
 
-        When I get "/traffic_reports?current_time=2014-02-15T23:52:12Z"
+        When I post to "/traffic_reports" with:
+        """
+        {"current_time": "2014-02-15T23:52:12Z"}
+        """
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
         And the field "disruptions" should have a size of 0
@@ -360,7 +375,10 @@ Feature: traffic report api
         | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab232-3d47-4eea-aa2c-22f8680230b1 | 7ffab232-3d47-4eea-aa2c-22f8680230b6 |2014-01-20 16:52:00                  |2014-01-30 16:52:00 |
         | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab232-3d47-4eea-aa2c-22f8680230b0 | 7ffab232-3d47-4eea-aa2c-22f8680230b6 |2014-02-20 16:52:00                  |2014-02-28 16:52:00 |
 
-    When I get "/traffic_reports?current_time=2013-12-15T23:52:12Z"
+    When I post to "/traffic_reports" with:
+    """
+    {"current_time": "2013-12-15T23:52:12Z"}
+    """
     Then the status code should be "200"
     And the header "Content-Type" should be "application/json"
     And the field "disruptions" should have a size of 0
@@ -411,7 +429,10 @@ Feature: traffic report api
         | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab232-3d47-4eea-aa2c-22f8680230b1 | 7ffab232-3d47-4eea-aa2c-22f8680230b6 |2014-01-20 16:52:00                  |2014-01-30 16:52:00 |
         | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab232-3d47-4eea-aa2c-22f8680230b0 | 7ffab232-3d47-4eea-aa2c-22f8680230b6 |2014-02-20 16:52:00                  |2014-02-28 16:52:00 |
 
-    When I get "/traffic_reports?current_time=2014-02-02T23:52:12Z"
+    When I post to "/traffic_reports" with:
+    """
+    {"current_time": "2014-02-02T23:52:12Z"}
+    """
     Then the status code should be "200"
     And the header "Content-Type" should be "application/json"
     And the field "disruptions" should have a size of 1
@@ -468,7 +489,10 @@ Feature: traffic report api
         | created_at          | updated_at          |id                                   | impact_id                            |start_date                           |end_date            |
         | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab232-3d47-4eea-aa2c-22f8680230b1 | 7ffab232-3d47-4eea-aa2c-22f8680230b6 |2014-01-20 16:52:00                  |2014-01-30 16:52:00 |
 
-    When I get "/traffic_reports?current_time=2014-01-23T23:52:12Z"
+    When I post to "/traffic_reports" with:
+    """
+    {"current_time": "2014-01-23T23:52:12Z"}
+    """
     Then the status code should be "200"
     And the header "Content-Type" should be "application/json"
     And the field "disruptions" should have a size of 1
@@ -530,7 +554,10 @@ Feature: traffic report api
         | created_at          | updated_at          |id                                   | impact_id                            |start_date                           |end_date            |
         | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab232-3d47-4eea-aa2c-22f8680230b1 | 7ffab232-3d47-4eea-aa2c-22f8680230b6 |2014-01-20 16:52:00                  |2014-01-30 16:52:00 |
 
-    When I get "/traffic_reports?current_time=2014-01-23T23:52:12Z"
+    When I post to "/traffic_reports" with:
+    """
+    {"current_time": "2014-01-23T23:52:12Z"}
+    """
     Then the status code should be "200"
     And the header "Content-Type" should be "application/json"
     And the field "disruptions" should have a size of 1
@@ -591,7 +618,10 @@ Feature: traffic report api
         | created_at          | updated_at          |id                                   | impact_id                            |start_date                           |end_date            |
         | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab232-3d47-4eea-aa2c-22f8680230b1 | 7ffab232-3d47-4eea-aa2c-22f8680230b6 |2014-01-20 16:52:00                  |2014-01-30 16:52:00 |
 
-    When I get "/traffic_reports?current_time=2014-01-23T23:52:12Z"
+    When I post to "/traffic_reports" with:
+    """
+    {"current_time": "2014-01-23T23:52:12Z"}
+    """
     Then the status code should be "200"
     And the header "Content-Type" should be "application/json"
     And the field "disruptions" should have a size of 1
@@ -658,7 +688,10 @@ Feature: traffic report api
         | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab232-3d47-4eea-aa2c-22f8680230b1 | 7ffab232-3d47-4eea-aa2c-22f8680230b6 |2014-01-05 16:52:00                  |2014-01-10 16:52:00 |
         | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab232-3d47-4eea-aa2c-22f8680230b2 | 7ffab232-3d47-4eea-aa2c-22f8680230b7 |2014-01-20 16:52:00                  |2014-01-30 16:52:00 |
 
-    When I get "/traffic_reports?current_time=2014-01-15T23:52:12Z"
+    When I post to "/traffic_reports" with:
+    """
+    {"current_time": "2014-01-15T23:52:12Z"}
+    """
     Then the status code should be "200"
     And the header "Content-Type" should be "application/json"
     And the field "disruptions" should have a size of 2
@@ -724,7 +757,10 @@ Feature: traffic report api
         | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab232-3d47-4eea-aa2c-22f8680230b1 | 7ffab232-3d47-4eea-aa2c-22f8680230b6 |2014-01-10 16:52:00                  |2014-01-20 16:52:00 |
         | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab232-3d47-4eea-aa2c-22f8680230b2 | 7ffab232-3d47-4eea-aa2c-22f8680230b7 |2014-01-15 16:52:00                  |2014-02-05 16:52:00 |
 
-    When I get "/traffic_reports?current_time=2014-01-17T23:52:12Z"
+    When I post to "/traffic_reports" with:
+    """
+    {"current_time": "2014-01-17T23:52:12Z"}
+    """
     Then the status code should be "200"
     And the header "Content-Type" should be "application/json"
     And the field "disruptions" should have a size of 2
@@ -783,7 +819,10 @@ Feature: traffic report api
         | created_at          | updated_at          |id                                   | impact_id                            |start_date                           |end_date            |
         | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab232-3d47-4eea-aa2c-22f8680230b1 | 7ffab232-3d47-4eea-aa2c-22f8680230b6 |2014-01-10 16:52:00                  |2014-01-20 16:52:00 |
 
-    When I get "/traffic_reports?current_time=2014-01-17T23:52:12Z"
+    When I post to "/traffic_reports" with:
+    """
+    {"current_time": "2014-01-17T23:52:12Z"}
+    """
     Then the status code should be "200"
     And the header "Content-Type" should be "application/json"
     And the field "disruptions" should have a size of 1
@@ -848,7 +887,10 @@ Feature: traffic report api
         | created_at          | updated_at          |id                                   | impact_id                            |start_date                           |end_date            |
         | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab232-3d47-4eea-aa2c-22f8680230b1 | 7ffab232-3d47-4eea-aa2c-22f8680230b6 |2014-01-10 16:52:00                  |2014-01-20 16:52:00 |
 
-    When I get "/traffic_reports?current_time=2014-01-17T23:52:12Z"
+    When I post to "/traffic_reports" with:
+    """
+    {"current_time": "2014-01-17T23:52:12Z"}
+    """
     Then the status code should be "200"
     And the header "Content-Type" should be "application/json"
     And the field "disruptions" should have a size of 1
@@ -936,7 +978,10 @@ Feature: traffic report api
         | created_at          | updated_at          |id                                   | impact_id                            |start_date                           |end_date            |
         | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab232-3d47-4eea-aa2c-22f8680230b1 | 7ffab232-3d47-4eea-aa2c-22f8680230b6 |2014-01-10 16:52:00                  |2014-01-20 16:52:00 |
 
-    When I get "/traffic_reports?current_time=2014-01-17T23:52:12Z"
+    When I post to "/traffic_reports" with:
+    """
+    {"current_time": "2014-01-17T23:52:12Z"}
+    """
     Then the status code should be "200"
     And the header "Content-Type" should be "application/json"
     And the field "disruptions" should have a size of 1
@@ -1044,7 +1089,10 @@ Feature: traffic report api
         | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab232-3d47-4eea-aa2c-22f8680230b1 | 7ffab232-3d47-4eea-aa2c-22f8680230b6 |2014-01-10 16:52:00                  |2014-01-20 16:52:00 |
         | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab232-3d47-4eea-aa2c-22f8680230b2 | 7ffab232-3d47-4eea-aa2c-22f8680230b7 |2014-01-10 16:52:00                  |2014-01-20 16:52:00 |
 
-    When I get "/traffic_reports?current_time=2014-01-17T23:52:12Z"
+    When I post to "/traffic_reports" with:
+    """
+    {"current_time": "2014-01-17T23:52:12Z"}
+    """
     Then the status code should be "200"
     And the header "Content-Type" should be "application/json"
     And the field "disruptions" should have a size of 2
@@ -1102,7 +1150,10 @@ Feature: traffic report api
             | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab232-3d47-4eea-aa2c-22f8680230b1 | 7ffab232-3d47-4eea-aa2c-22f8680230b6 |2014-01-20 16:52:00                  |2014-01-30 16:52:00 |
             | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab232-3d47-4eea-aa2c-22f8680230b2 | 7ffab232-3d47-4eea-aa2c-22f8680230b7 |2014-01-20 16:53:00                  |2014-01-30 16:52:00 |
 
-        When I get "/traffic_reports?current_time=2014-01-21T23:52:12Z"
+        When I post to "/traffic_reports" with:
+        """
+        {"current_time": "2014-01-21T23:52:12Z"}
+        """
         Then the status code should be "200"
         And the field "disruptions" should have a size of 2
         And the field "traffic_reports" should have a size of 2
@@ -1166,7 +1217,10 @@ Feature: traffic report api
             | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab232-3d47-4eea-aa2c-22f8680230b3 | 7ffab232-3d47-4eea-aa2c-22f8680230b3 |2014-01-20 16:52:00                  |2014-01-30 16:52:00 |
             | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab232-3d47-4eea-aa2c-22f8680230b4 | 7ffab232-3d47-4eea-aa2c-22f8680230b4 |2014-01-20 16:52:00                  |2014-01-30 16:52:00 |
 
-        When I get "/traffic_reports?current_time=2014-01-21T23:52:12Z"
+        When I post to "/traffic_reports" with:
+        """
+        {"current_time": "2014-01-21T23:52:12Z"}
+        """
         Then the status code should be "200"
         And the field "disruptions" should have a size of 4
         And the field "traffic_reports" should have a size of 1
@@ -1243,7 +1297,10 @@ Feature: traffic report api
             | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab232-3d47-4eea-aa2c-22f8680230b5 | 7ffab232-3d47-4eea-aa2c-22f8680230b4 |2014-01-20 16:52:00                  |2014-01-30 16:52:00 |
             | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab232-3d47-4eea-aa2c-22f8680230b6 | 7ffab232-3d47-4eea-aa2c-22f8680230b4 |2014-01-20 16:52:00                  |2014-01-30 16:52:00 |
 
-        When I get "/traffic_reports?current_time=2014-01-21T23:52:12Z"
+        When I post to "/traffic_reports" with:
+        """
+        {"current_time": "2014-01-21T23:52:12Z"}
+        """
         Then the status code should be "200"
         And the field "disruptions" should have a size of 6
         And the field "traffic_reports" should have a size of 1
@@ -1314,7 +1371,10 @@ Feature: traffic report api
             | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab232-3d47-4eea-aa2c-22f8680230b5 | 7ffab232-3d47-4eea-aa2c-22f8680230b4 |2014-01-20 16:52:00                  |2014-01-30 16:52:00 |
             | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab232-3d47-4eea-aa2c-22f8680230b6 | 7ffab232-3d47-4eea-aa2c-22f8680230b4 |2014-01-20 16:52:00                  |2014-01-30 16:52:00 |
 
-        When I get "/traffic_reports?current_time=2014-01-21T23:52:12Z"
+        When I post to "/traffic_reports" with:
+        """
+        {"current_time": "2014-01-21T23:52:12Z"}
+        """
         Then the status code should be "200"
         And the field "disruptions" should have a size of 5
         And the field "traffic_reports" should have a size of 1
@@ -1362,9 +1422,9 @@ Feature: traffic report api
             | created_at          | updated_at          |id                                   | impact_id                            |start_date                           |end_date            |
             | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab232-3d47-4eea-aa2c-22f8680230b1 | 7ffab232-3d47-4eea-aa2c-22f8680230b1 |2014-01-20 16:52:00                  |2014-01-30 16:52:00 |
 
-        When I get "/traffic_reports?current_time=2014-01-21T23:52:12Z" with:
+        When I post to "/traffic_reports" with:
         """
-        {"ptObjectFilter": {"networks": ["network:JDR:2"]}}
+        {"current_time": "2014-01-21T23:52:12Z", "ptObjectFilter": {"networks": ["network:JDR:2"]}}
         """
         Then the status code should be "200"
         And the field "disruptions" should have a size of 1
@@ -1413,9 +1473,9 @@ Feature: traffic report api
             | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab232-3d47-4eea-aa2c-22f8680230b1 | 7ffab232-3d47-4eea-aa2c-22f8680230b1 |2014-01-20 16:52:00                  |2014-01-30 16:52:00 |
             | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab232-3d47-4eea-aa2c-22f8680230b2 | 7ffab232-3d47-4eea-aa2c-22f8680230b2 |2014-01-20 16:52:00                  |2014-01-30 16:52:00 |
 
-        When I get "/traffic_reports?current_time=2014-01-21T23:52:12Z" with:
+        When I post to "/traffic_reports" with:
         """
-        {"ptObjectFilter": {"networks": ["network:JDR:2"]}}
+        {"current_time": "2014-01-21T23:52:12Z", "ptObjectFilter": {"networks": ["network:JDR:2"]}}
         """
         Then the status code should be "200"
         And the field "disruptions" should have a size of 0
@@ -1459,9 +1519,9 @@ Feature: traffic report api
             | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab232-3d47-4eea-aa2c-22f8680230b1 | 7ffab232-3d47-4eea-aa2c-22f8680230b1 |2014-01-20 16:52:00                  |2014-01-30 16:52:00 |
             | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab232-3d47-4eea-aa2c-22f8680230b2 | 7ffab232-3d47-4eea-aa2c-22f8680230b2 |2014-01-20 16:52:00                  |2014-01-30 16:52:00 |
 
-        When I get "/traffic_reports?current_time=2014-01-21T23:52:12Z" with:
+        When I post to "/traffic_reports" with:
         """
-        {"ptObjectFilter": {"networks": ["network:JDR:2"], "lines": ["line:JDR:TGV"]}}
+        {"current_time": "2014-01-21T23:52:12Z", "ptObjectFilter": {"networks": ["network:JDR:2"], "lines": ["line:JDR:TGV"]}}
         """
         Then the status code should be "200"
         And the field "disruptions" should have a size of 2
@@ -1524,9 +1584,9 @@ Feature: traffic report api
             | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab232-3d47-4eea-aa2c-22f8680230b1 | 7ffab232-3d47-4eea-aa2c-22f8680230b6 |2014-01-20 16:52:00                  |2014-01-30 16:52:00 |
             | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab232-3d47-4eea-aa2c-22f8680230b2 | 7ffab232-3d47-4eea-aa2c-22f8680230b7 |2014-01-20 16:53:00                  |2014-01-30 16:52:00 |
 
-        When I get "/traffic_reports?current_time=2014-01-21T23:52:12Z" with:
+        When I post to "/traffic_reports" with:
         """
-        {"ptObjectFilter": {"networks": ["network:JDR:2"]}}
+        {"current_time": "2014-01-21T23:52:12Z", "ptObjectFilter": {"networks": ["network:JDR:2"]}}
         """
         Then the status code should be "200"
         And the field "disruptions" should have a size of 1
