@@ -7,7 +7,7 @@ DATABASE_HOST = str(os.getenv('DATABASE_HOST', 'localhost'))
 SQLALCHEMY_DATABASE_URI = str(os.getenv('SQLALCHEMY_DATABASE_URI', 'postgresql://navitia:navitia@' + DATABASE_HOST + '/chaos_testing'))
 
 NAVITIA_URL = 'http://navitia2-ws.ctp.customer.canaltp.fr/'
-NAVITIA_TIMEOUT = 5
+NAVITIA_TIMEOUT = 10
 
 
 DEBUG = True
