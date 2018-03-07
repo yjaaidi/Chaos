@@ -1003,12 +1003,13 @@ class TrafficReport(flask_restful.Resource):
     @manage_navitia_error()
     @validate_client_token()
     def post(self, contributor, navitia):
-        body_json = (request.get_json(silent=True) or {})
-        return self._get_traffic_report(contributor.id, navitia, body_json)
+        return self._get_traffic_report(contributor.id, navitia, request.get_json(silent=True))
 
-    def _get_traffic_report(self, contributor_id, navitia, body_json={}):
+    def _get_traffic_report(self, contributor_id, navitia, body_json=None):
         self.navitia = navitia
         args = self.parsers['get'].parse_args()
+        if body_json is None:
+            body_json = {}
         g.current_time = (utils.get_datetime(body_json.get('current_time'), 'current_time')
                           if body_json.get('current_time')
                           else args['current_time'])
