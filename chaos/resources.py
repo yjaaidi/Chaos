@@ -1033,7 +1033,7 @@ class TrafficReport(flask_restful.Resource):
         result = utils.get_traffic_report_objects(disruptions, self.navitia, line_sections_by_objid)
         return marshal(
             {
-                'traffic_reports': [value for value in result["traffic_report"].items()],
+                'traffic_reports': [value for key, value in result["traffic_report"].items()],
                 'disruptions': result["impacts_used"]
             },
             traffic_reports_marshaler
