@@ -1362,9 +1362,9 @@ Feature: traffic report api
             | created_at          | updated_at          |id                                   | impact_id                            |start_date                           |end_date            |
             | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab232-3d47-4eea-aa2c-22f8680230b1 | 7ffab232-3d47-4eea-aa2c-22f8680230b1 |2014-01-20 16:52:00                  |2014-01-30 16:52:00 |
 
-        When I get "/traffic_reports?current_time=2014-01-21T23:52:12Z" with:
+        When I post to "/traffic_reports" with:
         """
-        {"ptObjectFilter": {"networks": ["network:JDR:2"]}}
+        {"current_time": "2014-01-21T23:52:12Z", "ptObjectFilter": {"networks": ["network:JDR:2"]}}
         """
         Then the status code should be "200"
         And the field "disruptions" should have a size of 1
@@ -1413,9 +1413,9 @@ Feature: traffic report api
             | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab232-3d47-4eea-aa2c-22f8680230b1 | 7ffab232-3d47-4eea-aa2c-22f8680230b1 |2014-01-20 16:52:00                  |2014-01-30 16:52:00 |
             | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab232-3d47-4eea-aa2c-22f8680230b2 | 7ffab232-3d47-4eea-aa2c-22f8680230b2 |2014-01-20 16:52:00                  |2014-01-30 16:52:00 |
 
-        When I get "/traffic_reports?current_time=2014-01-21T23:52:12Z" with:
+        When I post to "/traffic_reports" with:
         """
-        {"ptObjectFilter": {"networks": ["network:JDR:2"]}}
+        {"current_time": "2014-01-21T23:52:12Z", "ptObjectFilter": {"networks": ["network:JDR:2"]}}
         """
         Then the status code should be "200"
         And the field "disruptions" should have a size of 0
@@ -1459,9 +1459,9 @@ Feature: traffic report api
             | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab232-3d47-4eea-aa2c-22f8680230b1 | 7ffab232-3d47-4eea-aa2c-22f8680230b1 |2014-01-20 16:52:00                  |2014-01-30 16:52:00 |
             | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab232-3d47-4eea-aa2c-22f8680230b2 | 7ffab232-3d47-4eea-aa2c-22f8680230b2 |2014-01-20 16:52:00                  |2014-01-30 16:52:00 |
 
-        When I get "/traffic_reports?current_time=2014-01-21T23:52:12Z" with:
+        When I post to "/traffic_reports" with:
         """
-        {"ptObjectFilter": {"networks": ["network:JDR:2"], "lines": ["line:JDR:TGV"]}}
+        {"current_time": "2014-01-21T23:52:12Z", "ptObjectFilter": {"networks": ["network:JDR:2"], "lines": ["line:JDR:TGV"]}}
         """
         Then the status code should be "200"
         And the field "disruptions" should have a size of 2
@@ -1524,9 +1524,9 @@ Feature: traffic report api
             | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab232-3d47-4eea-aa2c-22f8680230b1 | 7ffab232-3d47-4eea-aa2c-22f8680230b6 |2014-01-20 16:52:00                  |2014-01-30 16:52:00 |
             | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab232-3d47-4eea-aa2c-22f8680230b2 | 7ffab232-3d47-4eea-aa2c-22f8680230b7 |2014-01-20 16:53:00                  |2014-01-30 16:52:00 |
 
-        When I get "/traffic_reports?current_time=2014-01-21T23:52:12Z" with:
+        When I post to "/traffic_reports" with:
         """
-        {"ptObjectFilter": {"networks": ["network:JDR:2"]}}
+        {"current_time": "2014-01-21T23:52:12Z", "ptObjectFilter": {"networks": ["network:JDR:2"]}}
         """
         Then the status code should be "200"
         And the field "disruptions" should have a size of 1
