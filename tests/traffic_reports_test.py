@@ -1,5 +1,5 @@
 from nose.tools import *
-from chaos.utils import get_traffic_report_objects, get_pt_object_from_list
+from chaos.utils import get_traffic_report_objects, get_pt_object_from_list, filter_disruptions_by_ptobjects
 import chaos
 from mock import MagicMock
 
@@ -348,3 +348,44 @@ def test_get_traffic_report_with_impact_on_line_sections():
     }
     dd = get_traffic_report_objects([disruption], navitia, { ptobject.id: ptobject.line_section })
     eq_(cmp(dd["traffic_report"], result), 0)
+
+def test_filter_disruptions_by_ptobjects():
+    disruption_1 = chaos.models.Disruption()
+    impact_1 = chaos.models.Impact()
+    impact_1.status = 'published'
+
+    #LineSection
+    ptobject_1 = chaos.models.PTobject()
+    ptobject_1.uri = "line:uri3:7ffab234-3d49-4eea-aa2c-22f8680230b6"
+    ptobject_1.type = "line_section"
+    ptobject_1.line_section = chaos.models.LineSection()
+    ptobject_1.line_section.id = '7ffab234-3d49-4eea-aa2c-22f8680230b6'
+    ptobject_1.line_section.sens = 1
+    ptobject_1.line_section.line = chaos.models.PTobject()
+    ptobject_1.line_section.line.uri = 'line:uri3'
+    ptobject_1.line_section.line.type = 'line'
+
+    ptobject_1.line_section.start_point = chaos.models.PTobject()
+    ptobject_1.line_section.start_point.uri = 'stop_area:1'
+    ptobject_1.line_section.start_point.type = 'stop_area'
+
+    ptobject_1.line_section.end_point = chaos.models.PTobject()
+    ptobject_1.line_section.end_point.uri = 'stop_area:2'
+    ptobject_1.line_section.end_point.type = 'stop_area'
+
+    impact_1.objects.append(ptobject_1)
+    disruption_1.impacts.append(impact_1)
+
+    filter_pt_object = {
+        "networks": ["network:uri1"],
+        "lines": ["line:uri3"]
+    }
+    list_disruption = [disruption_1]
+    filter_disruptions_by_ptobjects(list_disruption, filter_pt_object)
+    eq_(cmp(list_disruption, [disruption_1]), 0)
+    filter_pt_object = {
+        "networks": ["network:uri1"],
+        "lines": ["line:uri2"]
+    }
+    filter_disruptions_by_ptobjects(list_disruption, filter_pt_object)
+    eq_(cmp(list_disruption, []), 0)
