@@ -24,7 +24,7 @@ CONTRIBUTOR='shortterm.tn'
 ENABLE_RABBITMQ=False
 
 CACHE_CONFIGURATION = {
-    'CACHE_TYPE': 'null'
+    'CACHE_TYPE': 'simple'
 }
 
 #Log Level available

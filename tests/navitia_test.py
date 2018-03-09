@@ -47,25 +47,25 @@ def test_get_pt_object():
 
     mock = NavitiaMock(200, {'networks': []})
     with HTTMock(mock):
-        eq_(n.get_pt_object('network:foo', 'network'), None)
+        eq_(n.get_pt_object('network:foo1', 'network'), None)
 
     mock = NavitiaMock(404, {})
     with HTTMock(mock):
-        eq_(n.get_pt_object('network:foo', 'network'), None)
+        eq_(n.get_pt_object('network:foo2', 'network'), None)
 
 
 @raises(exceptions.NavitiaError)
 def test_navitia_request_error():
     n = Navitia('http://api.navitia.io', 'jdr')
     with HTTMock(navitia_mock_navitia_error):
-        n.get_pt_object('network:foo','network')
+        n.get_pt_object('network:foo3','network')
 
 
 @raises(exceptions.ObjectTypeUnknown)
 def test_navitia_unknown_object_type():
     n = Navitia('http://api.navitia.io', 'jdr')
     with HTTMock(navitia_mock_unknown_object_type):
-        n.get_pt_object('network:foo', 'aaaaaaaa')
+        n.get_pt_object('network:foo4', 'aaaaaaaa')
 
 
 def test_query_formater():
