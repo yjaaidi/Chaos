@@ -943,12 +943,44 @@
               $ref: "#/definitions/error_404"
     /traffic_reports:
       get:
+        deprecated: true
         description: This service provides the state of public transport traffic
         parameters:
         - $ref: "#/parameters/header_authorization"
         - $ref: "#/parameters/header_coverage"
         - $ref: "#/parameters/header_customer_id"
         - $ref: "#/parameters/header_contributors"
+        tags:
+          - Traffic Report
+        responses:
+          200:
+            description: State of public transport traffic
+            schema:
+              type: object
+              properties:
+                disruptions:
+                  type: array
+                  items:
+                    $ref: "#/definitions/traffic_report_disruption"
+                traffic_reports:
+                  type: array
+                  items:
+                    $ref: "#/definitions/traffic_report"
+      post:
+        description: This service provides the state of public transport traffic with filter
+        parameters:
+        - $ref: "#/parameters/header_authorization"
+        - $ref: "#/parameters/header_coverage"
+        - $ref: "#/parameters/header_customer_id"
+        - $ref: "#/parameters/header_contributors"
+        - in: body
+          name: body
+          description: Filter only disruption with this PtObject list
+          schema:
+            type: object
+            properties:
+              ptObjectFilter:
+                $ref: "#/definitions/traffic_report_pt_object_filter"
         tags:
           - Traffic Report
         responses:
@@ -1821,6 +1853,29 @@
                 type: "array"
                 items:
                   type: "string"
+    traffic_report_pt_object_filter:
+      type: "object"
+      properties:
+        networks:
+          type: "array"
+          items:
+            description: "Id of network object"
+            type: "string"
+        lines:
+          type: "array"
+          items:
+            description: "Id of line object"
+            type: "string"
+        stop_points:
+          type: "array"
+          items:
+            description: "Id of stop_point object"
+            type: "string"
+        stop_areas:
+          type: "array"
+          items:
+            description: "Id of stop_area object"
+            type: "string"
     traffic_report_disruption:
       type: "object"
       properties:
