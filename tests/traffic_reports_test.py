@@ -209,6 +209,32 @@ def test_get_traffic_report_with_impact_on_stop_areas_one_network():
     eq_(cmp(dd["traffic_report"], result), 0)
 
 
+def test_get_traffic_report_with_impact_on_stop_areas_2_networks_and_filter_activated():
+    navitia = chaos.navitia.Navitia('http://api.navitia.io', 'jdr')
+    navitia.get_pt_object = get_pt_object
+    disruption = chaos.models.Disruption()
+    impact = chaos.models.Impact()
+    impact.status = 'published'
+
+    line = chaos.models.PTobject()
+    line.type = 'stop_area'
+    line.uri = 'stop_area:uri2'
+    impact.objects.append(line)
+    disruption.impacts.append(impact)
+
+    result = {
+        "network:uri5": {
+            "network": {
+                "id": "network:uri5",
+                "name": "network 5 name"
+            },
+            "stop_areas": [{'id': 'stop_area:uri2', 'name': 'stop area 2 name', "impacts": [impact]}]
+        }
+    }
+    dd = get_traffic_report_objects([disruption], navitia, {}, ["network:uri5"])
+    eq_(cmp(dd["traffic_report"], result), 0)
+
+
 def test_get_traffic_report_with_impact_on_stop_areas_2_networks():
     navitia = chaos.navitia.Navitia('http://api.navitia.io', 'jdr')
     navitia.get_pt_object = get_pt_object
