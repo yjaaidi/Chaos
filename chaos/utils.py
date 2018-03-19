@@ -489,7 +489,7 @@ def get_navitia_networks(result, pt_object, navitia, types):
     return networks
 
 
-def manage_other_object(result, impact, pt_object, navitia, types, line_sections_by_objid):
+def manage_other_object(result, impact, pt_object, navitia, types, line_sections_by_objid, networks_filter):
 
     navitia_type = types
     pt_object_for_navitia_research = pt_object
@@ -502,6 +502,8 @@ def manage_other_object(result, impact, pt_object, navitia, types, line_sections
     if navitia_networks:
         for network in navitia_networks:
             if 'id' in network and network['id'] not in result["traffic_report"]:
+                if networks_filter and network['id'] not in networks_filter:
+                    continue
                 add_network(result, network, False)
                 result["traffic_report"][network['id']][types] = []
 
@@ -567,7 +569,7 @@ def create_line_section(navitia_object, line_section_obj):
     return line_section
 
 
-def get_traffic_report_objects(disruptions, navitia, line_sections_by_objid):
+def get_traffic_report_objects(disruptions, navitia, line_sections_by_objid, networks_filter):
     """
     :param impacts: Sequence of impact (Database object)
     :return: dict
@@ -616,7 +618,7 @@ def get_traffic_report_objects(disruptions, navitia, line_sections_by_objid):
                             )
                             continue
                         manage_other_object(result, impact, pt_object, navitia, collections[pt_object.type],
-                                            line_sections_by_objid)
+                                            line_sections_by_objid, networks_filter)
 
     return result
 
