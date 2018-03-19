@@ -1015,9 +1015,11 @@ class TrafficReport(flask_restful.Resource):
                           else args['current_time'])
         disruptions = models.Disruption.traffic_report_filter(contributor_id)
 
+        networks_filter = []
         # Filter disruptions by PtObject
         if body_json.get('ptObjectFilter', []):
             utils.filter_disruptions_by_ptobjects(disruptions, body_json['ptObjectFilter'])
+            networks_filter = body_json['ptObjectFilter'].get('networks', [])
 
         # Prepare line sections to get them all in once
         pt_object_ids = []
@@ -1031,7 +1033,7 @@ class TrafficReport(flask_restful.Resource):
         for line_section in line_sections:
             line_sections_by_objid[line_section.object_id] = line_section
 
-        result = utils.get_traffic_report_objects(disruptions, self.navitia, line_sections_by_objid)
+        result = utils.get_traffic_report_objects(disruptions, self.navitia, line_sections_by_objid, networks_filter)
         return marshal(
             {
                 'traffic_reports': [value for key, value in result["traffic_report"].items()],
