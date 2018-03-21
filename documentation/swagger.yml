@@ -976,12 +976,12 @@
         - $ref: "#/parameters/header_contributors"
         - in: body
           name: body
-          description: Filter only disruption with this PtObject list
+          description: traffic with filter on ptObject possible
           schema:
             type: object
             properties:
               ptObjectFilter:
-                $ref: "#/definitions/traffic_report_pt_object_filter"
+                $ref: "#/definitions/pt_object_filter"
         tags:
           - Traffic Report
         responses:
@@ -1885,8 +1885,9 @@
                 type: "array"
                 items:
                   type: "string"
-    traffic_report_pt_object_filter:
+    pt_object_filter:
       type: "object"
+      description: Filter by ptObject list. If set, return only disruptions who has all impacts ptObject in this list
       properties:
         networks:
           type: "array"
@@ -2281,8 +2282,7 @@
           type: integer
           default: 1
         ptObjectFilter:
-          description: Filter by ptObject list
-          $ref: "#/definitions/traffic_report_pt_object_filter"
+          $ref: "#/definitions/pt_object_filter"
     impact:
       type: "object"
       properties:
