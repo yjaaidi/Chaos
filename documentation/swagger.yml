@@ -61,7 +61,7 @@
     - name: Status
     - name: Tag
     - name: Traffic Report
-    - name: Filter
+    - name: Search
 
   ################################################################################
   #                                   Paths                                      #
@@ -998,6 +998,10 @@
                   type: array
                   items:
                     $ref: "#/definitions/traffic_report"
+          400:
+            description: Bad request
+            schema:
+              $ref: "#/definitions/error_occured"
     /disruptions:
       get:
         description: Return all visible disruptions
@@ -1271,8 +1275,8 @@
         responses:
           204:
             description: Impact has been removed
-            
-    /disruptions/filter:
+
+    /disruptions/_search:
       post:
         description: Return filtered disruptions
         parameters:
@@ -1284,9 +1288,9 @@
           name: body
           description: Parameters of filter
           schema:
-            $ref: "#/definitions/disruptions_filter"
+            $ref: "#/definitions/disruptions_search"
         tags:
-          - Filter
+          - Search
         responses:
           200:
             description: List of disruption
@@ -1302,6 +1306,10 @@
                   properties:
                     pagination:
                       $ref: "#/definitions/pagination"
+          400:
+            description: Bad request
+            schema:
+              $ref: "#/definitions/error_occured"
 
   ################################################################################
   #                                 Parameters                                  #
@@ -2214,7 +2222,7 @@
               description: Channel ID
               type: string
               format: uuid
-    disruptions_filter:
+    disruptions_search:
       type: object
       properties:
         start_page:

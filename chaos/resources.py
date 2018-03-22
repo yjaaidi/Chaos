@@ -37,7 +37,7 @@ from fields import *
 from formats import *
 from formats import impact_input_format, channel_input_format, pt_object_type_values,\
     tag_input_format, category_input_format, channel_type_values,\
-    property_input_format
+    property_input_format, disruptions_search_input_format
 from chaos import mapper, exceptions
 from chaos import utils, db_helper
 import chaos
@@ -446,6 +446,63 @@ this disruption to Navitia. Please try again.'}}, error_fields), 503
             {'error': {'message': 'An error occurred during deletion\
 . Please try again.'}}, error_fields), 500
 
+class DisruptionsSearch(flask_restful.Resource):
+    def __init__(self):
+        self.navitia = None
+        self.parsers = {}
+        self.parsers["post"] = reqparse.RequestParser()
+        parser_post = self.parsers["post"]
+
+        parser_post.add_argument("start_page", type=int, default=1, location='json')
+        parser_post.add_argument("items_per_page", type=int, default=20, location='json')
+        parser_post.add_argument("ends_after_date", type=utils.get_datetime, location='json'),
+        parser_post.add_argument("ends_before_date", type=utils.get_datetime, location='json'),
+        parser_post.add_argument("uri", type=str, location='json')
+        parser_post.add_argument("line_section", type=types.boolean, default=False, location='json')
+        parser_post.add_argument("current_time", type=utils.get_datetime, location='json')
+        parser_post.add_argument("depth", type=int, default=1, location='json')
+
+    @validate_navitia()
+    @validate_contributor()
+    @manage_navitia_error()
+    @validate_client_token()
+    def post(self, contributor, navitia):
+        self.navitia = navitia
+        args = self.parsers['post'].parse_args()
+
+        try:
+            json = request.get_json(silent=True)
+            validate(json, disruptions_search_input_format)
+        except ValidationError as e:
+            logging.debug(str(e))
+            return marshal({'error': {'message': utils.parse_error(e)}},
+                           error_fields), 400
+
+        g.current_time = args['current_time']
+        g.display_impacts = args['depth'] > 1
+        result = models.Disruption.all_with_post_filter(
+            page_index=args['start_page'],
+            items_per_page=args['items_per_page'],
+            contributor_id=contributor.id,
+            publication_status=json.get('publication_status', publication_status_values),
+            ends_after_date=args['ends_after_date'],
+            ends_before_date=args['ends_before_date'],
+            tags=json.get('tag', None),
+            uri=args['uri'],
+            line_section=args['line_section'],
+            statuses=json.get('status', disruption_status_values),
+            ptObjectFilter=json.get('ptObjectFilter', None)
+        )
+        response = {'disruptions': result.items, 'meta': make_pager(result, 'disruption')}
+
+        '''
+        The purpose is to remove any database-loaded state from all current objects so that the next access of
+        any attribute, or any query execution, will retrieve new state, freshening those objects which are still
+        referenced outside of the session with the most recent available state.
+        '''
+        for o in result.items:
+            models.db.session.expunge(o)
+        return marshal(response, disruptions_fields)
 
 class Cause(flask_restful.Resource):
 
