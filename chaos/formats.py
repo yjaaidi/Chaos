@@ -336,7 +336,7 @@ impact_input_format = {
         'send_notifications': {'type': 'boolean'},
         'notification_date': {'type': ['string', 'null'], 'pattern': datetime_pattern}
     },
-    'required': ['severity']
+    'required': ['severity', 'objects']
 }
 
 disruptions_input_format = {
@@ -380,5 +380,5 @@ disruptions_input_format = {
             'items': associate_disruption_property_input_format
         }
     },
-    'required': ['reference', 'cause', 'contributor']
+    'required': ['reference', 'cause', 'contributor', 'impacts']
 }
