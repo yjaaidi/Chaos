@@ -61,6 +61,7 @@
     - name: Status
     - name: Tag
     - name: Traffic Report
+    - name: Search
 
   ################################################################################
   #                                   Paths                                      #
@@ -975,12 +976,12 @@
         - $ref: "#/parameters/header_contributors"
         - in: body
           name: body
-          description: Filter only disruption with this PtObject list
+          description: traffic with filter on ptObject possible
           schema:
             type: object
             properties:
               ptObjectFilter:
-                $ref: "#/definitions/traffic_report_pt_object_filter"
+                $ref: "#/definitions/pt_object_filter"
         tags:
           - Traffic Report
         responses:
@@ -997,6 +998,10 @@
                   type: array
                   items:
                     $ref: "#/definitions/traffic_report"
+          400:
+            description: Bad request
+            schema:
+              $ref: "#/definitions/error_occured"
     /disruptions:
       get:
         description: Return all visible disruptions
@@ -1270,6 +1275,41 @@
         responses:
           204:
             description: Impact has been removed
+
+    /disruptions/_search:
+      post:
+        description: Return filtered disruptions
+        parameters:
+        - $ref: "#/parameters/header_authorization"
+        - $ref: "#/parameters/header_coverage"
+        - $ref: "#/parameters/header_customer_id"
+        - $ref: "#/parameters/header_contributors"
+        - in: body
+          name: body
+          description: Parameters of filter
+          schema:
+            $ref: "#/definitions/disruptions_search"
+        tags:
+          - Search
+        responses:
+          200:
+            description: List of disruption
+            schema:
+              type: object
+              properties:
+                disruptions:
+                  type: array
+                  items:
+                    $ref: "#/definitions/disruption"
+                meta:
+                  type: object
+                  properties:
+                    pagination:
+                      $ref: "#/definitions/pagination"
+          400:
+            description: Bad request
+            schema:
+              $ref: "#/definitions/error_occured"
 
   ################################################################################
   #                                 Parameters                                  #
@@ -1853,8 +1893,9 @@
                 type: "array"
                 items:
                   type: "string"
-    traffic_report_pt_object_filter:
+    pt_object_filter:
       type: "object"
+      description: Filter by ptObject list. If set, return only disruptions who has all impacts ptObject in this list
       properties:
         networks:
           type: "array"
@@ -2181,6 +2222,75 @@
               description: Channel ID
               type: string
               format: uuid
+    disruptions_search:
+      type: object
+      properties:
+        start_page:
+          description: Index of the first element returned (start at 1)
+          type: integer
+          default: 1
+          minimum: 1
+        items_per_page:
+          description: Number of items per page
+          type: integer
+          default: 20
+        publication_status:
+          description: Filter by publication_status
+          default:
+            - past
+            - ongoing
+            - coming
+          type: array
+          items:
+            type: string
+            enum:
+              - past
+              - ongoing
+              - coming
+        ends_after_date:
+          description: Start-date restriction for end_publication date
+          type: string
+          format: date-time
+        ends_before_date:
+          description: End-date restriction for end_publication date
+          type: string
+          format: date-time
+        current_time:
+          description: Parameter for settings the current time, mostly for debugging purpose
+          default: now
+          type: string
+          format: date-time
+        tag:
+          description: Filter by tag (id of tag)
+          type: array
+          items:
+            type: string
+            format: uuid
+        uri:
+          description: Filter by uri of ptobject
+          type: string
+        line_section:
+          description: If uri is a line id, filter also on related line_section(s)
+          type: boolean
+          default: false
+        status:
+          description: Filter by status
+          default:
+            - published
+            - draft
+          type: array
+          items:
+            type: string
+            enum:
+              - archived
+              - published
+              - draft
+        depth:
+          description: With depth=2, you could retrieve the first page of impacts from the disruption
+          type: integer
+          default: 1
+        ptObjectFilter:
+          $ref: "#/definitions/pt_object_filter"
     impact:
       type: "object"
       properties:
