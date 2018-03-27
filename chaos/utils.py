@@ -664,7 +664,7 @@ def client_token_is_allowed(clients_tokens, client_code, token):
     """
 
     # If the configuration doesn't exist, allow the action (backward compatibility)
-    if clients_tokens is None:
+    if clients_tokens is None or (clients_tokens.has_key('master') is True and token in clients_tokens.get('master')):
         return True
 
     client_tokens = clients_tokens.get(client_code)

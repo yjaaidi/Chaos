@@ -2,5 +2,8 @@
   "transilien": [
     "9bf5",
     "9bf6"
+  ],
+  "master": [
+    "42"
   ]
 }
