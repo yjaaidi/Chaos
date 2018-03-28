@@ -321,7 +321,8 @@ impact_input_format = {
         'objects': {
             'type': 'array',
             'items': object_input_format,
-            'uniqueItems': True
+            'uniqueItems': True,
+            'minItems': 1
         },
         'messages': {
             'type': 'array',
@@ -373,7 +374,8 @@ disruptions_input_format = {
         'impacts': {
             'type': 'array',
             'items': impact_input_format,
-            'uniqueItems': True
+            'uniqueItems': True,
+            'minItems': 1
         },
         'properties': {
             'type': 'array',
