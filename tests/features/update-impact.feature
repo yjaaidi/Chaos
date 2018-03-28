@@ -284,7 +284,7 @@ Feature: Update (put) impacts in a Disruption
         I fill in header "X-Contributors" with "contrib1"
         When I put to "/disruptions/6a826e64-028f-11e4-92d0-090027079ff3/impacts/7ffab232-3d47-4eea-aa2c-22f8680230b6" with:
         """
-        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"application_periods": [{"begin": "2014-01-01T16:52:00Z","end": "2014-01-07T16:52:00Z"},{"begin": "2014-01-20T16:52:00Z","end": "2014-01-30T16:52:00Z"},{"begin": "2014-01-20T16:52:00Z","end": "2014-02-20T16:52:00Z"}]}
+        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"application_periods": [{"begin": "2014-01-01T16:52:00Z","end": "2014-01-07T16:52:00Z"},{"begin": "2014-01-20T16:52:00Z","end": "2014-01-30T16:52:00Z"},{"begin": "2014-01-20T16:52:00Z","end": "2014-02-20T16:52:00Z"}],"objects": [{"id": "network:JDR:1","type": "network"}]}
         """
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
@@ -323,7 +323,7 @@ Feature: Update (put) impacts in a Disruption
         I fill in header "X-Contributors" with "contrib1"
         When I put to "/disruptions/6a826e64-028f-11e4-92d0-090027079ff3/impacts/7ffab232-3d47-4eea-aa2c-22f8680230b6" with:
         """
-        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"application_periods": [{"begin": "2014-01-20T16:52:00Z","end": "2014-01-30T16:52:00Z"},{"begin": "2014-01-20T16:52:00Z","end": "2014-02-20T16:52:00Z"}]}
+        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"application_periods": [{"begin": "2014-01-20T16:52:00Z","end": "2014-01-30T16:52:00Z"},{"begin": "2014-01-20T16:52:00Z","end": "2014-02-20T16:52:00Z"}],"objects": [{"id": "network:JDR:1","type": "network"}]}
         """
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
@@ -362,7 +362,7 @@ Feature: Update (put) impacts in a Disruption
         I fill in header "X-Contributors" with "contrib1"
         When I put to "/disruptions/6a826e64-028f-11e4-92d0-090027079ff3/impacts/7ffab232-3d47-4eea-aa2c-22f8680230b6" with:
         """
-        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"application_periods": [{"begin": "2014-01-20T16:52:00Z","end": "2014-02-20T16:52:00Z"}]}
+        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"application_periods": [{"begin": "2014-01-20T16:52:00Z","end": "2014-02-20T16:52:00Z"}],"objects": [{"id": "network:JDR:1","type": "network"}]}
         """
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
@@ -401,7 +401,7 @@ Feature: Update (put) impacts in a Disruption
         I fill in header "X-Contributors" with "contrib1"
         When I put to "/disruptions/6a826e64-028f-11e4-92d0-090027079ff3/impacts/7ffab232-3d47-4eea-aa2c-22f8680230b6" with:
         """
-        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}}
+        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"objects": [{"id": "network:JDR:1","type": "network"}]}
         """
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
@@ -440,7 +440,7 @@ Feature: Update (put) impacts in a Disruption
         I fill in header "X-Contributors" with "contrib1"
         When I put to "/disruptions/6a826e64-028f-11e4-92d0-090027079ff3/impacts/AA-BB" with:
         """
-        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}}
+        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"objects": [{"id": "network:JDR:1","type": "network"}]}
         """
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
@@ -479,7 +479,7 @@ Feature: Update (put) impacts in a Disruption
         I fill in header "X-Contributors" with "contrib1"
         When I put to "/disruptions/6a826e64-028f-11e4-92d0-090027079ff3/impacts" with:
         """
-        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}}
+        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"objects": [{"id": "network:JDR:1","type": "network"}]}
         """
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
@@ -487,7 +487,7 @@ Feature: Update (put) impacts in a Disruption
 
         When I put to "/disruptions/6a826e64-028f-11e4-92d0-090027079ff3/impacts" with:
         """
-        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}}
+        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"objects": [{"id": "network:JDR:1","type": "network"}]}
         """
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
@@ -525,7 +525,7 @@ Feature: Update (put) impacts in a Disruption
             | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab234-3d49-4eea-aa2c-22f8680230b2 | 7ffab232-3d47-4eea-aa2c-22f8680230b6 |2014-01-20T16:52:00                  |2014-01-30T16:52:00 |
         When I put to "/disruptions/6a826e64-028f-11e4-92d0-090027079ff3/impacts/5ffab232-3d47-4eea-aa2c-22f8680230b6" with:
         """
-        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}}
+        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"objects": [{"id": "network:JDR:1","type": "network"}]}
         """
         Then the status code should be "404"
 
@@ -563,7 +563,7 @@ Feature: Update (put) impacts in a Disruption
         I fill in header "X-Contributors" with "contrib1"
         When I put to "/disruptions/6a826e64-028f-11e4-92d0-090027079ff3/impacts/7ffab232-3d47-4eea-aa2c-22f8680230b6" with:
         """
-        {"severity": {"id": "1ffab232-3d48-4eea-aa2c-22f8680230b6"},"application_periods": [{"begin": "2014-01-20T16:52:00Z","end": "2014-02-20T16:52:00Z"}]}
+        {"severity": {"id": "1ffab232-3d48-4eea-aa2c-22f8680230b6"},"application_periods": [{"begin": "2014-01-20T16:52:00Z","end": "2014-02-20T16:52:00Z"}],"objects": [{"id": "network:JDR:1","type": "network"}]}
         """
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
