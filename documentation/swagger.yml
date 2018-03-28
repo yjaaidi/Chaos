@@ -2087,6 +2087,7 @@
           items:
             $ref: "#/definitions/disruption_impact"
           uniqueItems: true
+          minItems: 1
         properties:
           description: List with property IDs
           type: array
@@ -2109,7 +2110,7 @@
       type: object
       required:
         - severity
-
+        - objects
       properties:
         severity:
           type: object
@@ -2162,6 +2163,7 @@
                   - route
                   - stop_point
           uniqueItems: true
+          minItems: 1
     disruption_impact_message:
       type: object
       required:
