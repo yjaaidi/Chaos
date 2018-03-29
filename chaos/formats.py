@@ -321,7 +321,8 @@ impact_input_format = {
         'objects': {
             'type': 'array',
             'items': object_input_format,
-            'uniqueItems': True
+            'uniqueItems': True,
+            'minItems': 1
         },
         'messages': {
             'type': 'array',
@@ -336,7 +337,7 @@ impact_input_format = {
         'send_notifications': {'type': 'boolean'},
         'notification_date': {'type': ['string', 'null'], 'pattern': datetime_pattern}
     },
-    'required': ['severity']
+    'required': ['severity', 'objects']
 }
 
 disruptions_input_format = {
@@ -373,14 +374,15 @@ disruptions_input_format = {
         'impacts': {
             'type': 'array',
             'items': impact_input_format,
-            'uniqueItems': True
+            'uniqueItems': True,
+            'minItems': 1
         },
         'properties': {
             'type': 'array',
             'items': associate_disruption_property_input_format
         }
     },
-    'required': ['reference', 'cause', 'contributor']
+    'required': ['reference', 'cause', 'contributor', 'impacts']
 }
 
 disruptions_search_input_format = {

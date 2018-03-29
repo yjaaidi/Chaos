@@ -120,7 +120,7 @@ def test_severity_is_required_in_impcat():
 
 def test_begin_date_is_required_in_impcat():
     try:
-        validate({"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "application_periods": [{"end": "2014-05-22T02:15:00Z"}, {"begin": "2014-04-29T16:52:00Z","end": "2014-05-22T02:15:00Z"}]}, impact_input_format)
+        validate({"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "application_periods": [{"end": "2014-05-22T02:15:00Z"}, {"begin": None,"end": "2014-05-22T02:15:00Z"}],"objects": [{"id": "network:JDR:1", "type": "network"}]}, impact_input_format)
         assert False
     except ValidationError, e:
         eq_(parse_error(e), "'begin' is a required property", True)
@@ -155,7 +155,7 @@ def test_not_pt_object_in_impcat():
 
 def test_text_is_required_in_message():
     try:
-        validate({"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "messages": [{"channel": {"id": "4ffab230-3d48-4eea-aa2c-22f8680230b6"}}]}, impact_input_format)
+        validate({"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "messages": [{"channel": {"id": "4ffab230-3d48-4eea-aa2c-22f8680230b6"}}],"objects": [{"id": "network:JDR:1", "type": "network"}]}, impact_input_format)
         assert False
     except ValidationError, e:
         eq_(parse_error(e), "'text' is a required property", True)
@@ -163,7 +163,7 @@ def test_text_is_required_in_message():
 
 def test_channel_is_required_in_message():
     try:
-        validate({"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "messages": [{"text": "message 1"}]}, impact_input_format)
+        validate({"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "messages": [{"text": "message 1"}],"objects": [{"id": "network:JDR:1", "type": "network"}]}, impact_input_format)
         assert False
     except ValidationError, e:
         eq_(parse_error(e), "'channel' is a required property", True)
@@ -171,7 +171,7 @@ def test_channel_is_required_in_message():
 
 def test_id_is_required_in_localization():
     try:
-        validate({"reference": "foo", "contributor": "contrib1", "publication_period": {"begin": "2014-06-24T10:35:00Z", "end": None}, "localization":[{"type": "stop_area"}], "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}}, disruptions_input_format)
+        validate({"reference": "foo", "contributor": "contrib1", "publication_period": {"begin": "2014-06-24T10:35:00Z", "end": None}, "localization":[{"type": "stop_area"}], "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"},"impacts": [{"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"objects": [{"id": "network:JDR:1","type": "network"}],"application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}]}, disruptions_input_format)
         assert False
     except ValidationError, e:
         eq_(parse_error(e), "'id' is a required property", True)
@@ -179,7 +179,7 @@ def test_id_is_required_in_localization():
 
 def test_type_is_required_in_localization():
     try:
-        validate({"reference": "foo", "contributor": "contrib1", "publication_period": {"begin": "2014-06-24T10:35:00Z", "end": None}, "localization":[{"id": "4ffab230-3d48-4eea-aa2c-22f8680230b6"}], "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}}, disruptions_input_format)
+        validate({"reference": "foo", "contributor": "contrib1", "publication_period": {"begin": "2014-06-24T10:35:00Z", "end": None}, "localization":[{"id": "4ffab230-3d48-4eea-aa2c-22f8680230b6"}], "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"},"impacts": [{"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"objects": [{"id": "network:JDR:1","type": "network"}],"application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}]}, disruptions_input_format)
         assert False
     except ValidationError, e:
         eq_(parse_error(e), "'type' is a required property", True)
@@ -203,7 +203,7 @@ def test_reference_is_required_in_disruption():
 
 def test_begin_date_is_required_in_disruption():
     try:
-        validate({"reference": "foo", "contributor": "contrib1", "publication_period": {"end": None}, "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}}, disruptions_input_format)
+        validate({"reference": "foo", "contributor": "contrib1", "publication_period": {"end": None}, "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"},"impacts": [{"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"objects": [{"id": "network:JDR:1","type": "network"}],"application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}]}, disruptions_input_format)
         assert False
     except ValidationError, e:
         eq_(parse_error(e), "'begin' is a required property", True)
@@ -211,7 +211,7 @@ def test_begin_date_is_required_in_disruption():
 
 def test_unique_localization_in_disruption():
     try:
-        validate({"reference": "foo", "contributor": "contrib1", "publication_period": {"begin": "2014-06-24T10:35:00Z", "end": None}, "localization":[{"id":"stop_area:JDR:SA:CHVIN", "type": "stop_area"}, {"id":"stop_area:JDR:SA:CHVIN", "type": "stop_area"}], "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}}, disruptions_input_format)
+        validate({"reference": "foo", "contributor": "contrib1", "publication_period": {"begin": "2014-06-24T10:35:00Z", "end": None}, "localization":[{"id":"stop_area:JDR:SA:CHVIN", "type": "stop_area"}, {"id":"stop_area:JDR:SA:CHVIN", "type": "stop_area"}], "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"},"impacts": [{"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"objects": [{"id": "network:JDR:1","type": "network"}],"application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}]}, disruptions_input_format)
         assert False
     except ValidationError, e:
         eq_(parse_error(e), "[{'type': 'stop_area', 'id': 'stop_area:JDR:SA:CHVIN'}, {'type': 'stop_area', 'id': 'stop_area:JDR:SA:CHVIN'}] has non-unique elements", True)
@@ -219,7 +219,7 @@ def test_unique_localization_in_disruption():
 
 def test_unique_application_periods_in_impact():
     try:
-        validate({"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-05-22T02:15:00Z"},{"begin": "2014-04-29T16:52:00Z","end": "2014-05-22T02:15:00Z"}]}, impact_input_format)
+        validate({"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-05-22T02:15:00Z"},{"begin": "2014-04-29T16:52:00Z","end": "2014-05-22T02:15:00Z"}],"objects": [{"id": "network:JDR:1", "type": "network"}]}, impact_input_format)
         assert False
     except ValidationError, e:
         eq_(parse_error(e), "[{'begin': '2014-04-29T16:52:00Z', 'end': '2014-05-22T02:15:00Z'}, {'begin': '2014-04-29T16:52:00Z', 'end': '2014-05-22T02:15:00Z'}] has non-unique elements", True)
@@ -235,7 +235,7 @@ def test_unique_pt_object_in_impact():
 
 def test_unique_message_in_impact():
     try:
-        validate({"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "messages": [{"text": "message 1","channel": {"id": "4ffab230-3d48-4eea-aa2c-22f8680230b6"}}, {"text": "message 1","channel": {"id": "4ffab230-3d48-4eea-aa2c-22f8680230b6"}}]}, impact_input_format)
+        validate({"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "messages": [{"text": "message 1","channel": {"id": "4ffab230-3d48-4eea-aa2c-22f8680230b6"}}, {"text": "message 1","channel": {"id": "4ffab230-3d48-4eea-aa2c-22f8680230b6"}}],"objects": [{"id": "network:JDR:1", "type": "network"}]}, impact_input_format)
         assert False
     except ValidationError, e:
         eq_(parse_error(e), "[{'text': 'message 1', 'channel': {'id': '4ffab230-3d48-4eea-aa2c-22f8680230b6'}}, {'text': 'message 1', 'channel': {'id': '4ffab230-3d48-4eea-aa2c-22f8680230b6'}}] has non-unique elements", True)
@@ -251,7 +251,7 @@ def test_name_is_required_in_tag():
 
 def test_unique_tag_in_disruption():
     try:
-        validate({"reference": "foo", "contributor": "contrib1", "publication_period": {"begin": "2014-06-24T10:35:00Z", "end": None}, "tags":[{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}, {"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}], "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}}, disruptions_input_format)
+        validate({"reference": "foo", "contributor": "contrib1", "publication_period": {"begin": "2014-06-24T10:35:00Z", "end": None}, "tags":[{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}, {"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}], "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"},"impacts": [{"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"objects": [{"id": "network:JDR:1","type": "network"}],"application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}]}, disruptions_input_format)
         assert False
     except ValidationError, e:
         eq_(parse_error(e), "[{'id': '7ffab230-3d48-4eea-aa2c-22f8680230b6'}, {'id': '7ffab230-3d48-4eea-aa2c-22f8680230b6'}] has non-unique elements", True)
@@ -259,7 +259,7 @@ def test_unique_tag_in_disruption():
 
 def test_id_tag_is_required_in_disruption():
     try:
-        validate({"reference": "foo", "contributor": "contrib1", "publication_period": {"begin": "2014-06-24T10:35:00Z", "end": None}, "tags":[{}, {"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}], "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}}, disruptions_input_format)
+        validate({"reference": "foo", "contributor": "contrib1", "publication_period": {"begin": "2014-06-24T10:35:00Z", "end": None}, "tags":[{}, {"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}], "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"},"impacts": [{"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"objects": [{"id": "network:JDR:1","type": "network"}],"application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}]}, disruptions_input_format)
         assert False
     except ValidationError, e:
         eq_(parse_error(e), "'id' is a required property", True)
@@ -267,14 +267,14 @@ def test_id_tag_is_required_in_disruption():
 
 def test_id_tag_format_is_not_valid_in_disruption():
     try:
-        validate({"reference": "foo", "contributor": "contrib1", "publication_period": {"begin": "2014-06-24T10:35:00Z", "end": None}, "tags":[{"id": "7ffab230-3d48-4eea-aa2c-22f8680230"}, {"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}], "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}}, disruptions_input_format)
+        validate({"reference": "foo", "contributor": "contrib1", "publication_period": {"begin": "2014-06-24T10:35:00Z", "end": None}, "tags":[{"id": "7ffab230-3d48-4eea-aa2c-22f8680230"}, {"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}], "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"},"impacts": [{"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"objects": [{"id": "network:JDR:1","type": "network"}],"application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}]}, disruptions_input_format)
         assert False
     except ValidationError, e:
         eq_(parse_error(e), "'7ffab230-3d48-4eea-aa2c-22f8680230' does not match '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'", True)
 
 def test_contributor_is_required_in_disruption():
     try:
-        validate({"reference": "foo", "note": "hello", "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}}, disruptions_input_format)
+        validate({"reference": "foo", "note": "hello", "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"},"impacts": [{"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"objects": [{"id": "network:JDR:1","type": "network"}],"application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}]}, disruptions_input_format)
         assert False
     except ValidationError, e:
         eq_(parse_error(e), "'contributor' is a required property", True)

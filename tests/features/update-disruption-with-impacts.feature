@@ -38,7 +38,7 @@ Feature: Update Disruption and impacts
 
         When I put to "/disruptions/2ffab230-3d48-4eea-aa2c-22f8680230b6" with:
         """
-        {"reference": "new ref", "contributor": "contrib1", "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}, "impacts": [{"id": "7ffab232-3d47-4eea-aa2c-22f8680230b6", "severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"},{"begin": "2014-04-29T16:52:00Z","end": "2014-05-22T02:15:00Z"}]}]}
+        {"reference": "new ref","contributor": "contrib1","cause": {"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"},"impacts": [{"id": "7ffab232-3d47-4eea-aa2c-22f8680230b6","severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"objects": [{"id": "network:JDR:1","type": "network"}],"application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"},{"begin": "2014-04-29T16:52:00Z","end": "2014-05-22T02:15:00Z"}]}]}
         """
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
@@ -78,7 +78,7 @@ Feature: Update Disruption and impacts
             | short  | 140        | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | text/plain  | 4ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
         When I put to "/disruptions/2ffab230-3d48-4eea-aa2c-22f8680230b6" with:
         """
-        {"reference": "new ref", "contributor": "contrib1", "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}, "impacts": [{"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"},{"begin": "2014-04-29T16:52:00Z","end": "2014-05-22T02:15:00Z"}]}, {"id": "7ffab232-3d47-4eea-aa2c-22f8680230b6", "severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"},{"begin": "2014-04-29T16:52:00Z","end": "2014-05-22T02:15:00Z"}]}]}
+        {"reference": "new ref","contributor": "contrib1","cause": {"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"},"impacts": [{"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"objects": [{"id": "network:JDR:1","type": "network"}],"application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"},{"begin": "2014-04-29T16:52:00Z","end": "2014-05-22T02:15:00Z"}]},{"id": "7ffab232-3d47-4eea-aa2c-22f8680230b6","severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"objects": [{"id": "network:JDR:1","type": "network"}],"application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"},{"begin": "2014-04-29T16:52:00Z","end": "2014-05-22T02:15:00Z"}]}]}
         """
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
@@ -119,7 +119,7 @@ Feature: Update Disruption and impacts
             | short  | 140        | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | text/plain  | 4ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
         When I put to "/disruptions/2ffab230-3d48-4eea-aa2c-22f8680230b6" with:
         """
-        {"reference": "new ref", "contributor": "contrib1", "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}, "impacts": [{"id": "7ffab232-3d47-4eea-aa2c-22f8680230b6", "severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"},{"begin": "2014-04-29T16:52:00Z","end": "2014-05-22T02:15:00Z"}]}]}
+        {"reference": "new ref","contributor": "contrib1","cause": {"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"},"impacts": [{"id": "7ffab232-3d47-4eea-aa2c-22f8680230b6","severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"objects": [{"id": "network:JDR:1","type": "network"}],"application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"},{"begin": "2014-04-29T16:52:00Z","end": "2014-05-22T02:15:00Z"}]}]}
         """
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
@@ -160,13 +160,13 @@ Feature: Update Disruption and impacts
             | short  | 140        | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | text/plain  | 4ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
         When I put to "/disruptions/2ffab230-3d48-4eea-aa2c-22f8680230b6" with:
         """
-        {"reference": "new ref", "contributor": "contrib1", "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}, "impacts": [{"id": "aaa", "severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"},{"begin": "2014-04-29T16:52:00Z","end": "2014-05-22T02:15:00Z"}]}]}
+        {"reference": "new ref","contributor": "contrib1","cause": {"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"},"impacts": [{"id": "aaa","severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"objects": [{"id": "network:JDR:1","type": "network"}],"application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"},{"begin": "2014-04-29T16:52:00Z","end": "2014-05-22T02:15:00Z"}]}]}
         """
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
         And the field "error.message" should be "u'aaa' does not match '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'"
 
-    Scenario: update of disruption with 2 impact in database without attribut "impacts" in json
+    Scenario: update of disruption with 2 impact in database with new impacts
 
         Given I have the following clients in my database:
             | client_code   | created_at          | updated_at          | id                                   |
@@ -198,13 +198,13 @@ Feature: Update Disruption and impacts
             | short  | 140        | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | text/plain  | 4ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
         When I put to "/disruptions/2ffab230-3d48-4eea-aa2c-22f8680230b6" with:
         """
-        {"reference": "modified ref", "contributor": "contrib1", "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}}
+        {"reference": "modified ref","contributor": "contrib1","cause": {"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"},"impacts": [{"id": "1ffab232-3d47-4eea-aa2c-22f8680230b6","severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"objects": [{"id": "network:JDR:1","type": "network"}],"application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}]}
         """
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
         And the field "disruption.version" should be 2
         And the field "disruption.reference" should be "modified ref"
-        And in the database for the impact "7ffab232-3d47-4eea-aa2c-22f8680230b6" the field "status" should be "published"
+        And in the database for the impact "7ffab232-3d47-4eea-aa2c-22f8680230b6" the field "status" should be "archived"
         And in the database for the impact "1ffab232-3d47-4eea-aa2c-22f8680230b6" the field "status" should be "published"
 
     Scenario: update of disruption with 2 impact in database with attribute "impacts" but empty in json
@@ -239,7 +239,7 @@ Feature: Update Disruption and impacts
             | short  | 140        | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | text/plain  | 4ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
         When I put to "/disruptions/2ffab230-3d48-4eea-aa2c-22f8680230b6" with:
         """
-        {"reference": "modified ref", "contributor": "contrib1", "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}, "impacts": []}
+        {"reference": "modified ref","contributor": "contrib1","cause": {"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"},"impacts": [{"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"objects": [{"id": "network:JDR:1","type": "network"}],"application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}]}
         """
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
