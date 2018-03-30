@@ -41,6 +41,11 @@ api.app.url_map.strict_slashes = False
 api.add_resource(resources.Index,
                  '/',
                  endpoint='index')
+
+api.add_resource(resources.DisruptionsSearch,
+                 '/disruptions/_search',
+                 endpoint='search')
+
 api.add_resource(resources.Disruptions,
                  '/disruptions',
                  '/disruptions/<string:id>',

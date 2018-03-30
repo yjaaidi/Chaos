@@ -42,7 +42,7 @@ Feature: Manipulate messages in a impact
 
         When I put to "/disruptions/2ffab230-3d48-4eea-aa2c-22f8680230b6/impacts/7ffab232-3d47-4eea-aa2c-22f8680230b6" with:
         """
-        {"severity": {"id": "3ffab232-3d48-4eea-aa2c-22f8680230b6"}, "messages": [{"text": "message 1","channel": {"id": "4ffab230-3d48-4eea-aa2c-22f8680230b6"}}], "objects": [{"id": "network:JDR:1","type": "network"}]}
+        {"severity": {"id": "3ffab232-3d48-4eea-aa2c-22f8680230b6"},"objects": [{"id": "network:JDR:1","type": "network"}],"messages": [{"text": "message 1","channel": {"id": "4ffab230-3d48-4eea-aa2c-22f8680230b6"}}]}
         """
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
@@ -143,7 +143,7 @@ Feature: Manipulate messages in a impact
 
         When I put to "/disruptions/2ffab230-3d48-4eea-aa2c-22f8680230b6/impacts/7ffab232-3d47-4eea-aa2c-22f8680230b6" with:
         """
-        {"severity": {"id": "3ffab232-3d48-4eea-aa2c-22f8680230b6"}, "messages": [{"text": "message 2","channel": {"id": "8ffab230-3d48-4eea-aa2c-22f8680230b6"}}, {"text": "message 1","channel": {"id": "4ffab230-3d48-4eea-aa2c-22f8680230b6"}}]}
+        {"severity": {"id": "3ffab232-3d48-4eea-aa2c-22f8680230b6"},"objects": [{"id": "network:JDR:1","type": "network"}],"messages": [{"text": "message 2","channel": {"id": "8ffab230-3d48-4eea-aa2c-22f8680230b6"}},{"text": "message 1","channel": {"id": "4ffab230-3d48-4eea-aa2c-22f8680230b6"}}]}
         """
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
@@ -194,7 +194,7 @@ Feature: Manipulate messages in a impact
 
         When I put to "/disruptions/2ffab230-3d48-4eea-aa2c-22f8680230b6/impacts/7ffab232-3d47-4eea-aa2c-22f8680230b6" with:
         """
-        {"severity": {"id": "3ffab232-3d48-4eea-aa2c-22f8680230b6"}, "messages": [{"text": "message 2","channel": {"id": "8ffab230-3d48-4eea-aa2c-22f8680230b6"}}]}
+        {"severity": {"id": "3ffab232-3d48-4eea-aa2c-22f8680230b6"},"objects": [{"id": "network:JDR:1","type": "network"}],"application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}],"messages" : [{"text": "message 2","channel": {"id": "8ffab230-3d48-4eea-aa2c-22f8680230b6"}}]}
         """
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"

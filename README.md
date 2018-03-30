@@ -129,6 +129,8 @@ If you want to add more security, you can add a file chaos/clients_tokens.json w
 client_code should be the same as the value of X-Customer-Id header in HTTP request and token should be the same as the value of Authorization header in HTTP request
 If the file doesn't exist, the security will be disabled.
 
+You can add a 'master' key in the file. It will allow you to access all resources for all clients.
+
 ## Tests
 
 The following commands for tests are also working in Docker environment, you just have to run before: 

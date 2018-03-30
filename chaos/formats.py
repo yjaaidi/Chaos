@@ -321,7 +321,8 @@ impact_input_format = {
         'objects': {
             'type': 'array',
             'items': object_input_format,
-            'uniqueItems': True
+            'uniqueItems': True,
+            'minItems': 1
         },
         'messages': {
             'type': 'array',
@@ -336,7 +337,7 @@ impact_input_format = {
         'send_notifications': {'type': 'boolean'},
         'notification_date': {'type': ['string', 'null'], 'pattern': datetime_pattern}
     },
-    'required': ['severity']
+    'required': ['severity', 'objects']
 }
 
 disruptions_input_format = {
@@ -373,12 +374,73 @@ disruptions_input_format = {
         'impacts': {
             'type': 'array',
             'items': impact_input_format,
-            'uniqueItems': True
+            'uniqueItems': True,
+            'minItems': 1
         },
         'properties': {
             'type': 'array',
             'items': associate_disruption_property_input_format
         }
     },
-    'required': ['reference', 'cause', 'contributor']
+    'required': ['reference', 'cause', 'contributor', 'impacts']
+}
+
+disruptions_search_input_format = {
+    'type': 'object',
+    'properties': {
+        'status': {
+            'type': 'array',
+            'items': {'enum': disruption_status_values},
+            'uniqueItems': True,
+            'minItems': 1
+        },
+        'tags': {
+            'type': 'array',
+            'items': {
+                'type': 'object',
+                'properties': {
+                    'id': {'type': 'string', 'pattern': id_format_text}
+                },
+                'required': ['id']
+            },
+            'uniqueItems': True
+        },
+        'publication_status': {
+            'type': 'array',
+            'items': {'enum': publication_status_values},
+            'uniqueItems': True,
+            'minItems': 1
+        },
+        'ptObjectFilter': {
+            'anyOf': [
+                {"required": ['networks']},
+                {"required": ['lines']},
+                {"required": ['stop_points']},
+                {"required": ['stop_areas']}
+            ],
+            'type': 'object',
+            'properties': {
+                'networks': {
+                    'type': 'array',
+                    'items': {'type': ['string']},
+                    'uniqueItems': True
+                },
+                'lines': {
+                    'type': 'array',
+                    'items': {'type': ['string']},
+                    'uniqueItems': True
+                },
+                'stop_points': {
+                    'type': 'array',
+                    'items': {'type': ['string']},
+                    'uniqueItems': True
+                },
+                'stop_areas': {
+                    'type': 'array',
+                    'items': {'type': ['string']},
+                    'uniqueItems': True
+                }
+            }
+        }
+    }
 }

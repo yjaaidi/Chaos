@@ -198,7 +198,6 @@ def given_i_have_the_following_causes_in_my_database(step, cls):
         db.session.add(row)
     db.session.commit()
 
-
 @step(u'Given I have the relation (\w+) in my database:')
 def given_i_have_the_relation_in_my_database(step, cls):
     for values_dict in step.hashes:
@@ -209,7 +208,6 @@ def given_i_have_the_relation_in_my_database(step, cls):
             values.append("'{}'".format(value))
         db.session.execute("INSERT INTO {} ({}) VALUES ({})".format(associations[cls], ','.join(keys), ','.join(values)))
     db.session.commit()
-
 
 @step(u'And the field "([^"]*)" should contain all of "(.*)"')
 def and_the_field_group1_should_contain_all_of_group2(step, group1, group2):

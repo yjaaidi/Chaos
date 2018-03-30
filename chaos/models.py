@@ -494,9 +494,7 @@ class Disruption(TimestampMixin, db.Model):
         ).first_or_404()
 
     @classmethod
-    @paginate()
-    def all_with_filter(
-            cls,
+    def get_query_with_args(cls,
             contributor_id,
             publication_status,
             ends_after_date,
@@ -504,14 +502,19 @@ class Disruption(TimestampMixin, db.Model):
             tags,
             uri,
             line_section,
-            statuses):
+            statuses,
+            query=None):
         availlable_filters = {
             'past': and_(cls.end_publication_date != None, cls.end_publication_date < get_current_time()),
             'ongoing': and_(cls.start_publication_date <= get_current_time(),
                             or_(cls.end_publication_date == None, cls.end_publication_date >= get_current_time())),
             'coming': Disruption.start_publication_date > get_current_time()
         }
-        query = cls.query.filter(and_(
+
+        if (query is None):
+            query = cls.query
+
+        query = query.filter(and_(
             cls.contributor_id == contributor_id,
             cls.status.in_(statuses)
         ))
@@ -554,6 +557,70 @@ class Disruption(TimestampMixin, db.Model):
                 query = query.union(query_line_section)
 
         return query.order_by(cls.end_publication_date, cls.id)
+
+    @classmethod
+    @paginate()
+    def all_with_post_filter(
+            cls,
+            contributor_id,
+            publication_status,
+            ends_after_date,
+            ends_before_date,
+            tags,
+            uri,
+            line_section,
+            statuses,
+            ptObjectFilter):
+        query = cls.query
+        object_types = []
+        uris = []
+
+        if uri is None and ptObjectFilter is not None:
+            for key, objectId in ptObjectFilter.iteritems():
+                object_types.append(key[:-1])
+                uris = uris + objectId
+            query = cls.query.filter(
+                and_(
+                    cls.impacts.any(Impact.objects.any(PTobject.type.in_(object_types))),
+                    cls.impacts.any(Impact.objects.any(PTobject.uri.in_(uris)))
+                )
+            )
+
+        return cls.get_query_with_args(
+            contributor_id=contributor_id,
+            publication_status=publication_status,
+            ends_after_date=ends_after_date,
+            ends_before_date=ends_before_date,
+            tags=tags,
+            uri=uri,
+            line_section=line_section,
+            statuses=statuses,
+            query=query
+        )
+
+    @classmethod
+    @paginate()
+    def all_with_filter(
+            cls,
+            contributor_id,
+            publication_status,
+            ends_after_date,
+            ends_before_date,
+            tags,
+            uri,
+            line_section,
+            statuses):
+
+        return cls.get_query_with_args(
+            contributor_id=contributor_id,
+            publication_status=publication_status,
+            ends_after_date=ends_after_date,
+            ends_before_date=ends_before_date,
+            tags=tags,
+            uri=uri,
+            line_section=line_section,
+            statuses=statuses
+        )
 
     @property
     def publication_status(self):
