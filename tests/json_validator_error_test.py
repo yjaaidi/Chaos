@@ -201,6 +201,28 @@ def test_reference_is_required_in_disruption():
         eq_(parse_error(e), "'reference' is a required property", True)
 
 
+def test_impacts_is_required_in_disruption():
+    try:
+        validate({"reference": "foo","contributor": "contrib1","publication_period": {"begin": "2014-06-24T10:35:00Z","end": "2018-06-24T10:35:00Z"},"localization": [{"id": "stop_area:JDR:SA:CHVIN","type": "stop_area"}],"cause": {"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}}, disruptions_input_format)
+        assert False
+    except ValidationError, e:
+        eq_(parse_error(e), "'impacts' is a required property", True)
+
+
+def test_min_1_impact_is_required_in_disruption():
+    try:
+        validate({"reference": "foo","contributor": "contrib1","publication_period": {"begin": "2014-06-24T10:35:00Z","end": "2018-06-24T10:35:00Z"},"localization": [{"id": "stop_area:JDR:SA:CHVIN","type": "stop_area"}],"cause": {"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"},"impacts": []}, disruptions_input_format)
+        assert True
+    except ValidationError, e:
+        eq_(parse_error(e), "[] is too short", True)
+
+def test_impact_format_is_checked_in_disruption():
+    try:
+        validate({"reference": "foo","contributor": "contrib1","publication_period": {"begin": "2014-06-24T10:35:00Z","end": "2018-06-24T10:35:00Z"},"localization": [{"id": "stop_area:JDR:SA:CHVIN","type": "stop_area"}],"cause": {"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"},"impacts": [{"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}}]}, disruptions_input_format)
+        assert True
+    except ValidationError, e:
+        eq_(parse_error(e), "'objects' is a required property", True)
+
 def test_begin_date_is_required_in_disruption():
     try:
         validate({"reference": "foo", "contributor": "contrib1", "publication_period": {"end": None}, "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"},"impacts": [{"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"objects": [{"id": "network:JDR:1","type": "network"}],"application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}]}, disruptions_input_format)
@@ -240,6 +262,13 @@ def test_unique_message_in_impact():
     except ValidationError, e:
         eq_(parse_error(e), "[{'text': 'message 1', 'channel': {'id': '4ffab230-3d48-4eea-aa2c-22f8680230b6'}}, {'text': 'message 1', 'channel': {'id': '4ffab230-3d48-4eea-aa2c-22f8680230b6'}}] has non-unique elements", True)
 
+
+def test_obects_is_required_in_impact():
+    try:
+        validate({"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "messages": [{"text": "message 1", "channel": {"id": "4ffab230-3d48-4eea-aa2c-22f8680230b6"}}, {"text": "message 1", "channel": {"id": "4ffab230-3d48-4eea-aa2c-22f8680230b6"}}]}, impact_input_format)
+        assert True
+    except ValidationError, e:
+        eq_(parse_error(e), "'objects' is a required property", True)
 
 def test_name_is_required_in_tag():
     try:
