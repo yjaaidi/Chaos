@@ -7,6 +7,7 @@ SQLALCHEMY_DATABASE_URI = str(os.getenv('SQLALCHEMY_DATABASE_URI', 'postgresql:/
 DEBUG = (os.getenv('DEBUG', 1) == 1)
 
 NAVITIA_URL = str(os.getenv('NAVITIA_URL', 'http://navitia2-ws.ctp.dev.canaltp.fr'))
+NAVITIA_TIMEOUT = os.getenv('NAVITIA_TIMEOUT', 1)
 
 # rabbitmq connections string: http://kombu.readthedocs.org/en/latest/userguide/connections.html#urls
 RABBITMQ_CONNECTION_STRING = str(
