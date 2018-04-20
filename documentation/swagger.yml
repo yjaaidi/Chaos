@@ -2072,7 +2072,7 @@
           description: Service note of disruption
         contributor:
           type: string
-          description: Contributor code
+          description: Contributor code (same as header X-Contributors)
         status:
           type: string
           enum:
