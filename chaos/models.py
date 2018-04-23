@@ -38,17 +38,14 @@ from formats import publication_status_values
 from sqlalchemy import or_, and_, between
 from sqlalchemy.orm import aliased
 
-# force the server to use UTC time for each connection
+#force the server to use UTC time for each connection checkouted from the pool
 import sqlalchemy
 
-
-def set_utc_on_connect(dbapi_con, con_record):
+@sqlalchemy.event.listens_for(sqlalchemy.pool.Pool, 'checkout')
+def set_utc_on_connect(dbapi_con, connection_record, connection_proxy):
     c = dbapi_con.cursor()
     c.execute("SET timezone='utc'")
     c.close()
-
-
-sqlalchemy.event.listen(sqlalchemy.pool.Pool, 'connect', set_utc_on_connect)
 
 
 class TimestampMixin(object):
