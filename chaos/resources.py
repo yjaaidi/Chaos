@@ -455,8 +455,8 @@ class DisruptionsSearch(flask_restful.Resource):
 
         parser_post.add_argument("start_page", type=int, default=1, location='json')
         parser_post.add_argument("items_per_page", type=int, default=20, location='json')
-        parser_post.add_argument("ends_after_date", type=utils.get_datetime, location='json'),
-        parser_post.add_argument("ends_before_date", type=utils.get_datetime, location='json'),
+        parser_post.add_argument("ends_after_date", type=utils.get_datetime, location='json')
+        parser_post.add_argument("ends_before_date", type=utils.get_datetime, location='json')
         parser_post.add_argument("uri", type=str, location='json')
         parser_post.add_argument("line_section", type=types.boolean, default=False, location='json')
         parser_post.add_argument("current_time", type=utils.get_datetime, location='json')

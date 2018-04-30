@@ -38,18 +38,14 @@ from formats import publication_status_values
 from sqlalchemy import or_, and_, between
 from sqlalchemy.orm import aliased
 
-
-# force the server to use UTC time for each connection
+#force the server to use UTC time for each connection checkouted from the pool
 import sqlalchemy
 
-
-def set_utc_on_connect(dbapi_con, con_record):
+@sqlalchemy.event.listens_for(sqlalchemy.pool.Pool, 'checkout')
+def set_utc_on_connect(dbapi_con, connection_record, connection_proxy):
     c = dbapi_con.cursor()
     c.execute("SET timezone='utc'")
     c.close()
-
-
-sqlalchemy.event.listen(sqlalchemy.pool.Pool, 'connect', set_utc_on_connect)
 
 
 class TimestampMixin(object):
@@ -574,17 +570,32 @@ class Disruption(TimestampMixin, db.Model):
         query = cls.query
         object_types = []
         uris = []
+        line_section_uris = []
 
         if uri is None and ptObjectFilter is not None:
-            for key, objectId in ptObjectFilter.iteritems():
-                object_types.append(key[:-1])
-                uris = uris + objectId
-            query = cls.query.filter(
-                and_(
-                    cls.impacts.any(Impact.objects.any(PTobject.type.in_(object_types))),
-                    cls.impacts.any(Impact.objects.any(PTobject.uri.in_(uris)))
-                )
+            for key, objectIds in ptObjectFilter.iteritems():
+                object_type = key[:-1]
+                object_types.append(object_type)
+                uris = uris + objectIds
+                if object_type == 'line':
+                    line_section_uris = [objectId + ':%' for objectId in objectIds]
+                    line_section = False
+
+            uris_filter = and_(
+                cls.impacts.any(Impact.objects.any(PTobject.type.in_(object_types))),
+                cls.impacts.any(Impact.objects.any(PTobject.uri.in_(uris)))
             )
+            if len(line_section_uris):
+                query = cls.query.filter(
+                    or_(
+                        uris_filter,
+                        cls.impacts.any(Impact.objects.any(
+                            or_(*[PTobject.uri.like(objectId) for objectId in line_section_uris])
+                        ))
+                    )
+                )
+            else:
+                query = cls.query.filter(uris_filter)
 
         return cls.get_query_with_args(
             contributor_id=contributor_id,
