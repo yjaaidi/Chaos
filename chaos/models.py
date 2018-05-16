@@ -31,7 +31,7 @@
 
 import uuid
 from chaos import db, utils, exceptions
-from utils import paginate, get_current_time
+from utils import paginate, get_current_time, get_current_time_format_second
 from sqlalchemy.dialects.postgresql import UUID, BIT
 from datetime import datetime
 from formats import publication_status_values
@@ -51,13 +51,13 @@ def set_utc_on_connect(dbapi_con, connection_record, connection_proxy):
 class TimestampMixin(object):
     created_at = db.Column(
         db.DateTime(),
-        default=datetime.utcnow,
+        default=get_current_time_format_second,
         nullable=False
     )
     updated_at = db.Column(
         db.DateTime(),
         default=None,
-        onupdate=datetime.utcnow
+        onupdate=get_current_time_format_second
     )
 
 

@@ -179,11 +179,18 @@ def get_utc_datetime_by_zone(value, time_zone):
 def get_current_time():
     """
         Get current time global variable
-        :return: DateTime format '2014-04-31T16:52:00'
+        :return: DateTime format '2014-04-31T16:52:00.000000'
     """
     if 'current_time' in g and g.current_time:
         return g.current_time
     return datetime.utcnow()
+
+def get_current_time_format_second():
+    """
+        Get DateTime formatted to second
+        :return: DateTime format '2018-04-31T16:52:00'
+    """
+    return datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S");
 
 
 def option_value(values):
