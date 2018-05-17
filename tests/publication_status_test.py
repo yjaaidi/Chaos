@@ -6,7 +6,7 @@ import chaos
 def test_publication_status_past():
     with chaos.app.app_context():
         ob = chaos.models.Disruption()
-        now = datetime.utcnow()
+        now = chaos.utils.get_current_time()
         ob.start_publication_date = now + timedelta(days=-4)
         ob.end_publication_date = now + timedelta(days=-1)
         eq_(ob.publication_status,  'past')
@@ -23,20 +23,20 @@ def test_publication_status_ongoing():
 def test_publication_status_coming():
     with chaos.app.app_context():
         ob = chaos.models.Disruption()
-        ob.start_publication_date = datetime.utcnow() + timedelta(days=1)
+        ob.start_publication_date = chaos.utils.get_current_time() + timedelta(days=1)
         ob.end_publication_date = ob.start_publication_date + timedelta(days=3)
         eq_(ob.publication_status,  'coming')
 
 def test_publication_status_coming_not_end_publication_date():
     with chaos.app.app_context():
         ob = chaos.models.Disruption()
-        ob.start_publication_date = datetime.utcnow() + timedelta(days=1)
+        ob.start_publication_date = chaos.utils.get_current_time() + timedelta(days=1)
         ob.end_publication_date = None
         eq_(ob.publication_status,  'coming')
 
 def test_publication_status_ongoing_not_end_publication_date():
     with chaos.app.app_context():
         ob = chaos.models.Disruption()
-        ob.start_publication_date = datetime.utcnow() + timedelta(days=-1)
+        ob.start_publication_date = chaos.utils.get_current_time() + timedelta(days=-1)
         ob.end_publication_date = None
         eq_(ob.publication_status,  'ongoing')
