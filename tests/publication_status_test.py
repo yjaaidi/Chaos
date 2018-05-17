@@ -15,7 +15,7 @@ def test_publication_status_past():
 def test_publication_status_ongoing():
     with chaos.app.app_context():
         ob = chaos.models.Disruption()
-        ob.start_publication_date = datetime.utcnow()
+        ob.start_publication_date = chaos.utils.get_current_time()
         ob.end_publication_date = ob.start_publication_date + timedelta(days=2)
         eq_(ob.publication_status,  'ongoing')
 
