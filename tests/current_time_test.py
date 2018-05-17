@@ -11,14 +11,14 @@ def test_current_time():
         eq_(chaos.utils.get_current_time(), g.current_time)
 
 
-#current_time is exists in g and g.current_time None
+#current_time exists in g and g.current_time None
 def test_now_current_time1():
     with chaos.app.app_context():
         g.current_time = None
-        eq_(datetime.utcnow() < chaos.utils.get_current_time(), True)
+        eq_(datetime.utcnow().replace(microsecond=0), chaos.utils.get_current_time())
 
 
-#current_time is not exists
+#current_time doesn't exists
 def test_now_current_time2():
     with chaos.app.app_context():
-        eq_(datetime.utcnow() < chaos.utils.get_current_time(), True)
+        eq_(datetime.utcnow().replace(microsecond=0), chaos.utils.get_current_time())
