@@ -181,7 +181,7 @@ def and_in_the_json_the_field_is_an_id(step, fields):
 
 @step(u'And in the database for the (\w+) "([^"]+)" the field "([^"]*)" should be "([^"]*)"')
 def and_in_the_database_the_severity_group1_the_field_group2_should_be_group3(step, cls, id, field, value):
-    #this way flask manage the sqlalchemy session
+    #Context to allow Flask to manage sqlalchemy session
     with chaos.app.app_context():
         row = model_classes[cls].query.filter_by(id=id).first()
         eq_(getattr(row, field), pythonify(value))
@@ -189,14 +189,16 @@ def and_in_the_database_the_severity_group1_the_field_group2_should_be_group3(st
 
 @step(u'Given I have the following (\w+) in my database:')
 def given_i_have_the_following_causes_in_my_database(step, cls):
-    for values_dict in step.hashes:
-        row = model_classes[cls]()
-        for key, value in values_dict.iteritems():
-            if value == 'None':
-                value = None
-            setattr(row, key, value)
-        db.session.add(row)
-    db.session.commit()
+    # Context to allow Flask to manage sqlalchemy session
+    with chaos.app.app_context():
+        for values_dict in step.hashes:
+            row = model_classes[cls]()
+            for key, value in values_dict.iteritems():
+                if value == 'None':
+                    value = None
+                setattr(row, key, value)
+            db.session.add(row)
+        db.session.commit()
 
 @step(u'Given I have the relation (\w+) in my database:')
 def given_i_have_the_relation_in_my_database(step, cls):
@@ -243,7 +245,7 @@ def and_the_field_group1_is_valid_impact(step, group1):
 @step(u'And the field "([^"]*)" should have "([^"]*)" with "(.*)"')
 def and_the_field_group1_should_have_obj_with_group2(step, source_field, search_field, group2):
     import json
-    #search attribut keys
+    #search attribute keys
     group2_json = json.loads(group2)
     group2_keys = set(group2_json.keys())
     exists = False
