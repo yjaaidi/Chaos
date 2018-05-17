@@ -1,7 +1,7 @@
 import os
 
 #URI for postgresql
-# postgresql://<user>:<password>@<host>:<port>/<dbname>
+#postgresql://<user>:<password>@<host>:<port>/<dbname>
 #http://docs.sqlalchemy.org/en/rel_0_9/dialects/postgresql.html#psycopg2
 DATABASE_HOST = str(os.getenv('DATABASE_HOST', 'localhost'))
 SQLALCHEMY_DATABASE_URI = str(os.getenv('SQLALCHEMY_DATABASE_URI', 'postgresql://navitia:navitia@' + DATABASE_HOST + '/chaos_testing'))
@@ -16,11 +16,11 @@ RABBITMQ_HOST = str(os.getenv('RABBITMQ_HOST', 'localhost'))
 RABBITMQ_CONNECTION_STRING = 'pyamqp://guest:guest@' + RABBITMQ_HOST + ':5672//?heartbeat=60'
 
 
-#amqp exhange used for sending disruptions
+#amqp exchange used for sending disruptions
 EXCHANGE='navitia'
 
 CONTRIBUTOR='shortterm.tn'
-#
+
 ENABLE_RABBITMQ=False
 
 CACHE_CONFIGURATION = {
