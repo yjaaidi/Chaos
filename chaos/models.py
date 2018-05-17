@@ -51,13 +51,13 @@ def set_utc_on_connect(dbapi_con, connection_record, connection_proxy):
 class TimestampMixin(object):
     created_at = db.Column(
         db.DateTime(),
-        default=datetime.utcnow,
+        default=get_current_time,
         nullable=False
     )
     updated_at = db.Column(
         db.DateTime(),
         default=None,
-        onupdate=datetime.utcnow
+        onupdate=get_current_time
     )
 
 

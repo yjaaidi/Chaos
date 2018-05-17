@@ -183,8 +183,7 @@ def get_current_time():
     """
     if 'current_time' in g and g.current_time:
         return g.current_time
-    return datetime.utcnow()
-
+    return datetime.utcnow().replace(microsecond=0)
 
 def option_value(values):
     def to_return(value, name):
