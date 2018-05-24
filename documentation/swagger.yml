@@ -1454,7 +1454,7 @@
   #                                 Definitions                                  #
   ################################################################################
   definitions:
-    application_period:
+    period:
       type: "object"
       properties:
         begin:
@@ -1966,7 +1966,7 @@
         application_periods:
           type: "array"
           items:
-            $ref: "#/definitions/application_period"
+            $ref: "#/definitions/period"
         messages:
           type: "array"
           items:
@@ -2020,7 +2020,7 @@
         publication_period:
           type: object
           description: Dates whithin disruption is active
-          $ref: "#/definitions/application_period"
+          $ref: "#/definitions/period"
         publication_status:
           type: string
           description: |
@@ -2121,7 +2121,7 @@
         publication_period:
           type: object
           description: Dates whithin disruption is active
-          $ref: "#/definitions/application_period"
+          $ref: "#/definitions/period"
         impacts:
           type: array
           description: List of associated impacts
@@ -2166,7 +2166,7 @@
           type: array
           description: Array with dates of application periods
           items:
-            $ref: "#/definitions/application_period"
+            $ref: "#/definitions/period"
         send_notifications:
           type: boolean
           description: If notification sms, mail, push on impact should be send
@@ -2303,7 +2303,7 @@
         application_periods:
           type: "array"
           items:
-            $ref: "#/definitions/application_period"
+            $ref: "#/definitions/period"
         created_at:
           type: "string"
           format: "date-time"
@@ -2399,7 +2399,7 @@
         application_periods:
           type: "array"
           items:
-            $ref: "#/definitions/application_period"
+            $ref: "#/definitions/period"
         severity:
           type: "object"
           properties:
