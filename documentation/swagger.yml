@@ -1140,7 +1140,7 @@
             schema:
               $ref: "#/definitions/error_occured"
       delete:
-        description: Remove a disruption
+        description: Change the disruption and its impacts statuses to "archived". Archived elements aren't used by Navitia.
         parameters:
         - $ref: "#/parameters/header_authorization"
         - $ref: "#/parameters/header_coverage"
