@@ -1,6 +1,6 @@
 from nose.tools import *
 import chaos
-from chaos.populate_pb import populate_pb, get_pt_object_type, get_pos_time, get_channel_type
+from chaos.populate_pb import populate_pb, get_pt_object_type, get_pos_time, get_channel_type, chaos_pb2
 from aniso8601 import parse_datetime
 import datetime
 
@@ -585,3 +585,15 @@ def test_disruption_without_cause():
     del disruption.cause
     feed_entity = populate_pb(disruption)
 
+
+def test_get_channel_type():
+    eq_(get_channel_type('sms'), chaos_pb2.Channel.sms)
+    eq_(get_channel_type('email'), chaos_pb2.Channel.email)
+    eq_(get_channel_type('web'), chaos_pb2.Channel.web)
+    eq_(get_channel_type('mobile'), chaos_pb2.Channel.mobile)
+    eq_(get_channel_type('notification'), chaos_pb2.Channel.notification)
+    eq_(get_channel_type('twitter'), chaos_pb2.Channel.twitter)
+    eq_(get_channel_type('facebook'), chaos_pb2.Channel.facebook)
+    eq_(get_channel_type('title'), chaos_pb2.Channel.title)
+    eq_(get_channel_type('beacon'), chaos_pb2.Channel.beacon)
+    eq_(get_channel_type('foo'), chaos_pb2.Channel.unkown_type)

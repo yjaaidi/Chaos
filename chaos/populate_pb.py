@@ -53,18 +53,10 @@ def get_pt_object_type(type):
 
 
 def get_channel_type(type):
-    collection = {
-        "web": chaos_pb2.Channel.web,
-        "sms": chaos_pb2.Channel.sms,
-        "email": chaos_pb2.Channel.email,
-        "mobile": chaos_pb2.Channel.mobile,
-        "notification": chaos_pb2.Channel.notification,
-        "twitter": chaos_pb2.Channel.twitter,
-        "facebook": chaos_pb2.Channel.facebook
-    }
-    if type in collection:
-        return collection[type]
-    return chaos_pb2.Channel.unkown_type
+    try:
+        return chaos_pb2.Channel.Type.Value(type)
+    except ValueError:
+        return chaos_pb2.Channel.unkown_type
 
 
 def created_upated_at(src, dest):
