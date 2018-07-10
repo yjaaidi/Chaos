@@ -19,6 +19,7 @@ RUN set -xe && \
     apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get -yq install $buildDeps && \
     pip install uwsgi -i https://pypi.python.org/simple/ && \
+    pip install --upgrade setuptools pip && \
     pip install -r requirements.txt -i https://pypi.python.org/simple/ && \
     python setup.py build_pbf && cd .. && \
     apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false -o APT::AutoRemove::SuggestsImportant=false $buildDeps && \
