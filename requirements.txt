@@ -27,8 +27,8 @@ requests==2.3.0
 httmock==1.2.2
 fuzzywuzzy==0.3.1
 sure==1.2.7
-amqp==1.4.6
-kombu==3.0.35
+amqp==2.3.2
+kombu==4.2.1
 gevent==1.0.2
 greenlet==0.4.4
 protobuf==2.6.0
