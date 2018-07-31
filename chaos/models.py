@@ -674,12 +674,12 @@ class Impact(TimestampMixin, db.Model):
     status = db.Column(ImpactStatus, nullable=False, default='published', index=True)
     disruption_id = db.Column(UUID, db.ForeignKey(Disruption.id))
     severity_id = db.Column(UUID, db.ForeignKey(Severity.id))
-    messages = db.relationship('Message', backref='impact', lazy='joined')
-    application_periods = db.relationship('ApplicationPeriods', backref='impact', lazy='joined')
+    messages = db.relationship('Message', backref='impact', lazy='joined', cascade='delete')
+    application_periods = db.relationship('ApplicationPeriods', backref='impact', lazy='joined', cascade='delete')
     severity = db.relationship('Severity', backref='impacts', lazy='joined')
     objects = db.relationship("PTobject", secondary=associate_impact_pt_object,
                               lazy='joined', order_by="PTobject.type, PTobject.uri")
-    patterns = db.relationship('Pattern', backref='impact', lazy='joined')
+    patterns = db.relationship('Pattern', backref='impact', lazy='joined', cascade='delete')
     send_notifications = db.Column(db.Boolean, unique=False, nullable=False, default=True)
     version = db.Column(db.Integer, nullable=False, default=1)
     notification_date = db.Column(db.DateTime(), default=None, nullable=True)
@@ -1062,7 +1062,7 @@ class Pattern(TimestampMixin, db.Model):
     end_date = db.Column(db.Date(), nullable=True)
     weekly_pattern = db.Column(BIT(7), unique=False, nullable=False)
     impact_id = db.Column(UUID, db.ForeignKey(Impact.id), index=True)
-    time_slots = db.relationship('TimeSlot', backref='pattern', lazy='joined')
+    time_slots = db.relationship('TimeSlot', backref='pattern', lazy='joined', cascade='delete')
 
     def __init__(self, impact_id=None):
         self.id = str(uuid.uuid1())
