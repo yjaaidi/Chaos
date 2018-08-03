@@ -952,7 +952,7 @@
         - $ref: "#/parameters/header_customer_id"
         - $ref: "#/parameters/header_contributors"
         tags:
-          - Traffic Report
+          - Traffic Reports
         responses:
           200:
             description: State of public transport traffic
@@ -964,9 +964,8 @@
                   items:
                     $ref: "#/definitions/traffic_report_disruption"
                 traffic_reports:
-                  type: array
-                  items:
-                    $ref: "#/definitions/traffic_report"
+                  $ref: "#/definitions/traffic_report"
+
       post:
         description: This service provides the state of public transport traffic with filter
         parameters:
@@ -983,7 +982,7 @@
               ptObjectFilter:
                 $ref: "#/definitions/pt_object_filter"
         tags:
-          - Traffic Report
+          - Traffic Reports
         responses:
           200:
             description: State of public transport traffic
@@ -995,9 +994,7 @@
                   items:
                     $ref: "#/definitions/traffic_report_disruption"
                 traffic_reports:
-                  type: array
-                  items:
-                    $ref: "#/definitions/traffic_report"
+                  $ref: "#/definitions/traffic_report"
           400:
             description: Bad request
             schema:
@@ -1386,28 +1383,22 @@
     ends_after_date:
       in: query
       name: ends_after_date
-      description: Start-date restriction for end_publication date
+      description: "Start-date restriction for end_publication date (example: 2018-08-03T12:19:13Z)"
       required: false
       type: string
-      pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
-      example: "2018-08-03T12:19:13Z"
     ends_before_date:
       in: query
       name: ends_before_date
-      description: End-date restriction for end_publication date
+      description: "End-date restriction for end_publication date (example: 2018-08-03T12:19:13Z)"
       required: false
       type: string
-      pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
-      example: "2018-08-03T12:19:13Z"
     current_time:
       in: query
       name: current_time
-      description: Parameter for settings the current time, mostly for debugging purpose
+      description: "Parameter for settings the current time, mostly for debugging purpose (example: 2018-08-03T12:19:13Z)"
       default: now
       required: false
       type: string
-      pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
-      example: "2018-08-03T12:19:13Z"
     tag:
       in: query
       name: tag
@@ -1764,39 +1755,6 @@
           type: "array"
           items:
             $ref: "#/definitions/traffic_report_link"
-    traffic_report:
-      type: "object"
-      properties:
-        line_sections:
-          description: "Impacted line sections"
-          type: "array"
-          items:
-            $ref: "#/definitions/traffic_report_line_section"
-        lines:
-          description: "Impacted lines"
-          type: "array"
-          items:
-            $ref: "#/definitions/traffic_report_line"
-        network:
-          type: "object"
-          description: "Impacted Network"
-          properties:
-            name:
-              description: "Network name"
-              type: "string"
-            id:
-              description: "Network identifier in Navitia"
-              type: "string"
-        stop_areas:
-          type: "array"
-          description: "Impacted stop areas"
-          items:
-            $ref: "#/definitions/traffic_report_stop"
-        stop_points:
-          type: "array"
-          description: "Impacted stop points"
-          items:
-            $ref: "#/definitions/traffic_report_stop"
     traffic_report_line_section_meta:
       type: "object"
       properties:
@@ -1910,6 +1868,45 @@
                 type: "array"
                 items:
                   type: "string"
+    traffic_report_for_network:
+      type: "object"
+      required: ["network"]
+      properties:
+        network:
+          type: "object"
+          description: "Impacted Network"
+          properties:
+            name:
+              description: "Network name"
+              type: "string"
+            id:
+              description: "Network identifier in Navitia"
+              type: "string"
+        line_sections:
+          description: "Impacted line sections"
+          type: "array"
+          items:
+            $ref: "#/definitions/traffic_report_line_section"
+        lines:
+           description: "Impacted lines"
+           type: "array"
+           items:
+            $ref: "#/definitions/traffic_report_line"
+        stop_areas:
+            type: "array"
+            description: "Impacted stop areas"
+            items:
+              $ref: "#/definitions/traffic_report_stop"
+        stop_points:
+            type: "array"
+            description: "Impacted stop points"
+            items:
+              $ref: "#/definitions/traffic_report_stop"
+
+    traffic_report:
+      type: "array"
+      items:
+        $ref: "#/definitions/traffic_report_for_network"
     pt_object_filter:
       type: "object"
       description: Filter by ptObject list. If set, return only disruptions who has all impacts ptObject in this list
@@ -1946,7 +1943,9 @@
           format: uuid
           description: "Impact ID"
         status:
-          type: boolean
+          type: "string"
+          enum:
+            - "active"
           description: "If impact is active or not"
         cause:
           type: "string"
