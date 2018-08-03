@@ -60,7 +60,7 @@
     - name: Severity
     - name: Status
     - name: Tag
-    - name: Traffic Report
+    - name: Traffic Reports
     - name: Search
 
   ################################################################################
@@ -1389,14 +1389,16 @@
       description: Start-date restriction for end_publication date
       required: false
       type: string
-      format: date-time
+      pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+      example: "2018-08-03T12:19:13Z"
     ends_before_date:
       in: query
       name: ends_before_date
       description: End-date restriction for end_publication date
       required: false
       type: string
-      format: date-time
+      pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+      example: "2018-08-03T12:19:13Z"
     current_time:
       in: query
       name: current_time
@@ -1404,7 +1406,8 @@
       default: now
       required: false
       type: string
-      format: date-time
+      pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+      example: "2018-08-03T12:19:13Z"
     tag:
       in: query
       name: tag
@@ -1459,10 +1462,12 @@
       properties:
         begin:
           type: "string"
-          format: "date-time"
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2018-08-03T12:19:13Z"
         end:
           type: "string"
-          format: "date-time"
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2018-08-03T12:19:13Z"
     application_period_pattern:
       type: "object"
       properties:
@@ -1534,7 +1539,8 @@
           type: "string"
         created_at:
           type: "string"
-          format: "date-time"
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2018-08-03T12:19:13Z"
         effect:
           type: "string"
           enum:
@@ -1552,7 +1558,8 @@
           type: "integer"
         updated_at:
           type: "string"
-          format: "date-time"
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2018-08-03T12:19:13Z"
         wording:
           type: "string"
         wordings:
@@ -1596,10 +1603,12 @@
           type: "string"
         created_at:
           type: "string"
-          format: "date-time"
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2018-08-03T12:19:13Z"
         updated_at:
           type: "string"
-          format: "date-time"
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2018-08-03T12:19:13Z"
     category_creation:
       type: "object"
       properties:
@@ -1623,10 +1632,12 @@
           $ref: "#/definitions/href"
         created_at:
           type: "string"
-          format: "date-time"
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2018-08-03T12:19:13Z"
         updated_at:
           type: "string"
-          format: "date-time"
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2018-08-03T12:19:13Z"
     cause_creation:
       type: "object"
       properties:
@@ -1657,10 +1668,12 @@
           type: "integer"
         created_at:
           type: "string"
-          format: "date-time"
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2018-08-03T12:19:13Z"
         updated_at:
           type: "string"
-          format: "date-time"
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2018-08-03T12:19:13Z"
         types:
           type: "array"
           items:
@@ -1703,10 +1716,12 @@
           type: "string"
         created_at:
           type: "string"
-          format: "date-time"
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2018-08-03T12:19:13Z"
         updated_at:
           type: "string"
-          format: "date-time"
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2018-08-03T12:19:13Z"
     property_creation:
       type: "object"
       properties:
@@ -1727,10 +1742,12 @@
           type: "string"
         created_at:
           type: "string"
-          format: "date-time"
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2018-08-03T12:19:13Z"
         updated_at:
           type: "string"
-          format: "date-time"
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2018-08-03T12:19:13Z"
     tag_creation:
       type: "object"
       properties:
@@ -1982,7 +1999,8 @@
           description: Contributor code
         created_at:
           type: string
-          format: date-time
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2018-08-03T12:19:13Z"
         id:
           type: string
           format: uuid
@@ -2051,7 +2069,8 @@
             $ref: "#/definitions/tag"
         updated_at:
           type: string
-          format: date-time
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2018-08-03T12:19:13Z"
         version:
           type: integer
           description: Number of how many time this disruption has been changed
@@ -2173,7 +2192,8 @@
         notification_date:
           description: Date of notification
           type: string
-          format: date-time
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2018-08-03T12:19:13Z"
         messages:
           type: array
           description: List with messages by channel
@@ -2252,16 +2272,19 @@
         ends_after_date:
           description: Start-date restriction for end_publication date
           type: string
-          format: date-time
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2018-08-03T12:19:13Z"
         ends_before_date:
           description: End-date restriction for end_publication date
           type: string
-          format: date-time
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2018-08-03T12:19:13Z"
         current_time:
           description: Parameter for settings the current time, mostly for debugging purpose
           default: now
           type: string
-          format: date-time
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2018-08-03T12:19:13Z"
         tag:
           description: Filter by tag (id of tag)
           type: array
@@ -2306,7 +2329,8 @@
             $ref: "#/definitions/period"
         created_at:
           type: "string"
-          format: "date-time"
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2018-08-03T12:19:13Z"
         disruption:
           description: "Link to disruption of impact"
           type: "object"
@@ -2322,7 +2346,8 @@
         notification_date:
           description: "Date of notification"
           type: "string"
-          format: "date-time"
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2018-08-03T12:19:13Z"
         objects:
           type: "array"
           description: "List with impacted PT objects"
@@ -2350,16 +2375,19 @@
           $ref: "#/definitions/severity"
         updated_at:
           type: "string"
-          format: "date-time"
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2018-08-03T12:19:13Z"
     impact_message:
       type: "object"
       properties:
         created_at:
           type: "string"
-          format: "date-time"
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2018-08-03T12:19:13Z"
         updated_at:
           type: "string"
-          format: "date-time"
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2018-08-03T12:19:13Z"
         text:
           description: "Message for given channel"
           type: "string"
@@ -2381,10 +2409,12 @@
           type: "integer"
         created_at:
           type: "string"
-          format: "date-time"
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2018-08-03T12:19:13Z"
         updated_at:
           type: "string"
-          format: "date-time"
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2018-08-03T12:19:13Z"
         types:
           type: "array"
           items:
@@ -2438,7 +2468,8 @@
         notification_date:
           description: "Date of notification"
           type: "string"
-          format: "date-time"
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2018-08-03T12:19:13Z"
     pagination:
       type: "object"
       properties:
