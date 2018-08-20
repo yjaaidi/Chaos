@@ -499,7 +499,8 @@ class Disruption(TimestampMixin, db.Model):
             uri,
             line_section,
             statuses,
-            query=None):
+            query=None,
+            cause_category_id=None):
         availlable_filters = {
             'past': and_(cls.end_publication_date != None, cls.end_publication_date < get_current_time()),
             'ongoing': and_(cls.start_publication_date <= get_current_time(),
@@ -514,6 +515,10 @@ class Disruption(TimestampMixin, db.Model):
             cls.contributor_id == contributor_id,
             cls.status.in_(statuses)
         ))
+
+        if cause_category_id:
+            query = query.join(cls.cause)
+            query = query.filter(Cause.category_id == cause_category_id)
 
         if ends_after_date:
             query = query.filter(cls.end_publication_date >= ends_after_date)
@@ -566,7 +571,8 @@ class Disruption(TimestampMixin, db.Model):
             uri,
             line_section,
             statuses,
-            ptObjectFilter):
+            ptObjectFilter,
+            cause_category_id):
         query = cls.query
         object_types = []
         uris = []
@@ -606,7 +612,8 @@ class Disruption(TimestampMixin, db.Model):
             uri=uri,
             line_section=line_section,
             statuses=statuses,
-            query=query
+            query=query,
+            cause_category_id=cause_category_id
         )
 
     @classmethod
