@@ -2251,6 +2251,7 @@
           type: integer
           default: 1
           minimum: 1
+          example: 1
         items_per_page:
           description: Number of items per page
           type: integer
