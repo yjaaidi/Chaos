@@ -2313,6 +2313,10 @@
           description: With depth=2, you could retrieve the first page of impacts from the disruption
           type: integer
           default: 1
+        cause_category_id:
+          description: Filter by category id
+          type: string
+          format: uuid
         ptObjectFilter:
           $ref: "#/definitions/pt_object_filter"
     impact:
