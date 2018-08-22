@@ -491,7 +491,8 @@ class DisruptionsSearch(flask_restful.Resource):
             uri=args['uri'],
             line_section=args['line_section'],
             statuses=json.get('status', disruption_status_values),
-            ptObjectFilter=json.get('ptObjectFilter', None)
+            ptObjectFilter=json.get('ptObjectFilter', None),
+            cause_category_id=json.get('cause_category_id', None)
         )
         response = {'disruptions': result.items, 'meta': make_pager(result, 'disruption')}
 

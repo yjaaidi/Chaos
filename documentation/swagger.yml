@@ -60,7 +60,7 @@
     - name: Severity
     - name: Status
     - name: Tag
-    - name: Traffic Report
+    - name: Traffic Reports
     - name: Search
 
   ################################################################################
@@ -952,7 +952,7 @@
         - $ref: "#/parameters/header_customer_id"
         - $ref: "#/parameters/header_contributors"
         tags:
-          - Traffic Report
+          - Traffic Reports
         responses:
           200:
             description: State of public transport traffic
@@ -964,9 +964,8 @@
                   items:
                     $ref: "#/definitions/traffic_report_disruption"
                 traffic_reports:
-                  type: array
-                  items:
-                    $ref: "#/definitions/traffic_report"
+                  $ref: "#/definitions/traffic_report"
+
       post:
         description: This service provides the state of public transport traffic with filter
         parameters:
@@ -983,7 +982,7 @@
               ptObjectFilter:
                 $ref: "#/definitions/pt_object_filter"
         tags:
-          - Traffic Report
+          - Traffic Reports
         responses:
           200:
             description: State of public transport traffic
@@ -995,9 +994,7 @@
                   items:
                     $ref: "#/definitions/traffic_report_disruption"
                 traffic_reports:
-                  type: array
-                  items:
-                    $ref: "#/definitions/traffic_report"
+                  $ref: "#/definitions/traffic_report"
           400:
             description: Bad request
             schema:
@@ -1386,25 +1383,22 @@
     ends_after_date:
       in: query
       name: ends_after_date
-      description: Start-date restriction for end_publication date
+      description: "Start-date restriction for end_publication date (example: 2018-08-03T12:19:13Z)"
       required: false
       type: string
-      format: date-time
     ends_before_date:
       in: query
       name: ends_before_date
-      description: End-date restriction for end_publication date
+      description: "End-date restriction for end_publication date (example: 2018-08-03T12:19:13Z)"
       required: false
       type: string
-      format: date-time
     current_time:
       in: query
       name: current_time
-      description: Parameter for settings the current time, mostly for debugging purpose
+      description: "Parameter for settings the current time, mostly for debugging purpose (example: 2018-08-03T12:19:13Z)"
       default: now
       required: false
       type: string
-      format: date-time
     tag:
       in: query
       name: tag
@@ -1459,10 +1453,12 @@
       properties:
         begin:
           type: "string"
-          format: "date-time"
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2018-08-03T12:19:13Z"
         end:
           type: "string"
-          format: "date-time"
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2018-08-03T12:19:13Z"
     application_period_pattern:
       type: "object"
       properties:
@@ -1534,7 +1530,8 @@
           type: "string"
         created_at:
           type: "string"
-          format: "date-time"
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2018-08-03T12:19:13Z"
         effect:
           type: "string"
           enum:
@@ -1552,7 +1549,8 @@
           type: "integer"
         updated_at:
           type: "string"
-          format: "date-time"
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2018-08-03T12:19:13Z"
         wording:
           type: "string"
         wordings:
@@ -1596,10 +1594,12 @@
           type: "string"
         created_at:
           type: "string"
-          format: "date-time"
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2018-08-03T12:19:13Z"
         updated_at:
           type: "string"
-          format: "date-time"
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2018-08-03T12:19:13Z"
     category_creation:
       type: "object"
       properties:
@@ -1623,10 +1623,12 @@
           $ref: "#/definitions/href"
         created_at:
           type: "string"
-          format: "date-time"
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2018-08-03T12:19:13Z"
         updated_at:
           type: "string"
-          format: "date-time"
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2018-08-03T12:19:13Z"
     cause_creation:
       type: "object"
       properties:
@@ -1657,10 +1659,12 @@
           type: "integer"
         created_at:
           type: "string"
-          format: "date-time"
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2018-08-03T12:19:13Z"
         updated_at:
           type: "string"
-          format: "date-time"
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2018-08-03T12:19:13Z"
         types:
           type: "array"
           items:
@@ -1703,10 +1707,12 @@
           type: "string"
         created_at:
           type: "string"
-          format: "date-time"
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2018-08-03T12:19:13Z"
         updated_at:
           type: "string"
-          format: "date-time"
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2018-08-03T12:19:13Z"
     property_creation:
       type: "object"
       properties:
@@ -1727,10 +1733,12 @@
           type: "string"
         created_at:
           type: "string"
-          format: "date-time"
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2018-08-03T12:19:13Z"
         updated_at:
           type: "string"
-          format: "date-time"
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2018-08-03T12:19:13Z"
     tag_creation:
       type: "object"
       properties:
@@ -1747,39 +1755,6 @@
           type: "array"
           items:
             $ref: "#/definitions/traffic_report_link"
-    traffic_report:
-      type: "object"
-      properties:
-        line_sections:
-          description: "Impacted line sections"
-          type: "array"
-          items:
-            $ref: "#/definitions/traffic_report_line_section"
-        lines:
-          description: "Impacted lines"
-          type: "array"
-          items:
-            $ref: "#/definitions/traffic_report_line"
-        network:
-          type: "object"
-          description: "Impacted Network"
-          properties:
-            name:
-              description: "Network name"
-              type: "string"
-            id:
-              description: "Network identifier in Navitia"
-              type: "string"
-        stop_areas:
-          type: "array"
-          description: "Impacted stop areas"
-          items:
-            $ref: "#/definitions/traffic_report_stop"
-        stop_points:
-          type: "array"
-          description: "Impacted stop points"
-          items:
-            $ref: "#/definitions/traffic_report_stop"
     traffic_report_line_section_meta:
       type: "object"
       properties:
@@ -1893,6 +1868,45 @@
                 type: "array"
                 items:
                   type: "string"
+    traffic_report_for_network:
+      type: "object"
+      required: ["network"]
+      properties:
+        network:
+          type: "object"
+          description: "Impacted Network"
+          properties:
+            name:
+              description: "Network name"
+              type: "string"
+            id:
+              description: "Network identifier in Navitia"
+              type: "string"
+        line_sections:
+          description: "Impacted line sections"
+          type: "array"
+          items:
+            $ref: "#/definitions/traffic_report_line_section"
+        lines:
+           description: "Impacted lines"
+           type: "array"
+           items:
+            $ref: "#/definitions/traffic_report_line"
+        stop_areas:
+            type: "array"
+            description: "Impacted stop areas"
+            items:
+              $ref: "#/definitions/traffic_report_stop"
+        stop_points:
+            type: "array"
+            description: "Impacted stop points"
+            items:
+              $ref: "#/definitions/traffic_report_stop"
+
+    traffic_report:
+      type: "array"
+      items:
+        $ref: "#/definitions/traffic_report_for_network"
     pt_object_filter:
       type: "object"
       description: Filter by ptObject list. If set, return only disruptions who has all impacts ptObject in this list
@@ -1929,7 +1943,9 @@
           format: uuid
           description: "Impact ID"
         status:
-          type: boolean
+          type: "string"
+          enum:
+            - "active"
           description: "If impact is active or not"
         cause:
           type: "string"
@@ -1982,7 +1998,8 @@
           description: Contributor code
         created_at:
           type: string
-          format: date-time
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2018-08-03T12:19:13Z"
         id:
           type: string
           format: uuid
@@ -2051,7 +2068,8 @@
             $ref: "#/definitions/tag"
         updated_at:
           type: string
-          format: date-time
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2018-08-03T12:19:13Z"
         version:
           type: integer
           description: Number of how many time this disruption has been changed
@@ -2173,7 +2191,8 @@
         notification_date:
           description: Date of notification
           type: string
-          format: date-time
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2018-08-03T12:19:13Z"
         messages:
           type: array
           description: List with messages by channel
@@ -2232,6 +2251,7 @@
           type: integer
           default: 1
           minimum: 1
+          example: 1
         items_per_page:
           description: Number of items per page
           type: integer
@@ -2252,16 +2272,19 @@
         ends_after_date:
           description: Start-date restriction for end_publication date
           type: string
-          format: date-time
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2018-08-03T12:19:13Z"
         ends_before_date:
           description: End-date restriction for end_publication date
           type: string
-          format: date-time
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2018-08-03T12:19:13Z"
         current_time:
           description: Parameter for settings the current time, mostly for debugging purpose
           default: now
           type: string
-          format: date-time
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2018-08-03T12:19:13Z"
         tag:
           description: Filter by tag (id of tag)
           type: array
@@ -2291,6 +2314,10 @@
           description: With depth=2, you could retrieve the first page of impacts from the disruption
           type: integer
           default: 1
+        cause_category_id:
+          description: Filter by category id
+          type: string
+          format: uuid
         ptObjectFilter:
           $ref: "#/definitions/pt_object_filter"
     impact:
@@ -2306,7 +2333,8 @@
             $ref: "#/definitions/period"
         created_at:
           type: "string"
-          format: "date-time"
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2018-08-03T12:19:13Z"
         disruption:
           description: "Link to disruption of impact"
           type: "object"
@@ -2322,7 +2350,8 @@
         notification_date:
           description: "Date of notification"
           type: "string"
-          format: "date-time"
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2018-08-03T12:19:13Z"
         objects:
           type: "array"
           description: "List with impacted PT objects"
@@ -2350,16 +2379,19 @@
           $ref: "#/definitions/severity"
         updated_at:
           type: "string"
-          format: "date-time"
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2018-08-03T12:19:13Z"
     impact_message:
       type: "object"
       properties:
         created_at:
           type: "string"
-          format: "date-time"
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2018-08-03T12:19:13Z"
         updated_at:
           type: "string"
-          format: "date-time"
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2018-08-03T12:19:13Z"
         text:
           description: "Message for given channel"
           type: "string"
@@ -2381,10 +2413,12 @@
           type: "integer"
         created_at:
           type: "string"
-          format: "date-time"
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2018-08-03T12:19:13Z"
         updated_at:
           type: "string"
-          format: "date-time"
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2018-08-03T12:19:13Z"
         types:
           type: "array"
           items:
@@ -2438,7 +2472,8 @@
         notification_date:
           description: "Date of notification"
           type: "string"
-          format: "date-time"
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2018-08-03T12:19:13Z"
     pagination:
       type: "object"
       properties:
