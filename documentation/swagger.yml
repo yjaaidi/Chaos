@@ -1524,7 +1524,6 @@
           type: "string"
           format: "uuid"
         self:
-          type: "object"
           $ref: "#/definitions/href"
         color:
           type: "string"
@@ -1588,7 +1587,6 @@
           type: "string"
           format: "uuid"
         self:
-          type: "object"
           $ref: "#/definitions/href"
         name:
           type: "string"
@@ -1616,10 +1614,8 @@
           items:
             $ref: "#/definitions/wording"
         category:
-          type: "object"
           $ref: "#/definitions/category"
         self:
-          type: "object"
           $ref: "#/definitions/href"
         created_at:
           type: "string"
@@ -1649,7 +1645,6 @@
           type: "string"
           format: "uuid"
         self:
-          type: "object"
           $ref: "#/definitions/href"
         name:
           type: "string"
@@ -1699,7 +1694,6 @@
           type: "string"
           format: "uuid"
         self:
-          type: "object"
           $ref: "#/definitions/href"
         key:
           type: "string"
@@ -1727,7 +1721,6 @@
           type: "string"
           format: "uuid"
         self:
-          type: "object"
           $ref: "#/definitions/href"
         name:
           type: "string"
@@ -1991,7 +1984,6 @@
       type: object
       properties:
         cause:
-          type: object
           $ref: "#/definitions/cause"
         contributor:
           type: string
@@ -2009,7 +2001,6 @@
           description: Links to impacts of this disruption
           properties:
             pagination:
-              type: object
               $ref: "#/definitions/pagination"
         localization:
           type: array
@@ -2035,7 +2026,6 @@
           type: object
           description: Associated properties
         publication_period:
-          type: object
           description: Dates whithin disruption is active
           $ref: "#/definitions/period"
         publication_status:
@@ -2053,7 +2043,6 @@
           type: string
           description: Publication reference label
         self:
-          type: object
           $ref: "#/definitions/href"
         status:
           type: string
@@ -2137,7 +2126,6 @@
                   - stop_area
           uniqueItems: true
         publication_period:
-          type: object
           description: Dates whithin disruption is active
           $ref: "#/definitions/period"
         impacts:
@@ -2243,6 +2231,11 @@
               description: Channel ID
               type: string
               format: uuid
+        meta:
+          type: "array"
+          description: "Message meta for additional information"
+          items:
+            $ref: "#/definitions/meta"
     disruptions_search:
       type: object
       properties:
@@ -2337,7 +2330,6 @@
           example: "2018-08-03T12:19:13Z"
         disruption:
           description: "Link to disruption of impact"
-          type: "object"
           $ref: "#/definitions/href"
         id:
           description: "Impact ID"
@@ -2368,14 +2360,12 @@
                 description: "Impacted PT object type in navitia"
                 type: "string"
         self:
-          type: "object"
           $ref: "#/definitions/href"
         send_notifications:
           description: "If notification should be send or not"
           type: "boolean"
         severity:
           description: "Related severity"
-          type: "object"
           $ref: "#/definitions/severity"
         updated_at:
           type: "string"
@@ -2397,8 +2387,12 @@
           type: "string"
         channel:
           description: "Channel for given message"
-          type: "object"
           $ref: "#/definitions/impact_message_channel"
+        meta:
+          type: "array"
+          description: "Message meta for additional information"
+          items:
+            $ref: "#/definitions/meta"
     impact_message_channel:
       type: "object"
       properties:
@@ -2445,15 +2439,7 @@
           description: "List with messages by Channel"
           type: "array"
           items:
-            type: "object"
-            properties:
-              text:
-                type: "string"
-              channel:
-                type: "object"
-                properties:
-                  id:
-                    type: "string"
+            $ref: "#/definitions/disruption_impact_message"
         objects:
           type: "array"
           description: "List with impacted PT objects"
@@ -2484,14 +2470,20 @@
         total_results:
           type: "integer"
         prev:
-          type: "string"
           $ref: "#/definitions/href"
         next:
-          type: "string"
           $ref: "#/definitions/href"
         first:
-          type: "string"
           $ref: "#/definitions/href"
         last:
-          type: "string"
           $ref: "#/definitions/href"
+    meta:
+      type: "object"
+      required:
+        - key
+        - value
+      properties:
+        key:
+          type: "string"
+        value:
+          type: "string"
