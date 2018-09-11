@@ -47,6 +47,7 @@ import logging
 from utils import make_pager, option_value
 from chaos.validate_params import validate_client, validate_contributor, validate_navitia, \
     manage_navitia_error, validate_id, validate_client_token
+from pprint import pprint
 
 __all__ = ['Disruptions', 'Index', 'Severity', 'Cause']
 
@@ -830,6 +831,10 @@ class Impacts(flask_restful.Resource):
                                        items_per_page=items_per_page,
                                        disruption_id=disruption_id,
                                        contributor_id=contributor.id)
+            return marshal(
+                {'error': {'message': '{}'.format(pprint(result))}},
+                error_fields
+            ), 500
             response = {'impacts': result.items, 'meta': make_pager(result, 'impact', disruption_id=disruption_id)}
             return marshal(response, impacts_fields)
 

@@ -123,6 +123,10 @@ def populate_messages(impact, impact_pb):
         message_pb.text = message.text
         created_upated_at(message, message_pb)
         populate_channel(message_pb.channel, message.channel)
+        for meta in message.meta:
+            meta_pb = message_pb.meta.add()
+            meta_pb.key = meta.key
+            meta_pb.value = meta.value
 
 
 def populate_informed_entitie(pt_object, informed_entitie):

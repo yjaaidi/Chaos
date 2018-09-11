@@ -225,11 +225,30 @@ def manage_message(impact, json):
                 message.impact_id = impact.id
                 mapper.fill_from_json(message, message_json, mapper.message_mapping)
                 impact.insert_message(message)
+                manage_message_meta(message, message_json)
                 messages_db[message.channel_id] = message
 
     difference = set(messages_db) - set(messages_json)
     for diff in difference:
         impact.delete_message(messages_db[diff])
+
+def manage_message_meta(message, json):
+    meta_db = dict((meta.key, meta) for meta in message.meta)
+    meta_json = dict()
+    if 'meta' in json:
+        metas_json = dict((meta['key'], meta) for meta in json['meta'])
+        for meta_json in json['meta']:
+            if meta_json['key'] not in meta_db:
+                meta = models.Meta()
+                mapper.fill_from_json(meta, meta_json, mapper.meta_mapping)
+                message.insert_meta(meta)
+                meta_db[meta.key] = meta
+            else:
+                meta = meta_db[meta_json['key']]
+                mapper.fill_from_json(meta, meta_json, mapper.meta_mapping)
+    difference = set(meta_db) - set(metas_json)
+    for diff in difference:
+        message.remove_meta(meta_db[diff])
 
 
 def manage_application_periods(impact, application_periods):
