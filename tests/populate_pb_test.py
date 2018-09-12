@@ -5,7 +5,7 @@ from aniso8601 import parse_datetime
 import datetime
 
 
-def get_disruption(contributor_code, with_via=True, with_routes=True):
+def get_disruption(contributor_code, with_via=True, with_routes=True, with_message_meta=False):
 
     # Disruption
     disruption = chaos.models.Disruption()
@@ -144,6 +144,12 @@ def get_disruption(contributor_code, with_via=True, with_routes=True):
     channel_type = chaos.models.ChannelType()
     channel_type.name = 'sms'
     message.channel.channel_types.append(channel_type)
+    # Meta
+    if with_message_meta:
+        meta = chaos.models.Meta()
+        meta.key = 'smsObject'
+        meta.value = 'Title of sms'
+        message.meta.append(meta)
     impact.messages.append(message)
 
     message = chaos.models.Message()
@@ -158,7 +164,15 @@ def get_disruption(contributor_code, with_via=True, with_routes=True):
     channel_type = chaos.models.ChannelType()
     channel_type.name = 'email'
     message.channel.channel_types.append(channel_type)
-
+    if with_message_meta:
+        meta1 = chaos.models.Meta()
+        meta1.key = 'mailObject'
+        meta1.value = 'Title of mail'
+        message.meta.append(meta1)
+        meta2 = chaos.models.Meta()
+        meta2.key = 'other'
+        meta2.value = 'test'
+        message.meta.append(meta2)
     impact.messages.append(message)
 
     disruption.impacts.append(impact)
@@ -597,3 +611,19 @@ def test_get_channel_type():
     eq_(get_channel_type('title'), chaos_pb2.Channel.title)
     eq_(get_channel_type('beacon'), chaos_pb2.Channel.beacon)
     eq_(get_channel_type('foo'), chaos_pb2.Channel.unkown_type)
+
+def test_disruption_with_message_meta():
+    disruption = get_disruption('KISIO-DIGITAL', True, True, True)
+    feed_entity = populate_pb(disruption).entity[0]
+    eq_(feed_entity.is_deleted, False)
+    disruption_pb = feed_entity.Extensions[chaos.chaos_pb2.disruption]
+    eq_(disruption_pb.reference, disruption.reference)
+    eq_(len(disruption_pb.impacts[0].messages), 2)
+    eq_(len(disruption_pb.impacts[0].messages[0].meta), 1)
+    eq_(disruption_pb.impacts[0].messages[0].meta[0].key, disruption.impacts[0].messages[0].meta[0].key)
+    eq_(disruption_pb.impacts[0].messages[0].meta[0].value, disruption.impacts[0].messages[0].meta[0].value)
+    eq_(len(disruption_pb.impacts[0].messages[1].meta), 2)
+    eq_(disruption_pb.impacts[0].messages[1].meta[0].key, disruption.impacts[0].messages[1].meta[0].key)
+    eq_(disruption_pb.impacts[0].messages[1].meta[0].value, disruption.impacts[0].messages[1].meta[0].value)
+    eq_(disruption_pb.impacts[0].messages[1].meta[1].key, disruption.impacts[0].messages[1].meta[1].key)
+    eq_(disruption_pb.impacts[0].messages[1].meta[1].value, disruption.impacts[0].messages[1].meta[1].value)

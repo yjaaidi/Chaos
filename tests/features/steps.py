@@ -9,7 +9,8 @@ from chaos.models import Disruption, Severity, Cause, Impact, PTobject,\
     associate_line_section_route_object, associate_line_section_via_object,\
     Client, Contributor, associate_disruption_pt_object, Category, Wording, \
     associate_wording_severity, Pattern, TimeSlot, ChannelType,\
-    associate_wording_line_section, Property, AssociateDisruptionProperty
+    associate_wording_line_section, Property, AssociateDisruptionProperty, Meta,\
+    associate_message_meta
 import chaos
 
 model_classes = {
@@ -25,6 +26,7 @@ model_classes = {
     'channel': Channel,
     'channels': Channel,
     'messages': Message,
+    'message': Message,
     'applicationperiods': ApplicationPeriods,
     'tag': Tag,
     'tags': Tag,
@@ -39,7 +41,9 @@ model_classes = {
     'timeslot': TimeSlot,
     'channel_type': ChannelType,
     'properties': Property,
-    'associate_disruption_properties': AssociateDisruptionProperty
+    'associate_disruption_properties': AssociateDisruptionProperty,
+    'meta': Meta,
+    'metas': Meta
 }
 
 associations = {
@@ -49,7 +53,8 @@ associations = {
     'associate_line_section_via_object': associate_line_section_via_object,
     'associate_disruption_pt_object': associate_disruption_pt_object,
     'associate_wording_severity': associate_wording_severity,
-    'associate_wording_line_section': associate_wording_line_section
+    'associate_wording_line_section': associate_wording_line_section,
+    'associate_message_meta': associate_message_meta
 }
 
 
