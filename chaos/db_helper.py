@@ -220,6 +220,7 @@ def manage_message(impact, json):
             if message_json["channel"]["id"] in messages_db:
                 msg = messages_db[message_json["channel"]["id"]]
                 mapper.fill_from_json(msg, message_json, mapper.message_mapping)
+                manage_message_meta(msg, message_json)
             else:
                 message = models.Message()
                 message.impact_id = impact.id
@@ -234,7 +235,7 @@ def manage_message(impact, json):
 
 def manage_message_meta(message, json):
     meta_db = dict((meta.key, meta) for meta in message.meta)
-    meta_json = dict()
+    metas_json = dict()
     if 'meta' in json:
         metas_json = dict((meta['key'], meta) for meta in json['meta'])
         for meta_json in json['meta']:
