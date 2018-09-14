@@ -154,6 +154,11 @@ message_mapping = {
     'channel': {'id': AliasText(attribute='channel_id')}
 }
 
+meta_mapping = {
+    'key': None,
+    'value': None
+}
+
 application_period_mapping = {
     'begin': Datetime(attribute='start_date'),
     'end': Datetime(attribute='end_date')

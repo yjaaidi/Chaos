@@ -418,9 +418,15 @@ one_channel_fields = {
     'channel': fields.Nested(channel_fields)
 }
 
+base_meta_fields= {
+    'key': fields.Raw,
+    'value': fields.Raw
+}
+
 base_message_fields = {
     'text': fields.Raw,
-    'channel': fields.Nested(base_channel_fields)
+    'channel': fields.Nested(base_channel_fields),
+    'meta': fields.List(fields.Nested(base_meta_fields))
 }
 
 message_fields = deepcopy(base_message_fields)
