@@ -249,7 +249,7 @@ def manage_message_meta(message, json):
                 mapper.fill_from_json(meta, meta_json, mapper.meta_mapping)
     difference = set(meta_db) - set(metas_json)
     for diff in difference:
-        message.remove_meta(meta_db[diff])
+        message.delete_meta(meta_db[diff])
 
 
 def manage_application_periods(impact, application_periods):
