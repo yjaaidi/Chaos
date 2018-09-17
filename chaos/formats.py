@@ -263,6 +263,10 @@ message_input_format = {
                 }
             },
             'required': ['id']
+        },
+        'meta': {
+            'type': 'array',
+            'items': key_value_input_format
         }
     },
     'required': ['text', 'channel']

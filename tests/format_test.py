@@ -266,6 +266,14 @@ def test_impact_whith_message_validation():
     json = {"severity":{"id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657ea"}, "messages":[{"teaaaaxt":"aaaaaa","channel":{"id": "3d1f42b2-e8df-11e3-8c3e-0008ca86c7ea"}}]}
     validate(json, formats.impact_input_format)
 
+def test_impact_whith_message_meta_validation():
+    json = {"severity":{"id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657ea"}, "messages":[{"text":"aaaaaa","channel":{"id": "3d1f42b2-e8df-11e3-8c3e-0008ca86c7ea"},"meta":[{"key":"object","value":"mail object"}]}]}
+    validate(json, formats.impact_input_format)
+
+@raises(ValidationError)
+def test_impact_whith_message_meta_validation():
+    json = {"severity":{"id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657ea"}, "messages":[{"text":"aaaaaa","channel":{"id": "3d1f42b2-e8df-11e3-8c3e-0008ca86c7ea"},"meta":[{"keys":"object","value":"mail object"}]}]}
+    validate(json, formats.impact_input_format)
 
 def test_impact_with_stop_area_validation():
     json = {'id': 'stop_area:...:200', 'type': 'stop_area'}

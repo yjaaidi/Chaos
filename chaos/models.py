@@ -973,6 +973,17 @@ class Channel(TimestampMixin, db.Model):
     def get(cls, id, client_id):
         return cls.query.filter_by(id=id, client_id=client_id, is_visible=True).first_or_404()
 
+associate_message_meta = db.Table(
+    'associate_message_meta',
+    db.metadata,
+    db.Column('message_id', UUID, db.ForeignKey('message.id')),
+    db.Column('meta_id', UUID, db.ForeignKey('meta.id')),
+    db.PrimaryKeyConstraint(
+        'message_id',
+        'meta_id',
+        name='message_meta_pk'
+    )
+)
 
 class Message(TimestampMixin, db.Model):
     """
@@ -983,6 +994,7 @@ class Message(TimestampMixin, db.Model):
     impact_id = db.Column(UUID, db.ForeignKey(Impact.id))
     channel_id = db.Column(UUID, db.ForeignKey(Channel.id))
     channel = db.relationship('Channel', backref='message', lazy='select')
+    meta = db.relationship("Meta", secondary=associate_message_meta, lazy="joined")
 
     def __init__(self):
         self.id = str(uuid.uuid1())
@@ -998,6 +1010,19 @@ class Message(TimestampMixin, db.Model):
     def get(cls, id):
         return cls.query.filter_by(id=id).first_or_404()
 
+    def insert_meta(self, meta):
+        """
+        Adds an meta in a message.
+        """
+        self.meta.append(meta)
+        db.session.add(meta)
+
+    def delete_meta(self, meta):
+        """
+        delete a meta in a message.
+        """
+        self.meta.remove(meta)
+        db.session.delete(meta)
 
 associate_wording_line_section = db.Table(
     'associate_wording_line_section',
@@ -1011,6 +1036,19 @@ associate_wording_line_section = db.Table(
     )
 )
 
+class Meta(db.Model):
+    """
+    represent the channel for the message of an impact
+    """
+    id = db.Column(UUID, primary_key=True)
+    key = db.Column(db.Text, unique=False, nullable=False)
+    value = db.Column(db.Text, unique=False, nullable=False)
+
+    def __init__(self):
+        self.id = str(uuid.uuid1())
+
+    def __repr__(self):
+        return '<Meta %r>' % self.id
 
 class LineSection(TimestampMixin, db.Model):
     __tablename__ = 'line_section'
