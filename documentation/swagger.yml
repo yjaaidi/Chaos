@@ -1367,7 +1367,7 @@
     publication_status:
       in: query
       name: publication_status
-      description: Filter by publication_status
+      description: Filter by publication_status (example:publication_status[]=ongoing)
       required: false
       default:
         - past
