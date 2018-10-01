@@ -1669,6 +1669,7 @@
             type: "string"
     channel_creation:
       type: "object"
+      required: ["name", "max_size", "content_type", "types"]
       properties:
         name:
           type: "string"

@@ -940,6 +940,7 @@ class Channel(TimestampMixin, db.Model):
     client_id = db.Column(UUID, db.ForeignKey(Client.id), nullable=False)
     client = db.relationship('Client', backref='channels')
     channel_types = db.relationship('ChannelType', backref='channel', lazy='joined')
+    required = db.Column(db.Boolean, unique=False, nullable=False, default=False)
 
     def __init__(self):
         self.id = str(uuid.uuid1())
