@@ -1652,6 +1652,9 @@
           type: "string"
         max_size:
           type: "integer"
+        required:
+          type: "boolean"
+          example: false
         created_at:
           type: "string"
           pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
@@ -1673,6 +1676,9 @@
           type: "integer"
         content_type:
           type: "string"
+        required:
+          type: "boolean"
+          example: false
         types:
           type: "array"
           items:
