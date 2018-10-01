@@ -974,6 +974,10 @@ class Channel(TimestampMixin, db.Model):
     def get(cls, id, client_id):
         return cls.query.filter_by(id=id, client_id=client_id, is_visible=True).first_or_404()
 
+    @classmethod
+    def get_channels_required(cls, client_id):
+        return cls.query.filter_by(client_id=client_id, is_visible=True, required=True).all()
+
 associate_message_meta = db.Table(
     'associate_message_meta',
     db.metadata,
