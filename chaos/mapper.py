@@ -27,8 +27,8 @@
 # https://groups.google.com/d/forum/navitia
 # www.navitia.io
 
-from aniso8601 import parse_datetime, parse_time, parse_date
 from collections import Mapping, Sequence
+from aniso8601 import parse_datetime, parse_time, parse_date
 
 
 class Datetime(object):

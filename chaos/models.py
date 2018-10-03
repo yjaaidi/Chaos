@@ -490,7 +490,8 @@ class Disruption(TimestampMixin, db.Model):
         ).first_or_404()
 
     @classmethod
-    def get_query_with_args(cls,
+    def get_query_with_args(
+            cls,
             contributor_id,
             publication_status,
             ends_after_date,
