@@ -2485,5 +2485,7 @@
       properties:
         key:
           type: "string"
+          example: "subject"
         value:
           type: "string"
+          example: "Mail subject"
