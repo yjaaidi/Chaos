@@ -211,11 +211,12 @@ def fill_and_add_line_section(navitia, impact_id, all_objects, pt_object_json):
     return ptobject
 
 
-def manage_message(impact, json):
+def manage_message(impact, json, client_id):
     messages_db = dict((msg.channel_id, msg) for msg in impact.messages)
     messages_json = dict()
     if 'messages' in json:
         messages_json = dict((msg["channel"]["id"], msg) for msg in json['messages'])
+        manage_channels_required(messages_json, client_id)
         for message_json in json['messages']:
             if message_json["channel"]["id"] in messages_db:
                 msg = messages_db[message_json["channel"]["id"]]
@@ -232,6 +233,15 @@ def manage_message(impact, json):
     difference = set(messages_db) - set(messages_json)
     for diff in difference:
         impact.delete_message(messages_db[diff])
+
+def manage_channels_required(messages_json, client_id):
+    channels_required = models.Channel.get_channels_required(client_id)
+    if channels_required:
+        for channel_required in channels_required:
+            if channel_required.id not in messages_json or messages_json[channel_required.id] is None:
+                raise exceptions.InvalidJson('Channel {} is required.'.format(channel_required.id))
+            elif not messages_json[channel_required.id]['text']:
+                raise exceptions.InvalidJson('Empty property \'text\' is not allowed for channel {}.'.format(channel_required.id))
 
 def manage_message_meta(message, json):
     meta_db = dict((meta.key, meta) for meta in message.meta)
@@ -325,7 +335,7 @@ def create_or_update_impact(disruption, json_impact, navitia, impact_id=None):
     # or from apllication_periods in the data json
     app_periods_by_pattern = get_application_periods(json_impact)
     manage_application_periods(impact_bd, app_periods_by_pattern)
-    manage_message(impact_bd, json_impact)
+    manage_message(impact_bd, json_impact, disruption.client.id)
 
     return impact_bd
 

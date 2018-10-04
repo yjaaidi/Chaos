@@ -27,8 +27,8 @@
 # https://groups.google.com/d/forum/navitia
 # www.navitia.io
 
-from aniso8601 import parse_datetime, parse_time, parse_date
 from collections import Mapping, Sequence
+from aniso8601 import parse_datetime, parse_time, parse_date
 
 
 class Datetime(object):
@@ -85,7 +85,7 @@ class OptionalField(object):
         self.attribute = attribute
 
     def __call__(self, item, field, json):
-        if field in json and json[field]:
+        if field in json and json[field] is not None:
             setattr(item, self.attribute, json[field])
 
 
@@ -167,7 +167,8 @@ application_period_mapping = {
 channel_mapping = {
     'name': None,
     'max_size': None,
-    'content_type': None
+    'content_type': None,
+    'required': OptionalField(attribute='required')
 }
 
 line_section_mapping = {

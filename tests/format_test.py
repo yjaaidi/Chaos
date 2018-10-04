@@ -121,6 +121,12 @@ def test_channels_validation():
     json = {'name': 'short', 'max_size': 200, 'content_type': '', 'types': ['web']}
     validate(json, formats.channel_input_format)
 
+    json = {'name': 'short', 'max_size': 200, 'content_type': '', 'types': ['web'], 'required': True}
+    validate(json, formats.channel_input_format)
+
+    json = {'name': 'short', 'max_size': 200, 'content_type': '', 'types': ['web'], 'required': False}
+    validate(json, formats.channel_input_format)
+
 
 @raises(ValidationError)
 def test_channel_validation_attributs_mandatory():
@@ -139,6 +145,15 @@ def test_channel_types_validation_mandatory():
     json = {'name': 'short', 'max_size': 200, 'content_type': '', 'types': []}
     validate(json, formats.channel_input_format)
 
+@raises(ValidationError)
+def test_channel_validation_attributs_mandatory():
+    json = {'name': 'short', 'max_size': 200}
+    validate(json, formats.channel_input_format)
+
+@raises(ValidationError)
+def test_channel_with_required_not_boolean():
+    json = {'name': 'short', 'max_size': 200, 'content_type': '', 'types': ['web'], 'required': 1}
+    validate(json, formats.channel_input_format)
 
 def test_validate_object_format():
     Draft4Validator.check_schema(formats.object_input_format)
@@ -612,6 +627,3 @@ def test_impact_with_notification_date_and_None_value():
 def test_impact_with_notification_date_without_value():
     json = {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"notification_date": "","objects": [{"id": "network:JDR:1", "type": "network"}]}
     validate(json, formats.impact_input_format)
-
-
-

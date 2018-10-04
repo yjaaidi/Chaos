@@ -241,6 +241,7 @@ channel_input_format = {
         'name': {'type': 'string', 'maxLength': 250},
         'max_size': {'type': ['integer', 'null']},
         'content_type': {'type': 'string', 'maxLength': 250},
+        'required': {'type': 'boolean'},
         'types': {
             'type': 'array',
             'items': channel_type_input_format,

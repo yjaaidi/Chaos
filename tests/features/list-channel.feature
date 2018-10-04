@@ -28,9 +28,9 @@ Feature: list channel
             | client_code   | created_at          | updated_at          | id                                   |
             | 5             | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
         Given I have the following channels in my database:
-            | name   | max_size   | created_at          | updated_at          | content_type| id                                   |client_id                            |
-            | short  | 140        | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | text/plain  | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
-            | email  | 520        | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | text/plain  | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
+            | name   | max_size   | created_at          | updated_at          | content_type| id                                   | client_id                            | required
+            | short  | 140        | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | text/plain  | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | true
+            | email  | 520        | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | text/plain  | 7ffab232-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | false
         When I get "/channels"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
@@ -38,6 +38,8 @@ Feature: list channel
         And the field "channels.0.name" should be "email"
         And the field "channels.0.max_size" should be 520
         And the field "channels.0.content_type" should be "text/plain"
+        And the field "channels.0.required" should be "False"
+        And the field "channels.1.required" should be "True"
 
     Scenario: list of four channels sorted by name
         Given I have the following clients in my database:
@@ -82,4 +84,3 @@ Feature: list channel
         And the field "channel.name" should be "email"
         And the field "channel.max_size" should be 520
         And the field "channel.content_type" should be "text/plain"
-
