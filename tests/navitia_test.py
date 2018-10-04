@@ -41,7 +41,7 @@ def navitia_mock_unknown_object_type(url, request):
 def test_get_pt_object():
     n = Navitia('http://api.navitia.io', 'jdr')
     mock = NavitiaMock(200, {'networks': [{'id': 'network:foo', 'name': 'reseau foo'}]},
-                       assert_url='http://api.navitia.io/v1/coverage/jdr/networks/network:foo?depth=0')
+                       assert_url='http://api.navitia.io/v1/coverage/jdr/networks/network:foo?depth=0&disable_disruption=true')
     with HTTMock(mock):
         eq_(n.get_pt_object('network:foo', 'network'), {'id': 'network:foo', 'name': 'reseau foo'})
 
@@ -70,7 +70,7 @@ def test_navitia_unknown_object_type():
 
 def test_query_formater():
     n = Navitia('http://api.navitia.io', 'jdr')
-    eq_(n.query_formater('uri', 'network'), 'http://api.navitia.io/v1/coverage/jdr/networks/uri?depth=0')
+    eq_(n.query_formater('uri', 'network'), 'http://api.navitia.io/v1/coverage/jdr/networks/uri?depth=0&disable_disruption=true')
 
 
 def test_query_formater_line_section():
@@ -80,13 +80,13 @@ def test_query_formater_line_section():
 
 def test_query_formater_all():
     n = Navitia('http://api.navitia.io', 'jdr')
-    eq_(n.query_formater('uri', 'network', 'networks'), 'http://api.navitia.io/v1/coverage/jdr/networks/uri/networks?depth=0')
+    eq_(n.query_formater('uri', 'network', 'networks'), 'http://api.navitia.io/v1/coverage/jdr/networks/uri/networks?depth=0&disable_disruption=true')
 
 
 @raises(exceptions.ObjectTypeUnknown)
 def test_query_formater_all_objects_invalid():
     n = Navitia('http://api.navitia.io', 'jdr')
-    eq_(n.query_formater('uri', 'network', 'stop_areas'), 'http://api.navitia.io/v1/coverage/jdr/networks/uri/networks?depth=0')
+    eq_(n.query_formater('uri', 'network', 'stop_areas'), 'http://api.navitia.io/v1/coverage/jdr/networks/uri/networks?depth=0&disable_disruption=true')
 
 
 navitia_timeout_count = 0

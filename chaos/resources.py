@@ -318,6 +318,10 @@ class Disruptions(flask_restful.Resource):
             response = self.get_post_error_response_and_log(e, 404)
             return response, 404
 
+        except exceptions.InvalidJson as e:
+            response = self.get_post_error_response_and_log(e, 400)
+            return response, 400
+
         # Add all properties present in Json
         try:
             db_helper.manage_properties(disruption, json)
@@ -326,7 +330,7 @@ class Disruptions(flask_restful.Resource):
             return response, 404
 
         except exceptions.InvalidJson as e:
-            response = self.get_post_error_response_and_log(e, 404)
+            response = self.get_post_error_response_and_log(e, 400)
             return response, 400
 
         try:
@@ -395,8 +399,8 @@ class Disruptions(flask_restful.Resource):
             return response, 404
 
         except exceptions.InvalidJson as e:
-            response = self.get_put_error_response_and_log(e, 404)
-            return response, 404
+            response = self.get_put_error_response_and_log(e, 400)
+            return response, 400
 
         # Add all properties present in Json
         try:

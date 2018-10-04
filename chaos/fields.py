@@ -401,6 +401,7 @@ base_channel_fields = {
     'name': fields.Raw,
     'max_size': fields.Integer(default=None),
     'content_type': fields.Raw,
+    'required': fields.Raw,
     'types': FieldChannelTypes()
 }
 

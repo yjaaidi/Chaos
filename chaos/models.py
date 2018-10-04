@@ -490,7 +490,8 @@ class Disruption(TimestampMixin, db.Model):
         ).first_or_404()
 
     @classmethod
-    def get_query_with_args(cls,
+    def get_query_with_args(
+            cls,
             contributor_id,
             publication_status,
             ends_after_date,
@@ -940,6 +941,7 @@ class Channel(TimestampMixin, db.Model):
     client_id = db.Column(UUID, db.ForeignKey(Client.id), nullable=False)
     client = db.relationship('Client', backref='channels')
     channel_types = db.relationship('ChannelType', backref='channel', lazy='joined')
+    required = db.Column(db.Boolean, unique=False, nullable=False, default=False)
 
     def __init__(self):
         self.id = str(uuid.uuid1())
@@ -972,6 +974,10 @@ class Channel(TimestampMixin, db.Model):
     @classmethod
     def get(cls, id, client_id):
         return cls.query.filter_by(id=id, client_id=client_id, is_visible=True).first_or_404()
+
+    @classmethod
+    def get_channels_required(cls, client_id):
+        return cls.query.filter_by(client_id=client_id, is_visible=True, required=True).all()
 
 associate_message_meta = db.Table(
     'associate_message_meta',

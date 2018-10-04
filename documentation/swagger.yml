@@ -1367,7 +1367,7 @@
     publication_status:
       in: query
       name: publication_status
-      description: Filter by publication_status
+      description: Filter by publication_status (example:publication_status[]=ongoing)
       required: false
       default:
         - past
@@ -1652,6 +1652,9 @@
           type: "string"
         max_size:
           type: "integer"
+        required:
+          type: "boolean"
+          example: false
         created_at:
           type: "string"
           pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
@@ -1666,6 +1669,7 @@
             type: "string"
     channel_creation:
       type: "object"
+      required: ["name", "max_size", "content_type", "types"]
       properties:
         name:
           type: "string"
@@ -1673,6 +1677,9 @@
           type: "integer"
         content_type:
           type: "string"
+        required:
+          type: "boolean"
+          example: false
         types:
           type: "array"
           items:
@@ -2485,5 +2492,7 @@
       properties:
         key:
           type: "string"
+          example: "subject"
         value:
           type: "string"
+          example: "Mail subject"

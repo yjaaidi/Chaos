@@ -65,7 +65,7 @@ class Navitia(object):
             url=self.url, coverage=self.coverage, collection=self.collections[object_type], uri=uri)
         if pt_objects:
             query = '{q}/{objects}'.format(q=query, objects=pt_objects)
-        return query + '?depth=0'
+        return query + '?depth=0&disable_disruption=true'
 
     @retry(retry_on_exception=lambda e: isinstance(e, requests.exceptions.Timeout),
            stop_max_attempt_number=3, wait_fixed=100)
