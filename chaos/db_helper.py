@@ -239,9 +239,9 @@ def manage_channels_required(messages_json, client_id):
     if channels_required:
         for channel_required in channels_required:
             if channel_required.id not in messages_json or messages_json[channel_required.id] is None:
-                raise exceptions.InvalidJson('Required channel {}'.format(channel_required.id))
+                raise exceptions.InvalidJson('Channel {} is required.'.format(channel_required.id))
             elif not messages_json[channel_required.id]['text']:
-                raise exceptions.InvalidJson('Text for required channel {} is empty'.format(channel_required.id))
+                raise exceptions.InvalidJson('Empty property \'text\' is not allowed for channel {}.'.format(channel_required.id))
 
 def manage_message_meta(message, json):
     meta_db = dict((meta.key, meta) for meta in message.meta)
