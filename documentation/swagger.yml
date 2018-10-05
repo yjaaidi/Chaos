@@ -1679,6 +1679,7 @@
           type: "string"
         required:
           type: "boolean"
+          description: "If true, this channel must contains text for an impact to be created or edited."
           example: false
         types:
           type: "array"
