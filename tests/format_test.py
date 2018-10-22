@@ -215,19 +215,19 @@ def test_disruption_validation():
 
 @raises(ValidationError)
 def test_disruption_without_cause_validation():
-    json = {"reference": "foo", "contributor": "contrib1"}
+    json = {"reference": "foo", "contributor": "contrib1","publication_period":{"begin":"2018-09-11T13:50:00Z","end":"2018-12-31T16:50:00Z"}}
     validate(json, formats.disruptions_input_format)
 
 
 @raises(ValidationError)
 def test_disruption_without_contributor_validation():
-    json = {"reference": "foo", "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}}
+    json = {"reference": "foo", "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"},"publication_period":{"begin":"2018-09-11T13:50:00Z","end":"2018-12-31T16:50:00Z"}}
     validate(json, formats.disruptions_input_format)
 
 
 @raises(ValidationError)
 def test_disruption_not_cause_id_validation():
-    json = {"reference": "foo", "contributor": "contrib1", "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230$6"}}
+    json = {"reference": "foo", "contributor": "contrib1", "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230$6"},"publication_period":{"begin":"2018-09-11T13:50:00Z","end":"2018-12-31T16:50:00Z"}}
     validate(json, formats.disruptions_input_format)
 
 
@@ -243,31 +243,36 @@ def test_disruption_with_localisation_validation():
 
 @raises(ValidationError)
 def test_disruption_with_list_localisation_doublon():
-    json = {"severity": {"id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657ea"},"localization":[{"id": "stop_area:aaaa", "type":"stop_area"}, {"id": "stop_area:aaaa", "type":"stop_area"}], "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}}
+    json = {"severity": {"id": "3d1f42b2-e8df-11e3-8c3e-0008ca8657ea"},"localization":[{"id": "stop_area:aaaa", "type":"stop_area"}, {"id": "stop_area:aaaa", "type":"stop_area"}], "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"},"publication_period":{"begin":"2018-09-11T13:50:00Z","end":"2018-12-31T16:50:00Z"}}
     validate(json, formats.disruptions_input_format)
 
 
 @raises(ValidationError)
 def test_disruption_with_list_localisation_validation():
-    json = {"reference": "foo", "contributor": "contrib1", "note": "hello","localization":{"id": "aaaa", "type":"stop_area"}}
+    json = {"reference": "foo", "contributor": "contrib1", "note": "hello","localization":{"id": "aaaa", "type":"stop_area"},"publication_period":{"begin":"2018-09-11T13:50:00Z","end":"2018-12-31T16:50:00Z"}}
     validate(json, formats.disruptions_input_format)
 
 
 @raises(ValidationError)
 def test_disruption_with_list_localisation_stop_point():
-    json = {"reference": "foo", "contributor": "contrib1", "note": "hello","localization":[{"id": "aaaa", "type":"stop_point"}]}
+    json = {"reference": "foo", "contributor": "contrib1", "note": "hello","localization":[{"id": "aaaa", "type":"stop_point"}],"publication_period":{"begin":"2018-09-11T13:50:00Z","end":"2018-12-31T16:50:00Z"}}
     validate(json, formats.disruptions_input_format)
 
 
 @raises(ValidationError)
 def test_disruption_with_list_localisation_line():
-    json = {"reference": "foo", "contributor": "contrib1", "note": "hello","localization":[{"id": "aaaa", "type":"line"}]}
+    json = {"reference": "foo", "contributor": "contrib1", "note": "hello","localization":[{"id": "aaaa", "type":"line"}],"publication_period":{"begin":"2018-09-11T13:50:00Z","end":"2018-12-31T16:50:00Z"}}
     validate(json, formats.disruptions_input_format)
 
 
 @raises(ValidationError)
 def test_disruption_with_list_localisation_network():
-    json = {"reference": "foo", "contributor": "contrib1", "note": "hello","localization":[{"id": "aaaa", "type":"network"}]}
+    json = {"reference": "foo", "contributor": "contrib1", "note": "hello","localization":[{"id": "aaaa", "type":"network"}],"publication_period":{"begin":"2018-09-11T13:50:00Z","end":"2018-12-31T16:50:00Z"}}
+    validate(json, formats.disruptions_input_format)
+
+@raises(ValidationError)
+def test_disruption_without_publication_period():
+    json = {"reference": "foo", "contributor": "contrib1", "note": "hello", "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"},"impacts": [{"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"objects": [{"id": "network:JDR:1","type": "network"}],"application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}]}
     validate(json, formats.disruptions_input_format)
 
 
