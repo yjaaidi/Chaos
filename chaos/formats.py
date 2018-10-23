@@ -387,7 +387,7 @@ disruptions_input_format = {
             'items': associate_disruption_property_input_format
         }
     },
-    'required': ['reference', 'cause', 'contributor', 'impacts']
+    'required': ['reference', 'cause', 'contributor', 'impacts', 'publication_period']
 }
 
 disruptions_search_input_format = {

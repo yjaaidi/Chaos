@@ -36,7 +36,7 @@ Feature: Update disruptions with properties
 
         When I put to "/disruptions/2ffab230-3d48-4eea-aa2c-22f8680230b6" with:
         """
-        {"reference": "foo","contributor": "contributor","cause": {"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"},"impacts": [{"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"objects": [{"id": "network:JDR:1","type": "network"}],"application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}]}
+        {"reference": "foo","contributor": "contributor","cause": {"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"},"publication_period":{"begin":"2018-09-11T13:50:00Z","end":"2018-12-31T16:50:00Z"},"impacts": [{"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"objects": [{"id": "network:JDR:1","type": "network"}],"application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}]}
         """
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
@@ -73,7 +73,7 @@ Feature: Update disruptions with properties
 
         When I put to "/disruptions/2ffab230-3d48-4eea-aa2c-22f8680230b6" with:
         """
-        {"reference": "foo","contributor": "contributor","cause": {"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"},"impacts": [{"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"objects": [{"id": "network:JDR:1","type": "network"}],"application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}],"properties": []}
+        {"reference": "foo","contributor": "contributor","cause": {"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"},"publication_period":{"begin":"2018-09-11T13:50:00Z","end":"2018-12-31T16:50:00Z"},"impacts": [{"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"objects": [{"id": "network:JDR:1","type": "network"}],"application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}],"properties": []}
         """
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
@@ -109,7 +109,7 @@ Feature: Update disruptions with properties
             | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | published | 7ffab232-3d47-4eea-aa2c-22f8680230b6 | 2ffab230-3d48-4eea-aa2c-22f8680230b6 |7ffab232-3d48-4eea-aa2c-22f8680230b6 |
         When I put to "/disruptions/2ffab230-3d48-4eea-aa2c-22f8680230b6" with:
         """
-        {"reference": "foo","contributor": "contributor","cause": {"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"},"properties": [{"property_id": "e408adec-0243-11e6-954b-0050568c8382","value": "val1"}],"impacts": [{"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"objects": [{"id": "network:JDR:1","type": "network"}],"application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}]}
+        {"reference": "foo","contributor": "contributor","cause": {"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"},"properties": [{"property_id": "e408adec-0243-11e6-954b-0050568c8382","value": "val1"}],"publication_period":{"begin":"2018-09-11T13:50:00Z","end":"2018-12-31T16:50:00Z"},"impacts": [{"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"objects": [{"id": "network:JDR:1","type": "network"}],"application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}]}
         """
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
@@ -143,7 +143,7 @@ Feature: Update disruptions with properties
             | good news | #654321 | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | True       | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
         When I put to "/disruptions/2ffab230-3d48-4eea-aa2c-22f8680230b6" with:
         """
-        {"reference": "foo","contributor": "contributor","cause": {"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"},"properties": [{"property_id": "e408adec-0243-11e6-954b-0050568c8382","value": "old type value"},{"property_id": "f408adec-0243-11e6-954b-0050568c8382","value": "new test value"}],"impacts": [{"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"objects": [{"id": "network:JDR:1","type": "network"}],"application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}]}
+        {"reference": "foo","contributor": "contributor","cause": {"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"},"properties": [{"property_id": "e408adec-0243-11e6-954b-0050568c8382","value": "old type value"},{"property_id": "f408adec-0243-11e6-954b-0050568c8382","value": "new test value"}],"publication_period":{"begin":"2018-09-11T13:50:00Z","end":"2018-12-31T16:50:00Z"},"impacts": [{"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"objects": [{"id": "network:JDR:1","type": "network"}],"application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}]}
         """
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
@@ -172,7 +172,7 @@ Feature: Update disruptions with properties
             | good news | #654321 | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | True       | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
         When I put to "/disruptions/2ffab230-3d48-4eea-aa2c-22f8680230b6" with:
         """
-        {"reference": "foo", "contributor": "contributor", "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}, "properties": [{"property_id": "e408adec-0243-11e6-954b-0050568c8382"}],"impacts": [{"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"objects": [{"id": "network:JDR:1","type": "network"}],"application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}]}
+        {"reference": "foo", "contributor": "contributor", "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}, "properties": [{"property_id": "e408adec-0243-11e6-954b-0050568c8382"}],"publication_period":{"begin":"2018-09-11T13:50:00Z","end":"2018-12-31T16:50:00Z"},"impacts": [{"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"objects": [{"id": "network:JDR:1","type": "network"}],"application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}]}
         """
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
@@ -196,7 +196,7 @@ Feature: Update disruptions with properties
             | good news | #654321 | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | True       | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
         When I put to "/disruptions/2ffab230-3d48-4eea-aa2c-22f8680230b6" with:
         """
-        {"reference": "foo", "contributor": "contributor", "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}, "properties": [{"property_id": "e408adec-0243-11e6-954b-0050568c8382", "value": ""}],"impacts": [{"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"objects": [{"id": "network:JDR:1","type": "network"}],"application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}]}
+        {"reference": "foo", "contributor": "contributor", "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}, "properties": [{"property_id": "e408adec-0243-11e6-954b-0050568c8382", "value": ""}],"publication_period":{"begin":"2018-09-11T13:50:00Z","end":"2018-12-31T16:50:00Z"},"impacts": [{"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"objects": [{"id": "network:JDR:1","type": "network"}],"application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}]}
         """
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
@@ -220,7 +220,7 @@ Feature: Update disruptions with properties
             | good news | #654321 | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | True       | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
         When I put to "/disruptions/2ffab230-3d48-4eea-aa2c-22f8680230b6" with:
         """
-        {"reference": "foo", "contributor": "contributor", "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}, "properties": [{"property_id": "e408adec-0243-11e6-954b-0050568c8382", "value": 42}],"impacts": [{"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"objects": [{"id": "network:JDR:1","type": "network"}],"application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}]}
+        {"reference": "foo", "contributor": "contributor", "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}, "properties": [{"property_id": "e408adec-0243-11e6-954b-0050568c8382", "value": 42}],"publication_period":{"begin":"2018-09-11T13:50:00Z","end":"2018-12-31T16:50:00Z"},"impacts": [{"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"objects": [{"id": "network:JDR:1","type": "network"}],"application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}]}
         """
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
@@ -244,7 +244,7 @@ Feature: Update disruptions with properties
             | good news | #654321 | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | True       | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
         When I put to "/disruptions/2ffab230-3d48-4eea-aa2c-22f8680230b6" with:
         """
-        {"reference": "foo", "contributor": "contributor", "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}, "properties": [{"value": "test"}],"impacts": [{"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"objects": [{"id": "network:JDR:1","type": "network"}],"application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}]}
+        {"reference": "foo", "contributor": "contributor", "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}, "properties": [{"value": "test"}],"publication_period":{"begin":"2018-09-11T13:50:00Z","end":"2018-12-31T16:50:00Z"},"impacts": [{"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"objects": [{"id": "network:JDR:1","type": "network"}],"application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}]}
         """
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
@@ -268,7 +268,7 @@ Feature: Update disruptions with properties
             | good news | #654321 | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | True       | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
         When I put to "/disruptions/2ffab230-3d48-4eea-aa2c-22f8680230b6" with:
         """
-        {"reference": "foo", "contributor": "contributor", "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}, "properties": [{"property_id": "", "value": "test"}],"impacts": [{"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"objects": [{"id": "network:JDR:1","type": "network"}],"application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}]}
+        {"reference": "foo", "contributor": "contributor", "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}, "properties": [{"property_id": "", "value": "test"}],"publication_period":{"begin":"2018-09-11T13:50:00Z","end":"2018-12-31T16:50:00Z"},"impacts": [{"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"objects": [{"id": "network:JDR:1","type": "network"}],"application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}]}
         """
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
@@ -292,7 +292,7 @@ Feature: Update disruptions with properties
             | good news | #654321 | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | True       | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
         When I put to "/disruptions/2ffab230-3d48-4eea-aa2c-22f8680230b6" with:
         """
-        {"reference": "foo", "contributor": "contributor", "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}, "properties": [{"property_id": "e408adec-0243-11e6-954b-0050568c838", "value": "test"}],"impacts": [{"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"objects": [{"id": "network:JDR:1","type": "network"}],"application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}]}
+        {"reference": "foo", "contributor": "contributor", "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}, "properties": [{"property_id": "e408adec-0243-11e6-954b-0050568c838", "value": "test"}],"publication_period":{"begin":"2018-09-11T13:50:00Z","end":"2018-12-31T16:50:00Z"},"impacts": [{"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"objects": [{"id": "network:JDR:1","type": "network"}],"application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}]}
         """
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
@@ -316,7 +316,7 @@ Feature: Update disruptions with properties
             | good news | #654321 | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | True       | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
         When I put to "/disruptions/2ffab230-3d48-4eea-aa2c-22f8680230b6" with:
         """
-        {"reference": "foo", "contributor": "contributor", "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}, "properties": [{"property_id": "e408adec-0243-11e6-954b-0050568c8382", "value": "val1"}],"impacts": [{"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"objects": [{"id": "network:JDR:1","type": "network"}],"application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}]}
+        {"reference": "foo", "contributor": "contributor", "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}, "properties": [{"property_id": "e408adec-0243-11e6-954b-0050568c8382", "value": "val1"}],"publication_period":{"begin":"2018-09-11T13:50:00Z","end":"2018-12-31T16:50:00Z"},"impacts": [{"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"objects": [{"id": "network:JDR:1","type": "network"}],"application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}]}
         """
         Then the status code should be "404"
         And the header "Content-Type" should be "application/json"

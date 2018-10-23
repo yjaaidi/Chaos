@@ -1459,6 +1459,20 @@
           type: "string"
           pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
           example: "2018-08-03T12:19:13Z"
+    period_create:
+      type: "object"
+      required:
+        - begin
+        - end
+      properties:
+        begin:
+          type: "string"
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2018-08-03T12:19:13Z"
+        end:
+          type: "string"
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2018-08-03T12:19:13Z"
     application_period_pattern:
       type: "object"
       properties:
@@ -2077,6 +2091,7 @@
         - impacts
         - contributor
         - cause
+        - publication_period
       properties:
         reference:
           type: string
@@ -2135,7 +2150,7 @@
           uniqueItems: true
         publication_period:
           description: Dates whithin disruption is active
-          $ref: "#/definitions/period"
+          $ref: "#/definitions/period_create"
         impacts:
           type: array
           description: List of associated impacts
@@ -2180,7 +2195,7 @@
           type: array
           description: Array with dates of application periods
           items:
-            $ref: "#/definitions/period"
+            $ref: "#/definitions/period_create"
         send_notifications:
           type: boolean
           description: If notification sms, mail, push on impact should be send
@@ -2435,7 +2450,7 @@
         application_periods:
           type: "array"
           items:
-            $ref: "#/definitions/period"
+            $ref: "#/definitions/period_create"
         severity:
           type: "object"
           properties:
