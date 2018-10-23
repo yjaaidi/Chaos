@@ -20,7 +20,7 @@ Feature: Create disruptions with properties
         I fill in header "X-Contributors" with "contributor"
         When I post to "/disruptions" with:
         """
-        {"reference": "foo","contributor": "contributor","cause": {"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"},"impacts": [{"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"objects": [{"id": "network:JDR:1","type": "network"}],"application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"},{"begin": "2014-04-29T16:52:00Z","end": "2014-05-22T02:15:00Z"}]}]}
+        {"reference": "foo","contributor": "contributor","cause": {"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"},"publication_period":{"begin":"2018-09-11T13:50:00Z","end":"2018-12-31T16:50:00Z"},"impacts": [{"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"objects": [{"id": "network:JDR:1","type": "network"}],"application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"},{"begin": "2014-04-29T16:52:00Z","end": "2014-05-22T02:15:00Z"}]}]}
         """
         Then the status code should be "201"
         And the header "Content-Type" should be "application/json"
@@ -41,7 +41,7 @@ Feature: Create disruptions with properties
         I fill in header "X-Contributors" with "contributor"
         When I post to "/disruptions" with:
         """
-        {"reference": "foo","contributor": "contributor","cause": {"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"},"impacts": [{"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"objects": [{"id": "network:JDR:1","type": "network"}],"application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}],"properties": [{"property_id": "e408adec-0243-11e6-954b-0050568c8382"}]}
+        {"reference": "foo","contributor": "contributor","cause": {"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"},"publication_period":{"begin":"2018-09-11T13:50:00Z","end":"2018-12-31T16:50:00Z"},"impacts": [{"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"objects": [{"id": "network:JDR:1","type": "network"}],"application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}],"properties": [{"property_id": "e408adec-0243-11e6-954b-0050568c8382"}]}
         """
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
@@ -61,7 +61,7 @@ Feature: Create disruptions with properties
         I fill in header "X-Contributors" with "contributor"
         When I post to "/disruptions" with:
         """
-        {"reference": "foo","contributor": "contributor","cause": {"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"},"impacts": [{"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"objects": [{"id": "network:JDR:1","type": "network"}],"application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"},{"begin": "2014-04-29T16:52:00Z","end": "2014-05-22T02:15:00Z"}]}],"properties": [{"property_id": "e408adec-0243-11e6-954b-0050568c8382","value": ""}]}
+        {"reference": "foo","contributor": "contributor","cause": {"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"},"publication_period":{"begin":"2018-09-11T13:50:00Z","end":"2018-12-31T16:50:00Z"},"impacts": [{"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"objects": [{"id": "network:JDR:1","type": "network"}],"application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"},{"begin": "2014-04-29T16:52:00Z","end": "2014-05-22T02:15:00Z"}]}],"properties": [{"property_id": "e408adec-0243-11e6-954b-0050568c8382","value": ""}]}
         """
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
@@ -81,7 +81,7 @@ Feature: Create disruptions with properties
         I fill in header "X-Contributors" with "contributor"
         When I post to "/disruptions" with:
         """
-        {"reference": "foo","contributor": "contributor","cause": {"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"},"impacts": [{"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"objects": [{"id": "network:JDR:1","type": "network"}],"application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}],"properties": [{"property_id": "e408adec-0243-11e6-954b-0050568c8382","value": 42}]}
+        {"reference": "foo","contributor": "contributor","cause": {"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"},"publication_period":{"begin":"2018-09-11T13:50:00Z","end":"2018-12-31T16:50:00Z"},"impacts": [{"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"objects": [{"id": "network:JDR:1","type": "network"}],"application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}],"properties": [{"property_id": "e408adec-0243-11e6-954b-0050568c8382","value": 42}]}
         """
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
@@ -101,7 +101,7 @@ Feature: Create disruptions with properties
         I fill in header "X-Contributors" with "contributor"
         When I post to "/disruptions" with:
         """
-        {"reference": "foo","contributor": "contributor","cause": {"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"},"impacts": [{"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"objects": [{"id": "network:JDR:1","type": "network"}],"application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}],"properties": [{"value": "test"}]}
+        {"reference": "foo","contributor": "contributor","cause": {"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"},"publication_period":{"begin":"2018-09-11T13:50:00Z","end":"2018-12-31T16:50:00Z"},"impacts": [{"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"objects": [{"id": "network:JDR:1","type": "network"}],"application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}],"properties": [{"value": "test"}]}
         """
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
@@ -121,7 +121,7 @@ Feature: Create disruptions with properties
         I fill in header "X-Contributors" with "contributor"
         When I post to "/disruptions" with:
         """
-        {"reference": "foo","contributor": "contributor","cause": {"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"},"impacts": [{"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"objects": [{"id": "network:JDR:1","type": "network"}],"application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}],"properties": [{"property_id": "","value": "test"}]}
+        {"reference": "foo","contributor": "contributor","cause": {"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"},"publication_period":{"begin":"2018-09-11T13:50:00Z","end":"2018-12-31T16:50:00Z"},"impacts": [{"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"objects": [{"id": "network:JDR:1","type": "network"}],"application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}],"properties": [{"property_id": "","value": "test"}]}
         """
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
@@ -141,7 +141,7 @@ Feature: Create disruptions with properties
         I fill in header "X-Contributors" with "contributor"
         When I post to "/disruptions" with:
         """
-        {"reference": "foo","contributor": "contributor","cause": {"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"},"impacts": [{"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"objects": [{"id": "network:JDR:1","type": "network"}],"application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}],"properties": [{"property_id": "e408adec-0243-11e6-954b-0050568c838","value": "test"}]}
+        {"reference": "foo","contributor": "contributor","cause": {"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"},"publication_period":{"begin":"2018-09-11T13:50:00Z","end":"2018-12-31T16:50:00Z"},"impacts": [{"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"objects": [{"id": "network:JDR:1","type": "network"}],"application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}],"properties": [{"property_id": "e408adec-0243-11e6-954b-0050568c838","value": "test"}]}
         """
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
@@ -167,7 +167,7 @@ Feature: Create disruptions with properties
         I fill in header "X-Contributors" with "contributor"
         When I post to "/disruptions" with:
         """
-        {"reference": "foo","contributor": "contributor","cause": {"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"},"impacts": [{"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"objects": [{"id": "network:JDR:1","type": "network"}],"application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}],"properties": [{"property_id": "e408adec-0243-11e6-954b-0050568c8382","value": "val1"}]}
+        {"reference": "foo","contributor": "contributor","cause": {"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"},"publication_period":{"begin":"2018-09-11T13:50:00Z","end":"2018-12-31T16:50:00Z"},"impacts": [{"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"objects": [{"id": "network:JDR:1","type": "network"}],"application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}],"properties": [{"property_id": "e408adec-0243-11e6-954b-0050568c8382","value": "val1"}]}
         """
         Then the status code should be "404"
         And the header "Content-Type" should be "application/json"
@@ -197,7 +197,7 @@ Feature: Create disruptions with properties
         I fill in header "X-Contributors" with "contributor"
         When I post to "/disruptions" with:
         """
-        {"reference": "foo","contributor": "contributor","cause": {"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"},"impacts": [{"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"objects": [{"id": "network:JDR:1","type": "network"}],"application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}],"properties": [{"property_id": "e408adec-0243-11e6-954b-0050568c8382","value": "val1"},{"property_id": "f408adec-0243-11e6-954b-0050568c8382","value": "val2"}]}
+        {"reference": "foo","contributor": "contributor","cause": {"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"},"publication_period":{"begin":"2018-09-11T13:50:00Z","end":"2018-12-31T16:50:00Z"},"impacts": [{"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"objects": [{"id": "network:JDR:1","type": "network"}],"application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}],"properties": [{"property_id": "e408adec-0243-11e6-954b-0050568c8382","value": "val1"},{"property_id": "f408adec-0243-11e6-954b-0050568c8382","value": "val2"}]}
         """
         Then the status code should be "201"
         And the header "Content-Type" should be "application/json"
