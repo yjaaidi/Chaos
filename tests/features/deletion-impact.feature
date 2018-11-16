@@ -194,4 +194,5 @@ Feature: Delete impacts in a Disruption
         Then the status code should be "204"
 
         When I get "/disruptions/6a826e64-028f-11e4-92d0-090027079ff3"
-        Then the status code should be "404"
+        Then the status code should be "200"
+        And the field "status" should be "archived"
