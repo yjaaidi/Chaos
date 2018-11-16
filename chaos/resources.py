@@ -932,10 +932,13 @@ this impact to Navitia. Please try again.'}}, error_fields), 503
     @validate_contributor()
     @validate_id(True)
     def delete(self, contributor, disruption_id, id):
-        impact = models.Impact.get(id, contributor.id)
-        impact.archive()
         disruption = models.Disruption.get(disruption_id, contributor.id)
         disruption.upgrade_version()
+        if (disruption.is_last_impact(id)):
+            disruption.archive()
+        else:
+            impact = models.Impact.get(id, contributor.id)
+            impact.archive()
         try:
             if chaos.utils.send_disruption_to_navitia(disruption):
                 db.session.commit()

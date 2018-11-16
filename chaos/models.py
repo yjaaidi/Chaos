@@ -481,6 +481,10 @@ class Disruption(TimestampMixin, db.Model):
     def is_draft(self):
         return self.status == 'draft'
 
+    def is_last_impact(self, impact_id):
+        nb_impacts = list(filter(lambda x: x.status != 'archived', self.impacts))
+        return len(nb_impacts) == 1 and nb_impacts[0].id == impact_id
+
     @classmethod
     def get(cls, id, contributor_id):
         return cls.query.filter(
