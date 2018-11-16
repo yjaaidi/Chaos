@@ -34,7 +34,7 @@ from chaos import db, utils, exceptions
 from utils import paginate, get_current_time
 from sqlalchemy.dialects.postgresql import UUID, BIT
 from datetime import datetime
-from formats import publication_status_values
+from formats import publication_status_values, application_status_values
 from sqlalchemy import or_, and_, between
 from sqlalchemy.orm import aliased
 
@@ -497,6 +497,7 @@ class Disruption(TimestampMixin, db.Model):
     def get_query_with_args(
             cls,
             contributor_id,
+            application_status,
             publication_status,
             ends_after_date,
             ends_before_date,
@@ -506,13 +507,6 @@ class Disruption(TimestampMixin, db.Model):
             statuses,
             query=None,
             cause_category_id=None):
-        availlable_filters = {
-            'past': and_(cls.end_publication_date != None, cls.end_publication_date < get_current_time()),
-            'ongoing': and_(cls.start_publication_date <= get_current_time(),
-                            or_(cls.end_publication_date == None, cls.end_publication_date >= get_current_time())),
-            'coming': Disruption.start_publication_date > get_current_time()
-        }
-
         if (query is None):
             query = cls.query
 
@@ -547,6 +541,12 @@ class Disruption(TimestampMixin, db.Model):
 
             query = query.filter(PTobject.uri == uri)
 
+        publication_availlable_filters = {
+            'past': and_(cls.end_publication_date != None, cls.end_publication_date < get_current_time()),
+            'ongoing': and_(cls.start_publication_date <= get_current_time(),
+                            or_(cls.end_publication_date == None, cls.end_publication_date >= get_current_time())),
+            'coming': Disruption.start_publication_date > get_current_time()
+        }
         publication_status = set(publication_status)
         if len(publication_status) == len(publication_status_values):
             # For a query by uri use union with the query for line_section
@@ -554,13 +554,24 @@ class Disruption(TimestampMixin, db.Model):
                 query = query.union(query_line_section)
 
         else:
-            filters = [availlable_filters[status] for status in publication_status]
+            filters = [publication_availlable_filters[status] for status in publication_status]
             query = query.filter(or_(*filters))
 
             # For a query by uri use union with the query for line_section
             if uri and line_section:
                 query_line_section = query_line_section.filter(or_(*filters))
                 query = query.union(query_line_section)
+
+        application_status = set(application_status)
+        if len(application_status) != len(application_status_values):
+            query = query.join(cls.impacts)
+            application_availlable_filters = {
+                'past': ApplicationPeriods.end_date < get_current_time(),
+                'ongoing': and_(ApplicationPeriods.start_date >= get_current_time(), ApplicationPeriods.end_date <= get_current_time()),
+                'coming': ApplicationPeriods.start_date > get_current_time()
+            }
+            filters = [application_availlable_filters[status] for status in application_status]
+            query = query.filter(or_(*filters))
 
         return query.order_by(cls.end_publication_date, cls.id)
 
@@ -569,6 +580,7 @@ class Disruption(TimestampMixin, db.Model):
     def all_with_post_filter(
             cls,
             contributor_id,
+            application_status,
             publication_status,
             ends_after_date,
             ends_before_date,
@@ -610,6 +622,7 @@ class Disruption(TimestampMixin, db.Model):
 
         return cls.get_query_with_args(
             contributor_id=contributor_id,
+            application_status=application_status,
             publication_status=publication_status,
             ends_after_date=ends_after_date,
             ends_before_date=ends_before_date,
