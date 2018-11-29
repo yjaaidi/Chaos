@@ -1526,6 +1526,7 @@
           type: "string"
     wording:
       type: "object"
+      required: ["key", "value"]
       properties:
         key:
           type: "string"
@@ -1572,6 +1573,7 @@
             $ref: "#/definitions/wording"
     severity_creation:
       type: "object"
+      required: ["wordings"]
       properties:
         color:
           type: "string"
@@ -1613,6 +1615,7 @@
           pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
           example: "2018-08-03T12:19:13Z"
     category_creation:
+      required: ["name"]
       type: "object"
       properties:
         name:
@@ -1641,6 +1644,7 @@
           example: "2018-08-03T12:19:13Z"
     cause_creation:
       type: "object"
+      required: ["wordings"]
       properties:
         wordings:
           type: "array"
@@ -1731,6 +1735,7 @@
           example: "2018-08-03T12:19:13Z"
     property_creation:
       type: "object"
+      required: ["key", "type"]
       properties:
         key:
           type: "string"
@@ -1756,6 +1761,7 @@
           example: "2018-08-03T12:19:13Z"
     tag_creation:
       type: "object"
+      required: ["name"]
       properties:
         name:
           type: "string"
@@ -2455,6 +2461,7 @@
             type: "string"
     impact_creation:
       type: "object"
+      required: ["severity", "objects", ]
       properties:
         application_period_patterns:
           type: "array"
