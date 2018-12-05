@@ -1942,6 +1942,11 @@
           items:
             description: "Id of line object"
             type: "string"
+        routes:
+          type: "array"
+          items:
+            description: "Id of route object"
+            type: "string"
         stop_points:
           type: "array"
           items:
