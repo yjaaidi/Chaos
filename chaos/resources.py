@@ -511,7 +511,8 @@ class DisruptionsSearch(flask_restful.Resource):
             current_time=current_time,
             uri=uri,
             pt_object_filter=ptObjectFilter,
-            application_status=application_status
+            application_status=application_status,
+            application_period=application_period
         )
         response = {'disruptions': result.items, 'meta': make_pager(result, 'disruption')}
 
