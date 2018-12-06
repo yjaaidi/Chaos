@@ -452,6 +452,14 @@ disruptions_search_input_format = {
                     'uniqueItems': True
                 }
             }
+        },
+        'application_period': {
+            'type': 'object',
+            'properties': {
+                'begin': {'type': ['string'], 'pattern': datetime_pattern},
+                'end': {'type': ['string', 'null'], 'pattern': datetime_pattern},
+            },
+            'required': ['begin', 'end']
         }
     }
 }
