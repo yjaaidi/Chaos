@@ -2319,6 +2319,19 @@
           type: string
           pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
           example: "2018-08-03T12:19:13Z"
+        application_period:
+          required: [begin, end]
+          type: object
+          description: Filter on impact application_period
+          properties:
+            begin:
+              type: string
+              pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+              example: "2018-08-03T12:19:13Z"
+            end:
+              type: string
+              pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+              example: "2018-08-03T12:19:13Z"
         current_time:
           description: Parameter for settings the current time, mostly for debugging purpose
           default: now
