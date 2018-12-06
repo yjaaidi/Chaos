@@ -816,7 +816,7 @@ Feature: list disruptions with ptObjects filter
         And the header "Content-Type" should be "application/json"
         And the field "disruptions" should have a size of 1
         And the field "disruptions.0.impacts.impacts" should have a size of 2
-@test
+
     Scenario: Filter on application_period return correct impacts
 
         Given I have the following clients in my database:
