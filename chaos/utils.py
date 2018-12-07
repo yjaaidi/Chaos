@@ -746,19 +746,19 @@ def has_impact_deleted_by_application_status(application_status, application_per
     if len(application_status) == 3: return False
     if current_time is None: current_time = get_current_time()
     impact_is_deleted = True
-    begin = None
-    end = None
     for application_period in application_periods:
-        if begin is None or application_period.start_date < begin:
-            begin = application_period.start_date
-        if end is None or application_period.end_date > end:
-            end = application_period.end_date
-    if 'past' in application_status and end < current_time:
-        impact_is_deleted = False
-    if 'ongoing' in application_status and begin <= current_time and end >= current_time:
-        impact_is_deleted = False
-    if 'coming' in application_status and begin > current_time:
-        impact_is_deleted = False
+        if 'past' in application_status:
+            if application_period.end_date < current_time:
+                impact_is_deleted = False
+                break
+        if 'ongoing' in application_status:
+            if application_period.start_date <= current_time and application_period.end_date >= current_time:
+                impact_is_deleted = False
+                break
+        if 'coming' in application_status:
+            if application_period.start_date > current_time:
+                impact_is_deleted = False
+                break
     return impact_is_deleted
 
 def has_impact_deleted_by_pt_objects(pt_objects, uri=None, pt_object_filter=None):
