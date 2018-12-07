@@ -743,7 +743,7 @@ def has_impact_deleted_by_application_status(application_status, application_per
         :return: True if the impact does not activate in a certain time status ['past', 'ongoing', 'coming']
         :rtype: bool
     """
-    if len(application_status) != 3: return False
+    if len(application_status) == 3: return False
     if current_time is None: current_time = get_current_time()
     impact_is_deleted = True
     begin = None
