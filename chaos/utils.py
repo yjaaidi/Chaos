@@ -746,19 +746,19 @@ def has_impact_deleted_by_application_status(application_status, application_per
     if len(application_status) != 3: return False
     if current_time is None: current_time = get_current_time()
     impact_is_deleted = True
+    begin = None
+    end = None
     for application_period in application_periods:
-        if 'past' in application_status:
-            if application_period.end_date < current_time:
-                impact_is_deleted = False
-                break
-        if 'ongoing' in application_status:
-            if application_period.start_date <= current_time and application_period.end_date >= current_time:
-                impact_is_deleted = False
-                break
-        if 'coming' in application_status:
-            if application_period.start_date > current_time:
-                impact_is_deleted = False
-                break
+        if begin is None or application_period.start_date < begin:
+            begin = application_period.start_date
+        if end is None or application_period.end_date > end:
+            end = application_period.end_date
+    if 'past' in application_status and end < current_time:
+        impact_is_deleted = False
+    if 'ongoing' in application_status and begin <= current_time and end >= current_time:
+        impact_is_deleted = False
+    if 'coming' in application_status and begin > current_time:
+        impact_is_deleted = False
     return impact_is_deleted
 
 def has_impact_deleted_by_pt_objects(pt_objects, uri=None, pt_object_filter=None):
@@ -789,11 +789,12 @@ def has_impact_deleted_by_application_period(searched_application_period, applic
     """
         Return if an impact should be deleted by application_period filter.
 
-        :param searched_application_period: array
+        :param searched_application_period: array with entry 'begin' and 'end'
         :param application_periods: Sequence of application_period (Database object)
         :return: True if the impact does not match the searched_application_period
         :rtype: bool
     """
+    if searched_application_period is None: return False
     impact_is_deleted = True
     for application_period in application_periods:
         begin = get_datetime(searched_application_period['begin'], 'begin')
@@ -830,23 +831,24 @@ def filter_disruptions_on_impacts(
         :rtype: Void
     """
     if current_time is None: current_time = get_current_time()
-    for disruption in disruptions[:]:
-        deleted_impacts = []
-        for impact in (i for i in disruption.impacts if i.status == 'published'):
-            if  has_impact_deleted_by_application_status(
-                    application_status=application_status,
-                    application_periods=impact.application_periods,
-                    current_time=current_time) or \
-                has_impact_deleted_by_pt_objects(
-                    pt_objects=impact.objects,
-                    uri=uri,
-                    pt_object_filter=pt_object_filter) or \
-                has_impact_deleted_by_application_period(
-                    searched_application_period=application_period,
-                    application_periods=impact.application_periods
-                ):
-                deleted_impacts.append(impact)
-        for deleted_impact in deleted_impacts:
-            disruption.impacts.remove(deleted_impact)
-        if len(disruption.impacts) == 0:
-            disruptions.remove(disruption)
+    if len(application_status) != 3 or application_period is not None:
+        for disruption in disruptions[:]:
+            deleted_impacts = []
+            for impact in (i for i in disruption.impacts if i.status == 'published'):
+                if  has_impact_deleted_by_application_status(
+                        application_status=application_status,
+                        application_periods=impact.application_periods,
+                        current_time=current_time) or \
+                    has_impact_deleted_by_pt_objects(
+                        pt_objects=impact.objects,
+                        uri=uri,
+                        pt_object_filter=pt_object_filter) or \
+                    has_impact_deleted_by_application_period(
+                        searched_application_period=application_period,
+                        application_periods=impact.application_periods
+                    ):
+                    deleted_impacts.append(impact)
+            for deleted_impact in deleted_impacts:
+                disruption.impacts.remove(deleted_impact)
+            if len(disruption.impacts) == 0:
+                disruptions.remove(disruption)
