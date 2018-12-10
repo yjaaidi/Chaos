@@ -594,6 +594,7 @@ class Disruption(TimestampMixin, db.Model):
             statuses,
             ptObjectFilter,
             cause_category_id,
+            application_period,
             current_time=None):
         if current_time is None: current_time = get_current_time()
         query = cls.query
@@ -626,6 +627,24 @@ class Disruption(TimestampMixin, db.Model):
                 )
             else:
                 query = cls.query.filter(uris_filter)
+        if application_period is not None:
+            query = cls.query.filter(
+                cls.impacts.any(Impact.application_periods.any(
+                or_(
+                    and_(
+                        ApplicationPeriods.start_date >= application_period['begin'],
+                        ApplicationPeriods.start_date <= application_period['end']
+                    ),
+                    and_(
+                        ApplicationPeriods.end_date >= application_period['begin'],
+                        ApplicationPeriods.end_date <= application_period['end']
+                    ),
+                    and_(
+                        ApplicationPeriods.start_date <= application_period['begin'],
+                        ApplicationPeriods.end_date >= application_period['end']
+                    )
+                )
+            )))
         return cls.get_query_with_args(
             contributor_id=contributor_id,
             application_status=application_status,
