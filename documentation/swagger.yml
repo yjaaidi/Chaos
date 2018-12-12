@@ -1526,6 +1526,7 @@
           type: "string"
     wording:
       type: "object"
+      required: ["key", "value"]
       properties:
         key:
           type: "string"
@@ -1572,6 +1573,7 @@
             $ref: "#/definitions/wording"
     severity_creation:
       type: "object"
+      required: ["wordings"]
       properties:
         color:
           type: "string"
@@ -1613,6 +1615,7 @@
           pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
           example: "2018-08-03T12:19:13Z"
     category_creation:
+      required: ["name"]
       type: "object"
       properties:
         name:
@@ -1641,6 +1644,7 @@
           example: "2018-08-03T12:19:13Z"
     cause_creation:
       type: "object"
+      required: ["wordings"]
       properties:
         wordings:
           type: "array"
@@ -1731,6 +1735,7 @@
           example: "2018-08-03T12:19:13Z"
     property_creation:
       type: "object"
+      required: ["key", "type"]
       properties:
         key:
           type: "string"
@@ -1756,6 +1761,7 @@
           example: "2018-08-03T12:19:13Z"
     tag_creation:
       type: "object"
+      required: ["name"]
       properties:
         name:
           type: "string"
@@ -1935,6 +1941,11 @@
           type: "array"
           items:
             description: "Id of line object"
+            type: "string"
+        routes:
+          type: "array"
+          items:
+            description: "Id of route object"
             type: "string"
         stop_points:
           type: "array"
@@ -2308,6 +2319,19 @@
           type: string
           pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
           example: "2018-08-03T12:19:13Z"
+        application_period:
+          required: [begin, end]
+          type: object
+          description: Filter on impact application_period
+          properties:
+            begin:
+              type: string
+              pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+              example: "2018-08-03T12:19:13Z"
+            end:
+              type: string
+              pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+              example: "2018-08-03T12:19:13Z"
         current_time:
           description: Parameter for settings the current time, mostly for debugging purpose
           default: now
@@ -2455,6 +2479,7 @@
             type: "string"
     impact_creation:
       type: "object"
+      required: ["severity", "objects", ]
       properties:
         application_period_patterns:
           type: "array"

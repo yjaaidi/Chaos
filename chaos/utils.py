@@ -743,6 +743,7 @@ def has_impact_deleted_by_application_status(application_status, application_per
         :return: True if the impact does not activate in a certain time status ['past', 'ongoing', 'coming']
         :rtype: bool
     """
+    if len(application_status) == 3: return False
     if current_time is None: current_time = get_current_time()
     impact_is_deleted = True
     for application_period in application_periods:
@@ -784,12 +785,38 @@ def has_impact_deleted_by_pt_objects(pt_objects, uri=None, pt_object_filter=None
                 break
     return impact_is_deleted
 
+def has_impact_deleted_by_application_period(searched_application_period, application_periods):
+    """
+        Return if an impact should be deleted by application_period filter.
+
+        :param searched_application_period: array with entry 'begin' and 'end'
+        :param application_periods: Sequence of application_period (Database object)
+        :return: True if the impact does not match the searched_application_period
+        :rtype: bool
+    """
+    if searched_application_period is None: return False
+    impact_is_deleted = True
+    for application_period in application_periods:
+        begin = get_datetime(searched_application_period['begin'], 'begin')
+        end  = get_datetime(searched_application_period['end'], 'end')
+        if application_period.start_date >= begin and application_period.start_date <= end:
+            impact_is_deleted = False
+            break
+        if application_period.end_date >= begin and application_period.end_date <= end:
+            impact_is_deleted = False
+            break
+        if application_period.start_date <= begin and application_period.end_date >= end:
+            impact_is_deleted = False
+            break
+    return impact_is_deleted
+
 def filter_disruptions_on_impacts(
     disruptions,
     pt_object_filter=None,
     uri=None,
     current_time=None,
-    application_status = ['past', 'ongoing', 'coming']
+    application_status = ['past', 'ongoing', 'coming'],
+    application_period = None
     ):
     """
         Do filter in disruptions impacts.
@@ -799,22 +826,27 @@ def filter_disruptions_on_impacts(
         :param uri: string
         :param current_time: DateTime
         :param application_status: array
+        :param application_period: array
         :return: Nothing
         :rtype: Void
     """
     if current_time is None: current_time = get_current_time()
-    if len(application_status) != 3:
+    if len(application_status) != 3 or application_period is not None:
         for disruption in disruptions[:]:
             deleted_impacts = []
             for impact in (i for i in disruption.impacts if i.status == 'published'):
-                if has_impact_deleted_by_application_status(
-                    application_status=application_status,
-                    application_periods=impact.application_periods,
-                    current_time=current_time) or \
+                if  has_impact_deleted_by_application_status(
+                        application_status=application_status,
+                        application_periods=impact.application_periods,
+                        current_time=current_time) or \
                     has_impact_deleted_by_pt_objects(
                         pt_objects=impact.objects,
                         uri=uri,
-                        pt_object_filter=pt_object_filter):
+                        pt_object_filter=pt_object_filter) or \
+                    has_impact_deleted_by_application_period(
+                        searched_application_period=application_period,
+                        application_periods=impact.application_periods
+                    ):
                     deleted_impacts.append(impact)
             for deleted_impact in deleted_impacts:
                 disruption.impacts.remove(deleted_impact)
