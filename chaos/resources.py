@@ -27,7 +27,7 @@
 # https://groups.google.com/d/forum/navitia
 # www.navitia.io
 
-from flask import g, request
+from flask import g, request, jsonify, make_response
 import flask_restful
 from flask_restful import marshal, reqparse, types
 from chaos import models, db, publisher
@@ -42,6 +42,7 @@ from chaos import mapper, exceptions
 from chaos import utils, db_helper
 import chaos
 import json
+from json import dumps
 from sqlalchemy.exc import IntegrityError
 import logging
 from utils import make_pager, option_value, get_current_time
@@ -489,7 +490,7 @@ class DisruptionsSearch(flask_restful.Resource):
         ptObjectFilter=json.get('ptObjectFilter', None)
         application_period = json.get('application_period', None)
 
-        result = models.Disruption.all_with_post_filter(
+        results = models.Disruption.all_with_post_filter_native(
             page_index=args['start_page'],
             items_per_page=args['items_per_page'],
             contributor_id=contributor.id,
@@ -506,24 +507,74 @@ class DisruptionsSearch(flask_restful.Resource):
             application_period=application_period,
             current_time=current_time
         )
-        utils.filter_disruptions_on_impacts(
-            disruptions=result.items,
-            current_time=current_time,
-            uri=uri,
-            pt_object_filter=ptObjectFilter,
-            application_status=application_status,
-            application_period=application_period
-        )
-        response = {'disruptions': result.items, 'meta': make_pager(result, 'disruption')}
+        # utils.filter_disruptions_on_impacts(
+        #     disruptions=result.items,
+        #     current_time=current_time,
+        #     uri=uri,
+        #     pt_object_filter=ptObjectFilter,
+        #     application_status=application_status,
+        #     application_period=application_period
+        # )
+        # response = {'disruptions': result.items, 'meta': make_pager(result, 'disruption')}
+        #
+        # '''
+        # The purpose is to remove any database-loaded state from all current objects so that the next access of
+        # any attribute, or any query execution, will retrieve new state, freshening those objects which are still
+        # referenced outside of the session with the most recent available state.
+        # '''
+        # for o in result.items:
+        #     models.db.session.expunge(o)
+        # return marshal(response, disruptions_fields)
 
-        '''
-        The purpose is to remove any database-loaded state from all current objects so that the next access of
-        any attribute, or any query execution, will retrieve new state, freshening those objects which are still
-        referenced outside of the session with the most recent available state.
-        '''
-        for o in result.items:
-            models.db.session.expunge(o)
-        return marshal(response, disruptions_fields)
+        disruptions = {}
+        disruptionImpacts = {}
+        cause_wording = {}
+
+        for r in results:
+            disruptionId = r.id
+
+            cause_category = {
+                'id': r.cause_category_id,
+                'name': r.cause_category_name,
+                'created_at': r.cause_category_created_at,
+                'updated_at': r.cause_category_updated_at
+            }
+
+            cause_wording = {disruptionId: {
+                'key': r.cause_wording_key,
+                'value': r.cause_wording_value
+            }}
+
+            cause = {
+                'id': r.cause_id,
+                'created_at': r.cause_created_at,
+                'updated_at': r.cause_updated_at,
+                #'wordings': cause_wordings,
+                'category': cause_category
+            }
+
+            disruption = {
+                "id":disruptionId,
+                "reference":r.reference,
+                'note': r.note,
+                'status': r.status,
+                'version': r.version,
+                'created_at': r.created_at,
+                'updated_at': r.updated_at,
+                'start_publication_date': r.start_publication_date,
+                'end_publication_date': r.end_publication_date,
+                'publication_status': r.publication_status,
+                'cause': cause
+            }
+            disruptions[disruptionId] = disruption
+
+        rawData = {'disruptions': disruptions, 'meta': {}}
+
+        #response = make_response(dumps(rawData))
+        #return jsonify(rawData)
+        #return response
+
+        return marshal(rawData, disruptions_fields)
 
 class Cause(flask_restful.Resource):
 

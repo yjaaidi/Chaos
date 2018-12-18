@@ -35,8 +35,9 @@ from utils import paginate, get_current_time, uri_is_not_in_pt_object_filter
 from sqlalchemy.dialects.postgresql import UUID, BIT
 from datetime import datetime
 from formats import publication_status_values, application_status_values
-from sqlalchemy import or_, and_, between
+from sqlalchemy import or_, and_, between, bindparam
 from sqlalchemy.orm import aliased
+from sqlalchemy.sql import text
 import logging
 
 #force the server to use UTC time for each connection checkouted from the pool
@@ -659,6 +660,50 @@ class Disruption(TimestampMixin, db.Model):
             cause_category_id=cause_category_id,
             current_time=current_time
         )
+
+    @classmethod
+    def all_with_post_filter_native(
+            cls,
+            page_index,
+            items_per_page,
+            contributor_id,
+            application_status,
+            publication_status,
+            ends_after_date,
+            ends_before_date,
+            tags,
+            uri,
+            line_section,
+            statuses,
+            ptObjectFilter,
+            cause_category_id,
+            application_period,
+            current_time=None):
+        query = 'SELECT ' \
+                'd.id, d.reference, d.note, d.status, d.version, d.created_at, d.updated_at, d.start_publication_date, d.end_publication_date, d.status AS publication_status,' \
+                'i.id AS impact_id, ' \
+                'c.id AS cause_id, c.created_at AS cause_created_at, c.updated_at AS cause_updated_at, ' \
+                'ctg.id AS cause_category_id, ctg.name AS cause_category_name, ctg.created_at AS cause_category_created_at, ctg.updated_at AS cause_category_updated_at, ' \
+                'cw.key AS cause_wording_key, cw.value AS cause_wording_value ' \
+                'FROM ' \
+                'disruption AS d LEFT JOIN ' \
+                'impact i ON (i.disruption_id = d.id) ' \
+                'LEFT JOIN cause c ON (d.cause_id = c.id) ' \
+                'LEFT JOIN category ctg ON (c.category_id = ctg.id) ' \
+                'LEFT JOIN associate_wording_cause awc ON (c.id = awc.cause_id) ' \
+                'LEFT JOIN wording AS cw ON (awc.wording_id = cw.id) '\
+                'LIMIT :limit ' \
+                'OFFSET :offset';
+
+        stmt = text(query)
+        stmt = stmt.bindparams(bindparam("limit", type_=db.Integer),
+                               bindparam("offset", type_=db.Integer))
+
+        vars = {"limit": 1, "offset": 0}
+        results = db.engine.execute(stmt, vars).fetchall()
+
+        return results
+
 
     @classmethod
     @paginate()

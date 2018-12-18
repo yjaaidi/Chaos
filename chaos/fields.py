@@ -558,13 +558,13 @@ disruption_fields = {
         'begin': FieldDateTime(attribute='start_publication_date'),
         'end': FieldDateTime(attribute='end_publication_date')
     },
-    'publication_status': fields.Raw,
-    'contributor': FieldContributor,
-    'impacts': CustomImpacts(),
-    'localization': FieldLocalization(attribute='localizations'),
-    'cause': fields.Nested(cause_fields, allow_null=True),
-    'tags': fields.List(fields.Nested(tag_fields)),
-    'properties': FieldAssociatedProperties(attribute='properties')
+    'publication_status': fields.Raw
+    #,'contributor': FieldContributor
+    #,'impacts': CustomImpacts()
+    #,'localization': FieldLocalization(attribute='localizations')
+    ,'cause': fields.Nested(cause_fields, allow_null=True),
+    # 'tags': fields.List(fields.Nested(tag_fields)),
+    # 'properties': FieldAssociatedProperties(attribute='properties')
 }
 
 disruptions_fields = {
