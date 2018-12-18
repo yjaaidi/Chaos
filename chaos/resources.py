@@ -526,7 +526,7 @@ class DisruptionsSearch(flask_restful.Resource):
         #     models.db.session.expunge(o)
         # return marshal(response, disruptions_fields)
 
-        disruptions = {}
+        disruptions = []
         disruptionImpacts = {}
         cause_wording = {}
 
@@ -566,7 +566,7 @@ class DisruptionsSearch(flask_restful.Resource):
                 'publication_status': r.publication_status,
                 'cause': cause
             }
-            disruptions[disruptionId] = disruption
+            disruptions.append(disruption)
 
         rawData = {'disruptions': disruptions, 'meta': {}}
 

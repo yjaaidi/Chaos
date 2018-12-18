@@ -699,7 +699,7 @@ class Disruption(TimestampMixin, db.Model):
         stmt = stmt.bindparams(bindparam("limit", type_=db.Integer),
                                bindparam("offset", type_=db.Integer))
 
-        vars = {"limit": 1, "offset": 0}
+        vars = {"limit": 10, "offset": 0}
         results = db.engine.execute(stmt, vars).fetchall()
 
         return results
