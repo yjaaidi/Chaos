@@ -568,7 +568,7 @@ class DisruptionsSearch(flask_restful.Resource):
             disruptions[disruptionId]['cause']['wordings'].append(cause_wording)
 
 
-        rawData = {'disruptions': disruptions, 'meta': {}}
+        rawData = {'disruptions': disruptions.values(), 'meta': {}}
 
         return jsonify(rawData)
         #return make_response(ujson.dumps(rawData))
