@@ -684,22 +684,27 @@ class Disruption(TimestampMixin, db.Model):
                 'i.id AS impact_id, ' \
                 'c.id AS cause_id, c.created_at AS cause_created_at, c.updated_at AS cause_updated_at, ' \
                 'ctg.id AS cause_category_id, ctg.name AS cause_category_name, ctg.created_at AS cause_category_created_at, ctg.updated_at AS cause_category_updated_at, ' \
-                'cw.key AS cause_wording_key, cw.value AS cause_wording_value ' \
+                'cw.key AS cause_wording_key, cw.value AS cause_wording_value, ' \
+                's.created_at AS severity_created_at, s.updated_at AS severity_updated_at, s.id AS severity_id, s.wording AS severity_wording, s.color AS severity_color, s.is_visible AS severity_is_visible, s.priority AS severity_priority, s.effect AS severity_effect, s.client_id AS severity_client_id ' \
                 'FROM ' \
                 'disruption AS d LEFT JOIN ' \
                 'impact i ON (i.disruption_id = d.id) ' \
                 'LEFT JOIN cause c ON (d.cause_id = c.id) ' \
                 'LEFT JOIN category ctg ON (c.category_id = ctg.id) ' \
                 'LEFT JOIN associate_wording_cause awc ON (c.id = awc.cause_id) ' \
-                'LEFT JOIN wording AS cw ON (awc.wording_id = cw.id) '\
+                'LEFT JOIN wording AS cw ON (awc.wording_id = cw.id) ' \
+                'LEFT JOIN severity AS s ON s.id = i.severity_id '\
+                'WHERE d.contributor_id=:contributor_id '\
                 'LIMIT :limit ' \
                 'OFFSET :offset';
 
         stmt = text(query)
         stmt = stmt.bindparams(bindparam("limit", type_=db.Integer),
-                               bindparam("offset", type_=db.Integer))
+                               bindparam("offset", type_=db.Integer),
+                               bindparam('contributor_id', type_=db.String)
+                               )
 
-        vars = {"limit": 10, "offset": 0}
+        vars = {"limit": items_per_page, "offset": page_index, 'contributor_id': contributor_id}
         results = db.engine.execute(stmt, vars).fetchall()
 
         return results

@@ -42,7 +42,6 @@ from chaos import mapper, exceptions
 from chaos import utils, db_helper
 import chaos
 import json
-from json import dumps
 from sqlalchemy.exc import IntegrityError
 import logging
 from utils import make_pager, option_value, get_current_time
@@ -526,55 +525,55 @@ class DisruptionsSearch(flask_restful.Resource):
         #     models.db.session.expunge(o)
         # return marshal(response, disruptions_fields)
 
-        disruptions = []
+        disruptions = {}
         disruptionImpacts = {}
         cause_wording = {}
 
         for r in results:
             disruptionId = r.id
 
-            cause_category = {
-                'id': r.cause_category_id,
-                'name': r.cause_category_name,
-                'created_at': r.cause_category_created_at,
-                'updated_at': r.cause_category_updated_at
-            }
-
-            cause_wording = {disruptionId: {
+            cause_wording = {
                 'key': r.cause_wording_key,
                 'value': r.cause_wording_value
-            }}
-
-            cause = {
-                'id': r.cause_id,
-                'created_at': r.cause_created_at,
-                'updated_at': r.cause_updated_at,
-                #'wordings': cause_wordings,
-                'category': cause_category
             }
 
-            disruption = {
-                "id":disruptionId,
-                "reference":r.reference,
-                'note': r.note,
-                'status': r.status,
-                'version': r.version,
-                'created_at': r.created_at,
-                'updated_at': r.updated_at,
-                'start_publication_date': r.start_publication_date,
-                'end_publication_date': r.end_publication_date,
-                'publication_status': r.publication_status,
-                'cause': cause
-            }
-            disruptions.append(disruption)
+            if disruptionId not in disruptions:
+
+                disruption = {
+                    "id": disruptionId,
+                    "reference": r.reference,
+                    'note': r.note,
+                    'status': r.status,
+                    'version': r.version,
+                    'created_at': r.created_at,
+                    'updated_at': r.updated_at,
+                    'start_publication_date': r.start_publication_date,
+                    'end_publication_date': r.end_publication_date,
+                    'publication_status': r.publication_status,
+                    'cause': {
+                        'id': r.cause_id,
+                        'created_at': r.cause_created_at,
+                        'updated_at': r.cause_updated_at,
+                        'wordings': [],
+                        'category': {
+                            'id': r.cause_category_id,
+                            'name': r.cause_category_name,
+                            'created_at': r.cause_category_created_at,
+                            'updated_at': r.cause_category_updated_at
+                        }
+                    }
+                }
+                disruptions[disruptionId] = disruption
+
+            disruptions[disruptionId]['cause']['wordings'].append(cause_wording)
+
 
         rawData = {'disruptions': disruptions, 'meta': {}}
 
-        #response = make_response(dumps(rawData))
-        #return jsonify(rawData)
-        #return response
-
-        return marshal(rawData, disruptions_fields)
+        return jsonify(rawData)
+        #return make_response(ujson.dumps(rawData))
+        return response
+        #return marshal(rawData, disruptions_fields)
 
 class Cause(flask_restful.Resource):
 
