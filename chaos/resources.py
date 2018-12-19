@@ -569,11 +569,12 @@ class DisruptionsSearch(flask_restful.Resource):
 
 
         rawData = {'disruptions': disruptions.values(), 'meta': {}}
+        #return response
 
-        return jsonify(rawData)
+        #return jsonify(rawData)
         #return make_response(ujson.dumps(rawData))
-        return response
-        #return marshal(rawData, disruptions_fields)
+
+        return marshal(rawData, disruptions_fields)
 
 class Cause(flask_restful.Resource):
 
