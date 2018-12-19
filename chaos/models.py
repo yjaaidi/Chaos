@@ -694,7 +694,8 @@ class Disruption(TimestampMixin, db.Model):
                 'LEFT JOIN associate_wording_cause awc ON (c.id = awc.cause_id) ' \
                 'LEFT JOIN wording AS cw ON (awc.wording_id = cw.id) ' \
                 'LEFT JOIN severity AS s ON s.id = i.severity_id '\
-                'WHERE d.contributor_id=:contributor_id '\
+                'WHERE d.contributor_id=:contributor_id ' \
+                'ORDER BY d.end_publication_date, d.id '\
                 'LIMIT :limit ' \
                 'OFFSET :offset';
 
