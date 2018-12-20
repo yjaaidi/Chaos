@@ -526,15 +526,30 @@ class DisruptionsSearch(flask_restful.Resource):
         # return marshal(response, disruptions_fields)
 
         disruptions = {}
-        disruptionImpacts = {}
-        cause_wording = {}
+        tags = {}
+        cause_wordings = {}
 
         for r in results:
             disruptionId = r.id
+            tagId = r.tag_id
+            wordingId = r.cause_wording_id
 
-            cause_wording = {
+            if disruptionId not in cause_wordings:
+                cause_wordings[disruptionId] = {}
+
+            cause_wordings[disruptionId][wordingId] = {
                 'key': r.cause_wording_key,
                 'value': r.cause_wording_value
+            }
+
+            if disruptionId not in tags:
+                tags[disruptionId] = {}
+
+            tags[disruptionId][tagId] = {
+                'id' : tagId,
+                'name' : r.tag_name,
+                'created_at' : r.tag_created_at,
+                'updated_at' : r.tag_updated_at
             }
 
             if disruptionId not in disruptions:
@@ -550,6 +565,9 @@ class DisruptionsSearch(flask_restful.Resource):
                     'start_publication_date': r.start_publication_date,
                     'end_publication_date': r.end_publication_date,
                     'publication_status': r.publication_status,
+                    'contributor' : {
+                        'contributor_code' : r.contributor_code
+                    },
                     'cause': {
                         'id': r.cause_id,
                         'created_at': r.cause_created_at,
@@ -561,20 +579,26 @@ class DisruptionsSearch(flask_restful.Resource):
                             'created_at': r.cause_category_created_at,
                             'updated_at': r.cause_category_updated_at
                         }
-                    }
+                    },
+                    'tags' : [],
+                    'properties' : []
                 }
                 disruptions[disruptionId] = disruption
 
-            disruptions[disruptionId]['cause']['wordings'].append(cause_wording)
-
+        for disruption in disruptions.values():
+            disruptionId = disruption['id']
+            disruption['tags'] = tags[disruptionId].values()
+            disruption['cause']['wordings'] = cause_wordings[disruptionId].values()
 
         rawData = {'disruptions': disruptions.values(), 'meta': {}}
+        return marshal(rawData, disruptions_fields)
+
+        # return make_response(ujson.dumps(rawData))
         #return response
 
         #return jsonify(rawData)
-        #return make_response(ujson.dumps(rawData))
 
-        return marshal(rawData, disruptions_fields)
+
 
 class Cause(flask_restful.Resource):
 

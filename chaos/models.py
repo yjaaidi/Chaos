@@ -684,17 +684,27 @@ class Disruption(TimestampMixin, db.Model):
                 'i.id AS impact_id, ' \
                 'c.id AS cause_id, c.created_at AS cause_created_at, c.updated_at AS cause_updated_at, ' \
                 'ctg.id AS cause_category_id, ctg.name AS cause_category_name, ctg.created_at AS cause_category_created_at, ctg.updated_at AS cause_category_updated_at, ' \
-                'cw.key AS cause_wording_key, cw.value AS cause_wording_value, ' \
-                's.created_at AS severity_created_at, s.updated_at AS severity_updated_at, s.id AS severity_id, s.wording AS severity_wording, s.color AS severity_color, s.is_visible AS severity_is_visible, s.priority AS severity_priority, s.effect AS severity_effect, s.client_id AS severity_client_id ' \
+                'cw.id AS cause_wording_id, cw.key AS cause_wording_key, cw.value AS cause_wording_value, ' \
+                's.created_at AS severity_created_at, s.updated_at AS severity_updated_at, s.id AS severity_id, s.wording AS severity_wording, s.color AS severity_color, s.is_visible AS severity_is_visible, s.priority AS severity_priority, s.effect AS severity_effect, s.client_id AS severity_client_id, ' \
+                'contrib.contributor_code AS contributor_code, ' \
+                't.id AS tag_id, t.name AS tag_name, t.created_at AS tag_created_at, t.updated_at AS tag_updated_at ' \
                 'FROM ' \
-                'disruption AS d LEFT JOIN ' \
-                'impact i ON (i.disruption_id = d.id) ' \
+                'disruption AS d ' \
+                'LEFT JOIN impact i ON (i.disruption_id = d.id) ' \
                 'LEFT JOIN cause c ON (d.cause_id = c.id) ' \
                 'LEFT JOIN category ctg ON (c.category_id = ctg.id) ' \
                 'LEFT JOIN associate_wording_cause awc ON (c.id = awc.cause_id) ' \
                 'LEFT JOIN wording AS cw ON (awc.wording_id = cw.id) ' \
-                'LEFT JOIN severity AS s ON s.id = i.severity_id '\
+                'LEFT JOIN severity AS s ON (s.id = i.severity_id) ' \
+                'LEFT JOIN contributor AS contrib ON (contrib.id = d.contributor_id) ' \
+                'LEFT JOIN associate_disruption_tag adt ON (d.id = adt.disruption_id) ' \
+                'LEFT JOIN tag t ON (t.id = adt.tag_id) ' \
+                'LEFT JOIN associate_disruption_property AS adp ON (d.id = adp.disruption_id) '\
                 'WHERE d.contributor_id=:contributor_id ' \
+                'AND d.status = :disruption_status ' \
+                'AND i.status = :impact_status ' \
+                'AND c.is_visible = :cause_is_visisble ' \
+                'AND ctg.is_visible = :category_is_visisble ' \
                 'ORDER BY d.end_publication_date, d.id '\
                 'LIMIT :limit ' \
                 'OFFSET :offset';
@@ -702,13 +712,23 @@ class Disruption(TimestampMixin, db.Model):
         stmt = text(query)
         stmt = stmt.bindparams(bindparam("limit", type_=db.Integer),
                                bindparam("offset", type_=db.Integer),
-                               bindparam('contributor_id', type_=db.String)
+                               bindparam('contributor_id', type_=db.String),
+                               bindparam('disruption_status', type_=db.String),
+                               bindparam('impact_status', type_=db.String),
+                               bindparam('cause_is_visisble', type_=db.Boolean),
+                               bindparam('category_is_visisble', type_=db.Boolean)
                                )
 
-        vars = {"limit": items_per_page, "offset": page_index, 'contributor_id': contributor_id}
-        results = db.engine.execute(stmt, vars).fetchall()
+        vars = {'limit': items_per_page,
+                'offset': 0,
+                'contributor_id': contributor_id,
+                'disruption_status' : 'published',
+                'impact_status' : 'published',
+                'cause_is_visisble' : True,
+                'category_is_visisble' : True
+                }
 
-        return results
+        return db.engine.execute(stmt, vars).fetchall()
 
 
     @classmethod

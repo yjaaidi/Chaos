@@ -32,7 +32,7 @@ from flask import current_app, request, g
 from utils import make_fake_pager, get_coverage, get_token, get_current_time
 from chaos.navitia import Navitia
 from copy import deepcopy
-
+import logging
 
 class FieldDateTime(fields.Raw):
     def format(self, value):
@@ -157,6 +157,8 @@ class FieldLocalization(fields.Raw):
 
 class FieldContributor(fields.Raw):
     def output(self, key, obj):
+        if isinstance(obj, dict):
+            return obj['contributor']['contributor_code']
         if hasattr(obj, 'contributor'):
             return obj.contributor.contributor_code
         return None
@@ -204,7 +206,9 @@ class FieldCause(fields.Raw):
 class FieldAssociatedProperties(fields.Raw):
     def output(self, key, obj):
         properties = {}
-        if obj.properties:
+        if isinstance(obj, dict) and 'properties' in obj:
+            return properties
+        elif obj.properties:
             for property in obj.properties:
                 prop = property.property
                 properties.setdefault(prop.type, []).append(
@@ -562,9 +566,9 @@ disruption_fields = {
     ,'contributor': FieldContributor
     #,'impacts': CustomImpacts()
     #,'localization': FieldLocalization(attribute='localizations')
-    ,'cause': fields.Nested(cause_fields, allow_null=True),
-    # 'tags': fields.List(fields.Nested(tag_fields)),
-    # 'properties': FieldAssociatedProperties(attribute='properties')
+    ,'cause': fields.Nested(cause_fields, allow_null=True)
+    ,'tags': fields.List(fields.Nested(tag_fields))
+    ,'properties': FieldAssociatedProperties(attribute='properties')
 }
 
 disruptions_fields = {
