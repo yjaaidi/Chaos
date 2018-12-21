@@ -687,7 +687,8 @@ class Disruption(TimestampMixin, db.Model):
                 'cw.id AS cause_wording_id, cw.key AS cause_wording_key, cw.value AS cause_wording_value, ' \
                 's.created_at AS severity_created_at, s.updated_at AS severity_updated_at, s.id AS severity_id, s.wording AS severity_wording, s.color AS severity_color, s.is_visible AS severity_is_visible, s.priority AS severity_priority, s.effect AS severity_effect, s.client_id AS severity_client_id, ' \
                 'contrib.contributor_code AS contributor_code, ' \
-                't.id AS tag_id, t.name AS tag_name, t.created_at AS tag_created_at, t.updated_at AS tag_updated_at ' \
+                't.id AS tag_id, t.name AS tag_name, t.created_at AS tag_created_at, t.updated_at AS tag_updated_at, ' \
+                'p.id AS property_id, p.key AS property_key, p.type AS property_type, adp.value AS property_value, p.created_at AS property_created_at, p.updated_at AS property_updated_at ' \
                 'FROM ' \
                 'disruption AS d ' \
                 'LEFT JOIN impact i ON (i.disruption_id = d.id) ' \
@@ -700,6 +701,7 @@ class Disruption(TimestampMixin, db.Model):
                 'LEFT JOIN associate_disruption_tag adt ON (d.id = adt.disruption_id) ' \
                 'LEFT JOIN tag t ON (t.id = adt.tag_id) ' \
                 'LEFT JOIN associate_disruption_property AS adp ON (d.id = adp.disruption_id) '\
+                'LEFT JOIN property AS p ON (p.id = adp.property_id) '\
                 'WHERE d.contributor_id=:contributor_id ' \
                 'AND d.status = :disruption_status ' \
                 'AND i.status = :impact_status ' \

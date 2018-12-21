@@ -206,7 +206,35 @@ class FieldCause(fields.Raw):
 class FieldAssociatedProperties(fields.Raw):
     def output(self, key, obj):
         properties = {}
+        # logging.getLogger(__name__).debug('obj: %s', obj)
+        # logging.getLogger(__name__).debug('DEBUG A: %s', obj['properties'])
         if isinstance(obj, dict) and 'properties' in obj:
+            for property in obj['properties']:
+                # logging.getLogger(__name__).debug('DEBUG: %s', property)
+                properties.setdefault(property['type'], []).append(
+                    {
+                        'value': property['value'],
+                        'property': {
+                            'id': property['id'],
+                            'created_at': FieldDateTime().format(
+                                property['created_at']
+                            ),
+                            'updated_at': FieldDateTime().format(
+                                property['updated_at']
+                            ),
+                            'self': {
+                                'href': url_for(
+                                    'property',
+                                    id=property['id'],
+                                    _external=True
+                                )
+                            },
+                            'key': property['key'],
+                            'type': property['type']
+                        }
+                    }
+                )
+
             return properties
         elif obj.properties:
             for property in obj.properties:

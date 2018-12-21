@@ -528,11 +528,16 @@ class DisruptionsSearch(flask_restful.Resource):
         disruptions = {}
         tags = {}
         cause_wordings = {}
+        properties = {}
 
         for r in results:
             disruptionId = r.id
             tagId = r.tag_id
             wordingId = r.cause_wording_id
+            property_id = r.property_id
+
+            if disruptionId not in properties:
+                properties[disruptionId] = {}
 
             if disruptionId not in cause_wordings:
                 cause_wordings[disruptionId] = {}
@@ -550,6 +555,15 @@ class DisruptionsSearch(flask_restful.Resource):
                 'name' : r.tag_name,
                 'created_at' : r.tag_created_at,
                 'updated_at' : r.tag_updated_at
+            }
+
+            properties[disruptionId][property_id] = {
+                'id' : r.property_id,
+                'key' : r.property_key,
+                'type' : r.property_type,
+                'value' : r.property_value,
+                'created_at' : r.property_created_at,
+                'updated_at' : r.property_updated_at
             }
 
             if disruptionId not in disruptions:
@@ -589,9 +603,12 @@ class DisruptionsSearch(flask_restful.Resource):
             disruptionId = disruption['id']
             disruption['tags'] = tags[disruptionId].values()
             disruption['cause']['wordings'] = cause_wordings[disruptionId].values()
+            disruption['properties'] = properties[disruptionId].values()
 
         rawData = {'disruptions': disruptions.values(), 'meta': {}}
-        return marshal(rawData, disruptions_fields)
+        toto = marshal(rawData, disruptions_fields)
+
+        return toto
 
         # return make_response(ujson.dumps(rawData))
         #return response
