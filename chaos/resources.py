@@ -529,34 +529,25 @@ class DisruptionsSearch(flask_restful.Resource):
         tags = {}
         cause_wordings = {}
         properties = {}
+        localizations = {}
 
         for r in results:
             disruptionId = r.id
             tagId = r.tag_id
             wordingId = r.cause_wording_id
             property_id = r.property_id
+            localization_id = r.localization_id
+
+            if disruptionId not in localizations:
+                localizations[disruptionId] = {}
+            if localization_id is not None:
+                localizations[disruptionId][localization_id] = {
+                    'uri': r.localization_uri,
+                    'type': r.localization_type
+                }
 
             if disruptionId not in properties:
                 properties[disruptionId] = {}
-
-            if disruptionId not in cause_wordings:
-                cause_wordings[disruptionId] = {}
-
-            cause_wordings[disruptionId][wordingId] = {
-                'key': r.cause_wording_key,
-                'value': r.cause_wording_value
-            }
-
-            if disruptionId not in tags:
-                tags[disruptionId] = {}
-
-            tags[disruptionId][tagId] = {
-                'id' : tagId,
-                'name' : r.tag_name,
-                'created_at' : r.tag_created_at,
-                'updated_at' : r.tag_updated_at
-            }
-
             properties[disruptionId][property_id] = {
                 'id' : r.property_id,
                 'key' : r.property_key,
@@ -564,6 +555,22 @@ class DisruptionsSearch(flask_restful.Resource):
                 'value' : r.property_value,
                 'created_at' : r.property_created_at,
                 'updated_at' : r.property_updated_at
+            }
+
+            if disruptionId not in cause_wordings:
+                cause_wordings[disruptionId] = {}
+            cause_wordings[disruptionId][wordingId] = {
+                'key': r.cause_wording_key,
+                'value': r.cause_wording_value
+            }
+
+            if disruptionId not in tags:
+                tags[disruptionId] = {}
+            tags[disruptionId][tagId] = {
+                'id' : tagId,
+                'name' : r.tag_name,
+                'created_at' : r.tag_created_at,
+                'updated_at' : r.tag_updated_at
             }
 
             if disruptionId not in disruptions:
@@ -595,7 +602,8 @@ class DisruptionsSearch(flask_restful.Resource):
                         }
                     },
                     'tags' : [],
-                    'properties' : []
+                    'properties' : [],
+                    'localizations' : []
                 }
                 disruptions[disruptionId] = disruption
 
@@ -604,6 +612,7 @@ class DisruptionsSearch(flask_restful.Resource):
             disruption['tags'] = tags[disruptionId].values()
             disruption['cause']['wordings'] = cause_wordings[disruptionId].values()
             disruption['properties'] = properties[disruptionId].values()
+            disruption['localizations'] = localizations[disruptionId].values()
 
         rawData = {'disruptions': disruptions.values(), 'meta': {}}
         toto = marshal(rawData, disruptions_fields)

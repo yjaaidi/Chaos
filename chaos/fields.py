@@ -136,22 +136,42 @@ class FieldLocalization(fields.Raw):
         navitia = Navitia(current_app.config['NAVITIA_URL'],
                           get_coverage(request),
                           get_token(request))
-        for localization in obj.localizations:
-            response = navitia.get_pt_object(
-                localization.uri,
-                localization.type)
 
-            if response and 'name' in response:
-                response["type"] = localization.type
-                to_return.append(response)
-            else:
-                to_return.append(
-                    {
-                        "id": localization.uri,
-                        "name": "Unable to find object",
-                        "type": localization.type
-                    }
-                )
+        if isinstance(obj, dict) and 'localizations' in obj:
+            for localization in obj['localizations']:
+
+                response = navitia.get_pt_object(
+                    localization['uri'],
+                    localization['type'])
+
+                if response and 'name' in response:
+                    response["type"] = localization['type']
+                    to_return.append(response)
+                else:
+                    to_return.append(
+                        {
+                            "id": localization['uri'],
+                            "name": "Unable to find object",
+                            "type": localization['type']
+                        }
+                    )
+        else:
+            for localization in obj.localizations:
+                response = navitia.get_pt_object(
+                    localization.uri,
+                    localization.type)
+
+                if response and 'name' in response:
+                    response["type"] = localization.type
+                    to_return.append(response)
+                else:
+                    to_return.append(
+                        {
+                            "id": localization.uri,
+                            "name": "Unable to find object",
+                            "type": localization.type
+                        }
+                    )
         return to_return
 
 
@@ -206,11 +226,8 @@ class FieldCause(fields.Raw):
 class FieldAssociatedProperties(fields.Raw):
     def output(self, key, obj):
         properties = {}
-        # logging.getLogger(__name__).debug('obj: %s', obj)
-        # logging.getLogger(__name__).debug('DEBUG A: %s', obj['properties'])
         if isinstance(obj, dict) and 'properties' in obj:
             for property in obj['properties']:
-                # logging.getLogger(__name__).debug('DEBUG: %s', property)
                 properties.setdefault(property['type'], []).append(
                     {
                         'value': property['value'],
@@ -593,7 +610,7 @@ disruption_fields = {
     ,'publication_status': fields.Raw
     ,'contributor': FieldContributor
     #,'impacts': CustomImpacts()
-    #,'localization': FieldLocalization(attribute='localizations')
+    ,'localization': FieldLocalization(attribute='localizations')
     ,'cause': fields.Nested(cause_fields, allow_null=True)
     ,'tags': fields.List(fields.Nested(tag_fields))
     ,'properties': FieldAssociatedProperties(attribute='properties')
