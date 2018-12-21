@@ -60,6 +60,12 @@ class FieldDate(fields.Raw):
 
 class CustomImpacts(fields.Raw):
     def output(self, key, val):
+        if isinstance(val, dict) and 'impacts' in val:
+            return marshal(val, {
+                'pagination': FieldPaginateImpacts(),
+                'impacts': PaginateObjects(fields.Nested(impact_fields, display_null=False))
+            }, display_null=False)
+
         val.impacts = [impact for impact in val.impacts if impact.status == 'published']
         return marshal(val, {
             'pagination': FieldPaginateImpacts(attribute='impacts'),
@@ -74,8 +80,12 @@ class FieldPaginateImpacts(fields.Raw):
     '''
 
     def output(self, key, disruption):
-        impacts = disruption.impacts
-        disruption_id = next((i.disruption_id for i in impacts), None)
+        if isinstance(disruption, dict) and 'impacts' in disruption:
+            impacts = disruption['impacts']
+            disruption_id = next((i['disruption_id'] for i in impacts), None)
+        else:
+            impacts = disruption.impacts
+            disruption_id = next((i.disruption_id for i in impacts), None)
         pagination = make_fake_pager(len(impacts), 20, 'impact', disruption_id=disruption_id)
 
         return pagination.get('pagination')
@@ -94,7 +104,10 @@ class PaginateObjects(fields.Raw):
         return impacts[:10]  # todo use the pagination to filter
 
     def output(self, key, disruption):
-        impacts = disruption.impacts
+        if isinstance(disruption, dict) and 'impacts' in disruption:
+            impacts = disruption['impacts']
+        else:
+            impacts = disruption.impacts
         if not hasattr(g, 'display_impacts') or not g.display_impacts:
             return None
 
@@ -109,8 +122,14 @@ class PaginateObjects(fields.Raw):
 
 class FieldUrlDisruption(fields.Raw):
     def output(self, key, obj):
+        if isinstance(obj, dict) and 'disruption_id' in obj:
+            logging.getLogger(__name__).debug('obj = : %s', obj)
+            disruption_id = obj['disruption_id']
+        else:
+            disruption_id = obj.disruption_id
+
         return {'href': url_for('disruption',
-                                id=obj.disruption_id,
+                                id=disruption_id,
                                 _external=True)}
 
 
@@ -155,7 +174,7 @@ class FieldLocalization(fields.Raw):
                             "type": localization['type']
                         }
                     )
-        else:
+        elif obj.localizations:
             for localization in obj.localizations:
                 response = navitia.get_pt_object(
                     localization.uri,
@@ -609,7 +628,7 @@ disruption_fields = {
     }
     ,'publication_status': fields.Raw
     ,'contributor': FieldContributor
-    #,'impacts': CustomImpacts()
+    ,'impacts': CustomImpacts()
     ,'localization': FieldLocalization(attribute='localizations')
     ,'cause': fields.Nested(cause_fields, allow_null=True)
     ,'tags': fields.List(fields.Nested(tag_fields))

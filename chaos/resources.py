@@ -526,6 +526,7 @@ class DisruptionsSearch(flask_restful.Resource):
         # return marshal(response, disruptions_fields)
 
         disruptions = {}
+        impacts = {}
         tags = {}
         cause_wordings = {}
         properties = {}
@@ -537,6 +538,15 @@ class DisruptionsSearch(flask_restful.Resource):
             wordingId = r.cause_wording_id
             property_id = r.property_id
             localization_id = r.localization_id
+            impact_id = r.impact_id
+
+            if disruptionId not in impacts:
+                impacts[disruptionId] = {}
+            if impact_id is not None:
+                impacts[disruptionId][impact_id] = {
+                    'id': r.impact_id,
+                    'disruption_id': r.id
+                }
 
             if disruptionId not in localizations:
                 localizations[disruptionId] = {}
@@ -602,6 +612,7 @@ class DisruptionsSearch(flask_restful.Resource):
                         }
                     },
                     'tags' : [],
+                    'impacts' : [],
                     'properties' : [],
                     'localizations' : []
                 }
@@ -613,6 +624,7 @@ class DisruptionsSearch(flask_restful.Resource):
             disruption['cause']['wordings'] = cause_wordings[disruptionId].values()
             disruption['properties'] = properties[disruptionId].values()
             disruption['localizations'] = localizations[disruptionId].values()
+            disruption['impacts'] = impacts[disruptionId].values()
 
         rawData = {'disruptions': disruptions.values(), 'meta': {}}
         toto = marshal(rawData, disruptions_fields)
