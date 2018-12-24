@@ -686,6 +686,7 @@ class Disruption(TimestampMixin, db.Model):
                 'ctg.id AS cause_category_id, ctg.name AS cause_category_name, ctg.created_at AS cause_category_created_at, ctg.updated_at AS cause_category_updated_at, ' \
                 'cw.id AS cause_wording_id, cw.key AS cause_wording_key, cw.value AS cause_wording_value, ' \
                 's.created_at AS severity_created_at, s.updated_at AS severity_updated_at, s.id AS severity_id, s.wording AS severity_wording, s.color AS severity_color, s.is_visible AS severity_is_visible, s.priority AS severity_priority, s.effect AS severity_effect, s.client_id AS severity_client_id, ' \
+                'sw.id AS severity_wording_id, sw.key AS severity_wording_key, sw.value AS severity_wording_value, ' \
                 'contrib.contributor_code AS contributor_code, ' \
                 't.id AS tag_id, t.name AS tag_name, t.created_at AS tag_created_at, t.updated_at AS tag_updated_at, ' \
                 'p.id AS property_id, p.key AS property_key, p.type AS property_type, adp.value AS property_value, p.created_at AS property_created_at, p.updated_at AS property_updated_at, ' \
@@ -696,8 +697,10 @@ class Disruption(TimestampMixin, db.Model):
                 'LEFT JOIN cause c ON (d.cause_id = c.id) ' \
                 'LEFT JOIN category ctg ON (c.category_id = ctg.id) ' \
                 'LEFT JOIN associate_wording_cause awc ON (c.id = awc.cause_id) ' \
-                'LEFT JOIN wording AS cw ON (awc.wording_id = cw.id) ' \
                 'LEFT JOIN severity AS s ON (s.id = i.severity_id) ' \
+                'LEFT JOIN wording AS cw ON (awc.wording_id = cw.id) ' \
+                'LEFT JOIN associate_wording_severity aws ON (s.id = aws.severity_id) ' \
+                'LEFT JOIN wording AS sw ON (aws.wording_id = sw.id) ' \
                 'LEFT JOIN contributor AS contrib ON (contrib.id = d.contributor_id) ' \
                 'LEFT JOIN associate_disruption_tag adt ON (d.id = adt.disruption_id) ' \
                 'LEFT JOIN tag t ON (t.id = adt.tag_id) ' \

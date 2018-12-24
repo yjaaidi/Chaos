@@ -529,6 +529,7 @@ class DisruptionsSearch(flask_restful.Resource):
         impacts = {}
         tags = {}
         cause_wordings = {}
+        severity_wordings = {}
         properties = {}
         localizations = {}
 
@@ -539,6 +540,8 @@ class DisruptionsSearch(flask_restful.Resource):
             property_id = r.property_id
             localization_id = r.localization_id
             impact_id = r.impact_id
+            severity_id = r.severity_id
+            severity_wording_id = r.severity_wording_id
 
             if disruptionId not in impacts:
                 impacts[disruptionId] = {}
@@ -547,6 +550,25 @@ class DisruptionsSearch(flask_restful.Resource):
                     'id': r.impact_id,
                     'disruption_id': r.id
                 }
+                impacts[disruptionId][impact_id]['severity'] = {
+                    'id': r.severity_id,
+                    'client_id': r.severity_client_id,
+                    'effect': r.severity_effect,
+                    'priority': r.severity_priority,
+                    'is_visible': r.severity_is_visible,
+                    'color': r.severity_color,
+                    'wording': r.severity_wording,
+                    'updated_at': r.severity_updated_at,
+                    'created_at': r.severity_created_at
+                }
+
+            if severity_id not in severity_wordings:
+                severity_wordings[severity_id] = {}
+            if  severity_wording_id is not None:
+                severity_wordings[severity_id][severity_wording_id] = {
+                    'key': r.severity_wording_key,
+                    'value': r.severity_wording_value
+            }
 
             if disruptionId not in localizations:
                 localizations[disruptionId] = {}
@@ -625,6 +647,28 @@ class DisruptionsSearch(flask_restful.Resource):
             disruption['properties'] = properties[disruptionId].values()
             disruption['localizations'] = localizations[disruptionId].values()
             disruption['impacts'] = impacts[disruptionId].values()
+            for impact in disruption['impacts']:
+                impact['severity']['wordings'] = severity_wordings[impact['severity']['id']].values()
+
+        # exemple
+            # "severity": {
+            #     "self": {
+            #         "href": "http://chaos-prd-ws3.canaltp.prod/severities/3ac44a66-7488-11e8-8232-005056a47b86"
+            #     },
+            #     "color": "#FF0000",
+            #     "created_at": "2018-06-20T12:48:28Z",
+            #     "effect": "no_service",
+            #     "updated_at": "2018-07-25T09:35:35Z",
+            #     "priority": null,
+            #     "wordings": [
+            #         {
+            #             "value": "bloquante",
+            #             "key": "long"
+            #         }
+            #     ],
+            #     "id": "3ac44a66-7488-11e8-8232-005056a47b86",
+            #     "wording": "bloquante"
+            # },
 
         rawData = {'disruptions': disruptions.values(), 'meta': {}}
         toto = marshal(rawData, disruptions_fields)

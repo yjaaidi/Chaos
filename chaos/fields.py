@@ -70,7 +70,7 @@ class CustomImpacts(fields.Raw):
         return marshal(val, {
             'pagination': FieldPaginateImpacts(attribute='impacts'),
             'impacts': PaginateObjects(fields.Nested(impact_fields, display_null=False,
-                                                     attribute='impacts'))
+                                                    attribute='impacts'))
         }, display_null=False)
 
 
@@ -116,6 +116,11 @@ class PaginateObjects(fields.Raw):
 
         # we use the pagination to filter the outputed impacts
         wanted_impacted = self._filter(impacts)
+
+
+        # logging.getLogger(__name__).debug('wanted_impacted = : %s', wanted_impacted)
+        # logging.getLogger(__name__).debug('self.container = : %s', self.container)
+        # logging.getLogger(__name__).debug('self.display_null = : %s', self.display_null)
 
         return fields.marshal(wanted_impacted, self.container.nested, self.display_null)
 
