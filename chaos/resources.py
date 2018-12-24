@@ -530,6 +530,7 @@ class DisruptionsSearch(flask_restful.Resource):
         tags = {}
         cause_wordings = {}
         severity_wordings = {}
+        impact_pt_objects = {}
         properties = {}
         localizations = {}
 
@@ -542,6 +543,7 @@ class DisruptionsSearch(flask_restful.Resource):
             impact_id = r.impact_id
             severity_id = r.severity_id
             severity_wording_id = r.severity_wording_id
+            impact_pt_object_id = r.pt_object_id
 
             if disruptionId not in impacts:
                 impacts[disruptionId] = {}
@@ -568,6 +570,15 @@ class DisruptionsSearch(flask_restful.Resource):
                 severity_wordings[severity_id][severity_wording_id] = {
                     'key': r.severity_wording_key,
                     'value': r.severity_wording_value
+            }
+
+            if impact_id not in impact_pt_objects:
+                impact_pt_objects[impact_id] = {}
+            if  impact_pt_object_id is not None:
+                impact_pt_objects[impact_id][impact_pt_object_id] = {
+                    'id': r.pt_object_id,
+                    'uri': r.pt_object_uri,
+                    'type': r.pt_object_type
             }
 
             if disruptionId not in localizations:
@@ -649,26 +660,7 @@ class DisruptionsSearch(flask_restful.Resource):
             disruption['impacts'] = impacts[disruptionId].values()
             for impact in disruption['impacts']:
                 impact['severity']['wordings'] = severity_wordings[impact['severity']['id']].values()
-
-        # exemple
-            # "severity": {
-            #     "self": {
-            #         "href": "http://chaos-prd-ws3.canaltp.prod/severities/3ac44a66-7488-11e8-8232-005056a47b86"
-            #     },
-            #     "color": "#FF0000",
-            #     "created_at": "2018-06-20T12:48:28Z",
-            #     "effect": "no_service",
-            #     "updated_at": "2018-07-25T09:35:35Z",
-            #     "priority": null,
-            #     "wordings": [
-            #         {
-            #             "value": "bloquante",
-            #             "key": "long"
-            #         }
-            #     ],
-            #     "id": "3ac44a66-7488-11e8-8232-005056a47b86",
-            #     "wording": "bloquante"
-            # },
+                impact['objects'] = impact_pt_objects[impact['id']].values()
 
         rawData = {'disruptions': disruptions.values(), 'meta': {}}
         toto = marshal(rawData, disruptions_fields)

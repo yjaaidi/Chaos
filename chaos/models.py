@@ -679,7 +679,8 @@ class Disruption(TimestampMixin, db.Model):
             cause_category_id,
             application_period,
             current_time=None):
-        query = 'SELECT ' \
+        query = []
+        query.append('SELECT ' \
                 'd.id, d.reference, d.note, d.status, d.version, d.created_at, d.updated_at, d.start_publication_date, d.end_publication_date, d.status AS publication_status,' \
                 'i.id AS impact_id, ' \
                 'c.id AS cause_id, c.created_at AS cause_created_at, c.updated_at AS cause_updated_at, ' \
@@ -690,8 +691,9 @@ class Disruption(TimestampMixin, db.Model):
                 'contrib.contributor_code AS contributor_code, ' \
                 't.id AS tag_id, t.name AS tag_name, t.created_at AS tag_created_at, t.updated_at AS tag_updated_at, ' \
                 'p.id AS property_id, p.key AS property_key, p.type AS property_type, adp.value AS property_value, p.created_at AS property_created_at, p.updated_at AS property_updated_at, ' \
-                'localization.uri AS localization_uri, localization.type AS localization_type, localization.id AS localization_id  ' \
-                'FROM ' \
+                'localization.uri AS localization_uri, localization.type AS localization_type, localization.id AS localization_id, ' \
+                'po.id AS pt_object_id, po.type AS pt_object_type, po.uri AS pt_object_uri')
+        query.append('FROM ' \
                 'disruption AS d ' \
                 'LEFT JOIN impact i ON (i.disruption_id = d.id) ' \
                 'LEFT JOIN cause c ON (d.cause_id = c.id) ' \
@@ -708,23 +710,28 @@ class Disruption(TimestampMixin, db.Model):
                 'LEFT JOIN property AS p ON (p.id = adp.property_id) '\
                 'LEFT JOIN associate_disruption_pt_object AS adpo ON (adpo.disruption_id = d.id) '\
                 'LEFT JOIN pt_object AS localization ON (localization.id = adpo.pt_object_id) '\
-                'WHERE d.contributor_id = :contributor_id ' \
+                'LEFT JOIN associate_impact_pt_object AS aipto ON (aipto.impact_id = i.id) '\
+                'LEFT JOIN pt_object AS po ON (po.id = aipto.pt_object_id) ')
+        query.append('WHERE d.contributor_id = :contributor_id ' \
                 'AND d.status = :disruption_status ' \
                 'AND i.status = :impact_status ' \
                 'AND c.is_visible = :cause_is_visisble ' \
-                'AND ctg.is_visible = :category_is_visisble ' \
-                'ORDER BY d.end_publication_date, d.id '\
-                'LIMIT :limit ' \
-                'OFFSET :offset';
+                'AND ctg.is_visible = :category_is_visisble')
+        if ptObjectFilter is not None:
+            query.append('AND po.uri IN :pt_objects_uris')
+        query.append('ORDER BY d.end_publication_date, d.id')
+        query.append('LIMIT :limit')
+        query.append('OFFSET :offset')
 
-        stmt = text(query)
+        stmt = text(' '.join(query))
         stmt = stmt.bindparams(bindparam("limit", type_=db.Integer),
                                bindparam("offset", type_=db.Integer),
                                bindparam('contributor_id', type_=db.String),
                                bindparam('disruption_status', type_=db.String),
                                bindparam('impact_status', type_=db.String),
                                bindparam('cause_is_visisble', type_=db.Boolean),
-                               bindparam('category_is_visisble', type_=db.Boolean)
+                               bindparam('category_is_visisble', type_=db.Boolean),
+                               bindparam('pt_objects_uris', type_=db.String)
                                )
 
         vars = {'limit': items_per_page,
@@ -735,6 +742,8 @@ class Disruption(TimestampMixin, db.Model):
                 'cause_is_visisble' : True,
                 'category_is_visisble' : True
                 }
+        if ptObjectFilter is not None:
+            vars['pt_objects_uris'] = tuple([id for ids in ptObjectFilter.itervalues() for id in ids])
 
         return db.engine.execute(stmt, vars).fetchall()
 

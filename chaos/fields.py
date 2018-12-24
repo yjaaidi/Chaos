@@ -117,11 +117,6 @@ class PaginateObjects(fields.Raw):
         # we use the pagination to filter the outputed impacts
         wanted_impacted = self._filter(impacts)
 
-
-        # logging.getLogger(__name__).debug('wanted_impacted = : %s', wanted_impacted)
-        # logging.getLogger(__name__).debug('self.container = : %s', self.container)
-        # logging.getLogger(__name__).debug('self.display_null = : %s', self.display_null)
-
         return fields.marshal(wanted_impacted, self.container.nested, self.display_null)
 
 
@@ -140,15 +135,22 @@ class FieldUrlDisruption(fields.Raw):
 
 class FieldObjectName(fields.Raw):
     def output(self, key, obj):
+        if isinstance(obj, dict) and 'uri' in obj and 'type' in obj:
+            obj_uri = obj['uri']
+            obj_type = obj['type']
+        else:
+            obj_uri = obj.uri
+            obj_type = obj.type
+
         if not obj:
             return None
-        if obj.type == 'line_section':
+        if obj_type == 'line_section':
             return None
         navitia = Navitia(
             current_app.config['NAVITIA_URL'],
             get_coverage(request),
             get_token(request))
-        response = navitia.get_pt_object(obj.uri, obj.type)
+        response = navitia.get_pt_object(obj_uri, obj_type)
         if response and 'name' in response:
             return response['name']
         return 'Unable to find object'
@@ -458,11 +460,11 @@ line_section_fields = {
 objectTC_fields = {
     'id': fields.Raw(attribute='uri'),
     'type': fields.Raw,
-    'name': FieldObjectName(),
-    'line_section': fields.Nested(
-        line_section_fields,
-        display_null=False,
-        allow_null=True)
+    'name': FieldObjectName()
+    # 'line_section': fields.Nested( <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+    #     line_section_fields,
+    #     display_null=False,
+    #     allow_null=True)
 }
 
 channel_type_fields = {
