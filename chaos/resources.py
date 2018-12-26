@@ -533,6 +533,7 @@ class DisruptionsSearch(flask_restful.Resource):
         impact_pt_objects = {}
         properties = {}
         localizations = {}
+        application_periods = {}
 
         for r in results:
             disruptionId = r.id
@@ -544,13 +545,18 @@ class DisruptionsSearch(flask_restful.Resource):
             severity_id = r.severity_id
             severity_wording_id = r.severity_wording_id
             impact_pt_object_id = r.pt_object_id
+            application_period_id = r.application_period_id
 
             if disruptionId not in impacts:
                 impacts[disruptionId] = {}
             if impact_id is not None:
                 impacts[disruptionId][impact_id] = {
                     'id': r.impact_id,
-                    'disruption_id': r.id
+                    'disruption_id': r.id,
+                    'created_at': r.impact_created_at,
+                    'updated_at': r.impact_updated_at,
+                    'send_notifications': r.impact_send_notifications,
+                    'notification_date': r.impact_notification_date
                 }
                 impacts[disruptionId][impact_id]['severity'] = {
                     'id': r.severity_id,
@@ -562,6 +568,14 @@ class DisruptionsSearch(flask_restful.Resource):
                     'wording': r.severity_wording,
                     'updated_at': r.severity_updated_at,
                     'created_at': r.severity_created_at
+                }
+
+            if impact_id not in application_periods:
+                application_periods[impact_id] = {}
+            if application_period_id is not None:
+                application_periods[impact_id][application_period_id] = {
+                    'start_date': r.application_period_start_date,
+                    'end_date': r.application_period_end_date
                 }
 
             if severity_id not in severity_wordings:
@@ -659,8 +673,10 @@ class DisruptionsSearch(flask_restful.Resource):
             disruption['localizations'] = localizations[disruptionId].values()
             disruption['impacts'] = impacts[disruptionId].values()
             for impact in disruption['impacts']:
+                impact_id = impact['id']
                 impact['severity']['wordings'] = severity_wordings[impact['severity']['id']].values()
-                impact['objects'] = impact_pt_objects[impact['id']].values()
+                impact['objects'] = impact_pt_objects[impact_id].values()
+                impact['application_periods'] = application_periods[impact_id].values()
 
         rawData = {'disruptions': disruptions.values(), 'meta': {}}
         toto = marshal(rawData, disruptions_fields)

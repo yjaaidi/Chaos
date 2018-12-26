@@ -682,7 +682,7 @@ class Disruption(TimestampMixin, db.Model):
         query = []
         query.append('SELECT ' \
                 'd.id, d.reference, d.note, d.status, d.version, d.created_at, d.updated_at, d.start_publication_date, d.end_publication_date, d.status AS publication_status,' \
-                'i.id AS impact_id, ' \
+                'i.id AS impact_id, i.created_at AS impact_created_at, i.updated_at AS impact_updated_at, i.send_notifications AS impact_send_notifications, i.notification_date AS impact_notification_date, '  \
                 'c.id AS cause_id, c.created_at AS cause_created_at, c.updated_at AS cause_updated_at, ' \
                 'ctg.id AS cause_category_id, ctg.name AS cause_category_name, ctg.created_at AS cause_category_created_at, ctg.updated_at AS cause_category_updated_at, ' \
                 'cw.id AS cause_wording_id, cw.key AS cause_wording_key, cw.value AS cause_wording_value, ' \
@@ -692,7 +692,8 @@ class Disruption(TimestampMixin, db.Model):
                 't.id AS tag_id, t.name AS tag_name, t.created_at AS tag_created_at, t.updated_at AS tag_updated_at, ' \
                 'p.id AS property_id, p.key AS property_key, p.type AS property_type, adp.value AS property_value, p.created_at AS property_created_at, p.updated_at AS property_updated_at, ' \
                 'localization.uri AS localization_uri, localization.type AS localization_type, localization.id AS localization_id, ' \
-                'po.id AS pt_object_id, po.type AS pt_object_type, po.uri AS pt_object_uri')
+                'po.id AS pt_object_id, po.type AS pt_object_type, po.uri AS pt_object_uri, ' \
+                'ap.id AS application_period_id, ap.start_date AS application_period_start_date, ap.end_date AS application_period_end_date ' )
         query.append('FROM ' \
                 'disruption AS d ' \
                 'LEFT JOIN impact i ON (i.disruption_id = d.id) ' \
@@ -711,7 +712,8 @@ class Disruption(TimestampMixin, db.Model):
                 'LEFT JOIN associate_disruption_pt_object AS adpo ON (adpo.disruption_id = d.id) '\
                 'LEFT JOIN pt_object AS localization ON (localization.id = adpo.pt_object_id) '\
                 'LEFT JOIN associate_impact_pt_object AS aipto ON (aipto.impact_id = i.id) '\
-                'LEFT JOIN pt_object AS po ON (po.id = aipto.pt_object_id) ')
+                'LEFT JOIN pt_object AS po ON (po.id = aipto.pt_object_id) '\
+                'LEFT JOIN application_periods AS ap ON (ap.impact_id = i.id) ')
         query.append('WHERE d.contributor_id = :contributor_id ' \
                 'AND d.status = :disruption_status ' \
                 'AND i.status = :impact_status ' \
@@ -730,9 +732,10 @@ class Disruption(TimestampMixin, db.Model):
                                bindparam('disruption_status', type_=db.String),
                                bindparam('impact_status', type_=db.String),
                                bindparam('cause_is_visisble', type_=db.Boolean),
-                               bindparam('category_is_visisble', type_=db.Boolean),
-                               bindparam('pt_objects_uris', type_=db.String)
+                               bindparam('category_is_visisble', type_=db.Boolean)
                                )
+        if ptObjectFilter is not None:
+            stmt = stmt.bindparams(bindparam('pt_objects_uris', type_=db.String))
 
         vars = {'limit': items_per_page,
                 'offset': 0,
