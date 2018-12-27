@@ -678,22 +678,27 @@ class Disruption(TimestampMixin, db.Model):
             ptObjectFilter,
             cause_category_id,
             application_period,
-            current_time=None):
+            current_time=None,
+            only_count = False):
         query = []
-        query.append('SELECT ' \
-                'd.id, d.reference, d.note, d.status, d.version, d.created_at, d.updated_at, d.start_publication_date, d.end_publication_date, d.status AS publication_status,' \
-                'i.id AS impact_id, i.created_at AS impact_created_at, i.updated_at AS impact_updated_at, i.send_notifications AS impact_send_notifications, i.notification_date AS impact_notification_date, '  \
-                'c.id AS cause_id, c.created_at AS cause_created_at, c.updated_at AS cause_updated_at, ' \
-                'ctg.id AS cause_category_id, ctg.name AS cause_category_name, ctg.created_at AS cause_category_created_at, ctg.updated_at AS cause_category_updated_at, ' \
-                'cw.id AS cause_wording_id, cw.key AS cause_wording_key, cw.value AS cause_wording_value, ' \
-                's.created_at AS severity_created_at, s.updated_at AS severity_updated_at, s.id AS severity_id, s.wording AS severity_wording, s.color AS severity_color, s.is_visible AS severity_is_visible, s.priority AS severity_priority, s.effect AS severity_effect, s.client_id AS severity_client_id, ' \
-                'sw.id AS severity_wording_id, sw.key AS severity_wording_key, sw.value AS severity_wording_value, ' \
-                'contrib.contributor_code AS contributor_code, ' \
-                't.id AS tag_id, t.name AS tag_name, t.created_at AS tag_created_at, t.updated_at AS tag_updated_at, ' \
-                'p.id AS property_id, p.key AS property_key, p.type AS property_type, adp.value AS property_value, p.created_at AS property_created_at, p.updated_at AS property_updated_at, ' \
-                'localization.uri AS localization_uri, localization.type AS localization_type, localization.id AS localization_id, ' \
-                'po.id AS pt_object_id, po.type AS pt_object_type, po.uri AS pt_object_uri, ' \
-                'ap.id AS application_period_id, ap.start_date AS application_period_start_date, ap.end_date AS application_period_end_date ' )
+        query.append('SELECT ')
+        if only_count:
+            query.append('COUNT(DISTINCT d.id) AS cnt ')
+        else:
+            query.append(
+                    'd.id, d.reference, d.note, d.status, d.version, d.created_at, d.updated_at, d.start_publication_date, d.end_publication_date, d.status AS publication_status,' \
+                    'i.id AS impact_id, i.created_at AS impact_created_at, i.updated_at AS impact_updated_at, i.send_notifications AS impact_send_notifications, i.notification_date AS impact_notification_date, '  \
+                    'c.id AS cause_id, c.created_at AS cause_created_at, c.updated_at AS cause_updated_at, ' \
+                    'ctg.id AS cause_category_id, ctg.name AS cause_category_name, ctg.created_at AS cause_category_created_at, ctg.updated_at AS cause_category_updated_at, ' \
+                    'cw.id AS cause_wording_id, cw.key AS cause_wording_key, cw.value AS cause_wording_value, ' \
+                    's.created_at AS severity_created_at, s.updated_at AS severity_updated_at, s.id AS severity_id, s.wording AS severity_wording, s.color AS severity_color, s.is_visible AS severity_is_visible, s.priority AS severity_priority, s.effect AS severity_effect, s.client_id AS severity_client_id, ' \
+                    'sw.id AS severity_wording_id, sw.key AS severity_wording_key, sw.value AS severity_wording_value, ' \
+                    'contrib.contributor_code AS contributor_code, ' \
+                    't.id AS tag_id, t.name AS tag_name, t.created_at AS tag_created_at, t.updated_at AS tag_updated_at, ' \
+                    'p.id AS property_id, p.key AS property_key, p.type AS property_type, adp.value AS property_value, p.created_at AS property_created_at, p.updated_at AS property_updated_at, ' \
+                    'localization.uri AS localization_uri, localization.type AS localization_type, localization.id AS localization_id, ' \
+                    'po.id AS pt_object_id, po.type AS pt_object_type, po.uri AS pt_object_uri, ' \
+                    'ap.id AS application_period_id, ap.start_date AS application_period_start_date, ap.end_date AS application_period_end_date ' )
         query.append('FROM ' \
                 'disruption AS d ' \
                 'LEFT JOIN impact i ON (i.disruption_id = d.id) ' \
@@ -721,13 +726,14 @@ class Disruption(TimestampMixin, db.Model):
                 'AND ctg.is_visible = :category_is_visisble')
         if ptObjectFilter is not None:
             query.append('AND po.uri IN :pt_objects_uris')
-        query.append('ORDER BY d.end_publication_date, d.id')
-        query.append('LIMIT :limit')
-        query.append('OFFSET :offset')
+
+        if not only_count:
+            query.append('ORDER BY d.end_publication_date, d.id')
+            query.append('LIMIT :limit')
+            query.append('OFFSET :offset')
 
         stmt = text(' '.join(query))
-        stmt = stmt.bindparams(bindparam("limit", type_=db.Integer),
-                               bindparam("offset", type_=db.Integer),
+        stmt = stmt.bindparams(
                                bindparam('contributor_id', type_=db.String),
                                bindparam('disruption_status', type_=db.String),
                                bindparam('impact_status', type_=db.String),
@@ -737,16 +743,29 @@ class Disruption(TimestampMixin, db.Model):
         if ptObjectFilter is not None:
             stmt = stmt.bindparams(bindparam('pt_objects_uris', type_=db.String))
 
-        vars = {'limit': items_per_page,
-                'offset': 0,
+        if not only_count:
+            stmt.bindparams(bindparam("limit", type_=db.Integer),
+                            bindparam("offset", type_=db.Integer))
+
+        vars = {
                 'contributor_id': contributor_id,
                 'disruption_status' : 'published',
                 'impact_status' : 'published',
                 'cause_is_visisble' : True,
                 'category_is_visisble' : True
                 }
+
+        if not only_count:
+            vars['limit'] = items_per_page
+            vars['offset'] = 0
+
+
         if ptObjectFilter is not None:
             vars['pt_objects_uris'] = tuple([id for ids in ptObjectFilter.itervalues() for id in ids])
+
+        if only_count:
+            result = db.engine.execute(stmt, vars).fetchone()
+            return result['cnt']
 
         return db.engine.execute(stmt, vars).fetchall()
 

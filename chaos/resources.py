@@ -27,7 +27,9 @@
 # https://groups.google.com/d/forum/navitia
 # www.navitia.io
 
+import math
 from flask import g, request, jsonify, make_response
+from flask_sqlalchemy import Pagination
 import flask_restful
 from flask_restful import marshal, reqparse, types
 from chaos import models, db, publisher
@@ -506,24 +508,25 @@ class DisruptionsSearch(flask_restful.Resource):
             application_period=application_period,
             current_time=current_time
         )
-        # utils.filter_disruptions_on_impacts(
-        #     disruptions=result.items,
-        #     current_time=current_time,
-        #     uri=uri,
-        #     pt_object_filter=ptObjectFilter,
-        #     application_status=application_status,
-        #     application_period=application_period
-        # )
-        # response = {'disruptions': result.items, 'meta': make_pager(result, 'disruption')}
-        #
-        # '''
-        # The purpose is to remove any database-loaded state from all current objects so that the next access of
-        # any attribute, or any query execution, will retrieve new state, freshening those objects which are still
-        # referenced outside of the session with the most recent available state.
-        # '''
-        # for o in result.items:
-        #     models.db.session.expunge(o)
-        # return marshal(response, disruptions_fields)
+
+        total_results_count = models.Disruption.all_with_post_filter_native(
+            page_index=args['start_page'],
+            items_per_page=args['items_per_page'],
+            contributor_id=contributor.id,
+            application_status=application_status,
+            publication_status=json.get('publication_status', publication_status_values),
+            ends_after_date=args['ends_after_date'],
+            ends_before_date=args['ends_before_date'],
+            tags=json.get('tag', None),
+            uri=uri,
+            line_section=args['line_section'],
+            statuses=json.get('status', disruption_status_values),
+            ptObjectFilter=ptObjectFilter,
+            cause_category_id=json.get('cause_category_id', None),
+            application_period=application_period,
+            current_time=current_time,
+            only_count = True
+        )
 
         disruptions = {}
         impacts = {}
@@ -678,7 +681,15 @@ class DisruptionsSearch(flask_restful.Resource):
                 impact['objects'] = impact_pt_objects[impact_id].values()
                 impact['application_periods'] = application_periods[impact_id].values()
 
-        rawData = {'disruptions': disruptions.values(), 'meta': {}}
+
+
+        rawData = {'disruptions': disruptions.values(), 'meta': self.createPager(
+            resultset = disruptions.values(),
+            current_page=args['start_page'],
+            per_page = args['items_per_page'],
+            total_results_count = total_results_count,
+            endpoint = 'disruption')}
+
         toto = marshal(rawData, disruptions_fields)
 
         return toto
@@ -688,6 +699,25 @@ class DisruptionsSearch(flask_restful.Resource):
 
         #return jsonify(rawData)
 
+
+    def createPager(self, resultset, current_page, per_page, total_results_count,  endpoint):
+
+        per_page = max(1, per_page)
+
+        pagination = Pagination
+        pagination.per_page = per_page
+        pagination.total = total_results_count
+        pagination.page = current_page
+        pagination.items = resultset
+
+        pagination.pages = int(math.ceil(pagination.total / float(pagination.per_page)))
+        pagination.next_num = min(pagination.pages, pagination.page + 1)
+        pagination.prev_num = max(1, pagination.page - 1)
+
+        pagination.has_next = pagination.page < pagination.next_num
+        pagination.has_prev = pagination.page > pagination.prev_num
+
+        return make_pager(pagination, endpoint)
 
 
 class Cause(flask_restful.Resource):
