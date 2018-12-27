@@ -699,38 +699,37 @@ class Disruption(TimestampMixin, db.Model):
                     'localization.uri AS localization_uri, localization.type AS localization_type, localization.id AS localization_id, ' \
                     'po.id AS pt_object_id, po.type AS pt_object_type, po.uri AS pt_object_uri, ' \
                     'ap.id AS application_period_id, ap.start_date AS application_period_start_date, ap.end_date AS application_period_end_date ' )
-        query.append('FROM ' \
-                'disruption AS d ' \
-                'LEFT JOIN impact i ON (i.disruption_id = d.id) ' \
-                'LEFT JOIN cause c ON (d.cause_id = c.id) ' \
-                'LEFT JOIN category ctg ON (c.category_id = ctg.id) ' \
-                'LEFT JOIN associate_wording_cause awc ON (c.id = awc.cause_id) ' \
-                'LEFT JOIN severity AS s ON (s.id = i.severity_id) ' \
-                'LEFT JOIN wording AS cw ON (awc.wording_id = cw.id) ' \
-                'LEFT JOIN associate_wording_severity aws ON (s.id = aws.severity_id) ' \
-                'LEFT JOIN wording AS sw ON (aws.wording_id = sw.id) ' \
-                'LEFT JOIN contributor AS contrib ON (contrib.id = d.contributor_id) ' \
-                'LEFT JOIN associate_disruption_tag adt ON (d.id = adt.disruption_id) ' \
-                'LEFT JOIN tag t ON (t.id = adt.tag_id) ' \
-                'LEFT JOIN associate_disruption_property AS adp ON (d.id = adp.disruption_id) '\
-                'LEFT JOIN property AS p ON (p.id = adp.property_id) '\
-                'LEFT JOIN associate_disruption_pt_object AS adpo ON (adpo.disruption_id = d.id) '\
-                'LEFT JOIN pt_object AS localization ON (localization.id = adpo.pt_object_id) '\
-                'LEFT JOIN associate_impact_pt_object AS aipto ON (aipto.impact_id = i.id) '\
-                'LEFT JOIN pt_object AS po ON (po.id = aipto.pt_object_id) '\
-                'LEFT JOIN application_periods AS ap ON (ap.impact_id = i.id) ')
-        query.append('WHERE d.contributor_id = :contributor_id ' \
-                'AND d.status = :disruption_status ' \
-                'AND i.status = :impact_status ' \
+        query.append(' FROM ')
+        if only_count:
+            query.append('(SELECT * FROM disruption AS dsrp WHERE dsrp.contributor_id = :contributor_id AND dsrp.status = :disruption_status) AS d ')
+        else :
+            query.append('(SELECT * FROM disruption AS dsrp WHERE dsrp.contributor_id = :contributor_id AND dsrp.status = :disruption_status ORDER BY dsrp.end_publication_date, dsrp.id LIMIT :limit OFFSET :offset) AS d ')
+
+        query.append(
+                    'LEFT JOIN impact i ON (i.disruption_id = d.id) ' \
+                    'LEFT JOIN cause c ON (d.cause_id = c.id) ' \
+                    'LEFT JOIN category ctg ON (c.category_id = ctg.id) ' \
+                    'LEFT JOIN associate_wording_cause awc ON (c.id = awc.cause_id) ' \
+                    'LEFT JOIN severity AS s ON (s.id = i.severity_id) ' \
+                    'LEFT JOIN wording AS cw ON (awc.wording_id = cw.id) ' \
+                    'LEFT JOIN associate_wording_severity aws ON (s.id = aws.severity_id) ' \
+                    'LEFT JOIN wording AS sw ON (aws.wording_id = sw.id) ' \
+                    'LEFT JOIN contributor AS contrib ON (contrib.id = d.contributor_id) ' \
+                    'LEFT JOIN associate_disruption_tag adt ON (d.id = adt.disruption_id) ' \
+                    'LEFT JOIN tag t ON (t.id = adt.tag_id) ' \
+                    'LEFT JOIN associate_disruption_property AS adp ON (d.id = adp.disruption_id) '\
+                    'LEFT JOIN property AS p ON (p.id = adp.property_id) '\
+                    'LEFT JOIN associate_disruption_pt_object AS adpo ON (adpo.disruption_id = d.id) '\
+                    'LEFT JOIN pt_object AS localization ON (localization.id = adpo.pt_object_id) '\
+                    'LEFT JOIN associate_impact_pt_object AS aipto ON (aipto.impact_id = i.id) '\
+                    'LEFT JOIN pt_object AS po ON (po.id = aipto.pt_object_id) '\
+                    'LEFT JOIN application_periods AS ap ON (ap.impact_id = i.id) ')
+        query.append('WHERE ' \
+                'i.status = :impact_status ' \
                 'AND c.is_visible = :cause_is_visisble ' \
                 'AND ctg.is_visible = :category_is_visisble')
         if ptObjectFilter is not None:
             query.append('AND po.uri IN :pt_objects_uris')
-
-        if not only_count:
-            query.append('ORDER BY d.end_publication_date, d.id')
-            query.append('LIMIT :limit')
-            query.append('OFFSET :offset')
 
         stmt = text(' '.join(query))
         stmt = stmt.bindparams(
@@ -743,10 +742,6 @@ class Disruption(TimestampMixin, db.Model):
         if ptObjectFilter is not None:
             stmt = stmt.bindparams(bindparam('pt_objects_uris', type_=db.String))
 
-        if not only_count:
-            stmt.bindparams(bindparam("limit", type_=db.Integer),
-                            bindparam("offset", type_=db.Integer))
-
         vars = {
                 'contributor_id': contributor_id,
                 'disruption_status' : 'published',
@@ -756,6 +751,8 @@ class Disruption(TimestampMixin, db.Model):
                 }
 
         if not only_count:
+            stmt.bindparams(bindparam('limit', type_=db.Integer),
+                            bindparam('offset', type_=db.Integer))
             vars['limit'] = items_per_page
             vars['offset'] = 0
 
