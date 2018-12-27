@@ -728,6 +728,10 @@ class Disruption(TimestampMixin, db.Model):
                 'i.status = :impact_status ' \
                 'AND c.is_visible = :cause_is_visisble ' \
                 'AND ctg.is_visible = :category_is_visisble')
+
+        if tags is not None:
+            query.append('AND t.id IN :tag_ids')
+
         if ptObjectFilter is not None:
             query.append('AND po.uri IN :pt_objects_uris')
 
@@ -739,8 +743,6 @@ class Disruption(TimestampMixin, db.Model):
                                bindparam('cause_is_visisble', type_=db.Boolean),
                                bindparam('category_is_visisble', type_=db.Boolean)
                                )
-        if ptObjectFilter is not None:
-            stmt = stmt.bindparams(bindparam('pt_objects_uris', type_=db.String))
 
         vars = {
                 'contributor_id': contributor_id,
@@ -750,15 +752,19 @@ class Disruption(TimestampMixin, db.Model):
                 'category_is_visisble' : True
                 }
 
+        if tags is not None:
+            stmt = stmt.bindparams(bindparam('tag_ids', type_=db.String))
+            vars['tag_ids'] = tuple(tags)
+
+        if ptObjectFilter is not None:
+            stmt = stmt.bindparams(bindparam('pt_objects_uris', type_=db.String))
+            vars['pt_objects_uris'] = tuple([id for ids in ptObjectFilter.itervalues() for id in ids])
+
         if not only_count:
             stmt.bindparams(bindparam('limit', type_=db.Integer),
                             bindparam('offset', type_=db.Integer))
             vars['limit'] = items_per_page
             vars['offset'] = 0
-
-
-        if ptObjectFilter is not None:
-            vars['pt_objects_uris'] = tuple([id for ids in ptObjectFilter.itervalues() for id in ids])
 
         if only_count:
             result = db.engine.execute(stmt, vars).fetchone()
