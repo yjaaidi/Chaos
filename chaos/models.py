@@ -701,9 +701,9 @@ class Disruption(TimestampMixin, db.Model):
                     'ap.id AS application_period_id, ap.start_date AS application_period_start_date, ap.end_date AS application_period_end_date ' )
         query.append(' FROM ')
         if only_count:
-            query.append('(SELECT * FROM disruption AS dsrp WHERE dsrp.contributor_id = :contributor_id AND dsrp.status = :disruption_status) AS d ')
+            query.append('(SELECT * FROM disruption AS dsrp WHERE dsrp.contributor_id = :contributor_id AND dsrp.status IN :disruption_status) AS d ')
         else :
-            query.append('(SELECT * FROM disruption AS dsrp WHERE dsrp.contributor_id = :contributor_id AND dsrp.status = :disruption_status ORDER BY dsrp.end_publication_date, dsrp.id LIMIT :limit OFFSET :offset) AS d ')
+            query.append('(SELECT * FROM disruption AS dsrp WHERE dsrp.contributor_id = :contributor_id AND dsrp.status IN :disruption_status ORDER BY dsrp.end_publication_date, dsrp.id LIMIT :limit OFFSET :offset) AS d ')
 
         query.append(
                     'LEFT JOIN impact i ON (i.disruption_id = d.id) ' \
@@ -725,15 +725,15 @@ class Disruption(TimestampMixin, db.Model):
                     'LEFT JOIN pt_object AS po ON (po.id = aipto.pt_object_id) '\
                     'LEFT JOIN application_periods AS ap ON (ap.impact_id = i.id) ')
         query.append('WHERE ' \
-                'i.status = :impact_status ' \
-                'AND c.is_visible = :cause_is_visisble ' \
-                'AND ctg.is_visible = :category_is_visisble')
+                ' i.status = :impact_status' \
+                ' AND c.is_visible = :cause_is_visisble ' \
+                ' AND ctg.is_visible = :category_is_visisble')
 
         if tags is not None:
-            query.append('AND t.id IN :tag_ids')
+            query.append(' AND t.id IN :tag_ids ')
 
         if ptObjectFilter is not None:
-            query.append('AND po.uri IN :pt_objects_uris')
+            query.append(' AND po.uri IN :pt_objects_uris ')
 
         stmt = text(' '.join(query))
         stmt = stmt.bindparams(
@@ -746,7 +746,7 @@ class Disruption(TimestampMixin, db.Model):
 
         vars = {
                 'contributor_id': contributor_id,
-                'disruption_status' : 'published',
+                'disruption_status' : tuple(statuses),
                 'impact_status' : 'published',
                 'cause_is_visisble' : True,
                 'category_is_visisble' : True
