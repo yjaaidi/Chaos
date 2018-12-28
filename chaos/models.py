@@ -729,11 +729,17 @@ class Disruption(TimestampMixin, db.Model):
                 ' AND c.is_visible = :cause_is_visisble ' \
                 ' AND ctg.is_visible = :category_is_visisble')
 
-        if tags is not None:
+        if isinstance(tags, list) and tags:
             query.append(' AND t.id IN :tag_ids ')
 
         if ptObjectFilter is not None:
             query.append(' AND po.uri IN :pt_objects_uris ')
+
+        if ends_after_date:
+            query.append(' AND d.end_publication_date >=:ends_after_date ')
+
+        if ends_before_date:
+            query.append(' AND d.end_publication_date <=:ends_before_date ')
 
         stmt = text(' '.join(query))
         stmt = stmt.bindparams(
@@ -752,13 +758,21 @@ class Disruption(TimestampMixin, db.Model):
                 'category_is_visisble' : True
                 }
 
-        if tags is not None:
+        if isinstance(tags, list) and tags:
             stmt = stmt.bindparams(bindparam('tag_ids', type_=db.String))
             vars['tag_ids'] = tuple(tags)
 
         if ptObjectFilter is not None:
             stmt = stmt.bindparams(bindparam('pt_objects_uris', type_=db.String))
             vars['pt_objects_uris'] = tuple([id for ids in ptObjectFilter.itervalues() for id in ids])
+
+        if ends_after_date:
+            stmt = stmt.bindparams(bindparam('ends_after_date', type_=db.Date))
+            vars['ends_after_date'] = ends_after_date
+
+        if ends_before_date:
+            stmt = stmt.bindparams(bindparam('ends_before_date', type_=db.Date))
+            vars['ends_before_date'] = ends_before_date
 
         if not only_count:
             stmt.bindparams(bindparam('limit', type_=db.Integer),
