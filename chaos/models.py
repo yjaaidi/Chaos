@@ -680,6 +680,7 @@ class Disruption(TimestampMixin, db.Model):
             application_period,
             current_time=None,
             only_count = False):
+        if current_time is None: current_time = get_current_time()
         query = []
         query.append('SELECT ')
         if only_count:
@@ -727,7 +728,7 @@ class Disruption(TimestampMixin, db.Model):
         query.append('WHERE ' \
                 ' i.status = :impact_status' \
                 ' AND c.is_visible = :cause_is_visisble ' \
-                ' AND ctg.is_visible = :category_is_visisble')
+                ' AND ctg.is_visible = :category_is_visible')
 
         if isinstance(tags, list) and tags:
             query.append(' AND t.id IN :tag_ids ')
@@ -741,13 +742,23 @@ class Disruption(TimestampMixin, db.Model):
         if ends_before_date:
             query.append(' AND d.end_publication_date <=:ends_before_date ')
 
+        if len(application_status) != len(application_status_values):
+            application_availlable_filters = {
+                'past': 'ap.end_date < :current_time ',
+                'ongoing': '(ap.start_date <= :current_time AND ap.end_date >= :current_time) ',
+                'coming': 'ap.start_date > :current_time '
+            }
+            filters = [application_availlable_filters[status] for status in application_status]
+            query.append(' AND ')
+            query.append(' OR '.join(filters))
+
         stmt = text(' '.join(query))
         stmt = stmt.bindparams(
                                bindparam('contributor_id', type_=db.String),
                                bindparam('disruption_status', type_=db.String),
                                bindparam('impact_status', type_=db.String),
                                bindparam('cause_is_visisble', type_=db.Boolean),
-                               bindparam('category_is_visisble', type_=db.Boolean)
+                               bindparam('category_is_visible', type_=db.Boolean)
                                )
 
         vars = {
@@ -755,7 +766,7 @@ class Disruption(TimestampMixin, db.Model):
                 'disruption_status' : tuple(statuses),
                 'impact_status' : 'published',
                 'cause_is_visisble' : True,
-                'category_is_visisble' : True
+                'category_is_visible' : True
                 }
 
         if isinstance(tags, list) and tags:
@@ -774,11 +785,19 @@ class Disruption(TimestampMixin, db.Model):
             stmt = stmt.bindparams(bindparam('ends_before_date', type_=db.Date))
             vars['ends_before_date'] = ends_before_date
 
+        application_status = set(application_status)
+
         if not only_count:
             stmt.bindparams(bindparam('limit', type_=db.Integer),
                             bindparam('offset', type_=db.Integer))
             vars['limit'] = items_per_page
             vars['offset'] = 0
+
+        if len(application_status) != len(application_status_values):
+            stmt = stmt.bindparams(bindparam('current_time', type_=db.Date))
+            vars['current_time'] = current_time
+
+        logging.getLogger(__name__).debug('query ----------------------- : %s', query)
 
         if only_count:
             result = db.engine.execute(stmt, vars).fetchone()
