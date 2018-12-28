@@ -699,7 +699,11 @@ class Disruption(TimestampMixin, db.Model):
                     'p.id AS property_id, p.key AS property_key, p.type AS property_type, adp.value AS property_value, p.created_at AS property_created_at, p.updated_at AS property_updated_at, ' \
                     'localization.uri AS localization_uri, localization.type AS localization_type, localization.id AS localization_id, ' \
                     'po.id AS pt_object_id, po.type AS pt_object_type, po.uri AS pt_object_uri, ' \
-                    'ap.id AS application_period_id, ap.start_date AS application_period_start_date, ap.end_date AS application_period_end_date ' )
+                    'ap.id AS application_period_id, ap.start_date AS application_period_start_date, ap.end_date AS application_period_end_date, ' \
+                    'm.id AS message_id, m.created_at AS message_created_at, m.updated_at AS message_updated_at, m.text AS message_text, ' \
+                    'ch.id AS channel_id, ch.content_type AS channel_content_type, ch.created_at AS channel_created_at, ch.updated_at AS channel_updated_at, ch.max_size AS channel_max_size, ch.name AS channel_name, ch.required AS channel_required, ' \
+                    'cht.id AS channel_type_id, cht.name AS channel_type_name, ' \
+                    'me.id AS meta_id, me.key AS meta_key, me.value AS meta_value ')
         query.append(' FROM ')
         if only_count:
             query.append('(SELECT * FROM disruption AS dsrp WHERE dsrp.contributor_id = :contributor_id AND dsrp.status IN :disruption_status) AS d ')
@@ -724,7 +728,12 @@ class Disruption(TimestampMixin, db.Model):
                     'LEFT JOIN pt_object AS localization ON (localization.id = adpo.pt_object_id) '\
                     'LEFT JOIN associate_impact_pt_object AS aipto ON (aipto.impact_id = i.id) '\
                     'LEFT JOIN pt_object AS po ON (po.id = aipto.pt_object_id) '\
-                    'LEFT JOIN application_periods AS ap ON (ap.impact_id = i.id) ')
+                    'LEFT JOIN application_periods AS ap ON (ap.impact_id = i.id) ' \
+                    'LEFT JOIN message AS m ON (m.impact_id = i.id)  ' \
+                    'LEFT JOIN channel AS ch ON (m.channel_id = ch.id) ' \
+                    'LEFT JOIN channel_type AS cht ON (cht.channel_id = ch.id) ' \
+                    'LEFT JOIN associate_message_meta AS amm ON (amm.message_id = m.id) ' \
+                    'LEFT JOIN meta AS me ON (amm.meta_id = me.id) ')
         query.append('WHERE ' \
                 ' i.status = :impact_status' \
                 ' AND c.is_visible = :cause_is_visisble ' \

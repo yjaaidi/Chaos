@@ -537,6 +537,10 @@ class DisruptionsSearch(flask_restful.Resource):
         properties = {}
         localizations = {}
         application_periods = {}
+        messages = {}
+        channels = {}
+        channel_types = {}
+        message_metas = {}
 
         for r in results:
             disruptionId = r.id
@@ -549,6 +553,10 @@ class DisruptionsSearch(flask_restful.Resource):
             severity_wording_id = r.severity_wording_id
             impact_pt_object_id = r.pt_object_id
             application_period_id = r.application_period_id
+            message_id = r.message_id
+            channel_id = r.channel_id
+            channel_type_id = r.channel_type_id
+            message_meta_id = r.meta_id
 
             if disruptionId not in impacts:
                 impacts[disruptionId] = {}
@@ -579,6 +587,47 @@ class DisruptionsSearch(flask_restful.Resource):
                 application_periods[impact_id][application_period_id] = {
                     'start_date': r.application_period_start_date,
                     'end_date': r.application_period_end_date
+                }
+
+            if impact_id not in messages:
+                messages[impact_id] = {}
+
+            if message_id not in channels:
+                channels[message_id] = {}
+
+            if message_id is not None:
+                messages[impact_id][message_id] = {
+                    'id': r.message_id,
+                    'created_at': r.message_created_at,
+                    'updated_at': r.message_updated_at,
+                    'text': r.message_text,
+                    'meta': [],
+                    'channel': {
+                        'id': channel_id,
+                        'content_type': r.channel_content_type,
+                        'created_at': r.channel_created_at,
+                        'updated_at': r.channel_updated_at,
+                        'max_size': r.channel_max_size,
+                        'name': r.channel_name,
+                        'required': r.channel_required
+                    }
+                }
+
+            if channel_id is not None and channel_id not in channel_types:
+                channel_types[channel_id] = {}
+
+            if channel_type_id is not None:
+                if channel_type_id not in channel_types[channel_id]:
+                    channel_types[channel_id][channel_type_id] = {}
+                channel_types[channel_id][channel_type_id].update({
+                    'name': r.channel_type_name
+                })
+            if message_id not in message_metas:
+                message_metas[message_id] = {}
+            if message_meta_id is not None:
+                message_metas[message_id][message_meta_id] = {
+                    'key': r.meta_key,
+                    'value': r.meta_value
                 }
 
             if severity_id not in severity_wordings:
@@ -680,8 +729,12 @@ class DisruptionsSearch(flask_restful.Resource):
                 impact['severity']['wordings'] = severity_wordings[impact['severity']['id']].values()
                 impact['objects'] = impact_pt_objects[impact_id].values()
                 impact['application_periods'] = application_periods[impact_id].values()
+                impact['messages'] = messages[impact_id].values()
 
-
+                for message in impact['messages']:
+                    channel_id = message['channel']['id']
+                    message['channel']['channel_types'] = channel_types[channel_id].values()
+                    message['meta'] = message_metas[message_id].values()
 
         rawData = {'disruptions': disruptions.values(), 'meta': self.createPager(
             resultset = disruptions.values(),
