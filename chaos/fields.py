@@ -210,10 +210,15 @@ class FieldContributor(fields.Raw):
         return None
 
 
+#'types': {'channel_types': [{'name': 'email'}]},
+
 class FieldChannelTypes(fields.Raw):
     def output(self, key, obj):
+        if isinstance(obj, dict) and 'channel_types' in obj:
+            return [ch['name'] for ch in obj['channel_types']]
+
         if hasattr(obj, 'channel_types'):
-            return [ch.name for ch in obj.channel_types]
+           return [ch.name for ch in obj.channel_types]
         return None
 
 
@@ -467,6 +472,7 @@ objectTC_fields = {
     #     allow_null=True)
 }
 
+# not used?
 channel_type_fields = {
     'name': fields.Raw
 }
