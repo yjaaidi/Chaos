@@ -742,6 +742,9 @@ class Disruption(TimestampMixin, db.Model):
         if isinstance(tags, list) and tags:
             query.append(' AND t.id IN :tag_ids ')
 
+        if isinstance(cause_category_id, basestring) and cause_category_id:
+            query.append(' AND c.category_id <=:cause_category_id ')
+
         if ptObjectFilter is not None:
             query.append(' AND po.uri IN :pt_objects_uris ')
 
@@ -778,6 +781,10 @@ class Disruption(TimestampMixin, db.Model):
                 'category_is_visible' : True
                 }
 
+        if isinstance(cause_category_id, basestring) and cause_category_id:
+            stmt = stmt.bindparams(bindparam('cause_category_id', type_=db.String))
+            vars['cause_category_id'] = cause_category_id
+
         if isinstance(tags, list) and tags:
             stmt = stmt.bindparams(bindparam('tag_ids', type_=db.String))
             vars['tag_ids'] = tuple(tags)
@@ -805,8 +812,6 @@ class Disruption(TimestampMixin, db.Model):
         if len(application_status) != len(application_status_values):
             stmt = stmt.bindparams(bindparam('current_time', type_=db.Date))
             vars['current_time'] = current_time
-
-        logging.getLogger(__name__).debug('query ----------------------- : %s', query)
 
         if only_count:
             result = db.engine.execute(stmt, vars).fetchone()
