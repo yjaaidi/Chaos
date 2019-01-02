@@ -740,14 +740,14 @@ class DisruptionsSearch(flask_restful.Resource):
             total_results_count = total_results_count,
             endpoint = 'disruption')}
 
-        #toto = marshal(rawData, disruptions_fields)
+        toto = marshal(rawData, disruptions_fields)
 
-        #return toto
+        return toto
 
         # return make_response(ujson.dumps(rawData))
         #return response
 
-        return jsonify(rawData)
+        #return jsonify(rawData)
 
 
     def createPager(self, resultset, current_page, per_page, total_results_count,  endpoint):
