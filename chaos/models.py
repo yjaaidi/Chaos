@@ -675,8 +675,10 @@ class Disruption(TimestampMixin, db.Model):
             application_period,
             current_time=None,
             query_parts = []):
-        if current_time is None: current_time = get_current_time()
+        if uri_is_not_in_pt_object_filter(uri=uri, pt_object_filter=ptObjectFilter):
+            return ''
 
+        if current_time is None: current_time = get_current_time()
         join_tables = []
         join_tables.append('disruption AS d')
         join_tables.append('LEFT JOIN impact i ON (i.disruption_id = d.id)')
@@ -710,14 +712,16 @@ class Disruption(TimestampMixin, db.Model):
         andwheres.append('c.is_visible = :cause_is_visisble')
         andwheres.append('ctg.is_visible = :category_is_visible')
 
+        if isinstance(uri, basestring) and uri:
+            andwheres.append('po.uri = :uri')
+        elif ptObjectFilter is not None:
+            andwheres.append('po.uri IN :pt_objects_uris')
+
         if isinstance(cause_category_id, basestring) and cause_category_id:
             andwheres('c.category_id =:cause_category_id')
 
         if isinstance(tags, list) and tags:
             andwheres.append('t.id IN :tag_ids')
-
-        if ptObjectFilter is not None:
-            andwheres.append('po.uri IN :pt_objects_uris')
 
         if ends_after_date:
             andwheres.append('d.end_publication_date >=:ends_after_date')
@@ -793,6 +797,9 @@ class Disruption(TimestampMixin, db.Model):
             current_time,
             query_parts)
 
+        if not query:
+            return 0
+
         logging.getLogger(__name__).debug('query : %s', query)
 
         stmt = text(query)
@@ -812,6 +819,13 @@ class Disruption(TimestampMixin, db.Model):
             'category_is_visible': True
         }
 
+        if isinstance(uri, basestring) and uri:
+            stmt = stmt.bindparams(bindparam('uri', type_=db.String))
+            vars['uri'] = uri
+        elif ptObjectFilter is not None:
+            stmt = stmt.bindparams(bindparam('pt_objects_uris', type_=db.String))
+            vars['pt_objects_uris'] = tuple([id for ids in ptObjectFilter.itervalues() for id in ids])
+
         if isinstance(cause_category_id, basestring) and cause_category_id:
             stmt = stmt.bindparams(bindparam('cause_category_id', type_=db.String))
             vars['cause_category_id'] = cause_category_id
@@ -819,10 +833,6 @@ class Disruption(TimestampMixin, db.Model):
         if isinstance(tags, list) and tags:
             stmt = stmt.bindparams(bindparam('tag_ids', type_=db.String))
             vars['tag_ids'] = tuple(tags)
-
-        if ptObjectFilter is not None:
-            stmt = stmt.bindparams(bindparam('pt_objects_uris', type_=db.String))
-            vars['pt_objects_uris'] = tuple([id for ids in ptObjectFilter.itervalues() for id in ids])
 
         if ends_after_date:
             stmt = stmt.bindparams(bindparam('ends_after_date', type_=db.Date))
@@ -879,22 +889,38 @@ class Disruption(TimestampMixin, db.Model):
             current_time,
             query_parts)
 
+        if not query:
+            return []
+
         stmt = text(query)
         stmt = stmt.bindparams(
                                bindparam('contributor_id', type_=db.String),
                                bindparam('disruption_status', type_=db.String),
                                bindparam('impact_status', type_=db.String),
                                bindparam('cause_is_visisble', type_=db.Boolean),
-                               bindparam('category_is_visible', type_=db.Boolean)
+                               bindparam('category_is_visible', type_=db.Boolean),
+                               bindparam('limit', type_=db.Integer),
+                               bindparam('offset', type_=db.Integer)
                                )
+
+        offset = (max(1, page_index) - 1) * items_per_page
 
         vars = {
                 'contributor_id': contributor_id,
-                'disruption_status' : tuple(statuses),
-                'impact_status' : 'published',
-                'cause_is_visisble' : True,
-                'category_is_visible' : True
+                'disruption_status': tuple(statuses),
+                'impact_status': 'published',
+                'cause_is_visisble': True,
+                'category_is_visible': True,
+                'limit': items_per_page,
+                'offset': offset
                 }
+
+        if isinstance(uri, basestring) and uri:
+            stmt = stmt.bindparams(bindparam('uri', type_=db.String))
+            vars['uri'] = uri
+        elif ptObjectFilter is not None:
+            stmt = stmt.bindparams(bindparam('pt_objects_uris', type_=db.String))
+            vars['pt_objects_uris'] = tuple([id for ids in ptObjectFilter.itervalues() for id in ids])
 
         if isinstance(cause_category_id, basestring) and cause_category_id:
             stmt = stmt.bindparams(bindparam('cause_category_id', type_=db.String))
@@ -904,10 +930,6 @@ class Disruption(TimestampMixin, db.Model):
             stmt = stmt.bindparams(bindparam('tag_ids', type_=db.String))
             vars['tag_ids'] = tuple(tags)
 
-        if ptObjectFilter is not None:
-            stmt = stmt.bindparams(bindparam('pt_objects_uris', type_=db.String))
-            vars['pt_objects_uris'] = tuple([id for ids in ptObjectFilter.itervalues() for id in ids])
-
         if ends_after_date:
             stmt = stmt.bindparams(bindparam('ends_after_date', type_=db.Date))
             vars['ends_after_date'] = ends_after_date
@@ -916,16 +938,10 @@ class Disruption(TimestampMixin, db.Model):
             stmt = stmt.bindparams(bindparam('ends_before_date', type_=db.Date))
             vars['ends_before_date'] = ends_before_date
 
-        application_status = set(application_status)
-
         stmt.bindparams(bindparam('limit', type_=db.Integer),
                         bindparam('offset', type_=db.Integer))
 
-        offset = (max(1, page_index) - 1) *  items_per_page
-
-        vars['limit'] = items_per_page
-        vars['offset'] = offset
-
+        application_status = set(application_status)
         if len(application_status) != len(application_status_values):
             stmt = stmt.bindparams(bindparam('current_time', type_=db.Date))
             vars['current_time'] = current_time
@@ -1044,7 +1060,10 @@ class Disruption(TimestampMixin, db.Model):
             stmt = stmt.bindparams(bindparam('tag_ids', type_=db.String))
             vars['tag_ids'] = tuple(tags)
 
-        if ptObjectFilter is not None:
+        if isinstance(uri, basestring) and uri:
+            stmt = stmt.bindparams(bindparam('uri', type_=db.String))
+            vars['uri'] = uri
+        elif ptObjectFilter is not None:
             stmt = stmt.bindparams(bindparam('pt_objects_uris', type_=db.String))
             vars['pt_objects_uris'] = tuple([id for ids in ptObjectFilter.itervalues() for id in ids])
 
