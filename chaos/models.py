@@ -679,6 +679,7 @@ class Disruption(TimestampMixin, db.Model):
             return ''
 
         if current_time is None: current_time = get_current_time()
+
         join_tables = []
         join_tables.append('disruption AS d')
         join_tables.append('LEFT JOIN impact i ON (i.disruption_id = d.id)')
@@ -738,6 +739,14 @@ class Disruption(TimestampMixin, db.Model):
             }
             filters = [application_availlable_filters[status] for status in application_status]
             andwheres.append(' OR '.join(filters))
+
+        if isinstance(application_period, dict) and 'begin' in application_period and 'end' in application_period:
+            filters = []
+            filters.append('(ap.start_date >= :ap_start_date AND ap.start_date <= :ap_end_date)')
+            filters.append('(ap.end_date >= :ap_start_date AND ap.end_date <= :ap_end_date)')
+            filters.append('(ap.start_date <= :ap_start_date AND ap.end_date >= :ap_end_date)')
+            apDateFilter = ' OR '.join(filters)
+            andwheres.append('('+apDateFilter+')')
 
         orders = []
         orders.append('d.end_publication_date')
@@ -843,10 +852,15 @@ class Disruption(TimestampMixin, db.Model):
             vars['ends_before_date'] = ends_before_date
 
         application_status = set(application_status)
-
         if len(application_status) != len(application_status_values):
             stmt = stmt.bindparams(bindparam('current_time', type_=db.Date))
             vars['current_time'] = current_time
+
+        if isinstance(application_period, dict) and 'begin' in application_period and 'end' in application_period:
+            stmt = stmt.bindparams(bindparam('ap_start_date', type_=db.Date))
+            stmt = stmt.bindparams(bindparam('ap_end_date', type_=db.Date))
+            vars['ap_start_date'] = application_period['begin']
+            vars['ap_end_date'] = application_period['end']
 
         result = db.engine.execute(stmt, vars).fetchone()
         return result['cnt']
@@ -945,6 +959,12 @@ class Disruption(TimestampMixin, db.Model):
         if len(application_status) != len(application_status_values):
             stmt = stmt.bindparams(bindparam('current_time', type_=db.Date))
             vars['current_time'] = current_time
+
+        if isinstance(application_period, dict) and 'begin' in application_period and 'end' in application_period:
+            stmt = stmt.bindparams(bindparam('ap_start_date', type_=db.Date))
+            stmt = stmt.bindparams(bindparam('ap_end_date', type_=db.Date))
+            vars['ap_start_date'] = application_period['begin']
+            vars['ap_end_date'] = application_period['end']
 
         return db.engine.execute(stmt, vars).fetchall()
 
@@ -1080,6 +1100,12 @@ class Disruption(TimestampMixin, db.Model):
         if len(application_status) != len(application_status_values):
             stmt = stmt.bindparams(bindparam('current_time', type_=db.Date))
             vars['current_time'] = current_time
+
+        if isinstance(application_period, dict) and 'begin' in application_period and 'end' in application_period:
+            stmt = stmt.bindparams(bindparam('ap_start_date', type_=db.Date))
+            stmt = stmt.bindparams(bindparam('ap_end_date', type_=db.Date))
+            vars['ap_start_date'] = application_period['begin']
+            vars['ap_end_date'] = application_period['end']
 
         return db.engine.execute(stmt, vars).fetchall()
 
