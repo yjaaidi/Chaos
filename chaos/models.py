@@ -662,7 +662,187 @@ class Disruption(TimestampMixin, db.Model):
         )
 
     @classmethod
-    def all_with_post_filter_native(
+    def get_disruption_search_native_query(cls,
+            application_status,
+            publication_status,
+            ends_after_date,
+            ends_before_date,
+            tags,
+            uri,
+            line_section,
+            ptObjectFilter,
+            cause_category_id,
+            application_period,
+            current_time=None,
+            query_parts = []):
+        if current_time is None: current_time = get_current_time()
+
+        join_tables = []
+        join_tables.append('disruption AS d')
+        join_tables.append('LEFT JOIN impact i ON (i.disruption_id = d.id)')
+        join_tables.append('LEFT JOIN cause c ON (d.cause_id = c.id)')
+        join_tables.append('LEFT JOIN category ctg ON (c.category_id = ctg.id)')
+        join_tables.append('LEFT JOIN associate_wording_cause awc ON (c.id = awc.cause_id)')
+        join_tables.append('LEFT JOIN severity AS s ON (s.id = i.severity_id)')
+        join_tables.append('LEFT JOIN wording AS cw ON (awc.wording_id = cw.id)')
+        join_tables.append('LEFT JOIN associate_wording_severity aws ON (s.id = aws.severity_id)')
+        join_tables.append('LEFT JOIN wording AS sw ON (aws.wording_id = sw.id)')
+        join_tables.append('LEFT JOIN contributor AS contrib ON (contrib.id = d.contributor_id)')
+        join_tables.append('LEFT JOIN associate_disruption_tag adt ON (d.id = adt.disruption_id)')
+        join_tables.append('LEFT JOIN tag t ON (t.id = adt.tag_id)')
+        join_tables.append('LEFT JOIN associate_disruption_property AS adp ON (d.id = adp.disruption_id)')
+        join_tables.append('LEFT JOIN property AS p ON (p.id = adp.property_id)')
+        join_tables.append('LEFT JOIN associate_disruption_pt_object AS adpo ON (adpo.disruption_id = d.id)')
+        join_tables.append('LEFT JOIN pt_object AS localization ON (localization.id = adpo.pt_object_id)')
+        join_tables.append('LEFT JOIN associate_impact_pt_object AS aipto ON (aipto.impact_id = i.id)')
+        join_tables.append('LEFT JOIN pt_object AS po ON (po.id = aipto.pt_object_id)')
+        join_tables.append('LEFT JOIN application_periods AS ap ON (ap.impact_id = i.id)')
+        join_tables.append('LEFT JOIN message AS m ON (m.impact_id = i.id)')
+        join_tables.append('LEFT JOIN channel AS ch ON (m.channel_id = ch.id)')
+        join_tables.append('LEFT JOIN channel_type AS cht ON (cht.channel_id = ch.id)')
+        join_tables.append('LEFT JOIN associate_message_meta AS amm ON (amm.message_id = m.id)')
+        join_tables.append('LEFT JOIN meta AS me ON (amm.meta_id = me.id)')
+
+        andwheres = [] if 'and_wheres' not in query_parts else query_parts['and_wheres']
+        andwheres.append('d.contributor_id = :contributor_id')
+        andwheres.append('d.status IN :disruption_status')
+        andwheres.append('i.status = :impact_status')
+        andwheres.append('c.is_visible = :cause_is_visisble')
+        andwheres.append('ctg.is_visible = :category_is_visible')
+
+        if isinstance(cause_category_id, basestring) and cause_category_id:
+            andwheres('c.category_id =:cause_category_id')
+
+        if isinstance(tags, list) and tags:
+            andwheres.append('t.id IN :tag_ids')
+
+        if ptObjectFilter is not None:
+            andwheres.append('po.uri IN :pt_objects_uris')
+
+        if ends_after_date:
+            andwheres.append('d.end_publication_date >=:ends_after_date')
+
+        if ends_before_date:
+            andwheres.append('d.end_publication_date <=:ends_before_date')
+
+        application_status = set(application_status)
+        if len(application_status) != len(application_status_values):
+            application_availlable_filters = {
+                'past': 'ap.end_date < :current_time ',
+                'ongoing': '(ap.start_date <= :current_time AND ap.end_date >= :current_time) ',
+                'coming': 'ap.start_date > :current_time '
+            }
+            filters = [application_availlable_filters[status] for status in application_status]
+            andwheres.append(' OR '.join(filters))
+
+        orders = []
+        orders.append('d.end_publication_date')
+        orders.append('d.id')
+
+        columns = ','.join(query_parts['select_columns'])
+        tables = ' '.join(join_tables)
+        wheres = ' AND '.join(andwheres)
+
+        query = []
+        query.append('SELECT %s FROM %s WHERE %s' % (columns, tables, wheres))
+
+        if 'group_by' in query_parts:
+            query.append('GROUP BY %s' % (','.join(query_parts['group_by'])))
+
+        if 'order_by' in query_parts:
+            query.append('ORDER BY %s' % (','.join(query_parts['order_by'])))
+
+        if 'limit' in query_parts:
+            query.append('LIMIT %s' % (query_parts['limit']))
+
+        if 'offset' in query_parts:
+            query.append('OFFSET %s' % (query_parts['offset']))
+
+        return ' '.join(query)
+
+    @classmethod
+    def count_all_with_post_filter(
+            cls,
+            contributor_id,
+            application_status,
+            publication_status,
+            ends_after_date,
+            ends_before_date,
+            tags,
+            uri,
+            line_section,
+            statuses,
+            ptObjectFilter,
+            cause_category_id,
+            application_period,
+            current_time=None):
+        query_parts = {
+            'select_columns': ['COUNT(DISTINCT d.id) AS cnt']
+        }
+        query = cls.get_disruption_search_native_query(
+            application_status,
+            publication_status,
+            ends_after_date,
+            ends_before_date,
+            tags,
+            uri,
+            line_section,
+            ptObjectFilter,
+            cause_category_id,
+            application_period,
+            current_time,
+            query_parts)
+
+        logging.getLogger(__name__).debug('query : %s', query)
+
+        stmt = text(query)
+        stmt = stmt.bindparams(
+            bindparam('contributor_id', type_=db.String),
+            bindparam('disruption_status', type_=db.String),
+            bindparam('impact_status', type_=db.String),
+            bindparam('cause_is_visisble', type_=db.Boolean),
+            bindparam('category_is_visible', type_=db.Boolean)
+        )
+
+        vars = {
+            'contributor_id': contributor_id,
+            'disruption_status': tuple(statuses),
+            'impact_status': 'published',
+            'cause_is_visisble': True,
+            'category_is_visible': True
+        }
+
+        if isinstance(cause_category_id, basestring) and cause_category_id:
+            stmt = stmt.bindparams(bindparam('cause_category_id', type_=db.String))
+            vars['cause_category_id'] = cause_category_id
+
+        if isinstance(tags, list) and tags:
+            stmt = stmt.bindparams(bindparam('tag_ids', type_=db.String))
+            vars['tag_ids'] = tuple(tags)
+
+        if ptObjectFilter is not None:
+            stmt = stmt.bindparams(bindparam('pt_objects_uris', type_=db.String))
+            vars['pt_objects_uris'] = tuple([id for ids in ptObjectFilter.itervalues() for id in ids])
+
+        if ends_after_date:
+            stmt = stmt.bindparams(bindparam('ends_after_date', type_=db.Date))
+            vars['ends_after_date'] = ends_after_date
+
+        if ends_before_date:
+            stmt = stmt.bindparams(bindparam('ends_before_date', type_=db.Date))
+            vars['ends_before_date'] = ends_before_date
+
+        application_status = set(application_status)
+
+        if len(application_status) != len(application_status_values):
+            stmt = stmt.bindparams(bindparam('current_time', type_=db.Date))
+            vars['current_time'] = current_time
+
+        result = db.engine.execute(stmt, vars).fetchone()
+        return result['cnt']
+
+    @classmethod
+    def get_disruption_ids_with_post_filter_native(
             cls,
             page_index,
             items_per_page,
@@ -678,93 +858,28 @@ class Disruption(TimestampMixin, db.Model):
             ptObjectFilter,
             cause_category_id,
             application_period,
-            current_time=None,
-            only_count = False):
-        if current_time is None: current_time = get_current_time()
-        query = []
-        query.append('SELECT ')
-        if only_count:
-            query.append('COUNT(DISTINCT d.id) AS cnt ')
-        else:
-            query.append(
-                    'd.id, d.reference, d.note, d.status, d.version, d.created_at, d.updated_at, d.start_publication_date, d.end_publication_date, d.status AS publication_status,' \
-                    'i.id AS impact_id, i.created_at AS impact_created_at, i.updated_at AS impact_updated_at, i.send_notifications AS impact_send_notifications, i.notification_date AS impact_notification_date, '  \
-                    'c.id AS cause_id, c.created_at AS cause_created_at, c.updated_at AS cause_updated_at, ' \
-                    'ctg.id AS cause_category_id, ctg.name AS cause_category_name, ctg.created_at AS cause_category_created_at, ctg.updated_at AS cause_category_updated_at, ' \
-                    'cw.id AS cause_wording_id, cw.key AS cause_wording_key, cw.value AS cause_wording_value, ' \
-                    's.created_at AS severity_created_at, s.updated_at AS severity_updated_at, s.id AS severity_id, s.wording AS severity_wording, s.color AS severity_color, s.is_visible AS severity_is_visible, s.priority AS severity_priority, s.effect AS severity_effect, s.client_id AS severity_client_id, ' \
-                    'sw.id AS severity_wording_id, sw.key AS severity_wording_key, sw.value AS severity_wording_value, ' \
-                    'contrib.contributor_code AS contributor_code, ' \
-                    't.id AS tag_id, t.name AS tag_name, t.created_at AS tag_created_at, t.updated_at AS tag_updated_at, ' \
-                    'p.id AS property_id, p.key AS property_key, p.type AS property_type, adp.value AS property_value, p.created_at AS property_created_at, p.updated_at AS property_updated_at, ' \
-                    'localization.uri AS localization_uri, localization.type AS localization_type, localization.id AS localization_id, ' \
-                    'po.id AS pt_object_id, po.type AS pt_object_type, po.uri AS pt_object_uri, ' \
-                    'ap.id AS application_period_id, ap.start_date AS application_period_start_date, ap.end_date AS application_period_end_date, ' \
-                    'm.id AS message_id, m.created_at AS message_created_at, m.updated_at AS message_updated_at, m.text AS message_text, ' \
-                    'ch.id AS channel_id, ch.content_type AS channel_content_type, ch.created_at AS channel_created_at, ch.updated_at AS channel_updated_at, ch.max_size AS channel_max_size, ch.name AS channel_name, ch.required AS channel_required, ' \
-                    'cht.id AS channel_type_id, cht.name AS channel_type_name, ' \
-                    'me.id AS meta_id, me.key AS meta_key, me.value AS meta_value ')
-        query.append(' FROM ')
-        if only_count:
-            query.append('(SELECT * FROM disruption AS dsrp WHERE dsrp.contributor_id = :contributor_id AND dsrp.status IN :disruption_status) AS d ')
-        else :
-            query.append('(SELECT * FROM disruption AS dsrp WHERE dsrp.contributor_id = :contributor_id AND dsrp.status IN :disruption_status ORDER BY dsrp.end_publication_date, dsrp.id LIMIT :limit OFFSET :offset) AS d ')
+            current_time=None):
+        query_parts = {
+            'select_columns': ['DISTINCT d.id'],
+            'limit': ':limit',
+            'offset': ':offset'
+        }
 
-        query.append(
-                    'LEFT JOIN impact i ON (i.disruption_id = d.id) ' \
-                    'LEFT JOIN cause c ON (d.cause_id = c.id) ' \
-                    'LEFT JOIN category ctg ON (c.category_id = ctg.id) ' \
-                    'LEFT JOIN associate_wording_cause awc ON (c.id = awc.cause_id) ' \
-                    'LEFT JOIN severity AS s ON (s.id = i.severity_id) ' \
-                    'LEFT JOIN wording AS cw ON (awc.wording_id = cw.id) ' \
-                    'LEFT JOIN associate_wording_severity aws ON (s.id = aws.severity_id) ' \
-                    'LEFT JOIN wording AS sw ON (aws.wording_id = sw.id) ' \
-                    'LEFT JOIN contributor AS contrib ON (contrib.id = d.contributor_id) ' \
-                    'LEFT JOIN associate_disruption_tag adt ON (d.id = adt.disruption_id) ' \
-                    'LEFT JOIN tag t ON (t.id = adt.tag_id) ' \
-                    'LEFT JOIN associate_disruption_property AS adp ON (d.id = adp.disruption_id) '\
-                    'LEFT JOIN property AS p ON (p.id = adp.property_id) '\
-                    'LEFT JOIN associate_disruption_pt_object AS adpo ON (adpo.disruption_id = d.id) '\
-                    'LEFT JOIN pt_object AS localization ON (localization.id = adpo.pt_object_id) '\
-                    'LEFT JOIN associate_impact_pt_object AS aipto ON (aipto.impact_id = i.id) '\
-                    'LEFT JOIN pt_object AS po ON (po.id = aipto.pt_object_id) '\
-                    'LEFT JOIN application_periods AS ap ON (ap.impact_id = i.id) ' \
-                    'LEFT JOIN message AS m ON (m.impact_id = i.id)  ' \
-                    'LEFT JOIN channel AS ch ON (m.channel_id = ch.id) ' \
-                    'LEFT JOIN channel_type AS cht ON (cht.channel_id = ch.id) ' \
-                    'LEFT JOIN associate_message_meta AS amm ON (amm.message_id = m.id) ' \
-                    'LEFT JOIN meta AS me ON (amm.meta_id = me.id) ')
-        query.append('WHERE ' \
-                ' i.status = :impact_status' \
-                ' AND c.is_visible = :cause_is_visisble ' \
-                ' AND ctg.is_visible = :category_is_visible')
+        query = cls.get_disruption_search_native_query(
+            application_status,
+            publication_status,
+            ends_after_date,
+            ends_before_date,
+            tags,
+            uri,
+            line_section,
+            ptObjectFilter,
+            cause_category_id,
+            application_period,
+            current_time,
+            query_parts)
 
-        if isinstance(tags, list) and tags:
-            query.append(' AND t.id IN :tag_ids ')
-
-        if isinstance(cause_category_id, basestring) and cause_category_id:
-            query.append(' AND c.category_id <=:cause_category_id ')
-
-        if ptObjectFilter is not None:
-            query.append(' AND po.uri IN :pt_objects_uris ')
-
-        if ends_after_date:
-            query.append(' AND d.end_publication_date >=:ends_after_date ')
-
-        if ends_before_date:
-            query.append(' AND d.end_publication_date <=:ends_before_date ')
-
-        if len(application_status) != len(application_status_values):
-            application_availlable_filters = {
-                'past': 'ap.end_date < :current_time ',
-                'ongoing': '(ap.start_date <= :current_time AND ap.end_date >= :current_time) ',
-                'coming': 'ap.start_date > :current_time '
-            }
-            filters = [application_availlable_filters[status] for status in application_status]
-            query.append(' AND ')
-            query.append(' OR '.join(filters))
-
-        stmt = text(' '.join(query))
+        stmt = text(query)
         stmt = stmt.bindparams(
                                bindparam('contributor_id', type_=db.String),
                                bindparam('disruption_status', type_=db.String),
@@ -803,19 +918,149 @@ class Disruption(TimestampMixin, db.Model):
 
         application_status = set(application_status)
 
-        if not only_count:
-            stmt.bindparams(bindparam('limit', type_=db.Integer),
-                            bindparam('offset', type_=db.Integer))
-            vars['limit'] = items_per_page
-            vars['offset'] = 0
+        stmt.bindparams(bindparam('limit', type_=db.Integer),
+                        bindparam('offset', type_=db.Integer))
+
+        offset = (max(1, page_index) - 1) *  items_per_page
+
+        vars['limit'] = items_per_page
+        vars['offset'] = offset
 
         if len(application_status) != len(application_status_values):
             stmt = stmt.bindparams(bindparam('current_time', type_=db.Date))
             vars['current_time'] = current_time
 
-        if only_count:
-            result = db.engine.execute(stmt, vars).fetchone()
-            return result['cnt']
+        return db.engine.execute(stmt, vars).fetchall()
+
+
+    @classmethod
+    def all_with_post_filter_native(
+            cls,
+            page_index,
+            items_per_page,
+            contributor_id,
+            application_status,
+            publication_status,
+            ends_after_date,
+            ends_before_date,
+            tags,
+            uri,
+            line_section,
+            statuses,
+            ptObjectFilter,
+            cause_category_id,
+            application_period,
+            current_time=None):
+
+        disruption_ids = cls.get_disruption_ids_with_post_filter_native(page_index,
+            items_per_page,
+            contributor_id,
+            application_status,
+            publication_status,
+            ends_after_date,
+            ends_before_date,
+            tags,
+            uri,
+            line_section,
+            statuses,
+            ptObjectFilter,
+            cause_category_id,
+            application_period,
+            current_time)
+
+        if not disruption_ids :
+            return []
+
+        query_parts = {
+            'select_columns': [
+                'd.id', 'd.reference', 'd.note', 'd.status', 'd.version', 'd.created_at', 'd.updated_at',
+                'd.start_publication_date', 'd.end_publication_date', 'd.status AS publication_status',
+                'i.id AS impact_id', 'i.created_at AS impact_created_at', 'i.updated_at AS impact_updated_at',
+                'i.send_notifications AS impact_send_notifications', 'i.notification_date AS impact_notification_date',
+                'c.id AS cause_id', 'c.created_at AS cause_created_at', 'c.updated_at AS cause_updated_at',
+                'ctg.id AS cause_category_id', 'ctg.name AS cause_category_name', 'ctg.created_at AS cause_category_created_at',
+                'ctg.updated_at AS cause_category_updated_at', 'cw.id AS cause_wording_id', 'cw.key AS cause_wording_key',
+                'cw.value AS cause_wording_value', 's.created_at AS severity_created_at', 's.updated_at AS severity_updated_at',
+                's.id AS severity_id', 's.wording AS severity_wording', 's.color AS severity_color', 's.is_visible AS severity_is_visible',
+                's.priority AS severity_priority', 's.effect AS severity_effect', 's.client_id AS severity_client_id',
+                'sw.id AS severity_wording_id', 'sw.key AS severity_wording_key', 'sw.value AS severity_wording_value',
+                'contrib.contributor_code AS contributor_code', 't.id AS tag_id', 't.name AS tag_name', 't.created_at AS tag_created_at',
+                't.updated_at AS tag_updated_at', 'p.id AS property_id', 'p.key AS property_key', 'p.type AS property_type',
+                'adp.value AS property_value', 'p.created_at AS property_created_at', 'p.updated_at AS property_updated_at',
+                'localization.uri AS localization_uri', 'localization.type AS localization_type', 'localization.id AS localization_id',
+                'po.id AS pt_object_id', 'po.type AS pt_object_type', 'po.uri AS pt_object_uri', 'ap.id AS application_period_id',
+                'ap.start_date AS application_period_start_date', 'ap.end_date AS application_period_end_date',
+                'm.id AS message_id', 'm.created_at AS message_created_at', 'm.updated_at AS message_updated_at',
+                'm.text AS message_text', 'ch.id AS channel_id', 'ch.content_type AS channel_content_type',
+                'ch.created_at AS channel_created_at', 'ch.updated_at AS channel_updated_at', 'ch.max_size AS channel_max_size',
+                'ch.name AS channel_name', 'ch.required AS channel_required', 'cht.id AS channel_type_id', 'cht.name AS channel_type_name',
+                'me.id AS meta_id', 'me.key AS meta_key', 'me.value AS meta_value'
+            ],
+            'and_wheres' : ['d.id IN :disruption_ids'],
+        }
+
+        logging.getLogger(__name__).debug('page_index : %s', page_index)
+
+        query = cls.get_disruption_search_native_query(
+            application_status,
+            publication_status,
+            ends_after_date,
+            ends_before_date,
+            tags,
+            uri,
+            line_section,
+            ptObjectFilter,
+            cause_category_id,
+            application_period,
+            current_time,
+            query_parts)
+
+        logging.getLogger(__name__).debug('query : %s', query)
+
+        stmt = text(query)
+        stmt = stmt.bindparams(
+                               bindparam('contributor_id', type_=db.String),
+                               bindparam('disruption_status', type_=db.String),
+                               bindparam('disruption_ids', type_=db.String),
+                               bindparam('impact_status', type_=db.String),
+                               bindparam('cause_is_visisble', type_=db.Boolean),
+                               bindparam('category_is_visible', type_=db.Boolean)
+                               )
+
+        vars = {
+                'contributor_id': contributor_id,
+                'disruption_status' : tuple(statuses),
+                'impact_status' : 'published',
+                'cause_is_visisble' : True,
+                'category_is_visible' : True,
+                'disruption_ids': tuple([d[0] for d in disruption_ids]),
+                }
+
+        if isinstance(cause_category_id, basestring) and cause_category_id:
+            stmt = stmt.bindparams(bindparam('cause_category_id', type_=db.String))
+            vars['cause_category_id'] = cause_category_id
+
+        if isinstance(tags, list) and tags:
+            stmt = stmt.bindparams(bindparam('tag_ids', type_=db.String))
+            vars['tag_ids'] = tuple(tags)
+
+        if ptObjectFilter is not None:
+            stmt = stmt.bindparams(bindparam('pt_objects_uris', type_=db.String))
+            vars['pt_objects_uris'] = tuple([id for ids in ptObjectFilter.itervalues() for id in ids])
+
+        if ends_after_date:
+            stmt = stmt.bindparams(bindparam('ends_after_date', type_=db.Date))
+            vars['ends_after_date'] = ends_after_date
+
+        if ends_before_date:
+            stmt = stmt.bindparams(bindparam('ends_before_date', type_=db.Date))
+            vars['ends_before_date'] = ends_before_date
+
+        application_status = set(application_status)
+
+        if len(application_status) != len(application_status_values):
+            stmt = stmt.bindparams(bindparam('current_time', type_=db.Date))
+            vars['current_time'] = current_time
 
         return db.engine.execute(stmt, vars).fetchall()
 

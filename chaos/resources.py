@@ -491,6 +491,22 @@ class DisruptionsSearch(flask_restful.Resource):
         ptObjectFilter=json.get('ptObjectFilter', None)
         application_period = json.get('application_period', None)
 
+        total_results_count = models.Disruption.count_all_with_post_filter(
+            contributor_id=contributor.id,
+            application_status=application_status,
+            publication_status=json.get('publication_status', publication_status_values),
+            ends_after_date=args['ends_after_date'],
+            ends_before_date=args['ends_before_date'],
+            tags=json.get('tag', None),
+            uri=uri,
+            line_section=args['line_section'],
+            statuses=json.get('status', disruption_status_values),
+            ptObjectFilter=ptObjectFilter,
+            cause_category_id=json.get('cause_category_id', None),
+            application_period=application_period,
+            current_time=current_time
+        )
+
         results = models.Disruption.all_with_post_filter_native(
             page_index=args['start_page'],
             items_per_page=args['items_per_page'],
@@ -507,25 +523,6 @@ class DisruptionsSearch(flask_restful.Resource):
             cause_category_id=json.get('cause_category_id', None),
             application_period=application_period,
             current_time=current_time
-        )
-
-        total_results_count = models.Disruption.all_with_post_filter_native(
-            page_index=args['start_page'],
-            items_per_page=args['items_per_page'],
-            contributor_id=contributor.id,
-            application_status=application_status,
-            publication_status=json.get('publication_status', publication_status_values),
-            ends_after_date=args['ends_after_date'],
-            ends_before_date=args['ends_before_date'],
-            tags=json.get('tag', None),
-            uri=uri,
-            line_section=args['line_section'],
-            statuses=json.get('status', disruption_status_values),
-            ptObjectFilter=ptObjectFilter,
-            cause_category_id=json.get('cause_category_id', None),
-            application_period=application_period,
-            current_time=current_time,
-            only_count = True
         )
 
         disruptions = {}
@@ -743,14 +740,14 @@ class DisruptionsSearch(flask_restful.Resource):
             total_results_count = total_results_count,
             endpoint = 'disruption')}
 
-        toto = marshal(rawData, disruptions_fields)
+        #toto = marshal(rawData, disruptions_fields)
 
-        return toto
+        #return toto
 
         # return make_response(ujson.dumps(rawData))
         #return response
 
-        #return jsonify(rawData)
+        return jsonify(rawData)
 
 
     def createPager(self, resultset, current_page, per_page, total_results_count,  endpoint):

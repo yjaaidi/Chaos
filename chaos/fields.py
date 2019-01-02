@@ -123,7 +123,6 @@ class PaginateObjects(fields.Raw):
 class FieldUrlDisruption(fields.Raw):
     def output(self, key, obj):
         if isinstance(obj, dict) and 'disruption_id' in obj:
-            logging.getLogger(__name__).debug('obj = : %s', obj)
             disruption_id = obj['disruption_id']
         else:
             disruption_id = obj.disruption_id
