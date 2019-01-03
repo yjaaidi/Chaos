@@ -724,8 +724,8 @@ class DisruptionsSearch(flask_restful.Resource):
                     'created_at': r.created_at,
                     'updated_at': r.updated_at,
                     'start_publication_date': r.start_publication_date,
-                    'end_publication_date': r.start_publication_date,
-                    'publication_status': self.get_publication_status(r.start_publication_date, r.start_publication_date),
+                    'end_publication_date': r.end_publication_date,
+                    'publication_status': self.get_publication_status(r.start_publication_date, r.end_publication_date),
                     'contributor' : {
                         'contributor_code' : r.contributor_code
                     },
