@@ -716,9 +716,17 @@ class Disruption(TimestampMixin, db.Model):
         andwheres.append('ctg.is_visible = :category_is_visible')
 
         if isinstance(uri, basestring) and uri:
-            andwheres.append('po.uri = :uri')
+            uriFilter = []
+            uriFilter.append('po.uri = :uri')
+            if line_section:
+                uriFilter.append('po.type = :po_type_line_section AND po.uri LIKE :uri')
+            andwheres.append(' OR '.join(uriFilter))
         elif ptObjectFilter is not None:
-            andwheres.append('po.uri IN :pt_objects_uris')
+            uriFilter = []
+            uriFilter.append('po.uri IN :pt_objects_uris')
+            if line_section and 'lines' in ptObjectFilter:
+                uriFilter.append('(po.type = :po_type_line_section AND po.uri IN :po_line_section_lines)')
+            andwheres.append(' OR '.join(uriFilter))
 
         if isinstance(cause_category_id, basestring) and cause_category_id:
             andwheres('c.category_id =:cause_category_id')
@@ -749,6 +757,26 @@ class Disruption(TimestampMixin, db.Model):
             filters.append('(ap.start_date <= :ap_start_date AND ap.end_date >= :ap_end_date)')
             apDateFilter = ' OR '.join(filters)
             andwheres.append('('+apDateFilter+')')
+
+        publication_status = set(publication_status)
+
+        # if uri and line_section:
+        #     query = query.union(query_line_section)
+        #
+        #
+        # if len(publication_status) == len(publication_status_values):
+        #     # For a query by uri use union with the query for line_section
+        #     if uri and line_section:
+        #         query = query.union(query_line_section)
+        #
+        # else:
+        #     filters = [publication_availlable_filters[status] for status in publication_status]
+        #     query = query.filter(or_(*filters))
+        #
+        #     # For a query by uri use union with the query for line_section
+        #     if uri and line_section:
+        #         query_line_section = query_line_section.filter(or_(*filters))
+        #         query = query.union(query_line_section)
 
         orders = []
         orders.append('d.end_publication_date')
@@ -795,23 +823,21 @@ class Disruption(TimestampMixin, db.Model):
             'select_columns': ['COUNT(DISTINCT d.id) AS cnt']
         }
         query = cls.get_disruption_search_native_query(
-            application_status,
-            publication_status,
-            ends_after_date,
-            ends_before_date,
-            tags,
-            uri,
-            line_section,
-            ptObjectFilter,
-            cause_category_id,
-            application_period,
-            current_time,
-            query_parts)
+            application_status = application_status,
+            publication_status = publication_status,
+            ends_after_date = ends_after_date,
+            ends_before_date = ends_before_date,
+            tags = tags,
+            uri = uri,
+            line_section = line_section,
+            ptObjectFilter = ptObjectFilter,
+            cause_category_id = cause_category_id,
+            application_period = application_period,
+            current_time = current_time,
+            query_parts = query_parts)
 
         if not query:
             return 0
-
-        logging.getLogger(__name__).debug('query : %s', query)
 
         stmt = text(query)
         stmt = stmt.bindparams(
@@ -833,9 +859,17 @@ class Disruption(TimestampMixin, db.Model):
         if isinstance(uri, basestring) and uri:
             stmt = stmt.bindparams(bindparam('uri', type_=db.String))
             vars['uri'] = uri
+            if line_section:
+                stmt = stmt.bindparams(bindparam('po_type_line_section', type_=db.String))
+                vars['po_type_line_section'] = 'line_section'
         elif ptObjectFilter is not None:
             stmt = stmt.bindparams(bindparam('pt_objects_uris', type_=db.String))
             vars['pt_objects_uris'] = tuple([id for ids in ptObjectFilter.itervalues() for id in ids])
+            if line_section and 'lines' in ptObjectFilter:
+                stmt = stmt.bindparams(bindparam('po_type_line_section', type_=db.String))
+                stmt = stmt.bindparams(bindparam('po_line_section_lines', type_=db.String))
+                vars['po_type_line_section'] = 'line_section'
+                vars['po_line_section_lines'] = tuple([id + ':%' for id in ptObjectFilter['lines']])
 
         if isinstance(cause_category_id, basestring) and cause_category_id:
             stmt = stmt.bindparams(bindparam('cause_category_id', type_=db.String))
@@ -934,9 +968,17 @@ class Disruption(TimestampMixin, db.Model):
         if isinstance(uri, basestring) and uri:
             stmt = stmt.bindparams(bindparam('uri', type_=db.String))
             vars['uri'] = uri
+            if line_section:
+                stmt = stmt.bindparams(bindparam('po_type_line_section', type_=db.String))
+                vars['po_type_line_section'] = 'line_section'
         elif ptObjectFilter is not None:
             stmt = stmt.bindparams(bindparam('pt_objects_uris', type_=db.String))
             vars['pt_objects_uris'] = tuple([id for ids in ptObjectFilter.itervalues() for id in ids])
+            if line_section and 'lines' in ptObjectFilter:
+                stmt = stmt.bindparams(bindparam('po_type_line_section', type_=db.String))
+                stmt = stmt.bindparams(bindparam('po_line_section_lines', type_=db.String))
+                vars['po_type_line_section'] = 'line_section'
+                vars['po_line_section_lines'] = tuple([id + ':%' for id in ptObjectFilter['lines']])
 
         if isinstance(cause_category_id, basestring) and cause_category_id:
             stmt = stmt.bindparams(bindparam('cause_category_id', type_=db.String))
@@ -1039,8 +1081,6 @@ class Disruption(TimestampMixin, db.Model):
             'and_wheres' : ['d.id IN :disruption_ids'],
         }
 
-        logging.getLogger(__name__).debug('page_index : %s', page_index)
-
         query = cls.get_disruption_search_native_query(
             application_status,
             publication_status,
@@ -1054,8 +1094,6 @@ class Disruption(TimestampMixin, db.Model):
             application_period,
             current_time,
             query_parts)
-
-        logging.getLogger(__name__).debug('query : %s', query)
 
         stmt = text(query)
         stmt = stmt.bindparams(
@@ -1087,9 +1125,17 @@ class Disruption(TimestampMixin, db.Model):
         if isinstance(uri, basestring) and uri:
             stmt = stmt.bindparams(bindparam('uri', type_=db.String))
             vars['uri'] = uri
+            if line_section:
+                stmt = stmt.bindparams(bindparam('po_type_line_section', type_=db.String))
+                vars['po_type_line_section'] = 'line_section'
         elif ptObjectFilter is not None:
             stmt = stmt.bindparams(bindparam('pt_objects_uris', type_=db.String))
             vars['pt_objects_uris'] = tuple([id for ids in ptObjectFilter.itervalues() for id in ids])
+            if line_section and 'lines' in ptObjectFilter:
+                stmt = stmt.bindparams(bindparam('po_type_line_section', type_=db.String))
+                stmt = stmt.bindparams(bindparam('po_line_section_lines', type_=db.String))
+                vars['po_type_line_section'] = 'line_section'
+                vars['po_line_section_lines'] = tuple([id + ':%' for id in ptObjectFilter['lines']])
 
         if ends_after_date:
             stmt = stmt.bindparams(bindparam('ends_after_date', type_=db.Date))
