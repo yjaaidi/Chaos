@@ -467,6 +467,16 @@ class DisruptionsSearch(flask_restful.Resource):
         parser_post.add_argument("current_time", type=utils.get_datetime, location='json')
         parser_post.add_argument("depth", type=int, default=1, location='json')
 
+    def get_publication_status(self, start_publication_date, end_publication_date):
+        current_time = utils.get_current_time()
+        if (end_publication_date != None) and (end_publication_date < current_time):
+            return "past"
+        if start_publication_date <= current_time\
+                and (end_publication_date == None or end_publication_date >= current_time):
+            return "ongoing"
+        if start_publication_date > current_time:
+            return "coming"
+
     @validate_navitia()
     @validate_contributor()
     @manage_navitia_error()
@@ -675,30 +685,33 @@ class DisruptionsSearch(flask_restful.Resource):
 
             if disruptionId not in properties:
                 properties[disruptionId] = {}
-            properties[disruptionId][property_id] = {
-                'id' : r.property_id,
-                'key' : r.property_key,
-                'type' : r.property_type,
-                'value' : r.property_value,
-                'created_at' : r.property_created_at,
-                'updated_at' : r.property_updated_at
-            }
+            if property_id is not None:
+                properties[disruptionId][property_id] = {
+                    'id' : r.property_id,
+                    'key' : r.property_key,
+                    'type' : r.property_type,
+                    'value' : r.property_value,
+                    'created_at' : r.property_created_at,
+                    'updated_at' : r.property_updated_at
+                }
 
             if disruptionId not in cause_wordings:
                 cause_wordings[disruptionId] = {}
-            cause_wordings[disruptionId][wordingId] = {
-                'key': r.cause_wording_key,
-                'value': r.cause_wording_value
-            }
+            if wordingId is not None:
+                cause_wordings[disruptionId][wordingId] = {
+                    'key': r.cause_wording_key,
+                    'value': r.cause_wording_value
+                }
 
             if disruptionId not in tags:
                 tags[disruptionId] = {}
-            tags[disruptionId][tagId] = {
-                'id' : tagId,
-                'name' : r.tag_name,
-                'created_at' : r.tag_created_at,
-                'updated_at' : r.tag_updated_at
-            }
+            if tagId is not None:
+                tags[disruptionId][tagId] = {
+                    'id' : tagId,
+                    'name' : r.tag_name,
+                    'created_at' : r.tag_created_at,
+                    'updated_at' : r.tag_updated_at
+                }
 
             if disruptionId not in disruptions:
 
@@ -711,8 +724,8 @@ class DisruptionsSearch(flask_restful.Resource):
                     'created_at': r.created_at,
                     'updated_at': r.updated_at,
                     'start_publication_date': r.start_publication_date,
-                    'end_publication_date': r.end_publication_date,
-                    'publication_status': r.publication_status,
+                    'end_publication_date': r.start_publication_date,
+                    'publication_status': self.get_publication_status(r.start_publication_date, r.start_publication_date),
                     'contributor' : {
                         'contributor_code' : r.contributor_code
                     },

@@ -1047,7 +1047,7 @@ class Disruption(TimestampMixin, db.Model):
         query_parts = {
             'select_columns': [
                 'd.id', 'd.reference', 'd.note', 'd.status', 'd.version', 'd.created_at', 'd.updated_at',
-                'd.start_publication_date', 'd.end_publication_date', 'd.status AS publication_status',
+                'd.start_publication_date', 'd.end_publication_date',
                 'i.id AS impact_id', 'i.created_at AS impact_created_at', 'i.updated_at AS impact_updated_at',
                 'i.send_notifications AS impact_send_notifications', 'i.notification_date AS impact_notification_date',
                 'c.id AS cause_id', 'c.created_at AS cause_created_at', 'c.updated_at AS cause_updated_at',
