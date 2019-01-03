@@ -136,14 +136,15 @@ class FieldObjectName(fields.Raw):
     def output(self, key, obj):
         if not obj:
             return None
-        if obj_type == 'line_section':
-            return None
         if isinstance(obj, dict) and 'uri' in obj and 'type' in obj:
             obj_uri = obj['uri']
             obj_type = obj['type']
         else:
             obj_uri = obj.uri
             obj_type = obj.type
+
+        if obj_type == 'line_section':
+            return None
 
         navitia = Navitia(
             current_app.config['NAVITIA_URL'],
@@ -464,11 +465,11 @@ line_section_fields = {
 objectTC_fields = {
     'id': fields.Raw(attribute='uri'),
     'type': fields.Raw,
-    'name': FieldObjectName()
-    # 'line_section': fields.Nested( <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-    #     line_section_fields,
-    #     display_null=False,
-    #     allow_null=True)
+    'name': FieldObjectName(),
+    'line_section': fields.Nested(
+        line_section_fields,
+        display_null=False,
+        allow_null=True)
 }
 
 # not used?
