@@ -697,11 +697,10 @@ class DisruptionsSearch(flask_restful.Resource):
 
             if disruptionId not in cause_wordings:
                 cause_wordings[disruptionId] = {}
-            if wordingId is not None:
-                cause_wordings[disruptionId][wordingId] = {
-                    'key': r.cause_wording_key,
-                    'value': r.cause_wording_value
-                }
+            cause_wordings[disruptionId][wordingId] = {
+                'key': r.cause_wording_key,
+                'value': r.cause_wording_value
+            }
 
             if disruptionId not in tags:
                 tags[disruptionId] = {}
