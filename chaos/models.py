@@ -705,6 +705,8 @@ class Disruption(TimestampMixin, db.Model):
         join_tables.append('LEFT JOIN channel_type AS cht ON (cht.channel_id = ch.id)')
         join_tables.append('LEFT JOIN associate_message_meta AS amm ON (amm.message_id = m.id)')
         join_tables.append('LEFT JOIN meta AS me ON (amm.meta_id = me.id)')
+        join_tables.append('LEFT JOIN pattern AS pa ON (pa.impact_id = i.id)')
+        join_tables.append('LEFT JOIN time_slot AS ts ON (ts.pattern_id = pa.id)')
 
         andwheres = [] if 'and_wheres' not in query_parts else query_parts['and_wheres']
         andwheres.append('d.contributor_id = :contributor_id')
@@ -1030,7 +1032,9 @@ class Disruption(TimestampMixin, db.Model):
                 'm.text AS message_text', 'ch.id AS channel_id', 'ch.content_type AS channel_content_type',
                 'ch.created_at AS channel_created_at', 'ch.updated_at AS channel_updated_at', 'ch.max_size AS channel_max_size',
                 'ch.name AS channel_name', 'ch.required AS channel_required', 'cht.id AS channel_type_id', 'cht.name AS channel_type_name',
-                'me.id AS meta_id', 'me.key AS meta_key', 'me.value AS meta_value'
+                'me.id AS meta_id', 'me.key AS meta_key', 'me.value AS meta_value',
+                'pa.id AS pattern_id, pa.start_date AS pattern_start_date, pa.end_date AS pattern_end_date, pa.weekly_pattern AS pattern_weekly_pattern',
+                'ts.id AS time_slot_id, ts.begin AS time_slot_begin, ts.end AS time_slot_end'
             ],
             'and_wheres' : ['d.id IN :disruption_ids'],
         }

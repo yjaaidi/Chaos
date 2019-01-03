@@ -538,6 +538,8 @@ class DisruptionsSearch(flask_restful.Resource):
         channels = {}
         channel_types = {}
         message_metas = {}
+        application_period_patterns = {}
+        time_slots = {}
 
         for r in results:
             disruptionId = r.id
@@ -554,6 +556,8 @@ class DisruptionsSearch(flask_restful.Resource):
             channel_id = r.channel_id
             channel_type_id = r.channel_type_id
             message_meta_id = r.meta_id
+            application_period_patterns_id = r.pattern_id
+            time_slot_id = r.time_slot_id
 
             if disruptionId not in impacts:
                 impacts[disruptionId] = {}
@@ -576,6 +580,23 @@ class DisruptionsSearch(flask_restful.Resource):
                     'wording': r.severity_wording,
                     'updated_at': r.severity_updated_at,
                     'created_at': r.severity_created_at
+                }
+
+            if impact_id not in application_period_patterns:
+                application_period_patterns[impact_id] = {}
+            if application_period_patterns_id is not None:
+                application_period_patterns[impact_id][application_period_patterns_id] = {
+                    'id': r.pattern_id,
+                    'start_date': r.pattern_start_date,
+                    'end_date': r.pattern_end_date,
+                    'weekly_pattern': r.pattern_weekly_pattern
+                }
+            if application_period_patterns_id not in time_slots:
+                time_slots[application_period_patterns_id] = {}
+            if application_period_patterns_id is not None:
+                time_slots[application_period_patterns_id][time_slot_id] = {
+                    'begin': r.time_slot_begin,
+                    'end': r.time_slot_end
                 }
 
             if impact_id not in application_periods:
@@ -727,11 +748,16 @@ class DisruptionsSearch(flask_restful.Resource):
                 impact['objects'] = impact_pt_objects[impact_id].values()
                 impact['application_periods'] = application_periods[impact_id].values()
                 impact['messages'] = messages[impact_id].values()
+                impact['patterns'] = application_period_patterns[impact_id].values()
 
                 for message in impact['messages']:
                     channel_id = message['channel']['id']
+                    message_id = message['id']
                     message['channel']['channel_types'] = channel_types[channel_id].values()
                     message['meta'] = message_metas[message_id].values()
+                for application_period_pattern in impact['patterns']:
+                    application_period_pattern_id = application_period_pattern['id']
+                    application_period_pattern['time_slots'] = time_slots[application_period_pattern_id].values()
 
         rawData = {'disruptions': disruptions.values(), 'meta': self.createPager(
             resultset = disruptions.values(),
