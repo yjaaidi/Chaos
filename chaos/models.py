@@ -724,12 +724,11 @@ class Disruption(TimestampMixin, db.Model):
             uriFilter = []
             uriFilter.append('po.uri IN :pt_objects_uris')
             if line_section and 'lines' in ptObjectFilter:
-                uriFilter.append('(po.type = :po_type_line_section AND po.uri IN :po_line_section_lines)')
+                uriFilter.append('(po.type = :po_type_line_section AND po.uri LIKE ANY (array[:po_line_section_lines]))')
             andwheres.append(' OR '.join(uriFilter))
 
         if isinstance(cause_category_id, basestring) and cause_category_id:
-            andwheres('c.category_id =:cause_category_id')
-
+            andwheres.append('c.category_id = :cause_category_id')
         if isinstance(tags, list) and tags:
             andwheres.append('t.id IN :tag_ids')
 
@@ -767,10 +766,6 @@ class Disruption(TimestampMixin, db.Model):
 
             publicationFilters = [publication_availlable_filters[status] for status in publication_status]
             andwheres.append(' OR '.join(publicationFilters))
-
-        orders = []
-        orders.append('d.end_publication_date')
-        orders.append('d.id')
 
         columns = ','.join(query_parts['select_columns'])
         tables = ' '.join(join_tables)
@@ -857,7 +852,8 @@ class Disruption(TimestampMixin, db.Model):
                 stmt = stmt.bindparams(bindparam('po_type_line_section', type_=db.String))
                 stmt = stmt.bindparams(bindparam('po_line_section_lines', type_=db.String))
                 vars['po_type_line_section'] = 'line_section'
-                vars['po_line_section_lines'] = tuple([id + ':%' for id in ptObjectFilter['lines']])
+                po_line_section_lines = ','.join([id + ':%' for id in ptObjectFilter['lines']])
+                vars['po_line_section_lines'] = po_line_section_lines
 
         if isinstance(cause_category_id, basestring) and cause_category_id:
             stmt = stmt.bindparams(bindparam('cause_category_id', type_=db.String))
@@ -909,7 +905,8 @@ class Disruption(TimestampMixin, db.Model):
             application_period,
             current_time=None):
         query_parts = {
-            'select_columns': ['DISTINCT d.id'],
+            'select_columns': ['DISTINCT d.id, d.end_publication_date'],
+            'order_by': ['d.end_publication_date','d.id'],
             'limit': ':limit',
             'offset': ':offset'
         }
@@ -1067,6 +1064,7 @@ class Disruption(TimestampMixin, db.Model):
                 'ts.id AS time_slot_id, ts.begin AS time_slot_begin, ts.end AS time_slot_end'
             ],
             'and_wheres' : ['d.id IN :disruption_ids'],
+            'order_by': ['d.end_publication_date','d.id', 'po.type','po.uri'],
         }
 
         query = cls.get_disruption_search_native_query(

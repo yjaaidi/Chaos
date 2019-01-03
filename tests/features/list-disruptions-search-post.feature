@@ -62,7 +62,6 @@ Feature: list disruptions with ptObjects filter
         And the header "Content-Type" should be "application/json"
         And the field "disruptions" should have a size of 0
 
-
     Scenario: Filter on network
 
         Given I have the following contributors in my database:
@@ -566,7 +565,6 @@ Feature: list disruptions with ptObjects filter
         And the header "Content-Type" should be "application/json"
         And the field "disruptions" should have a size of 1
 
-
     Scenario: Filter on line section
 
         Given I have the following clients in my database:
@@ -773,8 +771,8 @@ Feature: list disruptions with ptObjects filter
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
         And the field "disruptions" should have a size of 2
-        And the field "disruptions.0.impacts.impacts" should have a size of 2
-        And the field "disruptions.1.impacts.impacts" should have a size of 1
+        And the field "disruptions.0.impacts.impacts" should have a size of 1
+        And the field "disruptions.1.impacts.impacts" should have a size of 2
 
     Scenario: Filter on ptojbect return correct impacts
 
