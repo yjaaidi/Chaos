@@ -759,24 +759,15 @@ class Disruption(TimestampMixin, db.Model):
             andwheres.append('('+apDateFilter+')')
 
         publication_status = set(publication_status)
+        if len(publication_status) != len(publication_status_values):
+            publication_availlable_filters = {
+                'past': 'd.end_publication_date IS NOT NULL AND d.end_publication_date < :current_time',
+                'ongoing': '(d.start_publication_date <= :current_time AND (d.end_publication_date IS NULL OR d.end_publication_date >= :current_time)) ',
+                'coming': 'd.start_publication_date > :current_time',
+            }
 
-        # if uri and line_section:
-        #     query = query.union(query_line_section)
-        #
-        #
-        # if len(publication_status) == len(publication_status_values):
-        #     # For a query by uri use union with the query for line_section
-        #     if uri and line_section:
-        #         query = query.union(query_line_section)
-        #
-        # else:
-        #     filters = [publication_availlable_filters[status] for status in publication_status]
-        #     query = query.filter(or_(*filters))
-        #
-        #     # For a query by uri use union with the query for line_section
-        #     if uri and line_section:
-        #         query_line_section = query_line_section.filter(or_(*filters))
-        #         query = query.union(query_line_section)
+            publicationFilters = [publication_availlable_filters[status] for status in publication_status]
+            andwheres.append(' OR '.join(publicationFilters))
 
         orders = []
         orders.append('d.end_publication_date')
@@ -888,7 +879,8 @@ class Disruption(TimestampMixin, db.Model):
             vars['ends_before_date'] = ends_before_date
 
         application_status = set(application_status)
-        if len(application_status) != len(application_status_values):
+        publication_status = set(publication_status)
+        if len(application_status) != len(application_status_values) or len(publication_status) != len(publication_status_values):
             stmt = stmt.bindparams(bindparam('current_time', type_=db.Date))
             vars['current_time'] = current_time
 
@@ -1000,7 +992,8 @@ class Disruption(TimestampMixin, db.Model):
                         bindparam('offset', type_=db.Integer))
 
         application_status = set(application_status)
-        if len(application_status) != len(application_status_values):
+        publication_status = set(publication_status)
+        if len(application_status) != len(application_status_values) or len(publication_status) != len(publication_status_values):
             stmt = stmt.bindparams(bindparam('current_time', type_=db.Date))
             vars['current_time'] = current_time
 
@@ -1146,8 +1139,8 @@ class Disruption(TimestampMixin, db.Model):
             vars['ends_before_date'] = ends_before_date
 
         application_status = set(application_status)
-
-        if len(application_status) != len(application_status_values):
+        publication_status = set(publication_status)
+        if len(application_status) != len(application_status_values) or len(publication_status) != len(publication_status_values):
             stmt = stmt.bindparams(bindparam('current_time', type_=db.Date))
             vars['current_time'] = current_time
 
