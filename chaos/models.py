@@ -713,7 +713,6 @@ class Disruption(TimestampMixin, db.Model):
         andwheres.append('d.status IN :disruption_status')
         andwheres.append('i.status = :impact_status')
         andwheres.append('c.is_visible = :cause_is_visisble')
-        andwheres.append('ctg.is_visible = :category_is_visible')
 
         if isinstance(uri, basestring) and uri:
             uriFilter = []
@@ -836,15 +835,13 @@ class Disruption(TimestampMixin, db.Model):
             bindparam('disruption_status', type_=db.String),
             bindparam('impact_status', type_=db.String),
             bindparam('cause_is_visisble', type_=db.Boolean),
-            bindparam('category_is_visible', type_=db.Boolean)
         )
 
         vars = {
             'contributor_id': contributor_id,
             'disruption_status': tuple(statuses),
             'impact_status': 'published',
-            'cause_is_visisble': True,
-            'category_is_visible': True
+            'cause_is_visisble': True
         }
 
         if isinstance(uri, basestring) and uri:
@@ -940,7 +937,6 @@ class Disruption(TimestampMixin, db.Model):
                                bindparam('disruption_status', type_=db.String),
                                bindparam('impact_status', type_=db.String),
                                bindparam('cause_is_visisble', type_=db.Boolean),
-                               bindparam('category_is_visible', type_=db.Boolean),
                                bindparam('limit', type_=db.Integer),
                                bindparam('offset', type_=db.Integer)
                                )
@@ -952,7 +948,6 @@ class Disruption(TimestampMixin, db.Model):
                 'disruption_status': tuple(statuses),
                 'impact_status': 'published',
                 'cause_is_visisble': True,
-                'category_is_visible': True,
                 'limit': items_per_page,
                 'offset': offset
                 }
@@ -1094,8 +1089,7 @@ class Disruption(TimestampMixin, db.Model):
                                bindparam('disruption_status', type_=db.String),
                                bindparam('disruption_ids', type_=db.String),
                                bindparam('impact_status', type_=db.String),
-                               bindparam('cause_is_visisble', type_=db.Boolean),
-                               bindparam('category_is_visible', type_=db.Boolean)
+                               bindparam('cause_is_visisble', type_=db.Boolean)
                                )
 
         vars = {
@@ -1103,7 +1097,6 @@ class Disruption(TimestampMixin, db.Model):
                 'disruption_status' : tuple(statuses),
                 'impact_status' : 'published',
                 'cause_is_visisble' : True,
-                'category_is_visible' : True,
                 'disruption_ids': tuple([d[0] for d in disruption_ids]),
                 }
 
