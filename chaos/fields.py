@@ -134,6 +134,10 @@ class FieldUrlDisruption(fields.Raw):
 
 class FieldObjectName(fields.Raw):
     def output(self, key, obj):
+        if not obj:
+            return None
+        if obj_type == 'line_section':
+            return None
         if isinstance(obj, dict) and 'uri' in obj and 'type' in obj:
             obj_uri = obj['uri']
             obj_type = obj['type']
@@ -141,10 +145,6 @@ class FieldObjectName(fields.Raw):
             obj_uri = obj.uri
             obj_type = obj.type
 
-        if not obj:
-            return None
-        if obj_type == 'line_section':
-            return None
         navitia = Navitia(
             current_app.config['NAVITIA_URL'],
             get_coverage(request),
