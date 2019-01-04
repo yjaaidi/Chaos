@@ -550,6 +550,9 @@ class DisruptionsSearch(flask_restful.Resource):
         message_metas = {}
         application_period_patterns = {}
         time_slots = {}
+        line_section_metas = {}
+        line_section_via = {}
+        line_section_routes = {}
 
         for r in results:
             disruptionId = r.id
@@ -568,6 +571,8 @@ class DisruptionsSearch(flask_restful.Resource):
             message_meta_id = r.meta_id
             application_period_patterns_id = r.pattern_id
             time_slot_id = r.time_slot_id
+            line_section_id = r.line_section_id
+
 
             if disruptionId not in impacts:
                 impacts[disruptionId] = {}
@@ -664,7 +669,7 @@ class DisruptionsSearch(flask_restful.Resource):
                 severity_wordings[severity_id][severity_wording_id] = {
                     'key': r.severity_wording_key,
                     'value': r.severity_wording_value
-            }
+                }
 
             if impact_id not in impact_pt_objects:
                 impact_pt_objects[impact_id] = {}
@@ -672,8 +677,49 @@ class DisruptionsSearch(flask_restful.Resource):
                 impact_pt_objects[impact_id][impact_pt_object_id] = {
                     'id': r.pt_object_id,
                     'uri': r.pt_object_uri,
-                    'type': r.pt_object_type
-            }
+                    'type': r.pt_object_type,
+                }
+                if line_section_id is not None:
+                    if impact_pt_object_id not in line_section_metas:
+                        line_section_metas[impact_pt_object_id] = {}
+                    if impact_pt_object_id not in line_section_via:
+                        line_section_via[impact_pt_object_id] = {}
+                    if impact_pt_object_id not in line_section_routes:
+                        line_section_routes[impact_pt_object_id] = {}
+
+                    if r.awlsw_id is not None:
+                        line_section_metas[impact_pt_object_id][r.awlsw_id] = {
+                            'key': r.awlsw_key,
+                            'value': r.awlsw_value
+                        }
+                    if r.po_via_id is not None:
+                        line_section_via[impact_pt_object_id][r.po_via_id] = {
+                            'uri': r.po_via_uri,
+                            'type': r.po_via_type
+                        }
+                    if r.po_route_id is not None:
+                        line_section_routes[impact_pt_object_id][r.po_route_id] = {
+                            'uri': r.po_route_uri,
+                            'type': r.po_route_type
+                        }
+                    impact_pt_objects[impact_id][impact_pt_object_id]['line_section'] = {
+                        'line': {
+                            'uri': r.line_section_line_uri,
+                            'type': r.line_section_line_type
+                        },
+                        'start_point': {
+                            'uri': r.line_section_start_uri,
+                            'type': r.line_section_start_type
+                        },
+                        'end_point': {
+                            'uri': r.line_section_end_uri,
+                            'type': r.line_section_end_type
+                        },
+                        'sens': r.line_section_sens,
+                        'routes': [],
+                        'via': [],
+                        'metas': []
+                    }
 
             if disruptionId not in localizations:
                 localizations[disruptionId] = {}
@@ -770,6 +816,11 @@ class DisruptionsSearch(flask_restful.Resource):
                 for application_period_pattern in impact['patterns']:
                     application_period_pattern_id = application_period_pattern['id']
                     application_period_pattern['time_slots'] = time_slots[application_period_pattern_id].values()
+                for pt_object in impact['objects']:
+                    impact_pt_object_id = pt_object['id']
+                    pt_object['line_section']['via'] = line_section_via[impact_pt_object_id].values()
+                    pt_object['line_section']['routes'] = line_section_routes[impact_pt_object_id].values()
+                    pt_object['line_section']['metas'] = line_section_metas[impact_pt_object_id].values()
 
         rawData = {'disruptions': disruptions.values(), 'meta': self.createPager(
             resultset = disruptions.values(),
@@ -778,9 +829,8 @@ class DisruptionsSearch(flask_restful.Resource):
             total_results_count = total_results_count,
             endpoint = 'disruption')}
 
-        toto = marshal(rawData, disruptions_fields)
-
-        return toto
+        result = marshal(rawData, disruptions_fields)
+        return result
 
         # return make_response(ujson.dumps(rawData))
         #return response

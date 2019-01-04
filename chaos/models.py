@@ -707,6 +707,16 @@ class Disruption(TimestampMixin, db.Model):
         join_tables.append('LEFT JOIN meta AS me ON (amm.meta_id = me.id)')
         join_tables.append('LEFT JOIN pattern AS pa ON (pa.impact_id = i.id)')
         join_tables.append('LEFT JOIN time_slot AS ts ON (ts.pattern_id = pa.id)')
+        join_tables.append('LEFT JOIN line_section AS ls ON (po.id = ls.object_id)')
+        join_tables.append('LEFT JOIN pt_object AS po_line ON (po_line.id = ls.line_object_id)')
+        join_tables.append('LEFT JOIN pt_object AS po_start ON (po_start.id = ls.start_object_id)')
+        join_tables.append('LEFT JOIN pt_object AS po_end ON (po_end.id = ls.end_object_id)')
+        join_tables.append('LEFT JOIN associate_line_section_route_object AS alsro ON (alsro.line_section_id = ls.id)')
+        join_tables.append('LEFT JOIN pt_object AS po_route ON (alsro.route_object_id = po_route.id)')
+        join_tables.append('LEFT JOIN associate_line_section_via_object AS alsvo ON (alsvo.line_section_id = ls.id)')
+        join_tables.append('LEFT JOIN pt_object AS po_via ON (alsvo.stop_area_object_id = po_via.id)')
+        join_tables.append('LEFT JOIN associate_wording_line_section AS awls ON (awls.line_section_id = ls.id)')
+        join_tables.append('LEFT JOIN wording AS awlsw ON (awls.wording_id = awlsw.id)')
 
         andwheres = [] if 'and_wheres' not in query_parts else query_parts['and_wheres']
         andwheres.append('d.contributor_id = :contributor_id')
@@ -1061,7 +1071,14 @@ class Disruption(TimestampMixin, db.Model):
                 'ch.name AS channel_name', 'ch.required AS channel_required', 'cht.id AS channel_type_id', 'cht.name AS channel_type_name',
                 'me.id AS meta_id', 'me.key AS meta_key', 'me.value AS meta_value',
                 'pa.id AS pattern_id, pa.start_date AS pattern_start_date, pa.end_date AS pattern_end_date, pa.weekly_pattern AS pattern_weekly_pattern',
-                'ts.id AS time_slot_id, ts.begin AS time_slot_begin, ts.end AS time_slot_end'
+                'ts.id AS time_slot_id, ts.begin AS time_slot_begin, ts.end AS time_slot_end',
+                'ls.id AS line_section_id, ls.sens AS line_section_sens',
+                'po_line.uri AS line_section_line_uri, po_line.type AS line_section_line_type',
+                'po_start.uri AS line_section_start_uri, po_start.type AS line_section_start_type',
+                'po_end.uri AS line_section_end_uri, po_end.type AS line_section_end_type',
+                'po_route.id AS po_route_id, po_route.uri AS po_route_uri, po_route.type AS po_route_type',
+                'awlsw.id AS awlsw_id, awlsw.key AS awlsw_key, awlsw.value AS awlsw_value',
+                'po_via.id AS po_via_id, po_via.uri AS po_via_uri, po_via.type AS po_via_type'
             ],
             'and_wheres' : ['d.id IN :disruption_ids'],
             'order_by': ['d.end_publication_date','d.id', 'po.type','po.uri'],
