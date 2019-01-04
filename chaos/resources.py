@@ -818,9 +818,12 @@ class DisruptionsSearch(flask_restful.Resource):
                     application_period_pattern['time_slots'] = time_slots[application_period_pattern_id].values()
                 for pt_object in impact['objects']:
                     impact_pt_object_id = pt_object['id']
-                    pt_object['line_section']['via'] = line_section_via[impact_pt_object_id].values()
-                    pt_object['line_section']['routes'] = line_section_routes[impact_pt_object_id].values()
-                    pt_object['line_section']['metas'] = line_section_metas[impact_pt_object_id].values()
+                    if impact_pt_object_id in line_section_via:
+                        pt_object['line_section']['via'] = line_section_via[impact_pt_object_id].values()
+                    if impact_pt_object_id in line_section_routes:
+                        pt_object['line_section']['routes'] = line_section_routes[impact_pt_object_id].values()
+                    if impact_pt_object_id in line_section_metas:
+                        pt_object['line_section']['metas'] = line_section_metas[impact_pt_object_id].values()
 
         rawData = {'disruptions': disruptions.values(), 'meta': self.createPager(
             resultset = disruptions.values(),
