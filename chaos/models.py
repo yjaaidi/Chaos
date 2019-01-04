@@ -962,7 +962,7 @@ class Disruption(TimestampMixin, db.Model):
                 stmt = stmt.bindparams(bindparam('po_type_line_section', type_=db.String))
                 stmt = stmt.bindparams(bindparam('po_line_section_lines', type_=db.String))
                 vars['po_type_line_section'] = 'line_section'
-                vars['po_line_section_lines'] = tuple([id + ':%' for id in ptObjectFilter['lines']])
+                vars['po_line_section_lines'] = ','.join([id + ':%' for id in ptObjectFilter['lines']])
 
         if isinstance(cause_category_id, basestring) and cause_category_id:
             stmt = stmt.bindparams(bindparam('cause_category_id', type_=db.String))
@@ -1119,7 +1119,7 @@ class Disruption(TimestampMixin, db.Model):
                 stmt = stmt.bindparams(bindparam('po_type_line_section', type_=db.String))
                 stmt = stmt.bindparams(bindparam('po_line_section_lines', type_=db.String))
                 vars['po_type_line_section'] = 'line_section'
-                vars['po_line_section_lines'] = tuple([id + ':%' for id in ptObjectFilter['lines']])
+                vars['po_line_section_lines'] = ','.join([id + ':%' for id in ptObjectFilter['lines']])
 
         if ends_after_date:
             stmt = stmt.bindparams(bindparam('ends_after_date', type_=db.Date))
