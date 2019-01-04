@@ -823,7 +823,7 @@ class DisruptionsSearch(flask_restful.Resource):
                     if impact_pt_object_id in line_section_routes:
                         pt_object['line_section']['routes'] = line_section_routes[impact_pt_object_id].values()
                     if impact_pt_object_id in line_section_metas:
-                        pt_object['line_section']['metas'] = line_section_metas[impact_pt_object_id].values()
+                        pt_object['line_section']['wordings'] = line_section_metas[impact_pt_object_id].values()
 
         rawData = {'disruptions': disruptions.values(), 'meta': self.createPager(
             resultset = disruptions.values(),
@@ -838,7 +838,7 @@ class DisruptionsSearch(flask_restful.Resource):
         # return make_response(ujson.dumps(rawData))
         #return response
 
-        #return jsonify(rawData)
+        # return jsonify(rawData)
 
 
     def createPager(self, resultset, current_page, per_page, total_results_count,  endpoint):
