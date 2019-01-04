@@ -728,14 +728,14 @@ class Disruption(TimestampMixin, db.Model):
             uriFilter = []
             uriFilter.append('po.uri = :uri')
             if line_section:
-                uriFilter.append('po.type = :po_type_line_section AND po.uri LIKE :uri')
-            andwheres.append(' OR '.join(uriFilter))
+                uriFilter.append('po.type = :po_type_line_section AND po.uri LIKE :uri_like')
+            andwheres.append('('+' OR '.join(uriFilter)+')')
         elif ptObjectFilter is not None:
             uriFilter = []
             uriFilter.append('po.uri IN :pt_objects_uris')
             if line_section and 'lines' in ptObjectFilter:
                 uriFilter.append('(po.type = :po_type_line_section AND po.uri LIKE ANY (array[:po_line_section_lines]))')
-            andwheres.append(' OR '.join(uriFilter))
+            andwheres.append('('+' OR '.join(uriFilter)+')')
 
         if isinstance(cause_category_id, basestring) and cause_category_id:
             andwheres.append('c.category_id = :cause_category_id')
@@ -756,7 +756,7 @@ class Disruption(TimestampMixin, db.Model):
                 'coming': 'ap.start_date > :current_time '
             }
             filters = [application_availlable_filters[status] for status in application_status]
-            andwheres.append(' OR '.join(filters))
+            andwheres.append('('+' OR '.join(filters)+')')
 
         if isinstance(application_period, dict) and 'begin' in application_period and 'end' in application_period:
             filters = []
@@ -775,7 +775,7 @@ class Disruption(TimestampMixin, db.Model):
             }
 
             publicationFilters = [publication_availlable_filters[status] for status in publication_status]
-            andwheres.append(' OR '.join(publicationFilters))
+            andwheres.append('('+' OR '.join(publicationFilters)+')')
 
         columns = ','.join(query_parts['select_columns'])
         tables = ' '.join(join_tables)
@@ -851,7 +851,9 @@ class Disruption(TimestampMixin, db.Model):
 
         if isinstance(uri, basestring) and uri:
             stmt = stmt.bindparams(bindparam('uri', type_=db.String))
+            stmt = stmt.bindparams(bindparam('uri_like', type_=db.String))
             vars['uri'] = uri
+            vars['uri_like'] = uri+':%'
             if line_section:
                 stmt = stmt.bindparams(bindparam('po_type_line_section', type_=db.String))
                 vars['po_type_line_section'] = 'line_section'
@@ -961,7 +963,9 @@ class Disruption(TimestampMixin, db.Model):
 
         if isinstance(uri, basestring) and uri:
             stmt = stmt.bindparams(bindparam('uri', type_=db.String))
+            stmt = stmt.bindparams(bindparam('uri_like', type_=db.String))
             vars['uri'] = uri
+            vars['uri_like'] = uri+':%'
             if line_section:
                 stmt = stmt.bindparams(bindparam('po_type_line_section', type_=db.String))
                 vars['po_type_line_section'] = 'line_section'
@@ -1125,7 +1129,9 @@ class Disruption(TimestampMixin, db.Model):
 
         if isinstance(uri, basestring) and uri:
             stmt = stmt.bindparams(bindparam('uri', type_=db.String))
+            stmt = stmt.bindparams(bindparam('uri_like', type_=db.String))
             vars['uri'] = uri
+            vars['uri_like'] = uri+':%'
             if line_section:
                 stmt = stmt.bindparams(bindparam('po_type_line_section', type_=db.String))
                 vars['po_type_line_section'] = 'line_section'
