@@ -49,6 +49,7 @@ import logging
 from utils import make_pager, option_value, get_current_time
 from chaos.validate_params import validate_client, validate_contributor, validate_navitia, \
     manage_navitia_error, validate_id, validate_client_token
+from collections import OrderedDict
 
 __all__ = ['Disruptions', 'Index', 'Severity', 'Cause']
 
@@ -535,7 +536,7 @@ class DisruptionsSearch(flask_restful.Resource):
             current_time=current_time
         )
 
-        disruptions = {}
+        disruptions = OrderedDict()
         impacts = {}
         tags = {}
         cause_wordings = {}
