@@ -32,7 +32,7 @@ from flask import current_app, request, g
 from utils import make_fake_pager, get_coverage, get_token, get_current_time
 from chaos.navitia import Navitia
 from copy import deepcopy
-
+import logging
 
 class FieldDateTime(fields.Raw):
     def format(self, value):
@@ -60,11 +60,17 @@ class FieldDate(fields.Raw):
 
 class CustomImpacts(fields.Raw):
     def output(self, key, val):
+        if isinstance(val, dict) and 'impacts' in val:
+            return marshal(val, {
+                'pagination': FieldPaginateImpacts(),
+                'impacts': PaginateObjects(fields.Nested(impact_fields, display_null=False))
+            }, display_null=False)
+
         val.impacts = [impact for impact in val.impacts if impact.status == 'published']
         return marshal(val, {
             'pagination': FieldPaginateImpacts(attribute='impacts'),
             'impacts': PaginateObjects(fields.Nested(impact_fields, display_null=False,
-                                                     attribute='impacts'))
+                                                    attribute='impacts'))
         }, display_null=False)
 
 
@@ -74,8 +80,12 @@ class FieldPaginateImpacts(fields.Raw):
     '''
 
     def output(self, key, disruption):
-        impacts = disruption.impacts
-        disruption_id = next((i.disruption_id for i in impacts), None)
+        if isinstance(disruption, dict) and 'impacts' in disruption:
+            impacts = disruption['impacts']
+            disruption_id = next((i['disruption_id'] for i in impacts), None)
+        else:
+            impacts = disruption.impacts
+            disruption_id = next((i.disruption_id for i in impacts), None)
         pagination = make_fake_pager(len(impacts), 20, 'impact', disruption_id=disruption_id)
 
         return pagination.get('pagination')
@@ -94,7 +104,10 @@ class PaginateObjects(fields.Raw):
         return impacts[:10]  # todo use the pagination to filter
 
     def output(self, key, disruption):
-        impacts = disruption.impacts
+        if isinstance(disruption, dict) and 'impacts' in disruption:
+            impacts = disruption['impacts']
+        else:
+            impacts = disruption.impacts
         if not hasattr(g, 'display_impacts') or not g.display_impacts:
             return None
 
@@ -109,8 +122,13 @@ class PaginateObjects(fields.Raw):
 
 class FieldUrlDisruption(fields.Raw):
     def output(self, key, obj):
+        if isinstance(obj, dict) and 'disruption_id' in obj:
+            disruption_id = obj['disruption_id']
+        else:
+            disruption_id = obj.disruption_id
+
         return {'href': url_for('disruption',
-                                id=obj.disruption_id,
+                                id=disruption_id,
                                 _external=True)}
 
 
@@ -118,13 +136,21 @@ class FieldObjectName(fields.Raw):
     def output(self, key, obj):
         if not obj:
             return None
-        if obj.type == 'line_section':
+        if isinstance(obj, dict) and 'uri' in obj and 'type' in obj:
+            obj_uri = obj['uri']
+            obj_type = obj['type']
+        else:
+            obj_uri = obj.uri
+            obj_type = obj.type
+
+        if obj_type == 'line_section':
             return None
+
         navitia = Navitia(
             current_app.config['NAVITIA_URL'],
             get_coverage(request),
             get_token(request))
-        response = navitia.get_pt_object(obj.uri, obj.type)
+        response = navitia.get_pt_object(obj_uri, obj_type)
         if response and 'name' in response:
             return response['name']
         return 'Unable to find object'
@@ -136,36 +162,63 @@ class FieldLocalization(fields.Raw):
         navitia = Navitia(current_app.config['NAVITIA_URL'],
                           get_coverage(request),
                           get_token(request))
-        for localization in obj.localizations:
-            response = navitia.get_pt_object(
-                localization.uri,
-                localization.type)
 
-            if response and 'name' in response:
-                response["type"] = localization.type
-                to_return.append(response)
-            else:
-                to_return.append(
-                    {
-                        "id": localization.uri,
-                        "name": "Unable to find object",
-                        "type": localization.type
-                    }
-                )
+        if isinstance(obj, dict) and 'localizations' in obj:
+            for localization in obj['localizations']:
+
+                response = navitia.get_pt_object(
+                    localization['uri'],
+                    localization['type'])
+
+                if response and 'name' in response:
+                    response["type"] = localization['type']
+                    to_return.append(response)
+                else:
+                    to_return.append(
+                        {
+                            "id": localization['uri'],
+                            "name": "Unable to find object",
+                            "type": localization['type']
+                        }
+                    )
+        elif obj.localizations:
+            for localization in obj.localizations:
+                response = navitia.get_pt_object(
+                    localization.uri,
+                    localization.type)
+
+                if response and 'name' in response:
+                    response["type"] = localization.type
+                    to_return.append(response)
+                else:
+                    to_return.append(
+                        {
+                            "id": localization.uri,
+                            "name": "Unable to find object",
+                            "type": localization.type
+                        }
+                    )
         return to_return
 
 
 class FieldContributor(fields.Raw):
     def output(self, key, obj):
+        if isinstance(obj, dict):
+            return obj['contributor']['contributor_code']
         if hasattr(obj, 'contributor'):
             return obj.contributor.contributor_code
         return None
 
 
+#'types': {'channel_types': [{'name': 'email'}]},
+
 class FieldChannelTypes(fields.Raw):
     def output(self, key, obj):
+        if isinstance(obj, dict) and 'channel_types' in obj:
+            return [ch['name'] for ch in obj['channel_types']]
+
         if hasattr(obj, 'channel_types'):
-            return [ch.name for ch in obj.channel_types]
+           return [ch.name for ch in obj.channel_types]
         return None
 
 
@@ -204,7 +257,34 @@ class FieldCause(fields.Raw):
 class FieldAssociatedProperties(fields.Raw):
     def output(self, key, obj):
         properties = {}
-        if obj.properties:
+        if isinstance(obj, dict) and 'properties' in obj:
+            for property in obj['properties']:
+                properties.setdefault(property['type'], []).append(
+                    {
+                        'value': property['value'],
+                        'property': {
+                            'id': property['id'],
+                            'created_at': FieldDateTime().format(
+                                property['created_at']
+                            ),
+                            'updated_at': FieldDateTime().format(
+                                property['updated_at']
+                            ),
+                            'self': {
+                                'href': url_for(
+                                    'property',
+                                    id=property['id'],
+                                    _external=True
+                                )
+                            },
+                            'key': property['key'],
+                            'type': property['type']
+                        }
+                    }
+                )
+
+            return properties
+        elif obj.properties:
             for property in obj.properties:
                 prop = property.property
                 properties.setdefault(prop.type, []).append(
@@ -392,6 +472,7 @@ objectTC_fields = {
         allow_null=True)
 }
 
+# not used?
 channel_type_fields = {
     'name': fields.Raw
 }
@@ -557,14 +638,14 @@ disruption_fields = {
     'publication_period': {
         'begin': FieldDateTime(attribute='start_publication_date'),
         'end': FieldDateTime(attribute='end_publication_date')
-    },
-    'publication_status': fields.Raw,
-    'contributor': FieldContributor,
-    'impacts': CustomImpacts(),
-    'localization': FieldLocalization(attribute='localizations'),
-    'cause': fields.Nested(cause_fields, allow_null=True),
-    'tags': fields.List(fields.Nested(tag_fields)),
-    'properties': FieldAssociatedProperties(attribute='properties')
+    }
+    ,'publication_status': fields.Raw
+    ,'contributor': FieldContributor
+    ,'impacts': CustomImpacts()
+    ,'localization': FieldLocalization(attribute='localizations')
+    ,'cause': fields.Nested(cause_fields, allow_null=True)
+    ,'tags': fields.List(fields.Nested(tag_fields))
+    ,'properties': FieldAssociatedProperties(attribute='properties')
 }
 
 disruptions_fields = {
