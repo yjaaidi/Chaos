@@ -850,11 +850,11 @@ class Disruption(TimestampMixin, db.Model):
 
         if isinstance(uri, basestring) and uri:
             stmt = stmt.bindparams(bindparam('uri', type_=db.String))
-            stmt = stmt.bindparams(bindparam('uri_like', type_=db.String))
             vars['uri'] = uri
-            vars['uri_like'] = uri+':%'
             if line_section:
+                stmt = stmt.bindparams(bindparam('uri_like', type_=db.String))
                 stmt = stmt.bindparams(bindparam('po_type_line_section', type_=db.String))
+                vars['uri_like'] = uri+':%'
                 vars['po_type_line_section'] = 'line_section'
         elif ptObjectFilter is not None:
             stmt = stmt.bindparams(bindparam('pt_objects_uris', type_=db.String))
@@ -961,11 +961,11 @@ class Disruption(TimestampMixin, db.Model):
 
         if isinstance(uri, basestring) and uri:
             stmt = stmt.bindparams(bindparam('uri', type_=db.String))
-            stmt = stmt.bindparams(bindparam('uri_like', type_=db.String))
             vars['uri'] = uri
-            vars['uri_like'] = uri+':%'
             if line_section:
+                stmt = stmt.bindparams(bindparam('uri_like', type_=db.String))
                 stmt = stmt.bindparams(bindparam('po_type_line_section', type_=db.String))
+                vars['uri_like'] = uri+':%'
                 vars['po_type_line_section'] = 'line_section'
         elif ptObjectFilter is not None:
             stmt = stmt.bindparams(bindparam('pt_objects_uris', type_=db.String))
@@ -1127,11 +1127,11 @@ class Disruption(TimestampMixin, db.Model):
 
         if isinstance(uri, basestring) and uri:
             stmt = stmt.bindparams(bindparam('uri', type_=db.String))
-            stmt = stmt.bindparams(bindparam('uri_like', type_=db.String))
             vars['uri'] = uri
-            vars['uri_like'] = uri+':%'
             if line_section:
+                stmt = stmt.bindparams(bindparam('uri_like', type_=db.String))
                 stmt = stmt.bindparams(bindparam('po_type_line_section', type_=db.String))
+                vars['uri_like'] = uri+':%'
                 vars['po_type_line_section'] = 'line_section'
         elif ptObjectFilter is not None:
             stmt = stmt.bindparams(bindparam('pt_objects_uris', type_=db.String))
