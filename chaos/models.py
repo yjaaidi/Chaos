@@ -697,33 +697,6 @@ class Disruption(TimestampMixin, db.Model):
         vars['cause_is_visisble'] = True
         bindparams['cause_is_visisble'] = db.Boolean
 
-
-        if isinstance(uri, basestring) and uri:
-            uriFilter = []
-            uriFilter.append('po.uri = :uri')
-            bindparams['uri'] = db.String
-            vars['uri'] = uri
-            if line_section:
-                uriFilter.append('po.type = :po_type_line_section AND po.uri LIKE :uri_like')
-                bindparams['uri_like'] = db.String
-                bindparams['po_type_line_section'] = db.String
-                vars['uri_like'] = uri+':%'
-                vars['po_type_line_section'] = 'line_section'
-            andwheres.append('(' + ' OR '.join(uriFilter) + ')')
-        elif ptObjectFilter is not None:
-            uriFilter = []
-            uriFilter.append('po.uri IN :pt_objects_uris')
-            bindparams['pt_objects_uris'] = db.String
-            vars['pt_objects_uris'] = tuple([id for ids in ptObjectFilter.itervalues() for id in ids])
-            if line_section and 'lines' in ptObjectFilter:
-                uriFilter.append('(po.type = :po_type_line_section AND po_line.uri IN :po_line_section_lines)')
-                bindparams['po_type_line_section'] = db.String
-                bindparams['po_line_section_lines'] = db.String
-                vars['po_type_line_section'] = 'line_section'
-                vars['po_line_section_lines'] = tuple(ptObjectFilter['lines'])
-            andwheres.append('(' + ' OR '.join(uriFilter) + ')')
-
-
         if isinstance(uri, basestring) and uri:
             uri_filters = []
             uri_filters.append('po.uri = :uri')
