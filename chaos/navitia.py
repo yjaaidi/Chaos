@@ -83,7 +83,13 @@ class Navitia(object):
     def get_pt_object(self, uri, object_type, pt_objects=None):
         cache_key = 'Chaos.get_pt_object.{}.{}.{}.{}.{}'.format(self.coverage, self.get_coverage_publication_date(),
                                                                 uri, object_type, pt_objects)
-        cached_pt_object = cache.get(cache_key)
+        try:
+            cached_pt_object = cache.get(cache_key)
+        except:
+            logging.getLogger(__name__).error('Redis time out !')
+            logging.getLogger(__name__).info('Trying to call navitia.')
+            cached_pt_object = None
+
         if cached_pt_object is not None:
             logging.getLogger().debug('Cache hit for coverage/uri: %s/%s', self.coverage, uri)
             return cached_pt_object
