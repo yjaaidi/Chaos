@@ -83,7 +83,13 @@ class Navitia(object):
     def get_pt_object(self, uri, object_type, pt_objects=None):
         cache_key = 'Chaos.get_pt_object.{}.{}.{}.{}.{}'.format(self.coverage, self.get_coverage_publication_date(),
                                                                 uri, object_type, pt_objects)
-        cached_pt_object = cache.get(cache_key)
+        try:
+            cached_pt_object = cache.get(cache_key)
+        except:
+            logging.getLogger(__name__).exception('Cache Timeout')
+            logging.getLogger(__name__).info('Trying to call navitia.')
+            cached_pt_object = None
+
         if cached_pt_object is not None:
             logging.getLogger().debug('Cache hit for coverage/uri: %s/%s', self.coverage, uri)
             return cached_pt_object
@@ -114,8 +120,13 @@ class Navitia(object):
 
             if self.collections[object_type] in json and json[self.collections[object_type]]:
                 json_pt_object = json[self.collections[object_type]][0]
-                cache.set(cache_key, json_pt_object,
-                          app.config['CACHE_CONFIGURATION'].get('NAVITIA_CACHE_TIMEOUT', 3600))
+                try:
+                    cache.set(cache_key, json_pt_object,
+                            app.config['CACHE_CONFIGURATION'].get('NAVITIA_CACHE_TIMEOUT', 3600))
+                except:
+                    logging.getLogger(__name__).exception('Cache Timeout')
+                    logging.getLogger(__name__).info('Set value in memory failed.')
+
                 return json_pt_object
 
         return None
