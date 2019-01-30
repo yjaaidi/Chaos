@@ -125,7 +125,7 @@ class Navitia(object):
                             app.config['CACHE_CONFIGURATION'].get('NAVITIA_CACHE_TIMEOUT', 3600))
                 except:
                     logging.getLogger(__name__).exception('Cache Timeout')
-                    logging.getLogger(__name__).info('Set value in memory failed.   ')
+                    logging.getLogger(__name__).info('Set value in memory failed.')
 
                 return json_pt_object
 
