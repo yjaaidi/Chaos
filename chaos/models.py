@@ -701,14 +701,13 @@ class Disruption(TimestampMixin, db.Model):
             uri_filters = []
             uri_filters.append('po.uri = :uri')
             bindparams['uri'] = db.String
-            bindparams['uri_like'] = db.String
             vars['uri'] = uri
-            vars['uri_like'] = uri + ':%'
-
             if line_section:
                 uri_filters.append('po.type = :po_type_line_section AND po.uri LIKE :uri_like')
                 bindparams['po_type_line_section'] = db.String
+                bindparams['uri_like'] = db.String
                 vars['po_type_line_section'] = 'line_section'
+                vars['uri_like'] = uri + ':%'
             andwheres.append('(' + ' OR '.join(uri_filters) + ')')
         elif ptObjectFilter is not None:
             uri_filters = []
