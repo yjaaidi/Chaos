@@ -24,6 +24,10 @@ class Publisher(object):
         self._connections.add(producer.connection)
         return producer
 
+    def errback(self, exc, interval):
+        logging.getLogger(__name__).info('Error: %r', exc, exc_info=1)
+        logging.getLogger(__name__).info('Retry in %s seconds.', interval)
+
     def publish(self, item, contributor):
         if not self._is_active:
             logging.getLogger(__name__).info('RabbitMQ is not enabled')
@@ -32,13 +36,13 @@ class Publisher(object):
         with self._get_producer() as producer:
             try:
                 self.is_connected = True
-                publish = producer.connection.ensure(producer, producer.publish, max_retries=3)
+                publish = producer.connection.ensure(producer, producer.publish, errback=self.errback, max_retries=3)
                 publish(item, exchange=self._exchange, routing_key=contributor, declare=[self._exchange])
                 logging.getLogger(__name__).info('Publishing message on exchange %s', self._exchange.name)
-            except BaseException, e:
+            except Exception, e:
                 self.is_connected = False
-                logging.exception("Impossible to publish message to rabbitmq")
-                logging.exception(repr(e))
+                logging.getLogger(__name__).exception("Impossible to publish message to rabbitmq")
+                logging.getLogger(__name__).exception(repr(e))
             finally:
                 return self.is_connected
 
