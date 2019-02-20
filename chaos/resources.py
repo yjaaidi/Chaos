@@ -39,7 +39,8 @@ from fields import *
 from formats import *
 from formats import impact_input_format, channel_input_format, pt_object_type_values,\
     tag_input_format, category_input_format, channel_type_values,\
-    property_input_format, disruptions_search_input_format, application_status_values
+    property_input_format, disruptions_search_input_format, application_status_values, \
+    impacts_search_input_format
 from chaos import mapper, exceptions
 from chaos import utils, db_helper
 import chaos
@@ -452,6 +453,48 @@ this disruption to Navitia. Please try again.'}}, error_fields), 503
         return marshal(
             {'error': {'message': 'An error occurred during deletion\
 . Please try again.'}}, error_fields), 500
+
+class ImpactsSearch(flask_restful.Resource):
+    def __init__(self):
+        self.navitia = None
+        self.parsers = {}
+        self.parsers["post"] = reqparse.RequestParser()
+        parser_post = self.parsers["post"]
+
+        parser_post.add_argument("start_page", type=int, default=1, location='json')
+        parser_post.add_argument("items_per_page", type=int, default=20, location='json')
+        parser_post.add_argument("current_time", type=utils.get_datetime, location='json')
+
+    @validate_navitia()
+    @validate_contributor()
+    @manage_navitia_error()
+    @validate_client_token()
+    def post(self, contributor, navitia):
+        self.navitia = navitia
+        args = self.parsers['post'].parse_args()
+
+        try:
+            json = request.get_json(silent=True)
+            validate(json, impacts_search_input_format)
+        except ValidationError as e:
+            logging.debug(str(e))
+            return marshal({'error': {'message': utils.parse_error(e)}},
+                           error_fields), 400
+
+        g.current_time = args['current_time']
+        current_time = get_current_time()
+        application_status = json.get('application_status', application_status_values)
+        ptObjectFilter = json.get('ptObjectFilter', None)
+        application_period = json.get('application_period', None)
+
+        total_results_count = models.Impact.count_all_with_post_filter(
+            contributor_id=contributor.id,
+            application_status=application_status,
+            ptObjectFilter=ptObjectFilter,
+            cause_category_id=json.get('cause_category_id', None),
+            application_period=application_period,
+            current_time=current_time
+        )
 
 class DisruptionsSearch(flask_restful.Resource):
     def __init__(self):
