@@ -1308,6 +1308,41 @@
             schema:
               $ref: "#/definitions/error_occured"
 
+    /impacts/_search:
+      post:
+        description: Return filtered impacts
+        parameters:
+        - $ref: "#/parameters/header_authorization"
+        - $ref: "#/parameters/header_coverage"
+        - $ref: "#/parameters/header_customer_id"
+        - $ref: "#/parameters/header_contributors"
+        - in: body
+          name: body
+          description: Parameters of filter
+          schema:
+            $ref: "#/definitions/impacts_search"
+        tags:
+          - Search
+        responses:
+          200:
+            description: List of impact
+            schema:
+              type: object
+              properties:
+                impacts:
+                  type: array
+                  items:
+                    $ref: "#/definitions/impact_with_disruption"
+                meta:
+                  type: object
+                  properties:
+                    pagination:
+                      $ref: "#/definitions/pagination"
+          400:
+            description: Bad request
+            schema:
+              $ref: "#/definitions/error_occured"
+
   ################################################################################
   #                                 Parameters                                  #
   ################################################################################
@@ -2270,6 +2305,96 @@
           description: "Message meta for additional information"
           items:
             $ref: "#/definitions/meta"
+    impacts_search:
+      type: object
+      properties:
+        start_page:
+          description: Index of the first element returned (start at 1)
+          type: integer
+          default: 1
+          minimum: 1
+          example: 1
+        items_per_page:
+          description: Number of items per page
+          type: integer
+          default: 20
+        application_status:
+          description: Filter by application_status (on impact)
+          default:
+            - past
+            - ongoing
+            - coming
+          type: array
+          items:
+            type: string
+            enum:
+              - past
+              - ongoing
+              - coming
+        ends_after_date:
+          description: Start-date restriction for end_publication date
+          type: string
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2018-08-03T12:19:13Z"
+        ends_before_date:
+          description: End-date restriction for end_publication date
+          type: string
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2018-08-03T12:19:13Z"
+        application_period:
+          required: [begin, end]
+          type: object
+          description: Filter on impact application_period
+          properties:
+            begin:
+              type: string
+              pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+              example: "2018-08-03T12:19:13Z"
+            end:
+              type: string
+              pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+              example: "2018-08-03T12:19:13Z"
+        current_time:
+          description: Parameter for settings the current time, mostly for debugging purpose
+          default: now
+          type: string
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2018-08-03T12:19:13Z"
+        tag:
+          description: Filter by tag (id of tag)
+          type: array
+          items:
+            type: string
+            format: uuid
+        uri:
+          description: Filter by uri of ptobject
+          type: string
+        line_section:
+          description: If uri is a line id, filter also on related line_section(s)
+          type: boolean
+          default: false
+        status:
+          description: Filter by status
+          default:
+            - published
+            - draft
+          type: array
+          items:
+            type: string
+            enum:
+              - archived
+              - published
+              - draft
+        depth:
+          description: With depth=2, you could retrieve the first page of impacts from the disruption
+          type: integer
+          default: 1
+        cause_category_id:
+          description: Filter by category id
+          type: string
+          format: uuid
+        ptObjectFilter:
+          $ref: "#/definitions/pt_object_filter"
     disruptions_search:
       type: object
       properties:
@@ -2518,6 +2643,75 @@
           type: "boolean"
         notification_date:
           description: "Date of notification"
+          type: "string"
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2018-08-03T12:19:13Z"
+    disruption_in_impact:
+      type: object
+      properties:
+        cause:
+          $ref: "#/definitions/cause"
+        id:
+          type: string
+          format: uuid
+          description: Disruption ID
+        self:
+          $ref: "#/definitions/href"
+    impact_with_disruption:
+      type: "object"
+      properties:
+        application_period_patterns:
+          type: "array"
+          items:
+            $ref: "#/definitions/application_period_pattern"
+        application_periods:
+          type: "array"
+          items:
+            $ref: "#/definitions/period"
+        created_at:
+          type: "string"
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2018-08-03T12:19:13Z"
+        disruption:
+          description: "Disruption of impact"
+          $ref: "#/definitions/disruption_in_impact"
+        id:
+          description: "Impact ID"
+          type: "string"
+          format: "uuid"
+        messages:
+          type: "array"
+          items:
+            $ref: "#/definitions/impact_message"
+        notification_date:
+          description: "Date of notification"
+          type: "string"
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2018-08-03T12:19:13Z"
+        objects:
+          type: "array"
+          description: "List with impacted PT objects"
+          items:
+            type: "object"
+            properties:
+              id:
+                description: "Impacted PT object ID in navitia"
+                type: "string"
+              name:
+                description: "Name of impacted PT object in navitia"
+                type: "string"
+              type:
+                description: "Impacted PT object type in navitia"
+                type: "string"
+        self:
+          $ref: "#/definitions/href"
+        send_notifications:
+          description: "If notification should be send or not"
+          type: "boolean"
+        severity:
+          description: "Related severity"
+          $ref: "#/definitions/severity"
+        updated_at:
           type: "string"
           pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
           example: "2018-08-03T12:19:13Z"
