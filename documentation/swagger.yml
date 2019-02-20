@@ -2331,16 +2331,6 @@
               - past
               - ongoing
               - coming
-        ends_after_date:
-          description: Start-date restriction for end_publication date
-          type: string
-          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
-          example: "2018-08-03T12:19:13Z"
-        ends_before_date:
-          description: End-date restriction for end_publication date
-          type: string
-          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
-          example: "2018-08-03T12:19:13Z"
         application_period:
           required: [begin, end]
           type: object
@@ -2360,35 +2350,6 @@
           type: string
           pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
           example: "2018-08-03T12:19:13Z"
-        tag:
-          description: Filter by tag (id of tag)
-          type: array
-          items:
-            type: string
-            format: uuid
-        uri:
-          description: Filter by uri of ptobject
-          type: string
-        line_section:
-          description: If uri is a line id, filter also on related line_section(s)
-          type: boolean
-          default: false
-        status:
-          description: Filter by status
-          default:
-            - published
-            - draft
-          type: array
-          items:
-            type: string
-            enum:
-              - archived
-              - published
-              - draft
-        depth:
-          description: With depth=2, you could retrieve the first page of impacts from the disruption
-          type: integer
-          default: 1
         cause_category_id:
           description: Filter by category id
           type: string
