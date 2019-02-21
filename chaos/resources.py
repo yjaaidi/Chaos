@@ -694,67 +694,33 @@ class ImpactsSearch(flask_restful.Resource):
                         'metas': []
                     }
 
-            if disruptionId not in cause_wordings:
-                cause_wordings[disruptionId] = {}
-            cause_wordings[disruptionId][wordingId] = {
-                'key': r.cause_wording_key,
-                'value': r.cause_wording_value
-            }
+        for impact in impacts.values():
+            impact_id = impact['id']
+            impact['severity']['wordings'] = severity_wordings[impact['severity']['id']].values()
+            impact['objects'] = impact_pt_objects[impact_id].values()
+            impact['application_periods'] = application_periods[impact_id].values()
+            impact['messages'] = messages[impact_id].values()
+            impact['patterns'] = application_period_patterns[impact_id].values()
 
-            if impact_id not in impacts:
+            for message in impact['messages']:
+                channel_id = message['channel']['id']
+                message_id = message['id']
+                message['channel']['channel_types'] = channel_types[channel_id].values()
+                message['meta'] = message_metas[message_id].values()
+            for application_period_pattern in impact['patterns']:
+                application_period_pattern_id = application_period_pattern['id']
+                application_period_pattern['time_slots'] = time_slots[application_period_pattern_id].values()
+            for pt_object in impact['objects']:
+                impact_pt_object_id = pt_object['id']
+                if impact_pt_object_id in line_section_via:
+                    pt_object['line_section']['via'] = line_section_via[impact_pt_object_id].values()
+                if impact_pt_object_id in line_section_routes:
+                    pt_object['line_section']['routes'] = line_section_routes[impact_pt_object_id].values()
+                if impact_pt_object_id in line_section_metas:
+                    pt_object['line_section']['wordings'] = line_section_metas[impact_pt_object_id].values()
 
-                impact = {
-                    "id": impact_id,
-                    'cause': {
-                        'id': r.cause_id,
-                        'created_at': r.cause_created_at,
-                        'updated_at': r.cause_updated_at,
-                        'wordings': [],
-                        'category': {
-                            'id': r.cause_category_id,
-                            'name': r.cause_category_name,
-                            'created_at': r.cause_category_created_at,
-                            'updated_at': r.cause_category_updated_at
-                        }
-                    },
-                    'tags' : [],
-                    'impacts' : [],
-                    'properties' : [],
-                    'localizations' : []
-                }
-                disruptions[disruptionId] = disruption
-
-        for disruption in disruptions.values():
-            disruptionId = disruption['id']
-            disruption['cause']['wordings'] = cause_wordings[disruptionId].values()
-            disruption['impacts'] = impacts[disruptionId].values()
-            for impact in disruption['impacts']:
-                impact_id = impact['id']
-                impact['severity']['wordings'] = severity_wordings[impact['severity']['id']].values()
-                impact['objects'] = impact_pt_objects[impact_id].values()
-                impact['application_periods'] = application_periods[impact_id].values()
-                impact['messages'] = messages[impact_id].values()
-                impact['patterns'] = application_period_patterns[impact_id].values()
-
-                for message in impact['messages']:
-                    channel_id = message['channel']['id']
-                    message_id = message['id']
-                    message['channel']['channel_types'] = channel_types[channel_id].values()
-                    message['meta'] = message_metas[message_id].values()
-                for application_period_pattern in impact['patterns']:
-                    application_period_pattern_id = application_period_pattern['id']
-                    application_period_pattern['time_slots'] = time_slots[application_period_pattern_id].values()
-                for pt_object in impact['objects']:
-                    impact_pt_object_id = pt_object['id']
-                    if impact_pt_object_id in line_section_via:
-                        pt_object['line_section']['via'] = line_section_via[impact_pt_object_id].values()
-                    if impact_pt_object_id in line_section_routes:
-                        pt_object['line_section']['routes'] = line_section_routes[impact_pt_object_id].values()
-                    if impact_pt_object_id in line_section_metas:
-                        pt_object['line_section']['wordings'] = line_section_metas[impact_pt_object_id].values()
-
-        rawData = {'impacts': disruptions.values(), 'meta': self.createPager(
-            resultset = disruptions.values(),
+        rawData = {'impacts': impacts.values(), 'meta': self.createPager(
+            resultset = impacts.values(),
             current_page=args['start_page'],
             per_page = args['items_per_page'],
             total_results_count = total_results_count,
