@@ -2683,7 +2683,7 @@
           type: "integer"
         items_per_page:
           type: "integer"
-        total_results:
+        total_result:
           type: "integer"
         prev:
           $ref: "#/definitions/href"
