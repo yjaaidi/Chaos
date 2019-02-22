@@ -465,16 +465,6 @@ class ImpactsSearch(flask_restful.Resource):
         parser_post.add_argument("items_per_page", type=int, default=20, location='json')
         parser_post.add_argument("current_time", type=utils.get_datetime, location='json')
 
-    def get_publication_status(self, start_publication_date, end_publication_date):
-        current_time = utils.get_current_time()
-        if (end_publication_date != None) and (end_publication_date < current_time):
-            return "past"
-        if start_publication_date <= current_time\
-                and (end_publication_date == None or end_publication_date >= current_time):
-            return "ongoing"
-        if start_publication_date > current_time:
-            return "coming"
-
     @validate_navitia()
     @validate_contributor()
     @manage_navitia_error()
