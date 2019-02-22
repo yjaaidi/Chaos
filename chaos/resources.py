@@ -553,11 +553,27 @@ class ImpactsSearch(flask_restful.Resource):
                 impacts[impact_id] = {
                     'id': r.impact_id,
                     'disruption_id': r.id,
+                    'disruption': {
+                        'id': r.id,
+                        'cause': {
+                            'id': r.cause_id,
+                            'created_at': r.cause_created_at,
+                            'updated_at': r.cause_updated_at,
+                            'wordings': [],
+                            'category': {
+                                'id': r.cause_category_id,
+                                'name': r.cause_category_name,
+                                'created_at': r.cause_category_created_at,
+                                'updated_at': r.cause_category_updated_at
+                            }
+                        }
+                    },
                     'created_at': r.impact_created_at,
                     'updated_at': r.impact_updated_at,
                     'send_notifications': r.impact_send_notifications,
                     'notification_date': r.impact_notification_date
                 }
+
                 impacts[impact_id]['severity'] = {
                     'id': r.severity_id,
                     'client_id': r.severity_client_id,
@@ -726,7 +742,7 @@ class ImpactsSearch(flask_restful.Resource):
             total_results_count = total_results_count,
             endpoint = 'disruption')}
 
-        result = marshal(rawData, impacts_fields)
+        result = marshal(rawData, impacts_search_fields)
         return result
 
     def createPager(self, resultset, current_page, per_page, total_results_count,  endpoint):
