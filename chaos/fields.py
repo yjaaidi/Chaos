@@ -586,7 +586,7 @@ impact_search_fields = {
         fields.List(fields.Nested(application_period_fields)),
     'severity': fields.Nested(severity_fields),
     'self': {'href': fields.Url('impact', absolute=True)},
-    'disruption': impacts_search_disruption_fields,
+    'disruption': fields.Nested(impacts_search_disruption_fields),
     'messages': fields.List(fields.Nested(message_fields)),
     'application_period_patterns':
         fields.List(fields.Nested(application_period_pattern_fields), attribute='patterns'),
@@ -594,8 +594,19 @@ impact_search_fields = {
     'notification_date': FieldDateTime
 }
 
+impacts_search_paginate_fields = {
+    "start_page": fields.String,
+    "items_on_page": fields.String,
+    "items_per_page": fields.String,
+    "total_result": fields.String
+}
+
+impacts_search_meta_fields = {
+    "pagination": fields.Nested(impacts_search_paginate_fields)
+}
+
 impacts_search_fields = {
-    'meta': fields.Nested(meta_fields),
+    'meta': fields.Nested(impacts_search_meta_fields),
     'impacts': fields.List(fields.Nested(impact_search_fields))
 }
 

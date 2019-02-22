@@ -740,7 +740,7 @@ class ImpactsSearch(flask_restful.Resource):
             current_page=args['start_page'],
             per_page = args['items_per_page'],
             total_results_count = total_results_count,
-            endpoint = 'disruption')}
+            endpoint = '')}
 
         result = marshal(rawData, impacts_search_fields)
         return result
@@ -754,13 +754,6 @@ class ImpactsSearch(flask_restful.Resource):
         pagination.total = total_results_count
         pagination.page = current_page
         pagination.items = resultset
-
-        pagination.pages = int(math.ceil(pagination.total / float(pagination.per_page)))
-        pagination.next_num = min(pagination.pages, pagination.page + 1)
-        pagination.prev_num = max(1, pagination.page - 1)
-
-        pagination.has_next = pagination.page < pagination.next_num
-        pagination.has_prev = pagination.page > pagination.prev_num
 
         return make_pager(pagination, endpoint)
 
