@@ -564,6 +564,13 @@ class ImpactsSearch(flask_restful.Resource):
                     'notification_date': r.impact_notification_date
                 }
 
+                if impact_id not in cause_wordings:
+                    cause_wordings[impact_id] = {}
+                cause_wordings[impact_id][wordingId] = {
+                    'key': r.cause_wording_key,
+                    'value': r.cause_wording_value
+                }
+
                 impacts[impact_id]['severity'] = {
                     'id': r.severity_id,
                     'client_id': r.severity_client_id,
@@ -702,6 +709,7 @@ class ImpactsSearch(flask_restful.Resource):
 
         for impact in impacts.values():
             impact_id = impact['id']
+            impact['disruption']['cause']['wordings'] = cause_wordings[impact_id].values()
             impact['severity']['wordings'] = severity_wordings[impact['severity']['id']].values()
             impact['objects'] = impact_pt_objects[impact_id].values()
             impact['application_periods'] = application_periods[impact_id].values()
