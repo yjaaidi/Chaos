@@ -1593,7 +1593,7 @@ class Impact(TimestampMixin, db.Model):
         query_parts = cls.generate_impacts_search_query_args(
             contributor_id = contributor_id,
             application_status = application_status,
-            ptObjectFilter = ptObjectFilter,
+            ptObjectFilter = None,
             cause_category_id = cause_category_id,
             application_period = application_period,
             current_time = current_time
