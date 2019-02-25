@@ -463,3 +463,52 @@ disruptions_search_input_format = {
         }
     }
 }
+impacts_search_input_format = {
+    'type': 'object',
+    'properties': {
+        'application_status': {
+            'type': 'array',
+            'items': {'enum': application_status_values},
+            'uniqueItems': True
+        },
+        'ptObjectFilter': {
+            'anyOf': [
+                {"required": ['networks']},
+                {"required": ['lines']},
+                {"required": ['stop_points']},
+                {"required": ['stop_areas']}
+            ],
+            'type': 'object',
+            'properties': {
+                'networks': {
+                    'type': 'array',
+                    'items': {'type': ['string']},
+                    'uniqueItems': True
+                },
+                'lines': {
+                    'type': 'array',
+                    'items': {'type': ['string']},
+                    'uniqueItems': True
+                },
+                'stop_points': {
+                    'type': 'array',
+                    'items': {'type': ['string']},
+                    'uniqueItems': True
+                },
+                'stop_areas': {
+                    'type': 'array',
+                    'items': {'type': ['string']},
+                    'uniqueItems': True
+                }
+            }
+        },
+        'application_period': {
+            'type': 'object',
+            'properties': {
+                'begin': {'type': ['string'], 'pattern': datetime_pattern},
+                'end': {'type': ['string'], 'pattern': datetime_pattern}
+            },
+            'required': ['begin', 'end']
+        }
+    }
+}

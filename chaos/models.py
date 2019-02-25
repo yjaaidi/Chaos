@@ -1294,6 +1294,353 @@ class Impact(TimestampMixin, db.Model):
         query = query.order_by("application_periods_1.start_date")
         return query.all()
 
+    @classmethod
+    def generate_impacts_search_query_args(cls,
+                                              contributor_id,
+                                              application_status,
+                                              ptObjectFilter,
+                                              cause_category_id,
+                                              application_period,
+                                              current_time=None):
+        if current_time is None: current_time = get_current_time()
+
+        andwheres = []
+        vars = {}
+        bindparams = {}
+
+        andwheres.append('d.contributor_id = :contributor_id')
+        vars['contributor_id'] = contributor_id
+        bindparams['contributor_id'] = db.String
+
+        andwheres.append('i.status = :impact_status')
+        vars['impact_status'] = 'published'
+        bindparams['impact_status'] = db.String
+
+        andwheres.append('c.is_visible = :cause_is_visisble')
+        vars['cause_is_visisble'] = True
+        bindparams['cause_is_visisble'] = db.Boolean
+
+        if ptObjectFilter is not None:
+            uri_filters = []
+            uri_filters.append('po.uri IN :pt_objects_uris')
+            bindparams['pt_objects_uris'] = db.String
+            vars['pt_objects_uris'] = tuple([id for ids in ptObjectFilter.itervalues() for id in ids])
+
+            if 'lines' in ptObjectFilter:
+                uri_filters.append('(po.type = :po_type_line_section AND po_line.uri IN :po_line_section_lines)')
+                bindparams['po_type_line_section'] = db.String
+                bindparams['po_line_section_lines'] = db.String
+                vars['po_type_line_section'] = 'line_section'
+                vars['po_line_section_lines'] = tuple(ptObjectFilter['lines'])
+            andwheres.append('(' + ' OR '.join(uri_filters) + ')')
+
+        if isinstance(cause_category_id, basestring) and cause_category_id:
+            andwheres.append('c.category_id = :cause_category_id')
+            bindparams['cause_category_id'] = db.String
+            vars['cause_category_id'] = cause_category_id
+
+        application_status = set(application_status)
+        if len(application_status) != len(application_status_values):
+            application_availlable_filters = {
+                'past': 'ap.end_date < :current_time ',
+                'ongoing': '(ap.start_date <= :current_time AND ap.end_date >= :current_time) ',
+                'coming': 'ap.start_date > :current_time '
+            }
+            app_status_filters = [application_availlable_filters[status] for status in application_status]
+            andwheres.append('(' + ' OR '.join(app_status_filters) + ')')
+            bindparams['current_time'] = db.Date
+            vars['current_time'] = current_time
+
+        if isinstance(application_period, dict) and 'begin' in application_period and 'end' in application_period:
+            app_period_filters = []
+            app_period_filters.append('(ap.start_date >= :ap_start_date AND ap.start_date <= :ap_end_date)')
+            app_period_filters.append('(ap.end_date >= :ap_start_date AND ap.end_date <= :ap_end_date)')
+            app_period_filters.append('(ap.start_date <= :ap_start_date AND ap.end_date >= :ap_end_date)')
+            apDateFilter = ' OR '.join(app_period_filters)
+            andwheres.append('(' + apDateFilter + ')')
+            bindparams['ap_start_date'] = db.Date
+            bindparams['ap_end_date'] = db.Date
+            vars['ap_start_date'] = application_period['begin']
+            vars['ap_end_date'] = application_period['end']
+
+        return {
+            'and_wheres': andwheres,
+            'bindparams': bindparams,
+            'vars': vars
+        }
+
+    @classmethod
+    def get_impacts_search_native_query(cls, query_parts=[]):
+
+        join_tables = []
+        join_tables.append('disruption AS d')
+        join_tables.append('LEFT JOIN impact i ON (i.disruption_id = d.id)')
+        join_tables.append('LEFT JOIN cause c ON (d.cause_id = c.id)')
+        join_tables.append('LEFT JOIN category ctg ON (c.category_id = ctg.id)')
+        join_tables.append('LEFT JOIN associate_wording_cause awc ON (c.id = awc.cause_id)')
+        join_tables.append('LEFT JOIN severity AS s ON (s.id = i.severity_id)')
+        join_tables.append('LEFT JOIN wording AS cw ON (awc.wording_id = cw.id)')
+        join_tables.append('LEFT JOIN associate_wording_severity aws ON (s.id = aws.severity_id)')
+        join_tables.append('LEFT JOIN wording AS sw ON (aws.wording_id = sw.id)')
+        join_tables.append('LEFT JOIN contributor AS contrib ON (contrib.id = d.contributor_id)')
+        join_tables.append('LEFT JOIN associate_impact_pt_object AS aipto ON (aipto.impact_id = i.id)')
+        join_tables.append('LEFT JOIN pt_object AS po ON (po.id = aipto.pt_object_id)')
+        join_tables.append('LEFT JOIN application_periods AS ap ON (ap.impact_id = i.id)')
+        join_tables.append('LEFT JOIN message AS m ON (m.impact_id = i.id)')
+        join_tables.append('LEFT JOIN channel AS ch ON (m.channel_id = ch.id)')
+        join_tables.append('LEFT JOIN channel_type AS cht ON (cht.channel_id = ch.id)')
+        join_tables.append('LEFT JOIN associate_message_meta AS amm ON (amm.message_id = m.id)')
+        join_tables.append('LEFT JOIN meta AS me ON (amm.meta_id = me.id)')
+        join_tables.append('LEFT JOIN pattern AS pa ON (pa.impact_id = i.id)')
+        join_tables.append('LEFT JOIN time_slot AS ts ON (ts.pattern_id = pa.id)')
+        join_tables.append('LEFT JOIN line_section AS ls ON (po.id = ls.object_id)')
+        join_tables.append('LEFT JOIN pt_object AS po_line ON (po_line.id = ls.line_object_id)')
+        join_tables.append('LEFT JOIN pt_object AS po_start ON (po_start.id = ls.start_object_id)')
+        join_tables.append('LEFT JOIN pt_object AS po_end ON (po_end.id = ls.end_object_id)')
+        join_tables.append('LEFT JOIN associate_line_section_route_object AS alsro ON (alsro.line_section_id = ls.id)')
+        join_tables.append('LEFT JOIN pt_object AS po_route ON (alsro.route_object_id = po_route.id)')
+        join_tables.append('LEFT JOIN associate_line_section_via_object AS alsvo ON (alsvo.line_section_id = ls.id)')
+        join_tables.append('LEFT JOIN pt_object AS po_via ON (alsvo.stop_area_object_id = po_via.id)')
+        join_tables.append('LEFT JOIN associate_wording_line_section AS awls ON (awls.line_section_id = ls.id)')
+        join_tables.append('LEFT JOIN wording AS awlsw ON (awls.wording_id = awlsw.id)')
+
+        andwheres = [] if 'and_wheres' not in query_parts else query_parts['and_wheres']
+
+        columns = ','.join(query_parts['select_columns'])
+        tables = ' '.join(join_tables)
+        wheres = ' AND '.join(andwheres)
+
+        query = []
+        query.append('SELECT %s FROM %s WHERE %s' % (columns, tables, wheres))
+
+        if 'group_by' in query_parts:
+            query.append('GROUP BY %s' % (','.join(query_parts['group_by'])))
+
+        if 'order_by' in query_parts:
+            query.append('ORDER BY %s' % (','.join(query_parts['order_by'])))
+
+        if 'limit' in query_parts:
+            query.append('LIMIT %s' % (query_parts['limit']))
+
+        if 'offset' in query_parts:
+            query.append('OFFSET %s' % (query_parts['offset']))
+
+        return ' '.join(query)
+
+    @classmethod
+    def count_all_with_post_filter(
+            cls,
+            contributor_id,
+            application_status,
+            ptObjectFilter,
+            cause_category_id,
+            application_period,
+            current_time=None):
+
+        query_parts = cls.generate_impacts_search_query_args(
+            contributor_id = contributor_id,
+            application_status = application_status,
+            ptObjectFilter = ptObjectFilter,
+            cause_category_id = cause_category_id,
+            application_period = application_period,
+            current_time = current_time
+        )
+
+        query_parts['select_columns'] = ['COUNT(DISTINCT i.id) AS cnt']
+        query = cls.get_impacts_search_native_query(query_parts)
+
+        if not query:
+            return 0
+
+        stmt = text(query)
+
+        for param_name, param_type in query_parts['bindparams'].iteritems():
+            stmt = stmt.bindparams(bindparam(param_name, type_=param_type))
+
+        result = db.engine.execute(stmt, query_parts['vars']).fetchone()
+
+        return result['cnt']
+
+    @classmethod
+    def get_impact_ids_with_post_filter_native(
+            cls,
+            page_index,
+            items_per_page,
+            contributor_id,
+            application_status,
+            ptObjectFilter,
+            cause_category_id,
+            application_period,
+            current_time=None):
+        query_parts = cls.generate_impacts_search_query_args(
+            contributor_id=contributor_id,
+            application_status=application_status,
+            ptObjectFilter=ptObjectFilter,
+            cause_category_id=cause_category_id,
+            application_period=application_period,
+            current_time=current_time
+        )
+        query_parts['select_columns'] = ['DISTINCT i.id', 'ap.end_date']
+        query_parts['order_by'] = ['ap.end_date', 'i.id']
+        query_parts['limit'] = ':limit'
+        query_parts['offset'] = ':offset'
+
+        query = cls.get_impacts_search_native_query(query_parts)
+
+        if not query:
+            return []
+
+        stmt = text(query)
+
+        for param_name, param_type in query_parts['bindparams'].iteritems():
+            stmt = stmt.bindparams(bindparam(param_name, type_=param_type))
+
+        stmt = stmt.bindparams(bindparam('limit', type_=db.Integer),
+                               bindparam('offset', type_=db.Integer)
+                               )
+
+        vars = query_parts['vars']
+        offset = (max(1, page_index) - 1) * items_per_page
+        vars['limit'] = items_per_page
+        vars['offset'] = offset
+
+        return db.engine.execute(stmt, vars).fetchall()
+
+    @classmethod
+    def get_impacts_search_native_query(cls, query_parts = []):
+
+        join_tables = []
+        join_tables.append('disruption AS d')
+        join_tables.append('LEFT JOIN impact i ON (i.disruption_id = d.id)')
+        join_tables.append('LEFT JOIN cause c ON (d.cause_id = c.id)')
+        join_tables.append('LEFT JOIN category ctg ON (c.category_id = ctg.id)')
+        join_tables.append('LEFT JOIN associate_wording_cause awc ON (c.id = awc.cause_id)')
+        join_tables.append('LEFT JOIN severity AS s ON (s.id = i.severity_id)')
+        join_tables.append('LEFT JOIN wording AS cw ON (awc.wording_id = cw.id)')
+        join_tables.append('LEFT JOIN associate_wording_severity aws ON (s.id = aws.severity_id)')
+        join_tables.append('LEFT JOIN wording AS sw ON (aws.wording_id = sw.id)')
+        join_tables.append('LEFT JOIN contributor AS contrib ON (contrib.id = d.contributor_id)')
+        join_tables.append('LEFT JOIN associate_disruption_pt_object AS adpo ON (adpo.disruption_id = d.id)')
+        join_tables.append('LEFT JOIN pt_object AS localization ON (localization.id = adpo.pt_object_id)')
+        join_tables.append('LEFT JOIN associate_impact_pt_object AS aipto ON (aipto.impact_id = i.id)')
+        join_tables.append('LEFT JOIN pt_object AS po ON (po.id = aipto.pt_object_id)')
+        join_tables.append('LEFT JOIN application_periods AS ap ON (ap.impact_id = i.id)')
+        join_tables.append('LEFT JOIN message AS m ON (m.impact_id = i.id)')
+        join_tables.append('LEFT JOIN channel AS ch ON (m.channel_id = ch.id)')
+        join_tables.append('LEFT JOIN channel_type AS cht ON (cht.channel_id = ch.id)')
+        join_tables.append('LEFT JOIN associate_message_meta AS amm ON (amm.message_id = m.id)')
+        join_tables.append('LEFT JOIN meta AS me ON (amm.meta_id = me.id)')
+        join_tables.append('LEFT JOIN pattern AS pa ON (pa.impact_id = i.id)')
+        join_tables.append('LEFT JOIN time_slot AS ts ON (ts.pattern_id = pa.id)')
+        join_tables.append('LEFT JOIN line_section AS ls ON (po.id = ls.object_id)')
+        join_tables.append('LEFT JOIN pt_object AS po_line ON (po_line.id = ls.line_object_id)')
+        join_tables.append('LEFT JOIN pt_object AS po_start ON (po_start.id = ls.start_object_id)')
+        join_tables.append('LEFT JOIN pt_object AS po_end ON (po_end.id = ls.end_object_id)')
+        join_tables.append('LEFT JOIN associate_line_section_route_object AS alsro ON (alsro.line_section_id = ls.id)')
+        join_tables.append('LEFT JOIN pt_object AS po_route ON (alsro.route_object_id = po_route.id)')
+        join_tables.append('LEFT JOIN associate_line_section_via_object AS alsvo ON (alsvo.line_section_id = ls.id)')
+        join_tables.append('LEFT JOIN pt_object AS po_via ON (alsvo.stop_area_object_id = po_via.id)')
+        join_tables.append('LEFT JOIN associate_wording_line_section AS awls ON (awls.line_section_id = ls.id)')
+        join_tables.append('LEFT JOIN wording AS awlsw ON (awls.wording_id = awlsw.id)')
+
+        andwheres = [] if 'and_wheres' not in query_parts else query_parts['and_wheres']
+
+        columns = ','.join(query_parts['select_columns'])
+        tables = ' '.join(join_tables)
+        wheres = ' AND '.join(andwheres)
+
+        query = []
+        query.append('SELECT %s FROM %s WHERE %s' % (columns, tables, wheres))
+
+        if 'group_by' in query_parts:
+            query.append('GROUP BY %s' % (','.join(query_parts['group_by'])))
+
+        if 'order_by' in query_parts:
+            query.append('ORDER BY %s' % (','.join(query_parts['order_by'])))
+
+        if 'limit' in query_parts:
+            query.append('LIMIT %s' % (query_parts['limit']))
+
+        if 'offset' in query_parts:
+            query.append('OFFSET %s' % (query_parts['offset']))
+
+        return ' '.join(query)
+
+    @classmethod
+    def all_with_post_filter_native(
+            cls,
+            page_index,
+            items_per_page,
+            contributor_id,
+            application_status,
+            ptObjectFilter,
+            cause_category_id,
+            application_period,
+            current_time=None):
+
+        impact_ids = cls.get_impact_ids_with_post_filter_native(page_index,
+            items_per_page,
+            contributor_id,
+            application_status,
+            ptObjectFilter,
+            cause_category_id,
+            application_period,
+            current_time)
+
+        if not impact_ids :
+            return []
+
+        query_parts = cls.generate_impacts_search_query_args(
+            contributor_id = contributor_id,
+            application_status = application_status,
+            ptObjectFilter = None,
+            cause_category_id = cause_category_id,
+            application_period = application_period,
+            current_time = current_time
+        )
+
+        query_parts['select_columns'] = [
+                'd.id', 'd.reference', 'd.note', 'd.status', 'd.version', 'd.created_at', 'd.updated_at',
+                'd.start_publication_date', 'd.end_publication_date',
+                'i.id AS impact_id', 'i.created_at AS impact_created_at', 'i.updated_at AS impact_updated_at',
+                'i.send_notifications AS impact_send_notifications', 'i.notification_date AS impact_notification_date',
+                'c.id AS cause_id', 'c.created_at AS cause_created_at', 'c.updated_at AS cause_updated_at',
+                'ctg.id AS cause_category_id', 'ctg.name AS cause_category_name', 'ctg.created_at AS cause_category_created_at',
+                'ctg.updated_at AS cause_category_updated_at', 'cw.id AS cause_wording_id', 'cw.key AS cause_wording_key',
+                'cw.value AS cause_wording_value', 's.created_at AS severity_created_at', 's.updated_at AS severity_updated_at',
+                's.id AS severity_id', 's.wording AS severity_wording', 's.color AS severity_color', 's.is_visible AS severity_is_visible',
+                's.priority AS severity_priority', 's.effect AS severity_effect', 's.client_id AS severity_client_id',
+                'sw.id AS severity_wording_id', 'sw.key AS severity_wording_key', 'sw.value AS severity_wording_value',
+                'contrib.contributor_code AS contributor_code',
+                'po.id AS pt_object_id', 'po.type AS pt_object_type', 'po.uri AS pt_object_uri', 'ap.id AS application_period_id',
+                'ap.start_date AS application_period_start_date', 'ap.end_date AS application_period_end_date',
+                'm.id AS message_id', 'm.created_at AS message_created_at', 'm.updated_at AS message_updated_at',
+                'm.text AS message_text', 'ch.id AS channel_id', 'ch.content_type AS channel_content_type',
+                'ch.created_at AS channel_created_at', 'ch.updated_at AS channel_updated_at', 'ch.max_size AS channel_max_size',
+                'ch.name AS channel_name', 'ch.required AS channel_required', 'cht.id AS channel_type_id', 'cht.name AS channel_type_name',
+                'me.id AS meta_id', 'me.key AS meta_key', 'me.value AS meta_value',
+                'pa.id AS pattern_id, pa.start_date AS pattern_start_date, pa.end_date AS pattern_end_date, pa.weekly_pattern AS pattern_weekly_pattern',
+                'ts.id AS time_slot_id, ts.begin AS time_slot_begin, ts.end AS time_slot_end',
+                'ls.id AS line_section_id, ls.sens AS line_section_sens',
+                'po_line.uri AS line_section_line_uri, po_line.type AS line_section_line_type',
+                'po_start.uri AS line_section_start_uri, po_start.type AS line_section_start_type',
+                'po_end.uri AS line_section_end_uri, po_end.type AS line_section_end_type',
+                'po_route.id AS po_route_id, po_route.uri AS po_route_uri, po_route.type AS po_route_type',
+                'awlsw.id AS awlsw_id, awlsw.key AS awlsw_key, awlsw.value AS awlsw_value',
+                'po_via.id AS po_via_id, po_via.uri AS po_via_uri, po_via.type AS po_via_type'
+            ]
+        query_parts['and_wheres'].append('i.id IN :impact_ids')
+        query_parts['order_by'] = ['ap.end_date','i.id', 'po.type','po.uri']
+
+        query = cls.get_impacts_search_native_query(query_parts)
+
+        stmt = text(query)
+        stmt = stmt.bindparams(bindparam('impact_ids', type_=db.String))
+
+        vars = query_parts['vars']
+        vars['impact_ids'] = tuple([d[0] for d in impact_ids])
+
+        return db.engine.execute(stmt, vars).fetchall()
 
 associate_line_section_route_object = db.Table(
     'associate_line_section_route_object',

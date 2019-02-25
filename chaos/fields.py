@@ -571,6 +571,45 @@ impacts_by_object_fields = {
     'objects': fields.List(fields.Nested(impact_by_object_fields))
 }
 
+impacts_search_disruption_fields = {
+    'id': fields.Raw,
+    'self': {'href': fields.Url('disruption', absolute=True)},
+    'cause': fields.Nested(cause_fields, allow_null=True)
+}
+
+impact_search_fields = {
+    'id': fields.Raw,
+    'created_at': FieldDateTime,
+    'updated_at': FieldDateTime,
+    'objects': fields.List(fields.Nested(objectTC_fields, display_null=False)),
+    'application_periods':
+        fields.List(fields.Nested(application_period_fields)),
+    'severity': fields.Nested(severity_fields),
+    'self': {'href': fields.Url('impact', absolute=True)},
+    'disruption': fields.Nested(impacts_search_disruption_fields),
+    'messages': fields.List(fields.Nested(message_fields)),
+    'application_period_patterns':
+        fields.List(fields.Nested(application_period_pattern_fields), attribute='patterns'),
+    'send_notifications': fields.Raw,
+    'notification_date': FieldDateTime
+}
+
+impacts_search_paginate_fields = {
+    "start_page": fields.String,
+    "items_on_page": fields.String,
+    "items_per_page": fields.String,
+    "total_result": fields.String
+}
+
+impacts_search_meta_fields = {
+    "pagination": fields.Nested(impacts_search_paginate_fields)
+}
+
+impacts_search_fields = {
+    'meta': fields.Nested(impacts_search_meta_fields),
+    'impacts': fields.List(fields.Nested(impact_search_fields))
+}
+
 generic_type = {
     "name": fields.String(),
     "id": fields.String(),
