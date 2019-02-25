@@ -1337,7 +1337,7 @@
                   type: object
                   properties:
                     pagination:
-                      $ref: "#/definitions/pagination"
+                      $ref: "#/definitions/pagination_impacts_search"
           400:
             description: Bad request
             schema:
@@ -2693,6 +2693,17 @@
           $ref: "#/definitions/href"
         last:
           $ref: "#/definitions/href"
+    pagination_impacts_search:
+      type: "object"
+      properties:
+        start_page:
+          type: "integer"
+        items_per_page:
+          type: "integer"
+        total_result:
+          type: "integer"
+        items_on_page:
+          type: "integer"
     meta:
       type: "object"
       required:
