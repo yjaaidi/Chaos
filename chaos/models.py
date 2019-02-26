@@ -1480,8 +1480,9 @@ class Impact(TimestampMixin, db.Model):
             application_period=application_period,
             current_time=current_time
         )
-        query_parts['select_columns'] = ['DISTINCT i.id', 'ap.end_date']
-        query_parts['order_by'] = ['ap.end_date', 'i.id']
+        query_parts['select_columns'] = ['DISTINCT i.id', 'MIN(ap.end_date)']
+        query_parts['group_by'] = ['i.id']
+        query_parts['order_by'] = ['MIN(ap.end_date)', 'i.id']
         query_parts['limit'] = ':limit'
         query_parts['offset'] = ':offset'
 
@@ -1503,7 +1504,6 @@ class Impact(TimestampMixin, db.Model):
         offset = (max(1, page_index) - 1) * items_per_page
         vars['limit'] = items_per_page
         vars['offset'] = offset
-
         return db.engine.execute(stmt, vars).fetchall()
 
     @classmethod
