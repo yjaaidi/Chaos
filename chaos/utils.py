@@ -53,27 +53,28 @@ def make_pager(resultset, endpoint, **kwargs):
     last_link = None
     first_link = None
 
-    if resultset.has_prev:
-        prev_link = url_for(endpoint,
-                            start_page=resultset.prev_num,
-                            items_per_page=resultset.per_page,
-                            _external=True, **kwargs)
+    if endpoint:
+        if resultset.has_prev:
+            prev_link = url_for(endpoint,
+                                start_page=resultset.prev_num,
+                                items_per_page=resultset.per_page,
+                                _external=True, **kwargs)
 
-    if resultset.has_next:
-        next_link = url_for(endpoint,
-                            start_page=resultset.next_num,
-                            items_per_page=resultset.per_page,
-                            _external=True, **kwargs)
+        if resultset.has_next:
+            next_link = url_for(endpoint,
+                                start_page=resultset.next_num,
+                                items_per_page=resultset.per_page,
+                                _external=True, **kwargs)
 
-    if resultset.total > 0:
-        last_link = url_for(endpoint,
-                            start_page=resultset.pages,
-                            items_per_page=resultset.per_page,
-                            _external=True, **kwargs)
-        first_link = url_for(endpoint,
-                             start_page=1,
-                             items_per_page=resultset.per_page,
-                             _external=True, **kwargs)
+        if resultset.total > 0:
+            last_link = url_for(endpoint,
+                                start_page=resultset.pages,
+                                items_per_page=resultset.per_page,
+                                _external=True, **kwargs)
+            first_link = url_for(endpoint,
+                                 start_page=1,
+                                 items_per_page=resultset.per_page,
+                                 _external=True, **kwargs)
 
     result = {}
     result["pagination"] = {
