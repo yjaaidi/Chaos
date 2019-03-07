@@ -49,7 +49,7 @@ from sqlalchemy.exc import IntegrityError
 import logging
 from utils import make_pager, option_value, get_current_time
 from chaos.validate_params import validate_client, validate_contributor, validate_navitia, \
-    manage_navitia_error, validate_id, validate_client_token
+    manage_navitia_error, validate_id, validate_client_token, validate_send_notifications_and_notification_date
 from collections import OrderedDict
 
 __all__ = ['Disruptions', 'Index', 'Severity', 'Cause']
@@ -288,6 +288,7 @@ class Disruptions(flask_restful.Resource):
     @validate_client(True)
     @manage_navitia_error()
     @validate_client_token()
+    @validate_send_notifications_and_notification_date()
     def post(self, client, navitia):
         self.navitia = navitia
         json = request.get_json(silent=True)
