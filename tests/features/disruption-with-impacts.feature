@@ -587,7 +587,7 @@ Feature: Manipulate impacts in a Disruption
         And the field "impact.severity.wording" should be "good news"
         And the field "impact.disruption.href" should exist
         And the field "impact.self.href" should exist
-        And the field "impact.send_notifications" should be "True"
+        And the field "impact.send_notifications" should be "False"
 
     Scenario: Add an impact in a disruption with notification_date
 
@@ -629,7 +629,7 @@ Feature: Manipulate impacts in a Disruption
         And the field "impact.severity.wording" should be "good news"
         And the field "impact.disruption.href" should exist
         And the field "impact.self.href" should exist
-        And the field "impact.send_notifications" should be "True"
+        And the field "impact.send_notifications" should be "False"
         And the field "impact.notification_date" should be "2014-06-24T10:35:00Z"
 
 
@@ -674,7 +674,7 @@ Feature: Manipulate impacts in a Disruption
         And the field "impact.severity.wording" should be "good news"
         And the field "impact.disruption.href" should exist
         And the field "impact.self.href" should exist
-        And the field "impact.send_notifications" should be "True"
+        And the field "impact.send_notifications" should be "False"
         And the field "impact.notification_date" should be null
 
 

@@ -238,7 +238,7 @@ def and_the_field_group1_is_valid_impact(step, group1):
     assert(date_is_valid(impact.get('created_at')))
     assert(impact.get('severity'))
     assert(impact.get('disruption'))
-    assert(impact.get('send_notifications'))
+    assert(False == impact.get('send_notifications'))
     if impact.get('updated_at'):
         assert(date_is_valid(impact.get('updated_at')))
 

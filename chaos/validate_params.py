@@ -170,9 +170,10 @@ class validate_send_notifications_and_notification_date(object):
                 fields.error_fields
             ), 400
             json = request.get_json(silent=True)
-            impacts = json['impacts']
-            for impact in impacts:
-                if ('send_notifications' in impact) and impact['send_notifications'] and ('notification_date' not in impact):
-                    return resp
+            if json and 'impacts' in json:
+                impacts = json['impacts']
+                for impact in impacts:
+                    if ('send_notifications' in impact) and impact['send_notifications'] and ('notification_date' not in impact):
+                        return resp
             return func(*args, **kwargs)
         return wrapper
