@@ -159,21 +159,21 @@ class validate_client_token(object):
         return wrapper
 
 class validate_send_notifications_and_notification_date(object):
-    def __init__(self, required=False):
-        self.required = required
-
     def __call__(self, func):
         @wraps(func)
         def wrapper(*args, **kwargs):
-            resp = marshal(
-                {'error': {'message': "notification_date should not be null when send_notifications is true"}},
-                fields.error_fields
-            ), 400
             json = request.get_json(silent=True)
+            impacts = []
             if json and 'impacts' in json:
                 impacts = json['impacts']
-                for impact in impacts:
-                    if ('send_notifications' in impact) and impact['send_notifications'] and ('notification_date' not in impact):
-                        return resp
+            elif json and 'send_notifications' in json:
+                impacts = [json]
+            for impact in impacts:
+                if ('send_notifications' in impact) and impact['send_notifications'] and \
+                    ('notification_date' not in impact or impact['notification_date'] is None):
+                    return marshal(
+                        {'error': {'message': "notification_date should not be null when send_notifications is true"}},
+                        fields.error_fields
+                    ), 400
             return func(*args, **kwargs)
         return wrapper
