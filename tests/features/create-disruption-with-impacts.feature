@@ -203,4 +203,4 @@ Feature: Create Disruption and impacts
         """
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
-        And the field "error.message" should be "notification_date should not be null when send_notifications is true"
+        And the field "error.message" should be "notification_date is mandatory if send_notifications is true"
