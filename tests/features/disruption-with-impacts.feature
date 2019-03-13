@@ -492,7 +492,7 @@ Feature: Manipulate impacts in a Disruption
         I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         When I post to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/impacts" with:
         """
-        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "route:JDR:M1","type": "route"}], "send_notifications": true}
+        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "route:JDR:M1","type": "route"}], "send_notifications": true, "notification_date": "2014-04-06T22:52:12Z"}
         """
         Then the status code should be "201"
         And the header "Content-Type" should be "application/json"
@@ -587,7 +587,7 @@ Feature: Manipulate impacts in a Disruption
         And the field "impact.severity.wording" should be "good news"
         And the field "impact.disruption.href" should exist
         And the field "impact.self.href" should exist
-        And the field "impact.send_notifications" should be "True"
+        And the field "impact.send_notifications" should be "False"
 
     Scenario: Add an impact in a disruption with notification_date
 
@@ -629,7 +629,7 @@ Feature: Manipulate impacts in a Disruption
         And the field "impact.severity.wording" should be "good news"
         And the field "impact.disruption.href" should exist
         And the field "impact.self.href" should exist
-        And the field "impact.send_notifications" should be "True"
+        And the field "impact.send_notifications" should be "False"
         And the field "impact.notification_date" should be "2014-06-24T10:35:00Z"
 
 
@@ -674,7 +674,7 @@ Feature: Manipulate impacts in a Disruption
         And the field "impact.severity.wording" should be "good news"
         And the field "impact.disruption.href" should exist
         And the field "impact.self.href" should exist
-        And the field "impact.send_notifications" should be "True"
+        And the field "impact.send_notifications" should be "False"
         And the field "impact.notification_date" should be null
 
 
@@ -712,4 +712,3 @@ Feature: Manipulate impacts in a Disruption
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
         And the field "error.message" should be "u'' does not match '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$'"
-
