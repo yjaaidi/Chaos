@@ -1131,7 +1131,7 @@ class Impact(TimestampMixin, db.Model):
     objects = db.relationship("PTobject", secondary=associate_impact_pt_object,
                               lazy='joined', order_by="PTobject.type, PTobject.uri")
     patterns = db.relationship('Pattern', backref='impact', lazy='joined', cascade='delete')
-    send_notifications = db.Column(db.Boolean, unique=False, nullable=False, default=True)
+    send_notifications = db.Column(db.Boolean, unique=False, nullable=False, default=False)
     version = db.Column(db.Integer, nullable=False, default=1)
     notification_date = db.Column(db.DateTime(), default=None, nullable=True)
 

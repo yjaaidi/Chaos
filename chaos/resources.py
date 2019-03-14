@@ -49,7 +49,7 @@ from sqlalchemy.exc import IntegrityError
 import logging
 from utils import make_pager, option_value, get_current_time
 from chaos.validate_params import validate_client, validate_contributor, validate_navitia, \
-    manage_navitia_error, validate_id, validate_client_token
+    manage_navitia_error, validate_id, validate_client_token, validate_send_notifications_and_notification_date
 from collections import OrderedDict
 
 __all__ = ['Disruptions', 'Index', 'Severity', 'Cause']
@@ -288,6 +288,7 @@ class Disruptions(flask_restful.Resource):
     @validate_client(True)
     @manage_navitia_error()
     @validate_client_token()
+    @validate_send_notifications_and_notification_date()
     def post(self, client, navitia):
         self.navitia = navitia
         json = request.get_json(silent=True)
@@ -361,6 +362,7 @@ class Disruptions(flask_restful.Resource):
     @manage_navitia_error()
     @validate_id(True)
     @validate_client_token()
+    @validate_send_notifications_and_notification_date()
     def put(self, client, contributor, navitia, id):
         self.navitia = navitia
         disruption = models.Disruption.get(id, contributor.id)
@@ -1496,6 +1498,7 @@ class Impacts(flask_restful.Resource):
     @validate_contributor()
     @validate_navitia()
     @manage_navitia_error()
+    @validate_send_notifications_and_notification_date()
     def post(self, client, contributor, navitia, disruption_id):
         self.navitia = navitia
         if not id_format.match(disruption_id):
@@ -1546,6 +1549,7 @@ class Impacts(flask_restful.Resource):
     @validate_navitia()
     @manage_navitia_error()
     @validate_id(True)
+    @validate_send_notifications_and_notification_date()
     def put(self, client, contributor, navitia, disruption_id, id):
         self.navitia = navitia
         json = request.get_json(silent=True)
