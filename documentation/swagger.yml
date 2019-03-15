@@ -2247,7 +2247,7 @@
           default: false
           description: If notification sms, mail, push on impact should be send
         notification_date:
-          description: Date of notification
+          description: Date of notification (if not set and send_notification is true, it will be the current UTC date)
           type: string
           pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
           example: "2018-08-03T12:19:13Z"
@@ -2487,7 +2487,7 @@
           items:
             $ref: "#/definitions/impact_message"
         notification_date:
-          description: "Date of notification"
+          description: "Date of notification (if not set and send_notification is true, it will be the current UTC date)"
           type: "string"
           pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
           example: "2018-08-03T12:19:13Z"
@@ -2606,7 +2606,7 @@
           type: "boolean"
           default: false
         notification_date:
-          description: "Date of notification"
+          description: "Date of notification (if not set and send_notification is true, it will be the current UTC date)"
           type: "string"
           pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
           example: "2018-08-03T12:19:13Z"
@@ -2669,7 +2669,7 @@
           type: "boolean"
           default: false
         notification_date:
-          description: "Date of notification"
+          description: "Date of notification (if not set and send_notification is true, it will be the current UTC date)"
           type: "string"
           pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
           example: "2018-08-03T12:19:13Z"
