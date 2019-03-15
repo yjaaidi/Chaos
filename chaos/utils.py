@@ -853,3 +853,21 @@ def filter_disruptions_on_impacts(
                 disruption.impacts.remove(deleted_impact)
             if len(disruption.impacts) == 0:
                 disruptions.remove(disruption)
+
+def add_notification_date_on_impacts(disruptions_or_impacts_json):
+    """
+        Add notification_date if send_notifications = True.
+
+        :param disruptions_or_impacts_json: json of disruption or impact
+        :return: Nothing
+        :rtype: Void
+    """
+    impacts = []
+    if disruptions_or_impacts_json and 'impacts' in disruptions_or_impacts_json:
+        impacts = disruptions_or_impacts_json['impacts']
+    elif disruptions_or_impacts_json and 'send_notifications' in disruptions_or_impacts_json:
+        impacts = [disruptions_or_impacts_json]
+    for impact in impacts:
+        if ('send_notifications' in impact) and impact['send_notifications'] and \
+            ('notification_date' not in impact):
+            impact['notification_date'] = get_current_time()
