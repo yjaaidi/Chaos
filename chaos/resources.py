@@ -47,7 +47,7 @@ import chaos
 import json
 from sqlalchemy.exc import IntegrityError
 import logging
-from utils import make_pager, option_value, get_current_time
+from utils import make_pager, option_value, get_current_time, add_notification_date_on_impacts
 from chaos.validate_params import validate_client, validate_contributor, validate_navitia, \
     manage_navitia_error, validate_id, validate_client_token, validate_send_notifications_and_notification_date
 from collections import OrderedDict
@@ -298,6 +298,7 @@ class Disruptions(flask_restful.Resource):
         except ValidationError as e:
             response = self.get_post_error_response_and_log(e, 400)
             return response, 400
+        add_notification_date_on_impacts(json)
         disruption = models.Disruption()
         mapper.fill_from_json(disruption, json, mapper.disruption_mapping)
 
@@ -373,7 +374,7 @@ class Disruptions(flask_restful.Resource):
         except ValidationError as e:
             response = self.get_put_error_response_and_log(e, 400)
             return response, 400
-
+        add_notification_date_on_impacts(json)
         if disruption.is_published() and 'status' in json\
            and json['status'] == 'draft':
             return marshal(
@@ -1515,7 +1516,7 @@ class Impacts(flask_restful.Resource):
             # TODO: generate good error messages
             return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 400
-
+        add_notification_date_on_impacts(json)
         disruption = models.Disruption.get(disruption_id, contributor.id)
         try:
             impact = db_helper.create_or_update_impact(disruption, json, self.navitia)
@@ -1562,7 +1563,7 @@ class Impacts(flask_restful.Resource):
             # TODO: generate good error messages
             return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 400
-
+        add_notification_date_on_impacts(json)
         disruption = models.Disruption.get(disruption_id, contributor.id)
         try:
             impact = db_helper.create_or_update_impact(disruption, json, self.navitia, id)
