@@ -170,9 +170,9 @@ class validate_send_notifications_and_notification_date(object):
                 impacts = [json]
             for impact in impacts:
                 if ('send_notifications' in impact) and impact['send_notifications'] and \
-                    ('notification_date' not in impact or impact['notification_date'] is None):
+                    ('notification_date' in impact and impact['notification_date'] is None):
                     return marshal(
-                        {'error': {'message': "notification_date is mandatory if send_notifications is true"}},
+                        {'error': {'message': "notification_date should not be empty if send_notifications is true"}},
                         fields.error_fields
                     ), 400
             return func(*args, **kwargs)
