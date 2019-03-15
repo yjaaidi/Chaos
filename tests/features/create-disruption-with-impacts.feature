@@ -199,7 +199,7 @@ Feature: Create Disruption and impacts
         I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         When I post to "/disruptions" with:
         """
-        {"reference": "foo","contributor": "contrib1","note": "hello","cause": {"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"},"publication_period":{"begin":"2018-09-11T13:50:00Z","end":"2018-12-31T16:50:00Z"},"impacts": [{"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"send_notifications":true,"notification_date":"","objects": [{"id": "network:JDR:1","type": "network"}],"application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}]}
+        {"reference": "foo","contributor": "contrib1","note": "hello","cause": {"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"},"publication_period":{"begin":"2018-09-11T13:50:00Z","end":"2018-12-31T16:50:00Z"},"impacts": [{"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"send_notifications":true,"notification_date":null,"objects": [{"id": "network:JDR:1","type": "network"}],"application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}]}
         """
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
