@@ -870,4 +870,4 @@ def add_notification_date_on_impacts(disruptions_or_impacts_json):
     for impact in impacts:
         if ('send_notifications' in impact) and impact['send_notifications'] and \
             ('notification_date' not in impact):
-            impact['notification_date'] = get_current_time()
+            impact['notification_date'] = get_current_time().strftime('%Y-%m-%dT%H:%M:%SZ')
