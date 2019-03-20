@@ -1345,6 +1345,23 @@
             schema:
               $ref: "#/definitions/error_occured"
 
+    /impacts/exports:
+      get:
+        description: Get exports status
+        parameters:
+        - $ref: "#/parameters/header_authorization"
+        - $ref: "#/parameters/header_coverage"
+        - $ref: "#/parameters/header_customer_id"
+        - $ref: "#/parameters/header_contributors"
+        tags:
+          - Export
+        responses:
+          200:
+            description: List of exports status
+            schema:
+              type: array
+              items:
+                $ref: "#/definitions/impacts_exports_status"
     /impacts/export:
       post:
         description: Create archive file export
@@ -2766,4 +2783,26 @@
           type: "string"
           pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
           example: "2019-03-01T23:59:59Z"
-
+    impacts_exports_status:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+          format: "uuid"
+        status:
+          type: "string"
+        process_start_date:
+          type: "string"
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2019-03-20T16:00:00Z"
+        start_date:
+          type: "string"
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2019-01-01T00:00:00Z"
+        end_date:
+          type: "string"
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2019-03-01T23:59:59Z"
+        url:
+          type: string
+          description: URL of archive file
