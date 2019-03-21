@@ -1397,14 +1397,11 @@
         - $ref: "#/parameters/id"
         tags:
           - Export
+        produces:
+          - application/csv
         responses:
           200:
             description: Archive file
-            content:
-              application/csv:
-                schema:
-                  type: string
-                  format: binary
 
   ################################################################################
   #                                 Parameters                                  #
