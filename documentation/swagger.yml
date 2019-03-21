@@ -1386,6 +1386,24 @@
             description: Bad request
             schema:
               $ref: "#/definitions/error_occured"
+    /impacts/export/{id}:
+      get:
+        description: Returns the archive file based ID
+        parameters:
+        - $ref: "#/parameters/header_authorization"
+        - $ref: "#/parameters/header_coverage"
+        - $ref: "#/parameters/header_customer_id"
+        - $ref: "#/parameters/header_contributors"
+        tags:
+          - Export
+        responses:
+          200:
+            description: Archive file
+            content:
+              application/csv:
+                schema:
+                  type: string
+                  format: binary
 
   ################################################################################
   #                                 Parameters                                  #
