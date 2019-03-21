@@ -8,7 +8,7 @@ Create Date: 2019-03-20 16:59:47.907869
 
 # revision identifiers, used by Alembic.
 revision = 'bf4581a9122'
-down_revision = '143e661e5114'
+down_revision = 'dfe97c5974e3'
 
 from alembic import op
 import sqlalchemy as sa
@@ -31,4 +31,4 @@ def upgrade():
 
 
 def downgrade():
-    op.drop_table('meta')
+    op.drop_table('export')
