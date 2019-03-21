@@ -1448,8 +1448,8 @@
       type: "string"
       format: "uuid"
     id:
-      in: path
       name: id
+      in: path
       description: identifier
       required: true
       type: "string"
