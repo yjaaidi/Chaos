@@ -1394,6 +1394,7 @@
         - $ref: "#/parameters/header_coverage"
         - $ref: "#/parameters/header_customer_id"
         - $ref: "#/parameters/header_contributors"
+        - $ref: "#/parameters/id"
         tags:
           - Export
         responses:
@@ -1443,6 +1444,13 @@
       in: path
       name: impact_id
       description: Impact identifier
+      required: true
+      type: "string"
+      format: "uuid"
+    id:
+      in: path
+      name: id
+      description: identifier
       required: true
       type: "string"
       format: "uuid"
