@@ -1,0 +1,36 @@
+{
+  "timezone": "Europe/Paris",
+  "database": "postgresql://navitia:navitia@localhost/chaos",
+  "rabbitmq": {
+    "exchange-name": "chaos",
+    "queue-name": "export",
+    "broker-url": "amqp://guest:guest@localhost:5672//?heartbeat=60",
+    "rt_topics": ["export"]
+  },
+  "logger": {
+    "version": 1,
+    "disable_existing_loggers": "False",
+    "formatters": {
+      "default": {
+        "format": "[%(asctime)s] [%(levelname)5s] [%(process)5s] [%(name)10s] %(message)s"
+      }
+    },
+    "handlers": {
+      "default": {
+        "level": "INFO",
+        "class": "logging.StreamHandler",
+        "formatter": "default",
+        "stream": "ext://sys.stdout"
+      }
+    },
+    "loggers": {
+      "": {
+        "handlers": [
+          "default"
+        ],
+        "level": "INFO",
+        "propagate": "True"
+      }
+    }
+  }
+}
