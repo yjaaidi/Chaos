@@ -2015,3 +2015,20 @@ class Property(TimestampMixin, db.Model):
         kargs = cls.prepare_request(client_id, key, type, id)
 
         return cls.query.filter_by(**kargs).first()
+
+class Export(TimestampMixin, db.Model):
+    id = db.Column(UUID, primary_key=True)
+    client_id = db.Column(UUID, db.ForeignKey(Client.id), nullable=False)
+    client = db.relationship('Client', backref='exports')
+    status = db.Column(db.Text, unique=False, nullable=False)
+    process_start_date = db.Column(db.DateTime(), nullable=True)
+    start_date = db.Column(db.DateTime(), nullable=True)
+    end_date = db.Column(db.DateTime(), nullable=True)
+    file_path = db.Column(db.Text, unique=False, nullable=True)
+
+    def __init__(self):
+        self.id = str(uuid.uuid1())
+
+    @classmethod
+    def get_oldest_waiting_export(cls):
+        return cls.query.order_by(cls.created_at).first()
