@@ -1,6 +1,6 @@
 import os, sys, getopt, logging, csv
 os.environ['CHAOS_CONFIG_FILE'] = "default_settings.py"
-from chaos import db, utils
+from chaos import db, utils, default_settings
 from chaos.models import Export
 
 class impactsExporter:
@@ -28,7 +28,7 @@ class impactsExporter:
         return Export.getArchivedImpacts(client_id, start_date, end_date)
 
     def generateFilePath(self, prefix):
-        fileName = prefix + '.csv'
+        fileName = os.path.join(default_settings.IMPACT_EXPORT_DIR, prefix + '.csv')
         return os.path.abspath(fileName)
 
     def createCSV(self, filePath, impacts):

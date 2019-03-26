@@ -38,6 +38,9 @@ ENABLE_RABBITMQ = (os.getenv('RABBITMQ_ENABLED', 1) == 1)
 
 ACTIVATE_PROFILING = (os.getenv('PROFILING_ENABLED', 0) == 1)
 
+# Directory for store export files
+IMPACT_EXPORT_DIR = '/tmp'
+
 # Log Level available
 # - DEBUG
 # - INFO
