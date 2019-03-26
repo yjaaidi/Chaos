@@ -500,6 +500,23 @@ one_channel_fields = {
     'channel': fields.Nested(channel_fields)
 }
 
+base_export_fields = {
+    'id': fields.Raw,
+    'status': fields.Raw,
+    'process_start_date': FieldDateTime,
+    'start_date': FieldDateTime,
+    'end_date': FieldDateTime,
+    'url': fields.Raw
+}
+
+export_fields = deepcopy(base_export_fields)
+export_fields['created_at'] = FieldDateTime
+export_fields['updated_at'] = FieldDateTime
+
+exports_fields = {
+    'exports': fields.List(fields.Nested(export_fields))
+}
+
 base_meta_fields= {
     'key': fields.Raw,
     'value': fields.Raw

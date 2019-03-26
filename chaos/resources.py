@@ -71,7 +71,8 @@ class Index(flask_restful.Resource):
             "channeltypes": {"href": url_for('channeltype', _external=True)},
             "status": {"href": url_for('status', _external=True)},
             "traffic_reports": {"href": url_for('trafficreport', _external=True)},
-            "properties": {"href": url_for('property', _external=True)}
+            "properties": {"href": url_for('property', _external=True)},
+            "impacts_exports": {"href": url_for('impacts_exports', _external=True)}
         }
         return response, 200
 
@@ -1880,3 +1881,12 @@ class Property(flask_restful.Resource):
             }, error_fields), 409
 
         return None, 204
+
+class ImpactsExports(flask_restful.Resource):
+    def __init__(self):
+        self.parsers = {'get': reqparse.RequestParser()}
+
+    @validate_client()
+    @validate_client_token()
+    def get(self, client):
+        return marshal({'exports':models.Export.all(client.id)}, exports_fields)

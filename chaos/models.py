@@ -1958,6 +1958,31 @@ class ChannelType(TimestampMixin, db.Model):
     def __repr__(self):
         return '<ChannelType %r>' % self.id
 
+class Export(TimestampMixin, db.Model):
+    """
+    represents the list of exports
+    """
+    __tablename__ = 'export'
+    id = db.Column(UUID, primary_key=True)
+    client_id = db.Column(UUID, db.ForeignKey(Client.id), nullable=False)
+    status = db.Column(db.Text, nullable=False)
+    process_start_date = db.Column(db.DateTime(), default=None, nullable=True)
+    start_date = db.Column(db.DateTime(), nullable=False)
+    end_date = db.Column(db.DateTime(), nullable=False)
+    file_path = db.Column(db.Text, nullable=False)
+
+    def __init__(self, client_id=None):
+        self.id = str(uuid.uuid1())
+        self.client_id = client_id
+
+    def __repr__(self):
+        return '<Export %r>' % self.id
+
+    @classmethod
+    def all(cls, client_id):
+        return cls.query.filter_by(
+            client_id=client_id
+        ).order_by(cls.created_at).all()
 
 class Property(TimestampMixin, db.Model):
     """
