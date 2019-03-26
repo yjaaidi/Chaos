@@ -1,11 +1,11 @@
 Feature: list export
 
     Background:
-        I fill in header "X-Customer-Id" with "5"
-        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
+        Given I fill in header "X-Customer-Id" with "5"
+        And I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
 
     Scenario: list without client in the header fails
-        I remove header "X-Customer-Id"
+        Given I remove header "X-Customer-Id"
         When I get "/impacts/exports"
         Then the status code should be "400"
 
@@ -21,7 +21,7 @@ Feature: list export
         When I get "/impacts/exports"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
-        and "exports" should be empty
+        And "exports" should be empty
 
     Scenario: list of two exports
         Given I have the following clients in my database:
