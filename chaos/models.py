@@ -2030,8 +2030,8 @@ class Export(TimestampMixin, db.Model):
         self.id = str(uuid.uuid1())
 
     @classmethod
-    def get_oldest_waiting_export(cls):
-        return cls.query.order_by(cls.created_at).first()
+    def get_oldest_waiting_export(cls, clientId):
+        return cls.query.filter_by(client_id=clientId, status='waiting').order_by(cls.created_at).first()
 
 
     @classmethod

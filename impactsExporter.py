@@ -1,17 +1,21 @@
 import os, sys, getopt, logging, csv
 os.environ['CHAOS_CONFIG_FILE'] = "default_settings.py"
 from chaos import db, utils, default_settings
-from chaos.models import Export
+from chaos.models import Export, Client
 
 class impactsExporter:
 
-    clientCode = ''
+    clientId = ''
 
-    def setClientCode(self, code):
-        self.clientCode = code
+    def setclientId(self, id):
+        self.clientId = id
 
-    def get_oldest_waiting_export(self):
-        return Export.get_oldest_waiting_export()
+    def get_oldest_waiting_export(self, clientId):
+        item = Export.get_oldest_waiting_export(clientId)
+        if not item:
+            raise ValueError("No waiting task for this client has been found")
+
+        return item
 
     def update_export_status(self, item, status):
         item.status = status
@@ -20,8 +24,15 @@ class impactsExporter:
         db.session.refresh(item)
 
     def checkRequiredArguments(self):
-        if not self.clientCode:
-            raise ValueError("Client code should be provided")
+        if not self.clientId:
+            raise ValueError("Client id should be provided")
+
+        if not utils.is_uuid(self.clientId):
+            raise ValueError("Wrong UUID format for client id")
+
+        client = Client.query.get(self.clientId)
+        if not client:
+            raise ValueError("Wrong client id")
         return True
 
     def getArchivedImpacts(self, client_id, start_date, end_date):
@@ -47,12 +58,13 @@ class impactsExporter:
     def run(self):
         try:
             self.checkRequiredArguments()
-            item = self.get_oldest_waiting_export()
+            item = self.get_oldest_waiting_export(self.clientId)
             self.update_export_status(item, 'handling')
             impacts = self.getArchivedImpacts(item.client_id, item.start_date, item.end_date)
             filePath = self.generateFilePath(item.id)
             self.createCSV(filePath, impacts)
             self.markExportAsDone(item, filePath)
+            logging.getLogger(__name__).info('Impacts are exported in ' + filePath)
         except Exception as e:
            logging.getLogger(__name__).debug(e)
            sys.exit(2)
@@ -74,5 +86,5 @@ if __name__ == "__main__":
     args = getCommandArguments(sys.argv[1:])
 
     exporter = impactsExporter()
-    exporter.setClientCode(args['client_id'])
+    exporter.setclientId(args['client_id'])
     exporter.run()
