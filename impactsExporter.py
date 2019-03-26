@@ -1,11 +1,9 @@
-import os, sys, getopt
+import os, sys, getopt, logging, csv
 os.environ['CHAOS_CONFIG_FILE'] = "default_settings.py"
-import logging
 from chaos import db, utils
 from chaos.models import Export
 
 class impactsExporter:
-
 
     clientCode = ''
 
@@ -26,14 +24,38 @@ class impactsExporter:
             raise ValueError("Client code should be provided")
         return True
 
+    def getArchivedImpacts(self, client_id, start_date, end_date):
+        return Export.getArchivedImpacts(client_id, start_date, end_date)
+
+    def generateFilePath(self, prefix):
+        fileName = prefix + '.csv'
+        return os.path.abspath(fileName)
+
+    def createCSV(self, filePath, impacts):
+        with open(filePath, 'wb') as f:
+            outcsv = csv.writer(f)
+            outcsv.writerow(impacts.keys())
+            outcsv.writerows(impacts.fetchall())
+            f.close()
+
+    def markExportAsDone(self, item, filePath):
+        item.status = 'done'
+        item.file_path = filePath
+        db.session.commit()
+        db.session.refresh(item)
+
     def run(self):
         try:
             self.checkRequiredArguments()
             item = self.get_oldest_waiting_export()
             self.update_export_status(item, 'handling')
+            impacts = self.getArchivedImpacts(item.client_id, item.start_date, item.end_date)
+            filePath = self.generateFilePath(item.id)
+            self.createCSV(filePath, impacts)
+            self.markExportAsDone(item, filePath)
         except Exception as e:
-            logging.getLogger(__name__).debug(e)
-            sys.exit(2)
+           logging.getLogger(__name__).debug(e)
+           sys.exit(2)
 
 def getCommandArguments(argv):
     client_id = ''
