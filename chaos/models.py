@@ -2061,3 +2061,31 @@ class Export(TimestampMixin, db.Model):
     @classmethod
     def get_oldest_waiting_export(cls):
         return cls.query.order_by(cls.created_at).first()
+
+
+    @classmethod
+    def getArchivedImpacts(cls, client_id, app_start_date, app_end_date):
+
+        query = 'SELECT' \
+                ' d.reference,' \
+                ' c.wording AS cause' \
+                ' FROM ' \
+                ' disruption d' \
+                ' LEFT JOIN impact i ON (i.disruption_id = d.id)' \
+                ' LEFT JOIN application_periods app ON (app.impact_id = i.id)' \
+                ' LEFT JOIN cause c ON (c.id = d.cause_id)' \
+                ' WHERE' \
+                ' d.client_id = :client_id' \
+                ' AND app.start_date >= :app_start_date' \
+                ' AND app.end_date <= :app_end_date'
+
+        stmt = text(query)
+        stmt = stmt.bindparams(bindparam('client_id', type_=db.String))
+        stmt = stmt.bindparams(bindparam('app_start_date', type_=db.Date))
+        stmt = stmt.bindparams(bindparam('app_end_date', type_=db.Date))
+        vars = {}
+        vars['client_id'] = client_id
+        vars['app_start_date'] = app_start_date
+        vars['app_end_date'] = app_end_date
+
+        return db.engine.execute(stmt, vars)
