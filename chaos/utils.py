@@ -871,3 +871,8 @@ def add_notification_date_on_impacts(disruptions_or_impacts_json):
         if ('send_notifications' in impact) and impact['send_notifications'] and \
             ('notification_date' not in impact):
             impact['notification_date'] = get_current_time().strftime('%Y-%m-%dT%H:%M:%SZ')
+
+def is_uuid(uuid_string, version=4):
+    import re
+    pattern = re.compile(r'^[\da-f]{8}-([\da-f]{4}-){3}[\da-f]{12}$', re.IGNORECASE)
+    return pattern.match(uuid_string)
