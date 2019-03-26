@@ -1,7 +1,7 @@
 import os, sys, getopt
 os.environ['CHAOS_CONFIG_FILE'] = "default_settings.py"
 import logging
-from chaos import db
+from chaos import db, utils
 from chaos.models import Export
 
 class impactsExporter:
@@ -17,6 +17,7 @@ class impactsExporter:
 
     def update_export_status(self, item, status):
         item.status = status
+        item.process_start_date = utils.get_current_time()
         db.session.commit()
         db.session.refresh(item)
 
@@ -35,21 +36,21 @@ class impactsExporter:
             sys.exit(2)
 
 def getCommandArguments(argv):
-    client_code = ''
-    opts, args = getopt.getopt(argv,"hc:",["client_code=",])
+    client_id = ''
+    opts, args = getopt.getopt(argv,"hc:",["client_id=",])
 
     for opt, arg in opts:
         if opt == '-h':
-            print 'impactsExporter.py -c <client_code>'
+            print 'impactsExporter.py -c <client_id>'
             sys.exit()
         elif opt  == '-c':
-            client_code = arg
+            client_id = arg
 
-    return {'client_code': client_code }
+    return {'client_id': client_id }
 
 if __name__ == "__main__":
     args = getCommandArguments(sys.argv[1:])
 
     exporter = impactsExporter()
-    exporter.setClientCode(args['client_code'])
+    exporter.setClientCode(args['client_id'])
     exporter.run()
