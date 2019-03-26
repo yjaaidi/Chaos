@@ -14,12 +14,13 @@ from alembic import op
 import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
+status_type = sa.Enum('waiting', 'handling', 'error', 'done', name='status')
 
 def upgrade():
     op.create_table('export',
     sa.Column('id', postgresql.UUID(), nullable=False),
     sa.Column('client_id', postgresql.UUID(), nullable=False),
-    sa.Column('status', sa.Text(), nullable=False),
+    sa.Column('status', status_type, nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=False),
     sa.Column('updated_at', sa.DateTime(), nullable=True),
     sa.Column('process_start_date', sa.DateTime(), nullable=True),
