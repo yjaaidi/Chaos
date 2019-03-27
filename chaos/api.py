@@ -85,6 +85,7 @@ api.add_resource(resources.ImpactsByObject,
 
 api.add_resource(resources.ImpactsExports,
                  '/impacts/exports',
+                 '/impacts/exports/<string:id>',
                  endpoint='impacts_exports')
 
 api.add_resource(resources.Channel,

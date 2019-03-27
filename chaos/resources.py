@@ -77,6 +77,7 @@ class Index(flask_restful.Resource):
             "properties": {"href": url_for('property', _external=True)},
             "property": {"href": url_for('property', _external=True) + '/{id}', "templated": True},
             "impacts_exports": {"href": url_for('impacts_exports', _external=True)},
+            "impacts_export": {"href": url_for('impacts_exports', _external=True) + '/{id}', "templated": True},
             "impacts": {"href": url_for('disruption', _external=True) + '/{disruption_id}/impacts', "templated": True},
             "impact": {"href": url_for('disruption', _external=True) + '/{disruption_id}/impacts/{id}', "templated": True}
         }
@@ -1893,6 +1894,11 @@ class ImpactsExports(flask_restful.Resource):
         self.parsers = {'get': reqparse.RequestParser()}
 
     @validate_client()
+    @validate_id()
     @validate_client_token()
-    def get(self, client):
-        return marshal({'exports':models.Export.all(client.id)}, exports_fields)
+    def get(self, client, id=None):
+        if id:
+            return marshal({'export': models.Export.get(client.id, id)}, one_export_fields)
+        else:
+            return marshal({'exports':models.Export.all(client.id)}, exports_fields)
+        
