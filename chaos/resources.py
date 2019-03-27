@@ -40,7 +40,7 @@ from formats import *
 from formats import impact_input_format, channel_input_format, pt_object_type_values,\
     tag_input_format, category_input_format, channel_type_values,\
     property_input_format, disruptions_search_input_format, application_status_values, \
-    impacts_search_input_format
+    impacts_search_input_format, export_input_format
 from chaos import mapper, exceptions
 from chaos import utils, db_helper
 import chaos
@@ -1901,4 +1901,31 @@ class ImpactsExports(flask_restful.Resource):
             return marshal({'export': models.Export.get(client.id, id)}, one_export_fields)
         else:
             return marshal({'exports':models.Export.all(client.id)}, exports_fields)
-        
+
+    @validate_client()
+    @validate_client_token()
+    def post(self, client):
+        json = request.get_json(silent=True)
+        logging.getLogger(__name__).debug('POST export: %s', json)
+
+        try:
+            validate(json, export_input_format)
+        except ValidationError as e:
+            return marshal({'error': {'message': utils.parse_error(e)}},
+                           error_fields), 400
+        export = models.Export.exist_without_error(client.id, json.get('start_date'), json.get('end_date'))
+        if export is not None:
+            return marshal({'export': export}, one_export_fields), 200
+
+        export = models.Export(client.id)
+        mapper.fill_from_json(export, json, mapper.export_mapping)
+        db.session.add(export)
+
+        try:
+            db.session.commit()
+            db.session.refresh(export)
+        except IntegrityError as e:
+            return marshal({'error': {'message': utils.parse_error(e)}},
+                           error_fields), 409
+
+        return marshal({'export': export}, one_export_fields), 201
