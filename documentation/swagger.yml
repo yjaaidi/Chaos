@@ -1498,11 +1498,25 @@
           - Export
         responses:
           200:
-            description: Accepted request
+            description: Export already exist
             schema:
-              $ref: "#/definitions/message_type"
+              type: object
+              properties:
+                export:
+                  $ref: "#/definitions/impacts_exports_status"
+          201:
+            description: Export in progress
+            schema:
+              type: object
+              properties:
+                export:
+                  $ref: "#/definitions/impacts_exports_status"
           400:
             description: Bad request
+            schema:
+              $ref: "#/definitions/error_occured"
+          409:
+            description: Conflict
             schema:
               $ref: "#/definitions/error_occured"
     /impacts/exports/{id}:

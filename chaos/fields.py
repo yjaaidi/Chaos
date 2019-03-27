@@ -505,8 +505,7 @@ base_export_fields = {
     'status': fields.Raw,
     'process_start_date': FieldDateTime,
     'start_date': FieldDateTime,
-    'end_date': FieldDateTime,
-    'url': fields.Raw
+    'end_date': FieldDateTime
 }
 
 export_fields = deepcopy(base_export_fields)
