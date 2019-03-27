@@ -2052,6 +2052,9 @@ class Export(TimestampMixin, db.Model):
     def get_oldest_waiting_export(cls, clientId):
         return cls.query.filter_by(client_id=clientId, status='waiting').order_by(cls.created_at).first()
 
+    @classmethod
+    def find_finished_export(cls, id):
+        return cls.query.filter_by(id=id, status='done').first()
 
     @classmethod
     def getArchivedImpacts(cls, client_id, app_start_date, app_end_date):

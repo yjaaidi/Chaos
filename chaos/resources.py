@@ -28,7 +28,7 @@
 # www.navitia.io
 
 import math
-from flask import g, request, jsonify, make_response
+from flask import g, request, jsonify, make_response, send_file
 from flask_sqlalchemy import Pagination
 import flask_restful
 from flask_restful import marshal, reqparse, types
@@ -78,6 +78,7 @@ class Index(flask_restful.Resource):
             "property": {"href": url_for('property', _external=True) + '/{id}', "templated": True},
             "impacts_exports": {"href": url_for('impacts_exports', _external=True)},
             "impacts_export": {"href": url_for('impacts_exports', _external=True) + '/{id}', "templated": True},
+            "impacts_export_download": {"href": url_for('impacts_exports', _external=True) + '/{id}/download', "templated": True},
             "impacts": {"href": url_for('disruption', _external=True) + '/{disruption_id}/impacts', "templated": True},
             "impact": {"href": url_for('disruption', _external=True) + '/{disruption_id}/impacts/{id}', "templated": True}
         }
@@ -1901,4 +1902,29 @@ class ImpactsExports(flask_restful.Resource):
             return marshal({'export': models.Export.get(client.id, id)}, one_export_fields)
         else:
             return marshal({'exports':models.Export.all(client.id)}, exports_fields)
-        
+
+class ImpactsExportDownload(flask_restful.Resource):
+    def __init__(self):
+        self.parsers = {'get': reqparse.RequestParser()}
+
+    @validate_client()
+    def get(self, client, id):
+        export = models.Export.find_finished_export(id)
+        if export is None:
+            return marshal({
+                'error': {'message': 'There is any available export for id {} '.format(id)}
+            }, error_fields), 404
+
+        export_file_path= export.file_path
+        import os.path
+        if not os.path.isfile(export_file_path):
+            return marshal({
+                'error': {'message': 'export file does not exists anymore'}
+            }, error_fields), 404
+
+
+        return send_file(export_file_path,
+                         mimetype="text/csv",
+                         as_attachment=True,
+                         attachment_filename = 'export.csv'
+                         )
