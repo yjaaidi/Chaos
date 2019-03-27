@@ -5,10 +5,9 @@ from chaos.models import Export, Client
 
 class impactsExporter:
 
-    clientId = ''
-
     def setclientId(self, id):
         self.clientId = id
+        self.logger = logging.getLogger('impacts exporter')
 
     def get_oldest_waiting_export(self, clientId):
         item = Export.get_oldest_waiting_export(clientId)
@@ -64,10 +63,10 @@ class impactsExporter:
             filePath = self.generateFilePath(item.id)
             self.createCSV(filePath, impacts)
             self.markExportAsDone(item, filePath)
-            logging.getLogger(__name__).info('Impacts are exported in ' + filePath)
+            self.logger.info('Impacts are exported in ' + filePath)
         except Exception as e:
-           logging.getLogger(__name__).debug(e)
-           sys.exit(2)
+            self.logger.debug(e)
+            sys.exit(2)
 
 def getCommandArguments(argv):
     client_id = ''
@@ -81,6 +80,7 @@ def getCommandArguments(argv):
             client_id = arg
 
     return {'client_id': client_id }
+
 
 if __name__ == "__main__":
     args = getCommandArguments(sys.argv[1:])
