@@ -58,20 +58,28 @@ __all__ = ['Disruptions', 'Index', 'Severity', 'Cause']
 class Index(flask_restful.Resource):
 
     def get(self):
-        url = url_for('disruption', _external=True)
         response = {
-            "disruptions": {"href": url},
-            "disruption": {"href": url + '/{id}', "templated": True},
+            "disruptions": {"href": url_for('disruption', _external=True)},
+            "disruption": {"href": url_for('disruption', _external=True) + '/{id}', "templated": True},
             "severities": {"href": url_for('severity', _external=True)},
+            "severity": {"href": url_for('severity', _external=True) + '/{id}', "templated": True},
             "causes": {"href": url_for('cause', _external=True)},
+            "cause": {"href": url_for('cause', _external=True) + '/{id}', "templated": True},
             "channels": {"href": url_for('channel', _external=True)},
+            "channel": {"href": url_for('channel', _external=True) + '/{id}', "templated": True},
             "impactsbyobject": {"href": url_for('impactsbyobject', _external=True)},
             "tags": {"href": url_for('tag', _external=True)},
+            "tag": {"href": url_for('tag', _external=True) + '/{id}', "templated": True},
             "categories": {"href": url_for('category', _external=True)},
+            "category": {"href": url_for('category', _external=True) + '/{id}', "templated": True},
             "channeltypes": {"href": url_for('channeltype', _external=True)},
-            "status": {"href": url_for('status', _external=True)},
             "traffic_reports": {"href": url_for('trafficreport', _external=True)},
-            "properties": {"href": url_for('property', _external=True)}
+            "properties": {"href": url_for('property', _external=True)},
+            "property": {"href": url_for('property', _external=True) + '/{id}', "templated": True},
+            "impacts_exports": {"href": url_for('impacts_exports', _external=True)},
+            "impacts_export": {"href": url_for('impacts_exports', _external=True) + '/{id}', "templated": True},
+            "impacts": {"href": url_for('disruption', _external=True) + '/{disruption_id}/impacts', "templated": True},
+            "impact": {"href": url_for('disruption', _external=True) + '/{disruption_id}/impacts/{id}', "templated": True}
         }
         return response, 200
 
@@ -1880,3 +1888,17 @@ class Property(flask_restful.Resource):
             }, error_fields), 409
 
         return None, 204
+
+class ImpactsExports(flask_restful.Resource):
+    def __init__(self):
+        self.parsers = {'get': reqparse.RequestParser()}
+
+    @validate_client()
+    @validate_id()
+    @validate_client_token()
+    def get(self, client, id=None):
+        if id:
+            return marshal({'export': models.Export.get(client.id, id)}, one_export_fields)
+        else:
+            return marshal({'exports':models.Export.all(client.id)}, exports_fields)
+        
