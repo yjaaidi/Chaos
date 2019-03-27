@@ -1984,6 +1984,10 @@ class Export(TimestampMixin, db.Model):
             client_id=client_id
         ).order_by(cls.created_at).all()
 
+    @classmethod
+    def get(cls, client_id, id):
+        return cls.query.filter_by(client_id=client_id, id=id).first_or_404()
+
 class Property(TimestampMixin, db.Model):
     """
     represents the types of properties

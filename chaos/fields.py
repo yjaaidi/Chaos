@@ -517,6 +517,10 @@ exports_fields = {
     'exports': fields.List(fields.Nested(export_fields))
 }
 
+one_export_fields = {
+    'export': fields.Nested(export_fields)
+}
+
 base_meta_fields= {
     'key': fields.Raw,
     'value': fields.Raw

@@ -25,7 +25,7 @@ def upgrade():
     sa.Column('process_start_date', sa.DateTime(), nullable=True),
     sa.Column('start_date', sa.DateTime(), nullable=False),
     sa.Column('end_date', sa.DateTime(), nullable=False),
-    sa.Column('file_path', sa.Text(), nullable=False),
+    sa.Column('file_path', sa.Text(), nullable=True),
     sa.ForeignKeyConstraint(['client_id'], [u'client.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
