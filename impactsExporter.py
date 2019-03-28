@@ -5,9 +5,18 @@ from chaos.models import Export, Client
 
 class impactsExporter:
 
-    def setclientId(self, id):
-        self.clientId = id
+    def __init__(self):
         self.logger = logging.getLogger('impacts exporter')
+
+    def initClientById(self, id):
+        if not utils.is_uuid(id):
+            raise ValueError("Wrong UUID format for client id")
+
+        client = Client.query.get(id)
+        if not client:
+            raise ValueError("Wrong client id")
+
+        self.client = client
 
     def get_oldest_waiting_export(self, clientId):
         item = Export.get_oldest_waiting_export(clientId)
@@ -24,23 +33,23 @@ class impactsExporter:
         db.session.refresh(item)
 
     def checkRequiredArguments(self):
-        if not self.clientId:
+        if not self.client:
             raise ValueError("Client id should be provided")
 
-        if not utils.is_uuid(self.clientId):
-            raise ValueError("Wrong UUID format for client id")
-
-        client = Client.query.get(self.clientId)
-        if not client:
-            raise ValueError("Wrong client id")
         return True
 
     def getArchivedImpacts(self, client_id, start_date, end_date):
         return Export.getArchivedImpacts(client_id, start_date, end_date)
 
-    def generateFilePath(self, prefix):
-        fileName = os.path.join(default_settings.IMPACT_EXPORT_DIR, prefix + '.csv')
-        return os.path.abspath(fileName)
+    def generateFilePath(self, item):
+        datePattern = '%Y_%m_%d'
+        start_date = item.start_date.strftime(datePattern)
+        end_date = item.end_date.strftime(datePattern)
+
+        fileName = '%s_impacts_export_%s_%s_%s.csv' % (self.client.client_code, start_date, end_date, item.id)
+        filePath = os.path.join(default_settings.IMPACT_EXPORT_DIR, fileName)
+
+        return os.path.abspath(filePath)
 
     def createCSV(self, filePath, impacts):
         with open(filePath, 'wb') as f:
@@ -59,10 +68,10 @@ class impactsExporter:
     def run(self):
         try:
             self.checkRequiredArguments()
-            item = self.get_oldest_waiting_export(self.clientId)
+            item = self.get_oldest_waiting_export(self.client.id)
             self.update_export_status(item, 'handling')
             impacts = self.getArchivedImpacts(item.client_id, item.start_date, item.end_date)
-            filePath = self.generateFilePath(item.id)
+            filePath = self.generateFilePath(item)
             self.createCSV(filePath, impacts)
             self.markExportAsDone(item, filePath)
             self.logger.info('Impacts are exported in ' + filePath)
@@ -91,5 +100,5 @@ if __name__ == "__main__":
     args = getCommandArguments(sys.argv[1:])
 
     exporter = impactsExporter()
-    exporter.setclientId(args['client_id'])
+    exporter.initClientById(args['client_id'])
     exporter.run()

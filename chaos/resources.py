@@ -1925,6 +1925,5 @@ class ImpactsExportDownload(flask_restful.Resource):
 
         return send_file(export_file_path,
                          mimetype="text/csv",
-                         as_attachment=True,
-                         attachment_filename = 'export.csv'
+                         as_attachment=True
                          )
