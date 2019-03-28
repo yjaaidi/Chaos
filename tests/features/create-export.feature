@@ -99,7 +99,7 @@ Feature: Create export
         And the field "export.id" should be "7ffab230-3d48-4eea-aa2c-22f8680230b6"
 
 
-    Scenario: create a impact export which exist in database
+    Scenario: create a impact export which exist in database but in error status
         Given I have the following clients in my database:
             | client_code   | created_at          | id                                   |
             | test          | 2014-04-02T23:52:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
