@@ -12,13 +12,14 @@ class impactsExporter:
     def get_oldest_waiting_export(self, clientId):
         item = Export.get_oldest_waiting_export(clientId)
         if not item:
-            raise ValueError("No waiting task for this client has been found")
+            raise UserWarning("No waiting task for this client has been found")
 
         return item
 
     def update_export_status(self, item, status):
         item.status = status
         item.process_start_date = utils.get_current_time()
+        item.updated_at = utils.get_current_time()
         db.session.commit()
         db.session.refresh(item)
 
@@ -51,6 +52,7 @@ class impactsExporter:
     def markExportAsDone(self, item, filePath):
         item.status = 'done'
         item.file_path = filePath
+        item.updated_at = utils.get_current_time()
         db.session.commit()
         db.session.refresh(item)
 
@@ -64,9 +66,12 @@ class impactsExporter:
             self.createCSV(filePath, impacts)
             self.markExportAsDone(item, filePath)
             self.logger.info('Impacts are exported in ' + filePath)
+        except UserWarning as w:
+            self.logger.info(w)
+            sys.exit(0)
         except Exception as e:
             self.logger.debug(e)
-            sys.exit(2)
+            sys.exit(1)
 
 def getCommandArguments(argv):
     client_id = ''
