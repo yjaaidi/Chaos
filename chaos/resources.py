@@ -51,6 +51,7 @@ from utils import make_pager, option_value, get_current_time, add_notification_d
 from chaos.validate_params import validate_client, validate_contributor, validate_navitia, \
     manage_navitia_error, validate_id, validate_client_token, validate_send_notifications_and_notification_date
 from collections import OrderedDict
+from aniso8601 import parse_datetime
 
 __all__ = ['Disruptions', 'Index', 'Severity', 'Cause']
 
@@ -1893,6 +1894,15 @@ class ImpactsExports(flask_restful.Resource):
     def __init__(self):
         self.parsers = {'get': reqparse.RequestParser()}
 
+    def _validate_dates_boundary(self, json):
+        start_date = parse_datetime(json.get('start_date')).replace(tzinfo=None)
+        end_date = parse_datetime(json.get('end_date')).replace(tzinfo=None)
+        if start_date > end_date:
+            raise ValidationError(message='\'start_date\' should be inferior to \'end_date\'')
+        duration_date = end_date - start_date
+        if duration_date.days > 366 :
+            raise ValidationError(message='Export should be less than 366 days')
+
     @validate_client()
     @validate_id()
     @validate_client_token()
@@ -1910,6 +1920,7 @@ class ImpactsExports(flask_restful.Resource):
 
         try:
             validate(json, export_input_format)
+            self._validate_dates_boundary(json)
         except ValidationError as e:
             return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 400

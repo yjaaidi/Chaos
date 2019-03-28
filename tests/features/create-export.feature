@@ -39,7 +39,7 @@ Feature: Create export
         And the header "Content-Type" should be "application/json"
         And the field "error.message" should be "'start_date' is a required property"
 
-    Scenario: we cannot create a property without 'end_date' data
+    Scenario: we cannot create an export without 'end_date' data
         Given I have the following clients in my database:
         | client_code | created_at          | updated_at          | id                                   |
         | test        | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
@@ -51,7 +51,7 @@ Feature: Create export
         And the header "Content-Type" should be "application/json"
         And the field "error.message" should be "'end_date' is a required property"
 
-    Scenario: we cannot create a property without 'start_date' data
+    Scenario: we cannot create an export without 'start_date' data
         Given I have the following clients in my database:
         | client_code | created_at          | updated_at          | id                                   |
         | test        | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
@@ -62,6 +62,30 @@ Feature: Create export
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
         And the field "error.message" should be "'start_date' is a required property"
+
+    Scenario: we cannot create an export with 'start_date' greater than 'end_date'
+        Given I have the following clients in my database:
+        | client_code | created_at          | updated_at          | id                                   |
+        | test        | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
+        When I post to "/impacts/exports" with:
+        """
+        {"start_date": "2014-04-04T23:52:12Z", "end_date": "2014-04-02T23:52:12Z"}
+        """
+        Then the status code should be "400"
+        And the header "Content-Type" should be "application/json"
+        And the field "error.message" should be "'start_date' should be inferior to 'end_date'"
+
+    Scenario: we cannot create an export with more than 366 days
+        Given I have the following clients in my database:
+        | client_code | created_at          | updated_at          | id                                   |
+        | test        | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
+        When I post to "/impacts/exports" with:
+        """
+        {"start_date": "2014-04-04T23:52:12Z", "end_date": "2015-06-02T23:52:12Z"}
+        """
+        Then the status code should be "400"
+        And the header "Content-Type" should be "application/json"
+        And the field "error.message" should be "Export should be less than 366 days"
 
     Scenario: create a impact export which doesn't exist in database
         Given I have the following clients in my database:
