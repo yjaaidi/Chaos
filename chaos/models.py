@@ -2060,13 +2060,23 @@ class Export(TimestampMixin, db.Model):
     def getArchivedImpacts(cls, client_id, app_start_date, app_end_date):
 
         query = 'SELECT' \
-                ' d.reference,' \
-                ' c.wording AS cause' \
+                ' d.reference' \
+                ', c.wording AS cause' \
+                ', d.start_publication_date AS publication_start_date' \
+                ', d.end_publication_date AS publication_end_date' \
+                ', po.type AS pt_object_type' \
+                ', po.uri AS pt_object_uri' \
+                ', app.start_date AS application_start_date' \
+                ', app.end_date AS application_end_date' \
+                ', i.created_at AS created_at' \
+                ', i.updated_at AS updated_at' \
                 ' FROM ' \
                 ' disruption d' \
                 ' LEFT JOIN impact i ON (i.disruption_id = d.id)' \
                 ' LEFT JOIN application_periods app ON (app.impact_id = i.id)' \
                 ' LEFT JOIN cause c ON (c.id = d.cause_id)' \
+                ' LEFT JOIN associate_impact_pt_object aipto ON (i.id = aipto.impact_id)' \
+                ' LEFT JOIN pt_object po ON (aipto.pt_object_id = po.id)' \
                 ' WHERE' \
                 ' d.client_id = :client_id' \
                 ' AND app.start_date >= :app_start_date' \
