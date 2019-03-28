@@ -14,8 +14,7 @@ from alembic import op
 
 
 def upgrade():
-    op.execute('update impact set send_notifications = false where notification_date is null')
+    op.execute('UPDATE impact SET notification_date = COALESCE(updated_at, created_at) WHERE send_notifications = true AND notification_date IS null')
 
 def downgrade():
-    # doing send_notifications = true isn't what we want so downgrade is empty
     pass
