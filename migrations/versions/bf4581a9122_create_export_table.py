@@ -30,7 +30,7 @@ def upgrade():
     sa.PrimaryKeyConstraint('id')
     )
     status_type.create(op.get_bind(), True)
-    op.add_column('export', sa.Column('status', status_type, nullable=False))
+    op.add_column('export', sa.Column('status', status_type, nullable=False, server_default='waiting'))
 
 
 def downgrade():

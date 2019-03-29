@@ -2024,7 +2024,7 @@ class Export(TimestampMixin, db.Model):
         represents the list of exports
         """
     __tablename__ = 'export'
-    id = db.Column(UUID, primary_key=True)
+    id = db.Column(UUID, primary_key=True, nullable=False)
     client_id = db.Column(UUID, db.ForeignKey(Client.id), nullable=False)
     client = db.relationship('Client', backref='exports')
     status = db.Column(ExportStatusEnum, nullable=False, default='waiting')
