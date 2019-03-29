@@ -31,7 +31,7 @@ Feature: list export
         Given I have the following exports in my database:
             | id                                   | client_id                            | status  | created_at          | process_start_date  | start_date          | end_date            | file_path                                           |
             | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | done    | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 2014-03-01T00:00:00 | 2014-04-01T00:00:00 | /tmp/5/export_2014-03-01T00-00_2014-04-01T00-00.csv |
-            | 7ffab232-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | working | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 2014-02-01T00:00:00 | 2014-03-01T00:00:00 | /tmp/5/export_2014-02-01T00-00_2014-03-01T00-00.csv |
+            | 7ffab232-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | handling | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 2014-02-01T00:00:00 | 2014-03-01T00:00:00 | /tmp/5/export_2014-02-01T00-00_2014-03-01T00-00.csv |
             | 7ffab234-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b7 | done    | 2014-04-04T23:52:12 | 2014-04-05T22:52:12 | 2014-02-01T00:00:00 | 2014-02-15T00:00:00 | /tmp/6/export_2014-02-01T00-00_2014-02-15T00-00.csv |
         When I get "/impacts/exports"
         Then the status code should be "200"
@@ -51,15 +51,15 @@ Feature: list export
             | 5             | 2014-04-02T23:52:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
             | 6             | 2014-04-02T23:52:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b7 |
         Given I have the following exports in my database:
-            | id                                   | client_id                            | status  | created_at          | process_start_date  | start_date          | end_date            | file_path                                           |
-            | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | done    | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 2014-03-01T00:00:00 | 2014-04-01T00:00:00 | /tmp/5/export_2014-03-01T00-00_2014-04-01T00-00.csv |
-            | 7ffab232-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | working | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 2014-02-01T00:00:00 | 2014-03-01T00:00:00 | /tmp/5/export_2014-02-01T00-00_2014-03-01T00-00.csv |
-            | 7ffab234-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b7 | done    | 2014-04-04T23:52:12 | 2014-04-05T22:52:12 | 2014-02-01T00:00:00 | 2014-02-15T00:00:00 | /tmp/6/export_2014-02-01T00-00_2014-02-15T00-00.csv |
+            | id                                   | client_id                            | status   | created_at          | process_start_date  | start_date          | end_date            | file_path                                           |
+            | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | done     | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 2014-03-01T00:00:00 | 2014-04-01T00:00:00 | /tmp/5/export_2014-03-01T00-00_2014-04-01T00-00.csv |
+            | 7ffab232-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | handling | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 2014-02-01T00:00:00 | 2014-03-01T00:00:00 | /tmp/5/export_2014-02-01T00-00_2014-03-01T00-00.csv |
+            | 7ffab234-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b7 | done     | 2014-04-04T23:52:12 | 2014-04-05T22:52:12 | 2014-02-01T00:00:00 | 2014-02-15T00:00:00 | /tmp/6/export_2014-02-01T00-00_2014-02-15T00-00.csv |
         When I get "/impacts/exports/7ffab232-3d48-4eea-aa2c-22f8680230b6"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
         And the field "export.id" should be "7ffab232-3d48-4eea-aa2c-22f8680230b6"
-        And the field "export.status" should be "working"
+        And the field "export.status" should be "handling"
         And the field "export.created_at" should be "2014-04-04T23:52:12Z"
         And the field "export.process_start_date" should be "2014-04-06T22:52:12Z"
         And the field "export.start_date" should be "2014-02-01T00:00:00Z"
@@ -71,9 +71,9 @@ Feature: list export
             | 5             | 2014-04-02T23:52:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
             | 6             | 2014-04-02T23:52:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b7 |
         Given I have the following exports in my database:
-            | id                                   | client_id                            | status  | created_at          | process_start_date  | start_date          | end_date            | file_path                                           |
-            | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | done    | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 2014-03-01T00:00:00 | 2014-04-01T00:00:00 | /tmp/5/export_2014-03-01T00-00_2014-04-01T00-00.csv |
-            | 7ffab232-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | working | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 2014-02-01T00:00:00 | 2014-03-01T00:00:00 | /tmp/5/export_2014-02-01T00-00_2014-03-01T00-00.csv |
-            | 7ffab234-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b7 | done    | 2014-04-04T23:52:12 | 2014-04-05T22:52:12 | 2014-02-01T00:00:00 | 2014-02-15T00:00:00 | /tmp/6/export_2014-02-01T00-00_2014-02-15T00-00.csv |
+            | id                                   | client_id                            | status   | created_at          | process_start_date  | start_date          | end_date            | file_path                                           |
+            | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | done     | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 2014-03-01T00:00:00 | 2014-04-01T00:00:00 | /tmp/5/export_2014-03-01T00-00_2014-04-01T00-00.csv |
+            | 7ffab232-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | handling | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 2014-02-01T00:00:00 | 2014-03-01T00:00:00 | /tmp/5/export_2014-02-01T00-00_2014-03-01T00-00.csv |
+            | 7ffab234-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b7 | done     | 2014-04-04T23:52:12 | 2014-04-05T22:52:12 | 2014-02-01T00:00:00 | 2014-02-15T00:00:00 | /tmp/6/export_2014-02-01T00-00_2014-02-15T00-00.csv |
         When I get "/impacts/exports/8ffab232-3d48-4eea-aa2c-22f8680230b6"
         Then the status code should be "404"
