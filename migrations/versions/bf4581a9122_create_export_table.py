@@ -20,7 +20,6 @@ def upgrade():
     op.create_table('export',
     sa.Column('id', postgresql.UUID(), nullable=False),
     sa.Column('client_id', postgresql.UUID(), nullable=False),
-    sa.Column('status', status_type, nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=False),
     sa.Column('updated_at', sa.DateTime(), nullable=True),
     sa.Column('process_start_date', sa.DateTime(), nullable=True),
@@ -30,6 +29,8 @@ def upgrade():
     sa.ForeignKeyConstraint(['client_id'], [u'client.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
+    status_type.create(op.get_bind(), True)
+    op.add_column('export', sa.Column('status', status_type, nullable=False))
 
 
 def downgrade():
