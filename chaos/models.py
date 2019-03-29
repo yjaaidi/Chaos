@@ -106,10 +106,7 @@ ChannelTypeEnum = db.Enum(
     'beacon'
 )
 
-ExportStatusEnum = db.Enum(
-    'waiting',
-    'error'
-)
+ExportStatusEnum = db.Enum('waiting', 'handling', 'error', 'done')
 
 
 class Client(TimestampMixin, db.Model):
