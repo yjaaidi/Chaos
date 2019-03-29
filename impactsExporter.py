@@ -65,6 +65,12 @@ class impactsExporter:
         db.session.commit()
         db.session.refresh(item)
 
+    def markExportAsError(self, item):
+        item.status = 'error'
+        item.updated_at = utils.get_current_time()
+        db.session.commit()
+        db.session.refresh(item)
+
     def run(self):
         try:
             self.checkRequiredArguments()
@@ -76,9 +82,11 @@ class impactsExporter:
             self.markExportAsDone(item, filePath)
             self.logger.info('Impacts are exported in ' + filePath)
         except UserWarning as w:
+            self.markExportAsError(item)
             self.logger.info(w)
             sys.exit(0)
         except Exception as e:
+            self.markExportAsError(item)
             self.logger.debug(e)
             sys.exit(1)
 

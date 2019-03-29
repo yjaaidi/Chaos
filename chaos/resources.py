@@ -1913,32 +1913,6 @@ class ImpactsExports(flask_restful.Resource):
         else:
             return marshal({'exports':models.Export.all(client.id)}, exports_fields)
 
-
-class ImpactsExportDownload(flask_restful.Resource):
-    def __init__(self):
-        self.parsers = {'get': reqparse.RequestParser()}
-
-    @validate_client()
-    def get(self, client, id):
-        export = models.Export.find_finished_export(id)
-        if export is None:
-            return marshal({
-                'error': {'message': 'There is any available export for id {} '.format(id)}
-            }, error_fields), 404
-
-        export_file_path= export.file_path
-        import os.path
-        if not os.path.isfile(export_file_path):
-            return marshal({
-                'error': {'message': 'export file does not exists anymore'}
-            }, error_fields), 404
-
-
-        return send_file(export_file_path,
-                         mimetype="text/csv",
-                         as_attachment=True
-                         )
-
     @validate_client()
     @validate_client_token()
     def post(self, client):
@@ -1967,3 +1941,29 @@ class ImpactsExportDownload(flask_restful.Resource):
                            error_fields), 409
 
         return marshal({'export': export}, one_export_fields), 201
+
+
+class ImpactsExportDownload(flask_restful.Resource):
+    def __init__(self):
+        self.parsers = {'get': reqparse.RequestParser()}
+
+    @validate_client()
+    def get(self, client, id):
+        export = models.Export.find_finished_export(id)
+        if export is None:
+            return marshal({
+                'error': {'message': 'There is any available export for id {} '.format(id)}
+            }, error_fields), 404
+
+        export_file_path= export.file_path
+        import os.path
+        if not os.path.isfile(export_file_path):
+            return marshal({
+                'error': {'message': 'export file does not exists anymore'}
+            }, error_fields), 404
+
+
+        return send_file(export_file_path,
+                         mimetype="text/csv",
+                         as_attachment=True
+                         )

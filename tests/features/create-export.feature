@@ -110,9 +110,9 @@ Feature: Create export
             | client_code   | created_at          | id                                   |
             | test          | 2014-04-02T23:52:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
         Given I have the following exports in my database:
-            | id                                   | client_id                            | status  | created_at          | process_start_date  | start_date          | end_date            | file_path                                           |
-            | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | done    | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 2014-03-01T00:00:00 | 2014-04-01T00:00:00 | /tmp/5/export_2014-03-01T00-00_2014-04-01T00-00.csv |
-            | 7ffab232-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | working | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 2014-02-01T00:00:00 | 2014-03-01T00:00:00 | /tmp/5/export_2014-02-01T00-00_2014-03-01T00-00.csv |
+            | id                                   | client_id                            | status   | created_at          | process_start_date  | start_date          | end_date            | file_path                                           |
+            | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | done     | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 2014-03-01T00:00:00 | 2014-04-01T00:00:00 | /tmp/5/export_2014-03-01T00-00_2014-04-01T00-00.csv |
+            | 7ffab232-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | handling | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 2014-02-01T00:00:00 | 2014-03-01T00:00:00 | /tmp/5/export_2014-02-01T00-00_2014-03-01T00-00.csv |
         When I post to "/impacts/exports" with:
         """
         {"start_date": "2014-03-01T00:00:00Z", "end_date": "2014-04-01T00:00:00Z"}
@@ -129,7 +129,7 @@ Feature: Create export
             | test          | 2014-04-02T23:52:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
         Given I have the following exports in my database:
             | id                                   | client_id                            | status  | created_at          | process_start_date  | start_date          | end_date            | file_path                                           |
-            | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | error    | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 2014-03-01T00:00:00 | 2014-04-01T00:00:00 | /tmp/5/export_2014-03-01T00-00_2014-04-01T00-00.csv |
+            | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | error   | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 2014-03-01T00:00:00 | 2014-04-01T00:00:00 | /tmp/5/export_2014-03-01T00-00_2014-04-01T00-00.csv |
         When I post to "/impacts/exports" with:
         """
         {"start_date": "2014-03-01T00:00:00Z", "end_date": "2014-04-01T00:00:00Z"}
