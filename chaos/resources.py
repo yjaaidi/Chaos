@@ -1904,6 +1904,19 @@ class ImpactsExports(flask_restful.Resource):
         if duration_date.days > 366 :
             raise ValidationError(message='Export should be less than 366 days')
 
+    def runExportForClient(self, client_id):
+
+        from subprocess import Popen, PIPE
+        from os import path, pardir
+
+        root_dir = path.abspath(path.join(__file__, "../.."))
+        python_path = path.join(root_dir, 'venv', 'bin', 'python')
+        exporter_path = path.join(root_dir, 'impactsExporter.py')
+
+        p1 = Popen([python_path, exporter_path, '-c', client_id], stdout=PIPE)
+        logging.getLogger(__name__).debug(p1.communicate()[0])
+
+
     @validate_client()
     @validate_id()
     @validate_client_token()
@@ -1927,6 +1940,7 @@ class ImpactsExports(flask_restful.Resource):
                            error_fields), 400
         export = models.Export.exist_without_error(client.id, json.get('start_date'), json.get('end_date'))
         if export is not None:
+            logging.getLogger(__name__).warning('There is an existing export task for this client marked as "%s"' % export.status)
             return marshal({'export': export}, one_export_fields), 200
 
         export = models.Export(client.id)
@@ -1939,6 +1953,8 @@ class ImpactsExports(flask_restful.Resource):
         except IntegrityError as e:
             return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 409
+        else:
+            self.runExportForClient(client.id)
 
         return marshal({'export': export}, one_export_fields), 201
 
