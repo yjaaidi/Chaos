@@ -106,6 +106,8 @@ ChannelTypeEnum = db.Enum(
     'beacon'
 )
 
+ExportStatusEnum = db.Enum('waiting', 'handling', 'error', 'done')
+
 
 class Client(TimestampMixin, db.Model):
     __tablename__ = 'client'
@@ -2025,11 +2027,11 @@ class Export(TimestampMixin, db.Model):
     id = db.Column(UUID, primary_key=True)
     client_id = db.Column(UUID, db.ForeignKey(Client.id), nullable=False)
     client = db.relationship('Client', backref='exports')
-    status = db.Column(db.Text, unique=False, nullable=False)
-    process_start_date = db.Column(db.DateTime(), nullable=True)
+    status = db.Column(ExportStatusEnum, nullable=False, default='waiting')
+    process_start_date = db.Column(db.DateTime(), default=None, nullable=True)
     start_date = db.Column(db.DateTime(), nullable=False)
     end_date = db.Column(db.DateTime(), nullable=False)
-    file_path = db.Column(db.Text, unique=False, nullable=True)
+    file_path = db.Column(db.Text, default=None, nullable=True)
 
     def __init__(self, client_id=None):
         self.id = str(uuid.uuid1())
@@ -2047,6 +2049,15 @@ class Export(TimestampMixin, db.Model):
     @classmethod
     def get(cls, client_id, id):
         return cls.query.filter_by(client_id=client_id, id=id).first_or_404()
+
+    @classmethod
+    def exist_without_error(cls, client_id, start_date, end_date):
+        return cls.query.filter(
+            cls.client_id==client_id,
+            cls.start_date==start_date,
+            cls.end_date==end_date,
+            cls.status!='error'
+            ).first()
 
     @classmethod
     def get_oldest_waiting_export(cls, clientId):
