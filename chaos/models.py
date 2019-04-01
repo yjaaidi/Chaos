@@ -2068,7 +2068,7 @@ class Export(TimestampMixin, db.Model):
         return cls.query.filter_by(id=id, status='done').first()
 
     @classmethod
-    def getArchivedImpacts(cls, client_id, app_start_date, app_end_date):
+    def get_client_impacts_between_application_dates(cls, client_id, app_start_date, app_end_date):
 
         query = 'SELECT' \
                 ' d.reference' \

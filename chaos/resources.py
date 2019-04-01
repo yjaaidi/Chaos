@@ -1904,16 +1904,17 @@ class ImpactsExports(flask_restful.Resource):
         if duration_date.days > 366 :
             raise ValidationError(message='Export should be less than 366 days')
 
-    def runExportForClient(self, client_id):
+    def run_export_for_client(self, client_id):
 
         from subprocess import Popen, PIPE
-        from os import path, pardir
+        from os import path
+        from sys import executable
 
         root_dir = path.abspath(path.join(__file__, "../.."))
-        python_path = path.join(root_dir, 'venv', 'bin', 'python')
         exporter_path = path.join(root_dir, 'impactsExporter.py')
 
-        p1 = Popen([python_path, exporter_path, '-c', client_id], stdout=PIPE)
+        p1 = Popen([executable, exporter_path, '-c', client_id], stdout=PIPE)
+
         logging.getLogger(__name__).debug(p1.communicate()[0])
 
 
@@ -1954,7 +1955,7 @@ class ImpactsExports(flask_restful.Resource):
             return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 409
         else:
-            self.runExportForClient(client.id)
+            self.run_export_for_client(client.id)
 
         return marshal({'export': export}, one_export_fields), 201
 
@@ -1975,7 +1976,7 @@ class ImpactsExportDownload(flask_restful.Resource):
         import os.path
         if not os.path.isfile(export_file_path):
             return marshal({
-                'error': {'message': 'export file does not exists anymore'}
+                'error': {'message': 'export file does not exist'}
             }, error_fields), 404
 
 

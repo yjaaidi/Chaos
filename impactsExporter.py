@@ -8,7 +8,7 @@ class impactsExporter:
     def __init__(self):
         self.logger = logging.getLogger('impacts exporter')
 
-    def initClientById(self, id):
+    def init_client_by_id(self, id):
         if not utils.is_uuid(id):
             raise ValueError("Wrong UUID format for client id")
 
@@ -32,16 +32,16 @@ class impactsExporter:
         db.session.commit()
         db.session.refresh(item)
 
-    def checkRequiredArguments(self):
+    def check_required_arguments(self):
         if not self.client:
             raise ValueError("Client id should be provided")
 
         return True
 
-    def getArchivedImpacts(self, client_id, start_date, end_date):
-        return Export.getArchivedImpacts(client_id, start_date, end_date)
+    def get_client_impacts_between_application_dates(self, client_id, start_date, end_date):
+        return Export.get_client_impacts_between_application_dates(client_id, start_date, end_date)
 
-    def generateFilePath(self, item):
+    def generate_file_path(self, item):
         datePattern = '%Y_%m_%d'
         start_date = item.start_date.strftime(datePattern)
         end_date = item.end_date.strftime(datePattern)
@@ -51,46 +51,49 @@ class impactsExporter:
 
         return os.path.abspath(filePath)
 
-    def createCSV(self, filePath, impacts):
+    def create_csv(self, filePath, impacts):
         with open(filePath, 'wb') as f:
             outcsv = csv.writer(f)
             outcsv.writerow(impacts.keys())
             outcsv.writerows(impacts.fetchall())
             f.close()
 
-    def markExportAsDone(self, item, filePath):
-        item.status = 'done'
-        item.file_path = filePath
-        item.updated_at = utils.get_current_time()
-        db.session.commit()
-        db.session.refresh(item)
+    def mark_export_as_done(self, item, filePath):
+        if isinstance(item, Export):
+            item.status = 'done'
+            item.file_path = filePath
+            item.updated_at = utils.get_current_time()
+            db.session.commit()
+            db.session.refresh(item)
 
-    def markExportAsError(self, item):
-        item.status = 'error'
-        item.updated_at = utils.get_current_time()
-        db.session.commit()
-        db.session.refresh(item)
+    def mark_export_as_error(self, item):
+        if isinstance(item, Export):
+            item.status = 'error'
+            item.updated_at = utils.get_current_time()
+            db.session.commit()
+            db.session.refresh(item)
 
     def run(self):
         try:
-            self.checkRequiredArguments()
+            item = None
+            self.check_required_arguments()
             item = self.get_oldest_waiting_export(self.client.id)
             self.update_export_status(item, 'handling')
-            impacts = self.getArchivedImpacts(item.client_id, item.start_date, item.end_date)
-            filePath = self.generateFilePath(item)
-            self.createCSV(filePath, impacts)
-            self.markExportAsDone(item, filePath)
-            self.logger.info('Impacts are exported in ' + filePath)
+            impacts = self.get_client_impacts_between_application_dates(item.client_id, item.start_date, item.end_date)
+            filePath = self.generate_file_path(item)
+            self.create_csv(filePath, impacts)
+            self.mark_export_as_done(item, filePath)
+            self.logger.info('Impacts export for %s is available at %s' % (item.client_id, filePath))
         except UserWarning as w:
-            self.markExportAsError(item)
+            self.mark_export_as_error(item)
             self.logger.info(w)
             sys.exit(0)
         except Exception as e:
-            self.markExportAsError(item)
+            self.mark_export_as_error(item)
             self.logger.debug(e)
             sys.exit(1)
 
-def getCommandArguments(argv):
+def get_command_arguments(argv):
     client_id = ''
     opts, args = getopt.getopt(argv,"hc:",["client_id=",])
 
@@ -105,8 +108,8 @@ def getCommandArguments(argv):
 
 
 if __name__ == "__main__":
-    args = getCommandArguments(sys.argv[1:])
+    args = get_command_arguments(sys.argv[1:])
 
     exporter = impactsExporter()
-    exporter.initClientById(args['client_id'])
+    exporter.init_client_by_id(args['client_id'])
     exporter.run()
