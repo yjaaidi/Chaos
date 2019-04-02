@@ -143,17 +143,12 @@ class FieldObjectName(fields.Raw):
             obj_uri = obj.uri
             obj_type = obj.type
 
-        if obj_type == 'line_section':
-            return None
-
         navitia = Navitia(
             current_app.config['NAVITIA_URL'],
             get_coverage(request),
             get_token(request))
-        response = navitia.get_pt_object(obj_uri, obj_type)
-        if response and 'name' in response:
-            return response['name']
-        return 'Unable to find object'
+
+        return navitia.find_tc_object_name(obj_uri, obj_type)
 
 
 class FieldLocalization(fields.Raw):
