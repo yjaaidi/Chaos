@@ -2077,6 +2077,8 @@ class Export(TimestampMixin, db.Model):
                 ', d.end_publication_date AS publication_end_date' \
                 ', po.type AS pt_object_type' \
                 ', po.uri AS pt_object_uri' \
+                ', po.uri AS pt_object_name' \
+                ', s.wording AS severity' \
                 ', app.start_date AS application_start_date' \
                 ', app.end_date AS application_end_date' \
                 ', i.created_at AS created_at' \
@@ -2088,6 +2090,7 @@ class Export(TimestampMixin, db.Model):
                 ' LEFT JOIN cause c ON (c.id = d.cause_id)' \
                 ' LEFT JOIN associate_impact_pt_object aipto ON (i.id = aipto.impact_id)' \
                 ' LEFT JOIN pt_object po ON (aipto.pt_object_id = po.id)' \
+                ' LEFT JOIN severity s ON (i.severity_id = s.id)' \
                 ' WHERE' \
                 ' d.client_id = :client_id' \
                 ' AND app.start_date >= :app_start_date' \
