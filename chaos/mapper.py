@@ -192,5 +192,6 @@ time_slot_mapping = {
 
 export_mapping = {
     'start_date': Datetime(attribute='start_date'),
-    'end_date': Datetime(attribute='end_date')
+    'end_date': Datetime(attribute='end_date'),
+    'time_zone': None
 }

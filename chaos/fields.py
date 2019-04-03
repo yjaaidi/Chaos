@@ -498,6 +498,7 @@ one_channel_fields = {
 base_export_fields = {
     'id': fields.Raw,
     'status': fields.Raw,
+    'time_zone': fields.Raw,
     'process_start_date': FieldDateTime,
     'start_date': FieldDateTime,
     'end_date': FieldDateTime

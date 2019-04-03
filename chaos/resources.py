@@ -1894,6 +1894,7 @@ class Property(flask_restful.Resource):
 class ImpactsExports(flask_restful.Resource):
     def __init__(self):
         self.parsers = {'get': reqparse.RequestParser()}
+        self.navitia = None
 
     def validate_dates_boundary(self, json):
         start_date = parse_datetime(json.get('start_date')).replace(tzinfo=None)
@@ -1913,9 +1914,7 @@ class ImpactsExports(flask_restful.Resource):
         root_dir = path.abspath(path.join(__file__, "../.."))
         exporter_path = path.join(root_dir, 'impactsExporter.py')
 
-        p1 = Popen([executable, exporter_path, '-c', client_id], stdout=PIPE)
-
-        logging.getLogger(__name__).debug(p1.communicate()[0])
+        p1 = Popen([executable, exporter_path, '--client_id', client_id, '--coverage', self.navitia.coverage, '--token', self.navitia.token], stdout=PIPE)
 
 
     @validate_client()
@@ -1928,8 +1927,10 @@ class ImpactsExports(flask_restful.Resource):
             return marshal({'exports':models.Export.all(client.id)}, exports_fields)
 
     @validate_client()
+    @validate_navitia()
     @validate_client_token()
-    def post(self, client):
+    def post(self, client, navitia):
+        self.navitia = navitia
         json = request.get_json(silent=True)
         logging.getLogger(__name__).debug('POST export: %s', json)
 
