@@ -26,11 +26,12 @@ def upgrade():
     sa.Column('start_date', sa.DateTime(), nullable=False),
     sa.Column('end_date', sa.DateTime(), nullable=False),
     sa.Column('file_path', sa.Text(), nullable=True),
-    sa.ForeignKeyConstraint(['client_id'], [u'client.id'], ),
+    sa.ForeignKeyConstraint(['client_id'], [u'client.id']),
     sa.PrimaryKeyConstraint('id')
     )
     status_type.create(op.get_bind(), True)
     op.add_column('export', sa.Column('status', status_type, nullable=False, server_default='waiting'))
+    op.add_column('export', sa.Column('time_zone', sa.Text(), nullable=False, server_default='UTC'))
 
 
 def downgrade():

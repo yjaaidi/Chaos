@@ -2031,6 +2031,7 @@ class Export(TimestampMixin, db.Model):
     process_start_date = db.Column(db.DateTime(), default=None, nullable=True)
     start_date = db.Column(db.DateTime(), nullable=False)
     end_date = db.Column(db.DateTime(), nullable=False)
+    time_zone = db.Column(db.Text, nullable=False, default='UTC')
     file_path = db.Column(db.Text, default=None, nullable=True)
 
     def __init__(self, client_id=None):
