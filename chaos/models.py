@@ -2080,6 +2080,7 @@ class Export(TimestampMixin, db.Model):
                 ', po.uri AS pt_object_uri' \
                 ', po.uri AS pt_object_name' \
                 ', s.wording AS severity' \
+                ', (CASE WHEN cht.name=\'title\' THEN m.text ELSE \'\' END) as impact_title' \
                 ', app.start_date AS application_start_date' \
                 ', app.end_date AS application_end_date' \
                 ', i.created_at AS created_at' \
@@ -2092,10 +2093,29 @@ class Export(TimestampMixin, db.Model):
                 ' LEFT JOIN associate_impact_pt_object aipto ON (i.id = aipto.impact_id)' \
                 ' LEFT JOIN pt_object po ON (aipto.pt_object_id = po.id)' \
                 ' LEFT JOIN severity s ON (i.severity_id = s.id)' \
+                ' LEFT JOIN message m ON (i.id = m.impact_id)' \
+                ' LEFT JOIN channel ch ON (ch.id = m.channel_id)' \
+                ' LEFT JOIN channel_type cht ON (cht.channel_id = ch.id)' \
                 ' WHERE' \
                 ' d.client_id = :client_id' \
+                ' AND ch.client_id = :client_id'\
                 ' AND app.start_date >= :app_start_date' \
-                ' AND app.end_date <= :app_end_date'
+                ' AND app.end_date <= :app_end_date' \
+                ' GROUP BY ' \
+                ' reference' \
+                ', cause' \
+                ', publication_start_date' \
+                ', publication_end_date' \
+                ', pt_object_type' \
+                ', pt_object_uri' \
+                ', pt_object_name' \
+                ', severity' \
+                ', application_start_date' \
+                ', application_end_date' \
+                ', i.created_at' \
+                ', i.updated_at' \
+                ', cht.name' \
+                ', m.text'
 
         stmt = text(query)
         stmt = stmt.bindparams(bindparam('client_id', type_=db.String))

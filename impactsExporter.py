@@ -77,7 +77,7 @@ class impactsExporter:
 
     def create_csv(self, filePath, columns, rows):
         with open(filePath, 'wb') as f:
-            w = csv.writer(f, encoding='utf-8')
+            w = csv.writer(f)
             w.writerow(columns)
             w.writerows(rows)
             f.close()
