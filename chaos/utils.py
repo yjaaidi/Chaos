@@ -876,3 +876,13 @@ def is_uuid(uuid_string):
     import re
     pattern = re.compile(r'^[\da-f]{8}-([\da-f]{4}-){3}[\da-f]{12}$', re.IGNORECASE)
     return pattern.match(uuid_string)
+
+def utc_to_local(utc_datetime, local_tz):
+    """
+    Converts date with UTC in local timezone
+    :param utc_datetime: datetime.datetime
+    :param local_tz: pytz.timezone
+    :return: datetime.datetime
+    """
+    local_dt = utc_datetime.replace(tzinfo=pytz.utc).astimezone(local_tz)
+    return local_tz.normalize(local_dt)

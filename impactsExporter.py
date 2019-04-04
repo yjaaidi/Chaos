@@ -1,4 +1,4 @@
-import os, sys, logging, argparse
+import os, sys, logging, argparse, pytz, datetime
 import unicodecsv as csv
 os.environ['CHAOS_CONFIG_FILE'] = "default_settings.py"
 from chaos import db, utils, default_settings
@@ -7,11 +7,12 @@ from chaos.navitia import Navitia
 
 class impactsExporter:
 
-    def __init__(self, client_id, coverage, token):
+    def __init__(self, client_id, coverage, token, time_zone = 'UTC'):
         self.logger = logging.getLogger('impacts exporter')
         self.set_client_by_id(client_id)
         self.set_coverage(coverage)
         self.set_token(token)
+        self.set_time_zone(time_zone)
 
     def set_client_by_id(self, id):
         if not utils.is_uuid(id):
@@ -28,6 +29,9 @@ class impactsExporter:
 
     def set_token(self, token):
         self.token = token
+
+    def set_time_zone(self, time_zone):
+        self.time_zone = time_zone
 
     def get_oldest_waiting_export(self, clientId):
         item = Export.get_oldest_waiting_export(clientId)
@@ -52,6 +56,9 @@ class impactsExporter:
 
         if not self.token:
             raise ValueError("Token should be provided")
+
+        if self.time_zone not in pytz.all_timezones:
+            raise ValueError("Invalid timezone string %s" % self.time_zone)
 
         return True
 
@@ -115,16 +122,20 @@ class impactsExporter:
 
         navitia = Navitia(default_settings.NAVITIA_URL, self.coverage, self.token)
 
+        local_tz = pytz.timezone(self.time_zone)
         columns = impacts.keys()
 
         rows = []
         for sub_dict in impacts.fetchall():
             row = []
             for column in columns:
+                val = sub_dict[column]
                 if column == 'pt_object_name' :
                     row.append(navitia.find_tc_object_name(sub_dict['pt_object_uri'], sub_dict['pt_object_type']))
+                elif isinstance(val, datetime.date):
+                    row.append(utils.utc_to_local(val, local_tz))
                 else:
-                    row.append(sub_dict[column])
+                    row.append(val)
 
             rows.append(row)
 
@@ -136,6 +147,7 @@ def get_command_arguments(argv):
     parser.add_argument('--client_id', help='Client UUID')
     parser.add_argument('--coverage', help='Navitia coverage')
     parser.add_argument('--token', help='Navitia token')
+    parser.add_argument('--tz', help='Time zone')
 
     return parser.parse_args()
 
@@ -143,5 +155,9 @@ def get_command_arguments(argv):
 if __name__ == "__main__":
     args = get_command_arguments(sys.argv[1:])
 
-    exporter = impactsExporter(args.client_id, args.coverage, args.token)
+    tz = args.tz;
+    if not tz:
+        tz = 'UTC'
+
+    exporter = impactsExporter(args.client_id, args.coverage, args.token, tz)
     exporter.run()

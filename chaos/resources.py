@@ -1896,6 +1896,7 @@ class ImpactsExports(flask_restful.Resource):
         self.parsers = {'get': reqparse.RequestParser()}
         self.navitia = None
 
+
     def validate_dates_boundary(self, json):
         start_date = parse_datetime(json.get('start_date')).replace(tzinfo=None)
         end_date = parse_datetime(json.get('end_date')).replace(tzinfo=None)
@@ -1905,7 +1906,7 @@ class ImpactsExports(flask_restful.Resource):
         if duration_date.days > 366 :
             raise ValidationError(message='Export should be less than 366 days')
 
-    def run_export_for_client(self, client_id):
+    def run_export(self, export):
 
         from subprocess import Popen, PIPE
         from os import path
@@ -1914,7 +1915,7 @@ class ImpactsExports(flask_restful.Resource):
         root_dir = path.abspath(path.join(__file__, "../.."))
         exporter_path = path.join(root_dir, 'impactsExporter.py')
 
-        p1 = Popen([executable, exporter_path, '--client_id', client_id, '--coverage', self.navitia.coverage, '--token', self.navitia.token], stdout=PIPE)
+        Popen([executable, exporter_path, '--client_id', export.client_id, '--coverage', self.navitia.coverage, '--token', self.navitia.token, '--tz', export.time_zone], stdout=PIPE)
 
 
     @validate_client()
@@ -1956,7 +1957,7 @@ class ImpactsExports(flask_restful.Resource):
             return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 409
         else:
-            self.run_export_for_client(client.id)
+            self.run_export(export)
 
         return marshal({'export': export}, one_export_fields), 201
 
