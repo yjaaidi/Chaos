@@ -1487,6 +1487,7 @@
         description: Create archive file export
         parameters:
         - $ref: "#/parameters/header_authorization"
+        - $ref: "#/parameters/header_coverage"
         - $ref: "#/parameters/header_customer_id"
         - in: body
           name: body
