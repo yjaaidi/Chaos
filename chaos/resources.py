@@ -1909,13 +1909,13 @@ class ImpactsExports(flask_restful.Resource):
     def run_export(self, export):
 
         from subprocess import Popen, PIPE
-        from os import path
+        from os import path, environ
         from sys import executable
 
         root_dir = path.abspath(path.join(__file__, "../.."))
         exporter_path = path.join(root_dir, 'impactsExporter.py')
 
-        Popen([executable, exporter_path, '--client_id', export.client_id, '--coverage', self.navitia.coverage, '--token', self.navitia.token, '--tz', export.time_zone], stdout=PIPE)
+        Popen([executable, exporter_path, '--client_id', export.client_id, '--coverage', self.navitia.coverage, '--token', self.navitia.token, '--tz', export.time_zone], stdout=PIPE, env=environ.copy())
 
 
     @validate_client()
