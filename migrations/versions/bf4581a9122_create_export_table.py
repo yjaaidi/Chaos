@@ -1,14 +1,14 @@
 """Create export table
 
 Revision ID: bf4581a9122
-Revises: 143e661e5114
+Revises: 463b471b2a9a
 Create Date: 2019-03-20 16:59:47.907869
 
 """
 
 # revision identifiers, used by Alembic.
 revision = 'bf4581a9122'
-down_revision = 'dfe97c5974e3'
+down_revision = '463b471b2a9a'
 
 from alembic import op
 import sqlalchemy as sa
