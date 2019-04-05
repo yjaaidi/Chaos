@@ -31,7 +31,7 @@ class impactsExporter:
         self.token = token
 
     def set_time_zone(self, time_zone):
-        self.time_zone = time_zone
+        self.time_zone = pytz.timezone(time_zone)
 
     def get_oldest_waiting_export(self, clientId):
         item = Export.get_oldest_waiting_export(clientId)
@@ -57,8 +57,8 @@ class impactsExporter:
         if not self.token:
             raise ValueError("Token should be provided")
 
-        if self.time_zone not in pytz.all_timezones:
-            raise ValueError("Invalid timezone string %s" % self.time_zone)
+        if not self.time_zone:
+            raise ValueError("Invalid timezone")
 
         return True
 
@@ -67,8 +67,9 @@ class impactsExporter:
 
     def generate_file_path(self, item):
         datePattern = '%Y_%m_%d'
-        start_date = item.start_date.strftime(datePattern)
-        end_date = item.end_date.strftime(datePattern)
+
+        start_date = utils.utc_to_local(item.start_date, self.time_zone).strftime(datePattern)
+        end_date = utils.utc_to_local(item.end_date, self.time_zone).strftime(datePattern)
 
         fileName = '%s_impacts_export_%s_%s_%s.csv' % (self.client.client_code, start_date, end_date, item.id)
         filePath = os.path.join(default_settings.IMPACT_EXPORT_DIR, fileName)
@@ -122,7 +123,6 @@ class impactsExporter:
 
         navitia = Navitia(default_settings.NAVITIA_URL, self.coverage, self.token)
 
-        local_tz = pytz.timezone(self.time_zone)
         columns = impacts.keys()
 
         rows = []
@@ -133,7 +133,7 @@ class impactsExporter:
                 if column == 'pt_object_name' :
                     row.append(navitia.find_tc_object_name(sub_dict['pt_object_uri'], sub_dict['pt_object_type']))
                 elif isinstance(val, datetime.date):
-                    row.append(utils.utc_to_local(val, local_tz))
+                    row.append(utils.utc_to_local(val, self.time_zone))
                 else:
                     row.append(val)
 
@@ -155,7 +155,7 @@ def get_command_arguments(argv):
 if __name__ == "__main__":
     args = get_command_arguments(sys.argv[1:])
 
-    tz = args.tz;
+    tz = args.tz
     if not tz:
         tz = 'UTC'
 
