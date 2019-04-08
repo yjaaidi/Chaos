@@ -131,11 +131,13 @@ class impactsExporter:
             for column in columns:
                 val = sub_dict[column]
                 if column == 'pt_object_name' :
-                    row.append(navitia.find_tc_object_name(sub_dict['pt_object_uri'], sub_dict['pt_object_type']))
+                    val = navitia.find_tc_object_name(sub_dict['pt_object_uri'], sub_dict['pt_object_type'])
+                elif column == 'status' and val == 'archived':
+                    val = 'deleted'
                 elif isinstance(val, datetime.date):
-                    row.append(utils.utc_to_local(val, self.time_zone))
-                else:
-                    row.append(val)
+                    val = utils.utc_to_local(val, self.time_zone)
+
+                row.append(val)
 
             rows.append(row)
 

@@ -2073,6 +2073,7 @@ class Export(TimestampMixin, db.Model):
 
         query = 'SELECT' \
                 ' d.reference' \
+                ', tag.name AS tag_name' \
                 ', c.wording AS cause' \
                 ', d.start_publication_date AS publication_start_date' \
                 ', d.end_publication_date AS publication_end_date' \
@@ -2081,6 +2082,9 @@ class Export(TimestampMixin, db.Model):
                 ', po.uri AS pt_object_name' \
                 ', s.wording AS severity' \
                 ', (CASE WHEN cht.name=\'title\' THEN m.text ELSE \'\' END) as impact_title' \
+                ', i.status' \
+                ', ch.name AS channel_name' \
+                ', coalesce(TRIM(msg.text), '') IS NOT TRUE AS channel_message_exists ' \
                 ', app.start_date AS application_start_date' \
                 ', app.end_date AS application_end_date' \
                 ', i.created_at AS created_at' \
@@ -2088,6 +2092,8 @@ class Export(TimestampMixin, db.Model):
                 ' FROM ' \
                 ' disruption d' \
                 ' LEFT JOIN impact i ON (i.disruption_id = d.id)' \
+                ' LEFT JOIN associate_disruption_tag adt ON (d.id = adt.disruption_id)' \
+                ' LEFT JOIN tag ON (tag.id = adt.tag_id)' \
                 ' LEFT JOIN application_periods app ON (app.impact_id = i.id)' \
                 ' LEFT JOIN cause c ON (c.id = d.cause_id)' \
                 ' LEFT JOIN associate_impact_pt_object aipto ON (i.id = aipto.impact_id)' \
@@ -2096,6 +2102,7 @@ class Export(TimestampMixin, db.Model):
                 ' LEFT JOIN message m ON (i.id = m.impact_id)' \
                 ' LEFT JOIN channel ch ON (ch.id = m.channel_id)' \
                 ' LEFT JOIN channel_type cht ON (cht.channel_id = ch.id)' \
+                ' LEFT JOIN message msg ON (msg.channel_id = ch.id)' \
                 ' WHERE' \
                 ' d.client_id = :client_id' \
                 ' AND ch.client_id = :client_id'\
@@ -2104,18 +2111,22 @@ class Export(TimestampMixin, db.Model):
                 ' GROUP BY ' \
                 ' reference' \
                 ', cause' \
+                ', tag_name' \
                 ', publication_start_date' \
                 ', publication_end_date' \
                 ', pt_object_type' \
                 ', pt_object_uri' \
                 ', pt_object_name' \
+                ', channel_name' \
+                ', message_text' \
                 ', severity' \
                 ', application_start_date' \
                 ', application_end_date' \
                 ', i.created_at' \
                 ', i.updated_at' \
                 ', cht.name' \
-                ', m.text'
+                ', m.text' \
+                ', i.status'
 
         stmt = text(query)
         stmt = stmt.bindparams(bindparam('client_id', type_=db.String))
