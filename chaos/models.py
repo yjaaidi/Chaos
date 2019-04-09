@@ -2071,7 +2071,7 @@ class Export(TimestampMixin, db.Model):
     @classmethod
     def get_client_impacts_between_application_dates(cls, client_id, app_start_date, app_end_date):
 
-        query = 'SELECT' \
+        query = 'SELECT DISTINCT ' \
                 ' d.reference' \
                 ', tag.name AS tag_name' \
                 ', c.wording AS cause' \
@@ -2084,7 +2084,7 @@ class Export(TimestampMixin, db.Model):
                 ', (CASE WHEN cht.name=\'title\' THEN m.text ELSE \'\' END) as impact_title' \
                 ', i.status' \
                 ', ch.name AS channel_name' \
-                ', coalesce(TRIM(msg.text), '') IS NOT TRUE AS channel_message_exists ' \
+                ', msg.text AS channel_message' \
                 ', app.start_date AS application_start_date' \
                 ', app.end_date AS application_end_date' \
                 ', i.created_at AS created_at' \
@@ -2107,26 +2107,7 @@ class Export(TimestampMixin, db.Model):
                 ' d.client_id = :client_id' \
                 ' AND ch.client_id = :client_id'\
                 ' AND app.start_date >= :app_start_date' \
-                ' AND app.end_date <= :app_end_date' \
-                ' GROUP BY ' \
-                ' reference' \
-                ', cause' \
-                ', tag_name' \
-                ', publication_start_date' \
-                ', publication_end_date' \
-                ', pt_object_type' \
-                ', pt_object_uri' \
-                ', pt_object_name' \
-                ', channel_name' \
-                ', message_text' \
-                ', severity' \
-                ', application_start_date' \
-                ', application_end_date' \
-                ', i.created_at' \
-                ', i.updated_at' \
-                ', cht.name' \
-                ', m.text' \
-                ', i.status'
+                ' AND app.end_date <= :app_end_date'
 
         stmt = text(query)
         stmt = stmt.bindparams(bindparam('client_id', type_=db.String))
