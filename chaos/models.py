@@ -2071,7 +2071,7 @@ class Export(TimestampMixin, db.Model):
     @classmethod
     def get_client_impacts_between_application_dates(cls, client_id, app_start_date, app_end_date):
 
-        query = 'SELECT DISTINCT ' \
+        query = 'SELECT ' \
                 ' d.reference' \
                 ', tag.name AS tag_name' \
                 ', c.wording AS cause' \
@@ -2084,9 +2084,10 @@ class Export(TimestampMixin, db.Model):
                 ', (CASE WHEN cht.name=\'title\' THEN m.text ELSE \'\' END) as impact_title' \
                 ', i.status' \
                 ', ch.name AS channel_name' \
-                ', msg.text AS channel_message' \
+                ', m.text AS channel_message' \
                 ', app.start_date AS application_start_date' \
                 ', app.end_date AS application_end_date' \
+                ', (CASE WHEN (COUNT(ptrn.id)>0 OR COUNT(app.id)>1) THEN True ELSE False END) AS periodicity' \
                 ', i.created_at AS created_at' \
                 ', i.updated_at AS updated_at' \
                 ' FROM ' \
@@ -2099,15 +2100,32 @@ class Export(TimestampMixin, db.Model):
                 ' LEFT JOIN associate_impact_pt_object aipto ON (i.id = aipto.impact_id)' \
                 ' LEFT JOIN pt_object po ON (aipto.pt_object_id = po.id)' \
                 ' LEFT JOIN severity s ON (i.severity_id = s.id)' \
-                ' LEFT JOIN message m ON (i.id = m.impact_id)' \
-                ' LEFT JOIN channel ch ON (ch.id = m.channel_id)' \
+                ' LEFT JOIN channel ch ON (ch.client_id = :client_id)' \
                 ' LEFT JOIN channel_type cht ON (cht.channel_id = ch.id)' \
-                ' LEFT JOIN message msg ON (msg.channel_id = ch.id)' \
+                ' LEFT JOIN message m ON (i.id = m.impact_id and m.channel_id = ch.id) ' \
+                ' LEFT JOIN pattern ptrn ON (i.id = ptrn.impact_id) ' \
                 ' WHERE' \
                 ' d.client_id = :client_id' \
                 ' AND ch.client_id = :client_id'\
                 ' AND app.start_date >= :app_start_date' \
-                ' AND app.end_date <= :app_end_date'
+                ' AND app.end_date <= :app_end_date' \
+                ' GROUP BY ' \
+                '  d.reference' \
+                ', tag.name' \
+                ', c.wording' \
+                ', d.start_publication_date' \
+                ', d.end_publication_date' \
+                ', po.type' \
+                ', po.uri' \
+                ', s.wording' \
+                ', cht.name' \
+                ', m.text' \
+                ', i.status' \
+                ', ch.name' \
+                ', app.start_date' \
+                ', app.end_date' \
+                ', i.created_at' \
+                ', i.updated_at'
 
         stmt = text(query)
         stmt = stmt.bindparams(bindparam('client_id', type_=db.String))
