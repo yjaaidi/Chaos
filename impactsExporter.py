@@ -140,7 +140,7 @@ class impactsExporter:
                 if column == 'pt_object_name' :
                     val = navitia.find_tc_object_name(sub_dict['pt_object_uri'], sub_dict['pt_object_type'])
                 elif column == 'periodicity':
-                    val = 'yes' if val else 'non'
+                    val = 'yes' if val else 'no'
                 elif column == 'status' and val == 'archived':
                     val = 'deleted'
                 elif isinstance(val, datetime.date):

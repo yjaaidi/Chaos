@@ -2100,8 +2100,8 @@ class Export(TimestampMixin, db.Model):
                 ' LEFT JOIN associate_impact_pt_object aipto ON (i.id = aipto.impact_id)' \
                 ' LEFT JOIN pt_object po ON (aipto.pt_object_id = po.id)' \
                 ' LEFT JOIN severity s ON (i.severity_id = s.id)' \
-                ' LEFT JOIN channel ch ON (ch.client_id = :client_id)' \
-                ' LEFT JOIN channel_type cht ON (cht.channel_id = ch.id)' \
+                ' INNER JOIN channel ch ON (ch.client_id = :client_id)' \
+                ' INNER JOIN channel_type cht ON (cht.channel_id = ch.id)' \
                 ' LEFT JOIN message m ON (i.id = m.impact_id and m.channel_id = ch.id) ' \
                 ' LEFT JOIN pattern ptrn ON (i.id = ptrn.impact_id) ' \
                 ' WHERE' \
@@ -2109,6 +2109,8 @@ class Export(TimestampMixin, db.Model):
                 ' AND ch.client_id = :client_id'\
                 ' AND app.start_date >= :app_start_date' \
                 ' AND app.end_date <= :app_end_date' \
+                ' AND c.is_visible = :is_visible' \
+                ' AND ch.is_visible = :is_visible' \
                 ' GROUP BY ' \
                 '  d.reference' \
                 ', tag.name' \
@@ -2131,9 +2133,11 @@ class Export(TimestampMixin, db.Model):
         stmt = stmt.bindparams(bindparam('client_id', type_=db.String))
         stmt = stmt.bindparams(bindparam('app_start_date', type_=db.Date))
         stmt = stmt.bindparams(bindparam('app_end_date', type_=db.Date))
+        stmt = stmt.bindparams(bindparam('is_visible', type_=db.Boolean))
         vars = {}
         vars['client_id'] = client_id
         vars['app_start_date'] = app_start_date
         vars['app_end_date'] = app_end_date
+        vars['is_visible'] = True
 
         return db.engine.execute(stmt, vars)
