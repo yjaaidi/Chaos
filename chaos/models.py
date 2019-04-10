@@ -2084,10 +2084,11 @@ class Export(TimestampMixin, db.Model):
                 ', (CASE WHEN cht.name=\'title\' THEN m.text ELSE \'\' END) as impact_title' \
                 ', i.status' \
                 ', ch.name AS channel_name' \
+                ', cht.name AS channel_type_name' \
                 ', m.text AS channel_message' \
                 ', app.start_date AS application_start_date' \
                 ', app.end_date AS application_end_date' \
-                ', (CASE WHEN (COUNT(ptrn.id)>0 OR COUNT(app.id)>1) THEN True ELSE False END) AS periodicity' \
+                ', (CASE WHEN (SELECT COUNT(1) FROM application_periods app_period WHERE app_period.impact_id = i.id AND app_period.start_date >= :app_start_date AND app_period.end_date <= :app_end_date) > 1 THEN True ELSE False END) AS periodicity' \
                 ', i.created_at AS created_at' \
                 ', i.updated_at AS updated_at' \
                 ' FROM ' \
@@ -2100,8 +2101,8 @@ class Export(TimestampMixin, db.Model):
                 ' LEFT JOIN associate_impact_pt_object aipto ON (i.id = aipto.impact_id)' \
                 ' LEFT JOIN pt_object po ON (aipto.pt_object_id = po.id)' \
                 ' LEFT JOIN severity s ON (i.severity_id = s.id)' \
-                ' INNER JOIN channel ch ON (ch.client_id = :client_id)' \
-                ' INNER JOIN channel_type cht ON (cht.channel_id = ch.id)' \
+                ' LEFT JOIN channel ch ON (ch.client_id = :client_id)' \
+                ' LEFT JOIN channel_type cht ON (cht.channel_id = ch.id)' \
                 ' LEFT JOIN message m ON (i.id = m.impact_id and m.channel_id = ch.id) ' \
                 ' LEFT JOIN pattern ptrn ON (i.id = ptrn.impact_id) ' \
                 ' WHERE' \
@@ -2127,7 +2128,8 @@ class Export(TimestampMixin, db.Model):
                 ', app.start_date' \
                 ', app.end_date' \
                 ', i.created_at' \
-                ', i.updated_at'
+                ', i.updated_at' \
+                ', i.id'
 
         stmt = text(query)
         stmt = stmt.bindparams(bindparam('client_id', type_=db.String))
