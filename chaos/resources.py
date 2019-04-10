@@ -1978,6 +1978,7 @@ class ImpactsExportDownload(flask_restful.Resource):
         self.parsers = {'get': reqparse.RequestParser()}
 
     @validate_client()
+    @validate_client_token()
     def get(self, client, id):
         export = models.Export.find_finished_export(id)
         if export is None:
