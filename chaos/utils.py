@@ -871,3 +871,29 @@ def add_notification_date_on_impacts(disruptions_or_impacts_json):
         if ('send_notifications' in impact) and impact['send_notifications'] and \
             ('notification_date' not in impact):
             impact['notification_date'] = get_current_time().strftime('%Y-%m-%dT%H:%M:%SZ')
+
+def is_uuid(uuid_string):
+    import re
+    pattern = re.compile(r'^[\da-f]{8}-([\da-f]{4}-){3}[\da-f]{12}$', re.IGNORECASE)
+    return pattern.match(uuid_string)
+
+def utc_to_local(utc_datetime, local_tz):
+    """
+    Converts date with UTC in local timezone
+    :param utc_datetime: datetime.datetime
+    :param local_tz: pytz.timezone
+    :return: datetime.datetime
+    """
+    local_dt = utc_datetime.replace(tzinfo=pytz.utc).astimezone(local_tz)
+    return local_tz.normalize(local_dt)
+
+def sanitize_csv_data(val):
+    """
+    Sanitizes data in order to write in CSV format
+    :param val: mixed
+    :return: mixed
+    """
+    if isinstance(val, basestring):
+        val = val.replace('\n', ' ').replace('\r', '')
+
+    return val

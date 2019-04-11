@@ -28,7 +28,7 @@
 # www.navitia.io
 
 import math
-from flask import g, request, jsonify, make_response
+from flask import g, request, jsonify, make_response, send_file
 from flask_sqlalchemy import Pagination
 import flask_restful
 from flask_restful import marshal, reqparse, types
@@ -79,6 +79,7 @@ class Index(flask_restful.Resource):
             "property": {"href": url_for('property', _external=True) + '/{id}', "templated": True},
             "impacts_exports": {"href": url_for('impacts_exports', _external=True)},
             "impacts_export": {"href": url_for('impacts_exports', _external=True) + '/{id}', "templated": True},
+            "impacts_export_download": {"href": url_for('impacts_exports', _external=True) + '/{id}/download', "templated": True},
             "impacts": {"href": url_for('disruption', _external=True) + '/{disruption_id}/impacts', "templated": True},
             "impact": {"href": url_for('disruption', _external=True) + '/{disruption_id}/impacts/{id}', "templated": True}
         }
@@ -1893,8 +1894,10 @@ class Property(flask_restful.Resource):
 class ImpactsExports(flask_restful.Resource):
     def __init__(self):
         self.parsers = {'get': reqparse.RequestParser()}
+        self.navitia = None
 
-    def _validate_dates_boundary(self, json):
+
+    def validate_dates_boundary(self, json):
         start_date = parse_datetime(json.get('start_date')).replace(tzinfo=None)
         end_date = parse_datetime(json.get('end_date')).replace(tzinfo=None)
         if start_date > end_date:
@@ -1902,6 +1905,29 @@ class ImpactsExports(flask_restful.Resource):
         duration_date = end_date - start_date
         if duration_date.days > 366 :
             raise ValidationError(message='Export should be less than 366 days')
+
+    def run_export(self, export):
+
+        from subprocess import Popen, PIPE
+        from os import path, environ
+        from sys import executable
+
+        root_dir = path.abspath(path.join(__file__, "../.."))
+        exporter_path = path.join(root_dir, 'impactsExporter.py')
+        python_exec = executable
+        if current_app.config['IMPACT_EXPORT_PYTHON'] != '':
+            python_exec = current_app.config['IMPACT_EXPORT_PYTHON']
+
+        Popen([
+            python_exec, exporter_path,
+            '--client_id', export.client_id,
+            '--navitia_url', self.navitia.url,
+            '--coverage', self.navitia.coverage,
+            '--token', self.navitia.token,
+            '--folder', current_app.config['IMPACT_EXPORT_DIR'],
+            '--tz', export.time_zone],
+            stdout=PIPE, env=environ.copy())
+
 
     @validate_client()
     @validate_id()
@@ -1913,19 +1939,22 @@ class ImpactsExports(flask_restful.Resource):
             return marshal({'exports':models.Export.all(client.id)}, exports_fields)
 
     @validate_client()
+    @validate_navitia()
     @validate_client_token()
-    def post(self, client):
+    def post(self, client, navitia):
+        self.navitia = navitia
         json = request.get_json(silent=True)
         logging.getLogger(__name__).debug('POST export: %s', json)
 
         try:
             validate(json, export_input_format)
-            self._validate_dates_boundary(json)
+            self.validate_dates_boundary(json)
         except ValidationError as e:
             return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 400
         export = models.Export.exist_without_error(client.id, json.get('start_date'), json.get('end_date'))
         if export is not None:
+            logging.getLogger(__name__).warning('There is an existing export task for this client marked as "%s"' % export.status)
             return marshal({'export': export}, one_export_fields), 200
 
         export = models.Export(client.id)
@@ -1938,5 +1967,34 @@ class ImpactsExports(flask_restful.Resource):
         except IntegrityError as e:
             return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 409
+        else:
+            self.run_export(export)
 
         return marshal({'export': export}, one_export_fields), 201
+
+
+class ImpactsExportDownload(flask_restful.Resource):
+    def __init__(self):
+        self.parsers = {'get': reqparse.RequestParser()}
+
+    @validate_client()
+    @validate_client_token()
+    def get(self, client, id):
+        export = models.Export.find_finished_export(id)
+        if export is None:
+            return marshal({
+                'error': {'message': 'There is any available export for id {} '.format(id)}
+            }, error_fields), 404
+
+        export_file_path= export.file_path
+        import os.path
+        if not os.path.isfile(export_file_path):
+            return marshal({
+                'error': {'message': 'export file does not exist'}
+            }, error_fields), 404
+
+
+        return send_file(export_file_path,
+                         mimetype="text/csv",
+                         as_attachment=True
+                         )

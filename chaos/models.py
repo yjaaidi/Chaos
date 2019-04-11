@@ -1960,44 +1960,6 @@ class ChannelType(TimestampMixin, db.Model):
     def __repr__(self):
         return '<ChannelType %r>' % self.id
 
-class Export(TimestampMixin, db.Model):
-    """
-    represents the list of exports
-    """
-    __tablename__ = 'export'
-    id = db.Column(UUID, primary_key=True)
-    client_id = db.Column(UUID, db.ForeignKey(Client.id), nullable=False)
-    status = db.Column(ExportStatusEnum, nullable=False, default='waiting')
-    process_start_date = db.Column(db.DateTime(), default=None, nullable=True)
-    start_date = db.Column(db.DateTime(), nullable=False)
-    end_date = db.Column(db.DateTime(), nullable=False)
-    file_path = db.Column(db.Text, nullable=False)
-
-    def __init__(self, client_id=None):
-        self.id = str(uuid.uuid1())
-        self.client_id = client_id
-
-    def __repr__(self):
-        return '<Export %r>' % self.id
-
-    @classmethod
-    def all(cls, client_id):
-        return cls.query.filter_by(
-            client_id=client_id
-        ).order_by(cls.created_at).all()
-
-    @classmethod
-    def get(cls, client_id, id):
-        return cls.query.filter_by(client_id=client_id, id=id).first_or_404()
-
-    @classmethod
-    def exist_without_error(cls, client_id, start_date, end_date):
-        return cls.query.filter(
-            cls.client_id==client_id,
-            cls.start_date==start_date,
-            cls.end_date==end_date,
-            cls.status!='error'
-            ).first()
 
 class Property(TimestampMixin, db.Model):
     """
@@ -2055,3 +2017,110 @@ class Property(TimestampMixin, db.Model):
         kargs = cls.prepare_request(client_id, key, type, id)
 
         return cls.query.filter_by(**kargs).first()
+
+
+class Export(TimestampMixin, db.Model):
+    """
+        represents the list of exports
+        """
+    __tablename__ = 'export'
+    id = db.Column(UUID, primary_key=True, nullable=False)
+    client_id = db.Column(UUID, db.ForeignKey(Client.id), nullable=False)
+    client = db.relationship('Client', backref='exports')
+    status = db.Column(ExportStatusEnum, nullable=False, default='waiting')
+    process_start_date = db.Column(db.DateTime(), default=None, nullable=True)
+    start_date = db.Column(db.DateTime(), nullable=False)
+    end_date = db.Column(db.DateTime(), nullable=False)
+    time_zone = db.Column(db.Text, nullable=False, default='UTC')
+    file_path = db.Column(db.Text, default=None, nullable=True)
+
+    def __init__(self, client_id=None):
+        self.id = str(uuid.uuid1())
+        self.client_id = client_id
+
+    def __repr__(self):
+        return '<Export %r>' % self.id
+
+    @classmethod
+    def all(cls, client_id):
+        return cls.query.filter_by(
+            client_id=client_id
+        ).order_by(cls.created_at).all()
+
+    @classmethod
+    def get(cls, client_id, id):
+        return cls.query.filter_by(client_id=client_id, id=id).first_or_404()
+
+    @classmethod
+    def exist_without_error(cls, client_id, start_date, end_date):
+        return cls.query.filter(
+            cls.client_id==client_id,
+            cls.start_date==start_date,
+            cls.end_date==end_date,
+            cls.status!='error'
+            ).first()
+
+    @classmethod
+    def get_oldest_waiting_export(cls, clientId):
+        return cls.query.filter_by(client_id=clientId, status='waiting').order_by(cls.created_at).first()
+
+    @classmethod
+    def find_finished_export(cls, id):
+        return cls.query.filter_by(id=id, status='done').first()
+
+    @classmethod
+    def get_client_impacts_between_application_dates(cls, client_id, app_start_date, app_end_date):
+
+        query = 'SELECT DISTINCT' \
+                ' d.reference' \
+                ', tag.name AS tag_name' \
+                ', c.wording AS cause' \
+                ', d.start_publication_date AS publication_start_date' \
+                ', d.end_publication_date AS publication_end_date' \
+                ', po.type AS pt_object_type' \
+                ', po.uri AS pt_object_uri' \
+                ', po.uri AS pt_object_name' \
+                ', s.wording AS severity' \
+                ', (CASE WHEN cht.name=\'title\' THEN m.text ELSE \'\' END) as impact_title' \
+                ', i.status' \
+                ', ch.name AS channel_name' \
+                ', cht.name AS channel_type_name' \
+                ', m.text AS channel_message' \
+                ', app.start_date AS application_start_date' \
+                ', app.end_date AS application_end_date' \
+                ', (CASE WHEN (SELECT COUNT(1) FROM application_periods app_period WHERE app_period.impact_id = i.id) > 1 THEN True ELSE False END) AS periodicity' \
+                ', i.created_at AS created_at' \
+                ', i.updated_at AS updated_at' \
+                ' FROM ' \
+                ' disruption d' \
+                ' LEFT JOIN impact i ON (i.disruption_id = d.id)' \
+                ' LEFT JOIN associate_disruption_tag adt ON (d.id = adt.disruption_id)' \
+                ' LEFT JOIN tag ON (tag.id = adt.tag_id)' \
+                ' LEFT JOIN application_periods app ON (app.impact_id = i.id)' \
+                ' LEFT JOIN cause c ON (c.id = d.cause_id)' \
+                ' LEFT JOIN associate_impact_pt_object aipto ON (i.id = aipto.impact_id)' \
+                ' LEFT JOIN pt_object po ON (aipto.pt_object_id = po.id)' \
+                ' LEFT JOIN severity s ON (i.severity_id = s.id)' \
+                ' LEFT JOIN channel ch ON (ch.client_id = :client_id)' \
+                ' LEFT JOIN channel_type cht ON (cht.channel_id = ch.id)' \
+                ' LEFT JOIN message m ON (i.id = m.impact_id and m.channel_id = ch.id) ' \
+                ' WHERE' \
+                ' d.client_id = :client_id' \
+                ' AND ch.client_id = :client_id'\
+                ' AND app.start_date >= :app_start_date' \
+                ' AND app.end_date <= :app_end_date' \
+                ' AND c.is_visible = :is_visible' \
+                ' AND ch.is_visible = :is_visible'
+
+        stmt = text(query)
+        stmt = stmt.bindparams(bindparam('client_id', type_=db.String))
+        stmt = stmt.bindparams(bindparam('app_start_date', type_=db.Date))
+        stmt = stmt.bindparams(bindparam('app_end_date', type_=db.Date))
+        stmt = stmt.bindparams(bindparam('is_visible', type_=db.Boolean))
+        vars = {}
+        vars['client_id'] = client_id
+        vars['app_start_date'] = app_start_date
+        vars['app_end_date'] = app_end_date
+        vars['is_visible'] = True
+
+        return db.engine.execute(stmt, vars)
