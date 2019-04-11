@@ -146,7 +146,7 @@ class impactsExporter:
                 elif isinstance(val, datetime.date):
                     val = utils.utc_to_local(val, self.time_zone)
 
-                row.append(val)
+                row.append(utils.sanitize_csv_data(val))
 
             rows.append(row)
 

@@ -2071,7 +2071,7 @@ class Export(TimestampMixin, db.Model):
     @classmethod
     def get_client_impacts_between_application_dates(cls, client_id, app_start_date, app_end_date):
 
-        query = 'SELECT ' \
+        query = 'SELECT DISTINCT' \
                 ' d.reference' \
                 ', tag.name AS tag_name' \
                 ', c.wording AS cause' \
@@ -2088,7 +2088,7 @@ class Export(TimestampMixin, db.Model):
                 ', m.text AS channel_message' \
                 ', app.start_date AS application_start_date' \
                 ', app.end_date AS application_end_date' \
-                ', (CASE WHEN (SELECT COUNT(1) FROM application_periods app_period WHERE app_period.impact_id = i.id AND app_period.start_date >= :app_start_date AND app_period.end_date <= :app_end_date) > 1 THEN True ELSE False END) AS periodicity' \
+                ', (CASE WHEN (SELECT COUNT(1) FROM application_periods app_period WHERE app_period.impact_id = i.id) > 1 THEN True ELSE False END) AS periodicity' \
                 ', i.created_at AS created_at' \
                 ', i.updated_at AS updated_at' \
                 ' FROM ' \
@@ -2104,32 +2104,13 @@ class Export(TimestampMixin, db.Model):
                 ' LEFT JOIN channel ch ON (ch.client_id = :client_id)' \
                 ' LEFT JOIN channel_type cht ON (cht.channel_id = ch.id)' \
                 ' LEFT JOIN message m ON (i.id = m.impact_id and m.channel_id = ch.id) ' \
-                ' LEFT JOIN pattern ptrn ON (i.id = ptrn.impact_id) ' \
                 ' WHERE' \
                 ' d.client_id = :client_id' \
                 ' AND ch.client_id = :client_id'\
                 ' AND app.start_date >= :app_start_date' \
                 ' AND app.end_date <= :app_end_date' \
                 ' AND c.is_visible = :is_visible' \
-                ' AND ch.is_visible = :is_visible' \
-                ' GROUP BY ' \
-                '  d.reference' \
-                ', tag.name' \
-                ', c.wording' \
-                ', d.start_publication_date' \
-                ', d.end_publication_date' \
-                ', po.type' \
-                ', po.uri' \
-                ', s.wording' \
-                ', cht.name' \
-                ', m.text' \
-                ', i.status' \
-                ', ch.name' \
-                ', app.start_date' \
-                ', app.end_date' \
-                ', i.created_at' \
-                ', i.updated_at' \
-                ', i.id'
+                ' AND ch.is_visible = :is_visible'
 
         stmt = text(query)
         stmt = stmt.bindparams(bindparam('client_id', type_=db.String))

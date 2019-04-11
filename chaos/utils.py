@@ -886,3 +886,14 @@ def utc_to_local(utc_datetime, local_tz):
     """
     local_dt = utc_datetime.replace(tzinfo=pytz.utc).astimezone(local_tz)
     return local_tz.normalize(local_dt)
+
+def sanitize_csv_data(val):
+    """
+    Sanitizes data in order to write in CSV format
+    :param val: mixed
+    :return: mixed
+    """
+    if isinstance(val, basestring):
+        val = val.replace('\n', ' ').replace('\r', '')
+
+    return val
