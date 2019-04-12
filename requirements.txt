@@ -15,7 +15,7 @@ gevent==1.0.2
 greenlet==0.4.14
 httmock==1.2.2
 itsdangerous==0.23
-Jinja2==2.7.2
+Jinja2==2.8.1
 jsonschema==2.3.0
 kombu==3.0.37
 lettuce==0.2.19
@@ -34,3 +34,4 @@ SQLAlchemy==0.9.7
 sure==1.2.7
 vine==1.1.4
 Werkzeug==0.12.2
+unicodecsv==0.14.1

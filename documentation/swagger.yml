@@ -62,6 +62,8 @@
     - name: Tag
     - name: Traffic Reports
     - name: Search
+    - name: Export
+
 
   ################################################################################
   #                                   Paths                                      #
@@ -125,7 +127,12 @@
         - $ref: "#/parameters/header_coverage"
         - $ref: "#/parameters/header_customer_id"
         - $ref: "#/parameters/header_contributors"
-        - $ref: "#/parameters/entity_id"
+        - name: id
+          in: path
+          required: true
+          type: string
+          description: Entity identifier
+
         tags:
           - Category
         responses:
@@ -150,7 +157,11 @@
         - $ref: "#/parameters/header_coverage"
         - $ref: "#/parameters/header_customer_id"
         - $ref: "#/parameters/header_contributors"
-        - $ref: "#/parameters/entity_id"
+        - name: id
+          in: path
+          required: true
+          type: string
+          description: Entity identifier
         - in: body
           name: body
           description: Category that needs to be stored
@@ -177,7 +188,11 @@
         - $ref: "#/parameters/header_coverage"
         - $ref: "#/parameters/header_customer_id"
         - $ref: "#/parameters/header_contributors"
-        - $ref: "#/parameters/entity_id"
+        - name: id
+          in: path
+          required: true
+          type: string
+          description: Entity identifier
         tags:
           - Category
         responses:
@@ -248,7 +263,11 @@
         - $ref: "#/parameters/header_coverage"
         - $ref: "#/parameters/header_customer_id"
         - $ref: "#/parameters/header_contributors"
-        - $ref: "#/parameters/entity_id"
+        - name: id
+          in: path
+          required: true
+          type: string
+          description: Entity identifier
         tags:
           - Cause
         responses:
@@ -277,7 +296,11 @@
         - $ref: "#/parameters/header_coverage"
         - $ref: "#/parameters/header_customer_id"
         - $ref: "#/parameters/header_contributors"
-        - $ref: "#/parameters/entity_id"
+        - name: id
+          in: path
+          required: true
+          type: string
+          description: Entity identifier
         - in: body
           name: body
           description: Cause that needs to be stored
@@ -308,7 +331,11 @@
         - $ref: "#/parameters/header_coverage"
         - $ref: "#/parameters/header_customer_id"
         - $ref: "#/parameters/header_contributors"
-        - $ref: "#/parameters/entity_id"
+        - name: id
+          in: path
+          required: true
+          type: string
+          description: Entity identifier
         tags:
           - Cause
         responses:
@@ -383,7 +410,11 @@
         - $ref: "#/parameters/header_coverage"
         - $ref: "#/parameters/header_customer_id"
         - $ref: "#/parameters/header_contributors"
-        - $ref: "#/parameters/entity_id"
+        - name: id
+          in: path
+          required: true
+          type: string
+          description: Entity identifier
         tags:
           - Channel
         responses:
@@ -409,7 +440,11 @@
         - $ref: "#/parameters/header_coverage"
         - $ref: "#/parameters/header_customer_id"
         - $ref: "#/parameters/header_contributors"
-        - $ref: "#/parameters/entity_id"
+        - name: id
+          in: path
+          required: true
+          type: string
+          description: Entity identifier
         - in: body
           name: body
           description: Category that needs to be stored
@@ -440,7 +475,11 @@
         - $ref: "#/parameters/header_coverage"
         - $ref: "#/parameters/header_customer_id"
         - $ref: "#/parameters/header_contributors"
-        - $ref: "#/parameters/entity_id"
+        - name: id
+          in: path
+          required: true
+          type: string
+          description: Entity identifier
         tags:
           - Channel
         responses:
@@ -534,7 +573,11 @@
         - $ref: "#/parameters/header_coverage"
         - $ref: "#/parameters/header_customer_id"
         - $ref: "#/parameters/header_contributors"
-        - $ref: "#/parameters/entity_id"
+        - name: id
+          in: path
+          required: true
+          type: string
+          description: Entity identifier
         tags:
           - Property
         responses:
@@ -560,7 +603,11 @@
         - $ref: "#/parameters/header_coverage"
         - $ref: "#/parameters/header_customer_id"
         - $ref: "#/parameters/header_contributors"
-        - $ref: "#/parameters/entity_id"
+        - name: id
+          in: path
+          required: true
+          type: string
+          description: Entity identifier
         - in: body
           name: body
           description: Property that needs to be stored
@@ -592,7 +639,11 @@
         - $ref: "#/parameters/header_coverage"
         - $ref: "#/parameters/header_customer_id"
         - $ref: "#/parameters/header_contributors"
-        - $ref: "#/parameters/entity_id"
+        - name: id
+          in: path
+          required: true
+          type: string
+          description: Entity identifier
         tags:
           - Property
         responses:
@@ -664,7 +715,11 @@
         - $ref: "#/parameters/header_coverage"
         - $ref: "#/parameters/header_customer_id"
         - $ref: "#/parameters/header_contributors"
-        - $ref: "#/parameters/entity_id"
+        - name: id
+          in: path
+          required: true
+          type: string
+          description: Entity identifier
         tags:
           - Severity
         responses:
@@ -690,7 +745,11 @@
         - $ref: "#/parameters/header_coverage"
         - $ref: "#/parameters/header_customer_id"
         - $ref: "#/parameters/header_contributors"
-        - $ref: "#/parameters/entity_id"
+        - name: id
+          in: path
+          required: true
+          type: string
+          description: Entity identifier
         - in: body
           name: body
           description: Category that needs to be stored
@@ -721,7 +780,11 @@
         - $ref: "#/parameters/header_coverage"
         - $ref: "#/parameters/header_customer_id"
         - $ref: "#/parameters/header_contributors"
-        - $ref: "#/parameters/entity_id"
+        - name: id
+          in: path
+          required: true
+          type: string
+          description: Entity identifier
         tags:
           - Severity
         responses:
@@ -862,7 +925,11 @@
         - $ref: "#/parameters/header_coverage"
         - $ref: "#/parameters/header_customer_id"
         - $ref: "#/parameters/header_contributors"
-        - $ref: "#/parameters/entity_id"
+        - name: id
+          in: path
+          required: true
+          type: string
+          description: Entity identifier
         tags:
           - Tag
         responses:
@@ -891,7 +958,11 @@
         - $ref: "#/parameters/header_coverage"
         - $ref: "#/parameters/header_customer_id"
         - $ref: "#/parameters/header_contributors"
-        - $ref: "#/parameters/entity_id"
+        - name: id
+          in: path
+          required: true
+          type: string
+          description: Entity identifier
         - in: body
           name: body
           description: Category that needs to be stored
@@ -925,7 +996,11 @@
         - $ref: "#/parameters/header_coverage"
         - $ref: "#/parameters/header_customer_id"
         - $ref: "#/parameters/header_contributors"
-        - $ref: "#/parameters/entity_id"
+        - name: id
+          in: path
+          required: true
+          type: string
+          description: Entity identifier
         tags:
           - Tag
         responses:
@@ -1081,8 +1156,12 @@
         - $ref: "#/parameters/header_coverage"
         - $ref: "#/parameters/header_customer_id"
         - $ref: "#/parameters/header_contributors"
-        - $ref: "#/parameters/entity_id"
         - $ref: "#/parameters/depth"
+        - name: id
+          in: path
+          required: true
+          type: string
+          description: Entity identifier
         tags:
           - Disruption
         responses:
@@ -1108,7 +1187,11 @@
         - $ref: "#/parameters/header_coverage"
         - $ref: "#/parameters/header_customer_id"
         - $ref: "#/parameters/header_contributors"
-        - $ref: "#/parameters/entity_id"
+        - name: id
+          in: path
+          required: true
+          type: string
+          description: Entity identifier
         - in: body
           name: body
           description: Category that needs to be stored
@@ -1143,7 +1226,11 @@
         - $ref: "#/parameters/header_coverage"
         - $ref: "#/parameters/header_customer_id"
         - $ref: "#/parameters/header_contributors"
-        - $ref: "#/parameters/entity_id"
+        - name: id
+          in: path
+          required: true
+          type: string
+          description: Entity identifier
         tags:
           - Disruption
         responses:
@@ -1173,7 +1260,11 @@
         - $ref: "#/parameters/header_coverage"
         - $ref: "#/parameters/header_customer_id"
         - $ref: "#/parameters/header_contributors"
-        - $ref: "#/parameters/entity_id"
+        - name: id
+          in: path
+          required: true
+          type: string
+          description: Entity identifier
         tags:
           - Impact
         responses:
@@ -1198,7 +1289,11 @@
         - $ref: "#/parameters/header_coverage"
         - $ref: "#/parameters/header_customer_id"
         - $ref: "#/parameters/header_contributors"
-        - $ref: "#/parameters/entity_id"
+        - name: id
+          in: path
+          required: true
+          type: string
+          description: Entity identifier
         - in: body
           name: body
           description: Impact that needs to be stored
@@ -1222,8 +1317,17 @@
         - $ref: "#/parameters/header_coverage"
         - $ref: "#/parameters/header_customer_id"
         - $ref: "#/parameters/header_contributors"
-        - $ref: "#/parameters/entity_id"
-        - $ref: "#/parameters/impact_id"
+        - name: id
+          in: path
+          required: true
+          type: string
+          description: Entity identifier
+        - in: path
+          name: impact_id
+          description: Impact identifier
+          required: true
+          type: "string"
+          format: "uuid"
         tags:
           - Impact
         responses:
@@ -1241,8 +1345,17 @@
         - $ref: "#/parameters/header_coverage"
         - $ref: "#/parameters/header_customer_id"
         - $ref: "#/parameters/header_contributors"
-        - $ref: "#/parameters/entity_id"
-        - $ref: "#/parameters/impact_id"
+        - name: id
+          in: path
+          required: true
+          type: string
+          description: Entity identifier
+        - in: path
+          name: impact_id
+          description: Impact identifier
+          required: true
+          type: "string"
+          format: "uuid"
         - in: body
           name: body
           description: "Impact data to be updated"
@@ -1265,8 +1378,17 @@
         - $ref: "#/parameters/header_coverage"
         - $ref: "#/parameters/header_customer_id"
         - $ref: "#/parameters/header_contributors"
-        - $ref: "#/parameters/entity_id"
-        - $ref: "#/parameters/impact_id"
+        - name: id
+          in: path
+          required: true
+          type: string
+          description: Entity identifier
+        - in: path
+          name: impact_id
+          description: Impact identifier
+          required: true
+          type: "string"
+          format: "uuid"
         tags:
           - Impact
         responses:
@@ -1343,6 +1465,110 @@
             schema:
               $ref: "#/definitions/error_occured"
 
+    /impacts/exports:
+      get:
+        description: Get exports status
+        parameters:
+        - $ref: "#/parameters/header_authorization"
+        - $ref: "#/parameters/header_customer_id"
+        tags:
+          - Export
+        responses:
+          200:
+            description: List of exports status
+            schema:
+              type: object
+              properties:
+                exports:
+                  type: array
+                  items:
+                    $ref: "#/definitions/impacts_exports_status"
+      post:
+        description: Create archive file export
+        parameters:
+        - $ref: "#/parameters/header_authorization"
+        - $ref: "#/parameters/header_coverage"
+        - $ref: "#/parameters/header_customer_id"
+        - in: body
+          name: body
+          description: Date range filters
+          schema:
+            $ref: "#/definitions/impacts_export_create"
+        tags:
+          - Export
+        responses:
+          200:
+            description: Export already exist
+            schema:
+              type: object
+              properties:
+                export:
+                  $ref: "#/definitions/impacts_exports_status"
+          201:
+            description: Export in progress
+            schema:
+              type: object
+              properties:
+                export:
+                  $ref: "#/definitions/impacts_exports_status"
+          400:
+            description: Bad request
+            schema:
+              $ref: "#/definitions/error_occured"
+          409:
+            description: Conflict
+            schema:
+              $ref: "#/definitions/error_occured"
+    /impacts/exports/{id}:
+      get:
+        description: Get the status of one export
+        parameters:
+        - $ref: "#/parameters/header_authorization"
+        - $ref: "#/parameters/header_customer_id"
+        - name: id
+          in: path
+          description: identifier
+          required: true
+          type: "string"
+          format: "uuid"
+        tags:
+          - Export
+        responses:
+          200:
+            description: Export status
+            schema:
+              type: object
+              properties:
+                export:
+                  $ref: "#/definitions/impacts_exports_status"
+          404:
+            description: Not found
+            schema:
+              $ref: "#/definitions/error_404"
+    /impacts/exports/{id}/download:
+      get:
+        description: Returns the archive file based ID
+        parameters:
+        - $ref: "#/parameters/header_authorization"
+        - $ref: "#/parameters/header_customer_id"
+        - name: id
+          in: path
+          description: identifier
+          required: true
+          type: "string"
+          format: "uuid"
+        tags:
+          - Export
+        produces:
+          - application/csv
+        responses:
+          200:
+            description: Archive file
+          404:
+            description: Not found
+            schema:
+              $ref: "#/definitions/error_404"
+
   ################################################################################
   #                                 Parameters                                  #
   ################################################################################
@@ -1371,19 +1597,6 @@
       description: Contributor code
       name: X-Contributors
       in: header
-    entity_id:
-      required: true
-      type: string
-      description: Entity identifier
-      name: id
-      in: path
-    impact_id:
-      in: path
-      name: impact_id
-      description: Impact identifier
-      required: true
-      type: "string"
-      format: "uuid"
     start_page:
       in: query
       name: start_page
@@ -1535,6 +1748,11 @@
                 type: "string"
                 description: "Start time (Format HH:MM)"
     bad_id:
+      type: "object"
+      properties:
+        message:
+          type: "string"
+    message_type:
       type: "object"
       properties:
         message:
@@ -2720,3 +2938,57 @@
         value:
           type: "string"
           example: "Mail subject"
+    impacts_export_create:
+      type: "object"
+      required:
+        - start_date
+        - end_date
+      properties:
+        start_date:
+          type: "string"
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2019-01-01T00:00:00Z"
+        end_date:
+          type: "string"
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2019-03-01T23:59:59Z"
+        time_zone:
+          type: "string"
+          default: "UTC"
+          example: "Europe/Paris"
+    impacts_exports_status:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+          format: "uuid"
+        status:
+          type: "string"
+          enum:
+            - 'waiting'
+            - 'handling'
+            - 'error'
+            - 'done'
+        process_start_date:
+          type: "string"
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2019-03-20T16:00:00Z"
+        start_date:
+          type: "string"
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2019-01-01T00:00:00Z"
+        end_date:
+          type: "string"
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2019-03-01T23:59:59Z"
+        time_zone:
+          type: "string"
+          example: "Europe/Paris"
+        created_at:
+          type: "string"
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2018-08-03T12:19:13Z"
+        updated_at:
+          type: "string"
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2018-08-03T12:19:13Z"

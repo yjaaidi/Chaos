@@ -10,7 +10,7 @@ from chaos.models import Disruption, Severity, Cause, Impact, PTobject,\
     Client, Contributor, associate_disruption_pt_object, Category, Wording, \
     associate_wording_severity, Pattern, TimeSlot, ChannelType,\
     associate_wording_line_section, Property, AssociateDisruptionProperty, Meta,\
-    associate_message_meta
+    associate_message_meta, Export
 import chaos
 
 model_classes = {
@@ -43,7 +43,8 @@ model_classes = {
     'properties': Property,
     'associate_disruption_properties': AssociateDisruptionProperty,
     'meta': Meta,
-    'metas': Meta
+    'metas': Meta,
+    'exports': Export
 }
 
 associations = {

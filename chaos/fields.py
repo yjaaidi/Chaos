@@ -143,17 +143,12 @@ class FieldObjectName(fields.Raw):
             obj_uri = obj.uri
             obj_type = obj.type
 
-        if obj_type == 'line_section':
-            return None
-
         navitia = Navitia(
             current_app.config['NAVITIA_URL'],
             get_coverage(request),
             get_token(request))
-        response = navitia.get_pt_object(obj_uri, obj_type)
-        if response and 'name' in response:
-            return response['name']
-        return 'Unable to find object'
+
+        return navitia.find_tc_object_name(obj_uri, obj_type)
 
 
 class FieldLocalization(fields.Raw):
@@ -498,6 +493,27 @@ channels_fields = {
 
 one_channel_fields = {
     'channel': fields.Nested(channel_fields)
+}
+
+base_export_fields = {
+    'id': fields.Raw,
+    'status': fields.Raw,
+    'time_zone': fields.Raw,
+    'process_start_date': FieldDateTime,
+    'start_date': FieldDateTime,
+    'end_date': FieldDateTime
+}
+
+export_fields = deepcopy(base_export_fields)
+export_fields['created_at'] = FieldDateTime
+export_fields['updated_at'] = FieldDateTime
+
+exports_fields = {
+    'exports': fields.List(fields.Nested(export_fields))
+}
+
+one_export_fields = {
+    'export': fields.Nested(export_fields)
 }
 
 base_meta_fields= {
