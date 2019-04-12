@@ -28,7 +28,7 @@
 # www.navitia.io
 
 import math
-from flask import g, request, jsonify, make_response
+from flask import g, request, jsonify, make_response, send_file
 from flask_sqlalchemy import Pagination
 import flask_restful
 from flask_restful import marshal, reqparse, types
@@ -40,7 +40,7 @@ from formats import *
 from formats import impact_input_format, channel_input_format, pt_object_type_values,\
     tag_input_format, category_input_format, channel_type_values,\
     property_input_format, disruptions_search_input_format, application_status_values, \
-    impacts_search_input_format
+    impacts_search_input_format, export_input_format
 from chaos import mapper, exceptions
 from chaos import utils, db_helper
 import chaos
@@ -51,6 +51,7 @@ from utils import make_pager, option_value, get_current_time, add_notification_d
 from chaos.validate_params import validate_client, validate_contributor, validate_navitia, \
     manage_navitia_error, validate_id, validate_client_token, validate_send_notifications_and_notification_date
 from collections import OrderedDict
+from aniso8601 import parse_datetime
 
 __all__ = ['Disruptions', 'Index', 'Severity', 'Cause']
 
@@ -58,20 +59,29 @@ __all__ = ['Disruptions', 'Index', 'Severity', 'Cause']
 class Index(flask_restful.Resource):
 
     def get(self):
-        url = url_for('disruption', _external=True)
         response = {
-            "disruptions": {"href": url},
-            "disruption": {"href": url + '/{id}', "templated": True},
+            "disruptions": {"href": url_for('disruption', _external=True)},
+            "disruption": {"href": url_for('disruption', _external=True) + '/{id}', "templated": True},
             "severities": {"href": url_for('severity', _external=True)},
+            "severity": {"href": url_for('severity', _external=True) + '/{id}', "templated": True},
             "causes": {"href": url_for('cause', _external=True)},
+            "cause": {"href": url_for('cause', _external=True) + '/{id}', "templated": True},
             "channels": {"href": url_for('channel', _external=True)},
+            "channel": {"href": url_for('channel', _external=True) + '/{id}', "templated": True},
             "impactsbyobject": {"href": url_for('impactsbyobject', _external=True)},
             "tags": {"href": url_for('tag', _external=True)},
+            "tag": {"href": url_for('tag', _external=True) + '/{id}', "templated": True},
             "categories": {"href": url_for('category', _external=True)},
+            "category": {"href": url_for('category', _external=True) + '/{id}', "templated": True},
             "channeltypes": {"href": url_for('channeltype', _external=True)},
-            "status": {"href": url_for('status', _external=True)},
             "traffic_reports": {"href": url_for('trafficreport', _external=True)},
-            "properties": {"href": url_for('property', _external=True)}
+            "properties": {"href": url_for('property', _external=True)},
+            "property": {"href": url_for('property', _external=True) + '/{id}', "templated": True},
+            "impacts_exports": {"href": url_for('impacts_exports', _external=True)},
+            "impacts_export": {"href": url_for('impacts_exports', _external=True) + '/{id}', "templated": True},
+            "impacts_export_download": {"href": url_for('impacts_exports', _external=True) + '/{id}/download', "templated": True},
+            "impacts": {"href": url_for('disruption', _external=True) + '/{disruption_id}/impacts', "templated": True},
+            "impact": {"href": url_for('disruption', _external=True) + '/{disruption_id}/impacts/{id}', "templated": True}
         }
         return response, 200
 
@@ -1880,3 +1890,111 @@ class Property(flask_restful.Resource):
             }, error_fields), 409
 
         return None, 204
+
+class ImpactsExports(flask_restful.Resource):
+    def __init__(self):
+        self.parsers = {'get': reqparse.RequestParser()}
+        self.navitia = None
+
+
+    def validate_dates_boundary(self, json):
+        start_date = parse_datetime(json.get('start_date')).replace(tzinfo=None)
+        end_date = parse_datetime(json.get('end_date')).replace(tzinfo=None)
+        if start_date > end_date:
+            raise ValidationError(message='\'start_date\' should be inferior to \'end_date\'')
+        duration_date = end_date - start_date
+        if duration_date.days > 366 :
+            raise ValidationError(message='Export should be less than 366 days')
+
+    def run_export(self, export):
+
+        from subprocess import Popen, PIPE
+        from os import path, environ
+        from sys import executable
+
+        root_dir = path.abspath(path.join(__file__, "../.."))
+        exporter_path = path.join(root_dir, 'impactsExporter.py')
+        python_exec = executable
+        if current_app.config['IMPACT_EXPORT_PYTHON'] != '':
+            python_exec = current_app.config['IMPACT_EXPORT_PYTHON']
+
+        Popen([
+            python_exec, exporter_path,
+            '--client_id', export.client_id,
+            '--navitia_url', self.navitia.url,
+            '--coverage', self.navitia.coverage,
+            '--token', self.navitia.token,
+            '--folder', current_app.config['IMPACT_EXPORT_DIR'],
+            '--tz', export.time_zone],
+            stdout=PIPE, env=environ.copy())
+
+
+    @validate_client()
+    @validate_id()
+    @validate_client_token()
+    def get(self, client, id=None):
+        if id:
+            return marshal({'export': models.Export.get(client.id, id)}, one_export_fields)
+        else:
+            return marshal({'exports':models.Export.all(client.id)}, exports_fields)
+
+    @validate_client()
+    @validate_navitia()
+    @validate_client_token()
+    def post(self, client, navitia):
+        self.navitia = navitia
+        json = request.get_json(silent=True)
+        logging.getLogger(__name__).debug('POST export: %s', json)
+
+        try:
+            validate(json, export_input_format)
+            self.validate_dates_boundary(json)
+        except ValidationError as e:
+            return marshal({'error': {'message': utils.parse_error(e)}},
+                           error_fields), 400
+        export = models.Export.exist_without_error(client.id, json.get('start_date'), json.get('end_date'))
+        if export is not None:
+            logging.getLogger(__name__).warning('There is an existing export task for this client marked as "%s"' % export.status)
+            return marshal({'export': export}, one_export_fields), 200
+
+        export = models.Export(client.id)
+        mapper.fill_from_json(export, json, mapper.export_mapping)
+        db.session.add(export)
+
+        try:
+            db.session.commit()
+            db.session.refresh(export)
+        except IntegrityError as e:
+            return marshal({'error': {'message': utils.parse_error(e)}},
+                           error_fields), 409
+        else:
+            self.run_export(export)
+
+        return marshal({'export': export}, one_export_fields), 201
+
+
+class ImpactsExportDownload(flask_restful.Resource):
+    def __init__(self):
+        self.parsers = {'get': reqparse.RequestParser()}
+
+    @validate_client()
+    @validate_client_token()
+    def get(self, client, id):
+        export = models.Export.find_finished_export(id)
+        if export is None:
+            return marshal({
+                'error': {'message': 'There is any available export for id {} '.format(id)}
+            }, error_fields), 404
+
+        export_file_path= export.file_path
+        import os.path
+        if not os.path.isfile(export_file_path):
+            return marshal({
+                'error': {'message': 'export file does not exist'}
+            }, error_fields), 404
+
+
+        return send_file(export_file_path,
+                         mimetype="text/csv",
+                         as_attachment=True
+                         )

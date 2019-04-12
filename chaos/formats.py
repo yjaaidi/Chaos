@@ -512,3 +512,11 @@ impacts_search_input_format = {
         }
     }
 }
+export_input_format = {
+    'type': 'object',
+    'properties': {
+        'start_date': {'type': ['string'], 'pattern': datetime_pattern},
+        'end_date': {'type': ['string'], 'pattern': datetime_pattern}
+    },
+    'required': ['start_date', 'end_date']
+}

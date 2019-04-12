@@ -146,6 +146,18 @@ class Navitia(object):
 
         return None
 
+    def find_tc_object_name(self, uri, type):
+        if not uri or not type:
+            return None
+
+        if type == 'line_section':
+            return None
+
+        response = self.get_pt_object(uri, type)
+        if response and 'name' in response:
+            return response['name']
+        return 'Unable to find object'
+
     def __repr__(self):
         """
         Overrides __repr__ method in order to separate cached entities by token, coverage and url
