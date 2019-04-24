@@ -29,6 +29,7 @@
 
 from chaos import models, exceptions, mapper, db
 from utils import get_application_periods
+import logging
 
 
 def fill_and_get_pt_object(navitia, all_objects, json, add_to_db=True):
@@ -210,6 +211,9 @@ def fill_and_add_line_section(navitia, impact_id, all_objects, pt_object_json):
     ptobject.insert_line_section(line_section)
     return ptobject
 
+def clean_message(msg):
+    if msg.channel.content_type == 'text/html':
+        msg.text = msg.text.replace('\r\n', '')
 
 def manage_message(impact, json, client_id):
     messages_db = dict((msg.channel_id, msg) for msg in impact.messages)
@@ -221,11 +225,13 @@ def manage_message(impact, json, client_id):
             if message_json["channel"]["id"] in messages_db:
                 msg = messages_db[message_json["channel"]["id"]]
                 mapper.fill_from_json(msg, message_json, mapper.message_mapping)
+                clean_message(msg)
                 manage_message_meta(msg, message_json)
             else:
                 message = models.Message()
                 message.impact_id = impact.id
                 mapper.fill_from_json(message, message_json, mapper.message_mapping)
+                clean_message(message)
                 impact.insert_message(message)
                 manage_message_meta(message, message_json)
                 messages_db[message.channel_id] = message
