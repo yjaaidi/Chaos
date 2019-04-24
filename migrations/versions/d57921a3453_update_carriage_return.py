@@ -11,10 +11,11 @@ revision = 'd57921a3453'
 down_revision = 'cf4581a9123'
 
 from alembic import op
-import sqlalchemy as sa
-from sqlalchemy.dialects import postgresql
 
 def upgrade():
     op.execute('UPDATE message SET text = regexp_replace(text, E\'[\\\\n\\\\r]\', \'\', \'g\' ) \
                 FROM channel \
                 WHERE message.channel_id = channel.id AND channel.content_type = \'text/html\';')
+
+def downgrade():
+    # function needed but not necessary for downgrade this fix
