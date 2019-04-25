@@ -212,7 +212,7 @@ def fill_and_add_line_section(navitia, impact_id, all_objects, pt_object_json):
 
 def clean_message(msg, type=''):
     if type == 'text/html':
-        msg.text = msg.text.replace('\r\n', '')
+        msg.text = msg.text.replace('\r\n', ' ')
 
 def manage_message(impact, json, client_id):
     messages_db = dict((msg.channel_id, msg) for msg in impact.messages)
