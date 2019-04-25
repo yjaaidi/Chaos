@@ -210,8 +210,8 @@ def fill_and_add_line_section(navitia, impact_id, all_objects, pt_object_json):
     ptobject.insert_line_section(line_section)
     return ptobject
 
-def clean_message(msg):
-    if msg.channel.content_type == 'text/html':
+def clean_message(msg, type=''):
+    if type == 'text/html':
         msg.text = msg.text.replace('\r\n', '')
 
 def manage_message(impact, json, client_id):
@@ -224,13 +224,14 @@ def manage_message(impact, json, client_id):
             if message_json["channel"]["id"] in messages_db:
                 msg = messages_db[message_json["channel"]["id"]]
                 mapper.fill_from_json(msg, message_json, mapper.message_mapping)
-                clean_message(msg)
+                clean_message(msg,  msg.channel.content_type)
                 manage_message_meta(msg, message_json)
             else:
                 message = models.Message()
                 message.impact_id = impact.id
                 mapper.fill_from_json(message, message_json, mapper.message_mapping)
-                clean_message(message)
+                channel = models.Channel.get(message.channel_id, client_id)
+                clean_message(message, channel.content_type)
                 impact.insert_message(message)
                 manage_message_meta(message, message_json)
                 messages_db[message.channel_id] = message
