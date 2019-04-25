@@ -19,3 +19,4 @@ def upgrade():
 
 def downgrade():
     # function needed but not necessary for downgrade this fix
+    pass
