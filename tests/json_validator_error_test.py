@@ -128,7 +128,7 @@ def test_begin_date_is_required_in_impcat():
 
 def test_id_object_is_required_in_impcat():
     try:
-        validate({"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "network:JDR:2","type": "network"}, {"type": "stop_area"}]}, impact_input_format)
+        validate({"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "network:JDR:2","type": "network"}, {"type": "stop_area"}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}, impact_input_format)
         assert False
     except ValidationError, e:
         eq_(parse_error(e), "'id' is a required property", True)
@@ -136,18 +136,18 @@ def test_id_object_is_required_in_impcat():
 
 def test_type_object_is_required_in_impcat():
     try:
-        validate({"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "network:JDR:2","type": "network"}, {"id": "network:JDR:1"}]}, impact_input_format)
+        validate({"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "network:JDR:2","type": "network"}, {"id": "network:JDR:1"}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}, impact_input_format)
         assert False
     except ValidationError, e:
         eq_(parse_error(e), "'type' is a required property", True)
 
 def test_pt_object_stop_point_in_impcat():
-    validate({"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "stop_point:JDR:2", "type": "stop_point"}]}, impact_input_format)
+    validate({"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "stop_point:JDR:2", "type": "stop_point"}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}, impact_input_format)
 
 
 def test_not_pt_object_in_impcat():
     try:
-        validate({"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "route_point:JDR:2", "type": "route_point"}]}, impact_input_format)
+        validate({"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "route_point:JDR:2", "type": "route_point"}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}, impact_input_format)
         assert False
     except ValidationError, e:
         eq_(parse_error(e), "'route_point' is not one of {}".format(pt_object_type_values), True)
@@ -155,7 +155,7 @@ def test_not_pt_object_in_impcat():
 
 def test_text_is_required_in_message():
     try:
-        validate({"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "messages": [{"channel": {"id": "4ffab230-3d48-4eea-aa2c-22f8680230b6"}}],"objects": [{"id": "network:JDR:1", "type": "network"}]}, impact_input_format)
+        validate({"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "messages": [{"channel": {"id": "4ffab230-3d48-4eea-aa2c-22f8680230b6"}}],"objects": [{"id": "network:JDR:1", "type": "network"}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}, impact_input_format)
         assert False
     except ValidationError, e:
         eq_(parse_error(e), "'text' is a required property", True)
@@ -163,7 +163,7 @@ def test_text_is_required_in_message():
 
 def test_channel_is_required_in_message():
     try:
-        validate({"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "messages": [{"text": "message 1"}],"objects": [{"id": "network:JDR:1", "type": "network"}]}, impact_input_format)
+        validate({"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "messages": [{"text": "message 1"}],"objects": [{"id": "network:JDR:1", "type": "network"}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}, impact_input_format)
         assert False
     except ValidationError, e:
         eq_(parse_error(e), "'channel' is a required property", True)
@@ -218,7 +218,7 @@ def test_min_1_impact_is_required_in_disruption():
 
 def test_impact_format_is_checked_in_disruption():
     try:
-        validate({"reference": "foo","contributor": "contrib1","publication_period": {"begin": "2014-06-24T10:35:00Z","end": "2018-06-24T10:35:00Z"},"localization": [{"id": "stop_area:JDR:SA:CHVIN","type": "stop_area"}],"cause": {"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"},"impacts": [{"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}}]}, disruptions_input_format)
+        validate({"reference": "foo","contributor": "contrib1","publication_period": {"begin": "2014-06-24T10:35:00Z","end": "2018-06-24T10:35:00Z"},"localization": [{"id": "stop_area:JDR:SA:CHVIN","type": "stop_area"}],"cause": {"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"},"impacts": [{"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}]}, disruptions_input_format)
         assert True
     except ValidationError, e:
         eq_(parse_error(e), "'objects' is a required property", True)
@@ -249,7 +249,7 @@ def test_unique_application_periods_in_impact():
 
 def test_unique_pt_object_in_impact():
     try:
-        validate({"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "network:JDR:2","type": "network"}, {"id": "network:JDR:2","type": "network"}]}, impact_input_format)
+        validate({"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "network:JDR:2","type": "network"}, {"id": "network:JDR:2","type": "network"}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}, impact_input_format)
         assert False
     except ValidationError, e:
         eq_(parse_error(e), "[{'type': 'network', 'id': 'network:JDR:2'}, {'type': 'network', 'id': 'network:JDR:2'}] has non-unique elements", True)
@@ -257,7 +257,7 @@ def test_unique_pt_object_in_impact():
 
 def test_unique_message_in_impact():
     try:
-        validate({"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "messages": [{"text": "message 1","channel": {"id": "4ffab230-3d48-4eea-aa2c-22f8680230b6"}}, {"text": "message 1","channel": {"id": "4ffab230-3d48-4eea-aa2c-22f8680230b6"}}],"objects": [{"id": "network:JDR:1", "type": "network"}]}, impact_input_format)
+        validate({"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "messages": [{"text": "message 1","channel": {"id": "4ffab230-3d48-4eea-aa2c-22f8680230b6"}}, {"text": "message 1","channel": {"id": "4ffab230-3d48-4eea-aa2c-22f8680230b6"}}],"objects": [{"id": "network:JDR:1", "type": "network"}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}, impact_input_format)
         assert False
     except ValidationError, e:
         eq_(parse_error(e), "[{'text': 'message 1', 'channel': {'id': '4ffab230-3d48-4eea-aa2c-22f8680230b6'}}, {'text': 'message 1', 'channel': {'id': '4ffab230-3d48-4eea-aa2c-22f8680230b6'}}] has non-unique elements", True)
@@ -265,7 +265,7 @@ def test_unique_message_in_impact():
 
 def test_obects_is_required_in_impact():
     try:
-        validate({"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "messages": [{"text": "message 1", "channel": {"id": "4ffab230-3d48-4eea-aa2c-22f8680230b6"}}, {"text": "message 1", "channel": {"id": "4ffab230-3d48-4eea-aa2c-22f8680230b6"}}]}, impact_input_format)
+        validate({"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "messages": [{"text": "message 1", "channel": {"id": "4ffab230-3d48-4eea-aa2c-22f8680230b6"}}, {"text": "message 1", "channel": {"id": "4ffab230-3d48-4eea-aa2c-22f8680230b6"}}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}, impact_input_format)
         assert True
     except ValidationError, e:
         eq_(parse_error(e), "'objects' is a required property", True)
