@@ -347,12 +347,8 @@ impact_input_format = {
     },
     'required': ['severity', 'objects'],
     'oneOf': [
-        {
-            'oneOf': [
-                {'required': ['application_periods']},
-                {'required': ['application_period_patterns']}
-            ]
-        }
+        {'required': ['application_periods']},
+        {'required': ['application_period_patterns']}
     ]
 }
 

@@ -2683,10 +2683,12 @@
       properties:
         application_period_patterns:
           type: "array"
+          description: "Either application_period_patterns or application_periods could be used"
           items:
             $ref: "#/definitions/application_period_pattern"
         application_periods:
           type: "array"
+          description: "Either application_period_patterns or application_periods could be used"
           items:
             $ref: "#/definitions/period"
         created_at:
