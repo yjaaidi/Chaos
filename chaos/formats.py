@@ -322,7 +322,8 @@ impact_input_format = {
         'application_periods': {
             'type': 'array',
             'items': date_period_format,
-            'uniqueItems': True
+            'uniqueItems': True,
+            'minItems': 1
         },
         'objects': {
             'type': 'array',
@@ -338,12 +339,17 @@ impact_input_format = {
         'application_period_patterns': {
             'type': 'array',
             'items': pattern_input_format,
-            'uniqueItems': True
+            'uniqueItems': True,
+            'minItems': 1
         },
         'send_notifications': {'type': 'boolean'},
         'notification_date': {'type': ['string', 'null'], 'pattern': datetime_pattern}
     },
-    'required': ['severity', 'objects']
+    'required': ['severity', 'objects'],
+    'oneOf': [
+        {'required': ['application_periods']},
+        {'required': ['application_period_patterns']}
+    ]
 }
 
 disruptions_input_format = {
