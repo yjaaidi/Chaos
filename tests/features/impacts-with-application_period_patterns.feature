@@ -74,7 +74,7 @@ Feature: Manipulate impacts in a Disruption
         """
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
-        And the field "error.message" should contain "is not valid under any of the given schemas"
+        And the field "error.message" should contain "is valid under each of {'required': ['application_period_patterns']}, {'required': ['application_periods']}"
 
     Scenario: Add an impact in a disruption with an application_periods
 
