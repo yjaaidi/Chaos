@@ -1738,31 +1738,31 @@
   ################################################################################
   definitions:
     application_period_pattern:
-        type: "object"
-        properties:
-          end_date:
-            type: "string"
-            format: "date"
-          start_date:
-            type: "string"
-            format: "date"
-          weekly_pattern:
-            description: |
-              Days of week beginning at monday. If notification on given day is active,
-              it should be marked with 1, otherwise 0
-            type: "string"
-          time_slots:
-            description: "List with time slots whitin impact is active"
-            type: "array"
-            items:
-              type: "object"
-              properties:
-                begin:
-                  type: "string"
-                  description: "Start time (Format HH:MM)"
-                end:
-                  type: "string"
-                  description: "Start time (Format HH:MM)"
+      type: "object"
+      properties:
+        end_date:
+          type: "string"
+          format: "date"
+        start_date:
+          type: "string"
+          format: "date"
+        weekly_pattern:
+          description: |
+            Days of week beginning at monday. If notification on given day is active,
+            it should be marked with 1, otherwise 0
+          type: "string"
+        time_slots:
+          description: "List with time slots whitin impact is active"
+          type: "array"
+          items:
+            type: "object"
+            properties:
+              begin:
+                type: "string"
+                description: "Start time (Format HH:MM)"
+              end:
+                type: "string"
+                description: "Start time (Format HH:MM)"
     bad_id:
       type: "object"
       properties:
