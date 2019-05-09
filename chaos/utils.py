@@ -868,9 +868,28 @@ def add_notification_date_on_impacts(disruptions_or_impacts_json):
     elif disruptions_or_impacts_json and 'send_notifications' in disruptions_or_impacts_json:
         impacts = [disruptions_or_impacts_json]
     for impact in impacts:
-        if ('send_notifications' in impact) and impact['send_notifications'] and \
-            ('notification_date' not in impact):
-            impact['notification_date'] = get_current_time().strftime('%Y-%m-%dT%H:%M:%SZ')
+        if ('send_notifications' in impact) and impact['send_notifications']:
+            impact_notification_date = define_notification_date_for_impact(impact)
+            impact['notification_date'] = datetime.strftime(impact_notification_date, '%Y-%m-%dT%H:%M:%SZ')
+
+def define_notification_date_for_impact(impact):
+    """
+    Defines notification date for impact
+
+    If notification date isn't set, or is in the past, it would be replaced with current one
+    :param impact:
+    :return: datetime
+    """
+    now = get_current_time()
+    if 'notification_date' not in impact:
+        return now
+
+    impact_notification_date = datetime.strptime(impact['notification_date'], '%Y-%m-%dT%H:%M:%SZ')
+    if impact_notification_date < now:
+        return now
+
+    return impact_notification_date
+
 
 def is_uuid(uuid_string):
     import re
