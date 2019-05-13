@@ -1737,31 +1737,6 @@
   #                                 Definitions                                  #
   ################################################################################
   definitions:
-    period:
-      type: "object"
-      properties:
-        begin:
-          type: "string"
-          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
-          example: "2018-08-03T12:19:13Z"
-        end:
-          type: "string"
-          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
-          example: "2018-08-03T12:19:13Z"
-    period_create:
-      type: "object"
-      required:
-        - begin
-        - end
-      properties:
-        begin:
-          type: "string"
-          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
-          example: "2018-08-03T12:19:13Z"
-        end:
-          type: "string"
-          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
-          example: "2018-08-03T12:19:13Z"
     application_period_pattern:
       type: "object"
       properties:
@@ -1793,103 +1768,6 @@
       properties:
         message:
           type: "string"
-    message_type:
-      type: "object"
-      properties:
-        message:
-          type: "string"
-    error_occured:
-      type: "object"
-      properties:
-        error:
-          type: "object"
-          properties:
-            message :
-              type: "string"
-    error_404:
-      type: "object"
-      properties:
-        status:
-          type: "number"
-        message :
-          type: "string"
-    href:
-      type: "object"
-      properties:
-        href:
-          type: "string"
-    wording:
-      type: "object"
-      required: ["key", "value"]
-      properties:
-        key:
-          type: "string"
-        value:
-          type: "string"
-    severity:
-      type: "object"
-      properties:
-        id:
-          type: "string"
-          format: "uuid"
-        self:
-          $ref: "#/definitions/href"
-        color:
-          type: "string"
-        created_at:
-          type: "string"
-          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
-          example: "2018-08-03T12:19:13Z"
-        effect:
-          type: "string"
-          enum:
-            - "no_service"
-            - "reduced_service"
-            - "significant_delays"
-            - "detour"
-            - "additional_service"
-            - "modified_service"
-            - "other_effect"
-            - "unknown_effect"
-            - "stop_moved"
-            - "None"
-        priority:
-          type: "integer"
-        updated_at:
-          type: "string"
-          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
-          example: "2018-08-03T12:19:13Z"
-        wording:
-          type: "string"
-        wordings:
-          type: "array"
-          items:
-            $ref: "#/definitions/wording"
-    severity_creation:
-      type: "object"
-      required: ["wordings"]
-      properties:
-        color:
-          type: "string"
-        effect:
-          type: "string"
-          enum:
-            - "no_service"
-            - "reduced_service"
-            - "significant_delays"
-            - "detour"
-            - "additional_service"
-            - "modified_service"
-            - "other_effect"
-            - "unknown_effect"
-            - "stop_moved"
-            - "None"
-        priority:
-          type: "integer"
-        wordings:
-          type: "array"
-          items:
-            $ref: "#/definitions/wording"
     category:
       type: "object"
       properties:
@@ -2007,306 +1885,6 @@
               - "facebook"
               - "title"
               - "beacon"
-    property:
-      type: "object"
-      properties:
-        id:
-          type: "string"
-          format: "uuid"
-        self:
-          $ref: "#/definitions/href"
-        key:
-          type: "string"
-        type:
-          type: "string"
-        created_at:
-          type: "string"
-          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
-          example: "2018-08-03T12:19:13Z"
-        updated_at:
-          type: "string"
-          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
-          example: "2018-08-03T12:19:13Z"
-    property_creation:
-      type: "object"
-      required: ["key", "type"]
-      properties:
-        key:
-          type: "string"
-        type:
-          type: "string"
-    tag:
-      type: "object"
-      properties:
-        id:
-          type: "string"
-          format: "uuid"
-        self:
-          $ref: "#/definitions/href"
-        name:
-          type: "string"
-        created_at:
-          type: "string"
-          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
-          example: "2018-08-03T12:19:13Z"
-        updated_at:
-          type: "string"
-          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
-          example: "2018-08-03T12:19:13Z"
-    tag_creation:
-      type: "object"
-      required: ["name"]
-      properties:
-        name:
-          type: "string"
-    traffic_report_stop:
-      type: "object"
-      properties:
-        name:
-          type: "string"
-        id:
-          type: "string"
-        links:
-          type: "array"
-          items:
-            $ref: "#/definitions/traffic_report_link"
-    traffic_report_line_section_meta:
-      type: "object"
-      properties:
-        value:
-          type: "string"
-        key:
-          type: "string"
-    traffic_report_line_section_route:
-      type: "object"
-      properties:
-        type:
-          type: "string"
-        id:
-          type: "string"
-    traffic_report_line_section:
-      type: "object"
-      properties:
-        line_section:
-          type: "object"
-          properties:
-            start_point:
-              type: "object"
-              properties:
-                type:
-                  type: "string"
-                id:
-                  type: "string"
-            end_point:
-              type: "object"
-              properties:
-                type:
-                  type: "string"
-                id:
-                  type: "string"
-            metas:
-              type: "array"
-              items:
-                $ref: "#/definitions/traffic_report_line_section_meta"
-            routes:
-              type: "array"
-              items:
-                $ref: "#/definitions/traffic_report_line_section_route"
-            line:
-              type: "object"
-              properties:
-                id:
-                  type: "string"
-                code:
-                  type: "string"
-                type:
-                  type: "string"
-                name:
-                  type: "string"
-        type:
-          type: "string"
-        id:
-          type: "string"
-          format: "uuid"
-        links:
-          type: "array"
-          items:
-            $ref: "#/definitions/traffic_report_link"
-    traffic_report_link:
-      type: "object"
-      properties:
-        internal:
-          type: "boolean"
-        template:
-          type: "boolean"
-        type:
-          type: "string"
-        id:
-          type: "string"
-          format: "uuid"
-        rel:
-          type: "string"
-    traffic_report_line:
-      type: "object"
-      properties:
-        code:
-          description: "Line code"
-          type: "string"
-        name:
-          description: "Line name"
-          type: "string"
-        id:
-          description: "Line identifier in Navitia"
-          type: "string"
-        links:
-          type: "array"
-          items:
-            $ref: "#/definitions/traffic_report_link"
-    traffic_report_message:
-        type: "object"
-        properties:
-          text:
-            type: "string"
-          channel:
-            type: "object"
-            properties:
-              id:
-                type: "string"
-                format: "uuid"
-              name:
-                type: "string"
-              content_type:
-                type: "string"
-              max_size:
-                type: "integer"
-              types:
-                type: "array"
-                items:
-                  type: "string"
-    traffic_report_for_network:
-      type: "object"
-      required: ["network"]
-      properties:
-        network:
-          type: "object"
-          description: "Impacted Network"
-          properties:
-            name:
-              description: "Network name"
-              type: "string"
-            id:
-              description: "Network identifier in Navitia"
-              type: "string"
-        line_sections:
-          description: "Impacted line sections"
-          type: "array"
-          items:
-            $ref: "#/definitions/traffic_report_line_section"
-        lines:
-           description: "Impacted lines"
-           type: "array"
-           items:
-            $ref: "#/definitions/traffic_report_line"
-        stop_areas:
-            type: "array"
-            description: "Impacted stop areas"
-            items:
-              $ref: "#/definitions/traffic_report_stop"
-        stop_points:
-            type: "array"
-            description: "Impacted stop points"
-            items:
-              $ref: "#/definitions/traffic_report_stop"
-
-    traffic_report:
-      type: "array"
-      items:
-        $ref: "#/definitions/traffic_report_for_network"
-    pt_object_filter:
-      type: "object"
-      description: Filter by ptObject list. If set, return only disruptions who has all impacts ptObject in this list
-      properties:
-        networks:
-          type: "array"
-          items:
-            description: "Id of network object"
-            type: "string"
-        lines:
-          type: "array"
-          items:
-            description: "Id of line object"
-            type: "string"
-        routes:
-          type: "array"
-          items:
-            description: "Id of route object"
-            type: "string"
-        stop_points:
-          type: "array"
-          items:
-            description: "Id of stop_point object"
-            type: "string"
-        stop_areas:
-          type: "array"
-          items:
-            description: "Id of stop_area object"
-            type: "string"
-    traffic_report_disruption:
-      type: "object"
-      properties:
-        id:
-          type: "string"
-          format: uuid
-          description: "Impact ID"
-        disruption_id:
-          type: "string"
-          format: uuid
-          description: "Impact ID"
-        status:
-          type: "string"
-          enum:
-            - "active"
-          description: "If impact is active or not"
-        cause:
-          type: "string"
-          description: "Label of related cause"
-        severity:
-          type: "object"
-          properties:
-            id:
-              type: "string"
-              format: uuid
-              description: "Severity ID"
-            name:
-              type: "string"
-              description: "Severity name"
-            effect:
-              type: "string"
-              description: "One of allowed severity effect"
-              enum:
-                - "no_service"
-                - "reduced_service"
-                - "significant_delays"
-                - "detour"
-                - "additional_service"
-                - "modified_service"
-                - "other_effect"
-                - "unknown_effect"
-                - "stop_moved"
-                - "None"
-            color:
-              type: "string"
-              description: "Hexadecimal color code"
-            priority:
-              type: "integer"
-        application_periods:
-          type: "array"
-          items:
-            $ref: "#/definitions/period"
-        messages:
-          type: "array"
-          items:
-            $ref: "#/definitions/traffic_report_message"
     disruption:
       type: object
       properties:
@@ -2563,57 +2141,17 @@
           description: "Message meta for additional information"
           items:
             $ref: "#/definitions/meta"
-    impacts_search:
+    disruption_in_impact:
       type: object
       properties:
-        start_page:
-          description: Index of the first element returned (start at 1)
-          type: integer
-          default: 1
-          minimum: 1
-          example: 1
-        items_per_page:
-          description: Number of items per page
-          type: integer
-          default: 20
-        application_status:
-          description: Filter by application_status (on impact)
-          default:
-            - past
-            - ongoing
-            - coming
-          type: array
-          items:
-            type: string
-            enum:
-              - past
-              - ongoing
-              - coming
-        application_period:
-          required: [begin, end]
-          type: object
-          description: Filter on impact application_period
-          properties:
-            begin:
-              type: string
-              pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
-              example: "2018-08-03T12:19:13Z"
-            end:
-              type: string
-              pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
-              example: "2018-08-03T12:19:13Z"
-        current_time:
-          description: Parameter for settings the current time, mostly for debugging purpose
-          default: now
-          type: string
-          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
-          example: "2018-08-03T12:19:13Z"
-        cause_category_id:
-          description: Filter by category id
+        cause:
+          $ref: "#/definitions/cause"
+        id:
           type: string
           format: uuid
-        ptObjectFilter:
-          $ref: "#/definitions/pt_object_filter"
+          description: Disruption ID
+        self:
+          $ref: "#/definitions/href"
     disruptions_search:
       type: object
       properties:
@@ -2717,15 +2255,37 @@
           format: uuid
         ptObjectFilter:
           $ref: "#/definitions/pt_object_filter"
+    error_404:
+      type: "object"
+      properties:
+        status:
+          type: "number"
+        message :
+          type: "string"
+    error_occured:
+      type: "object"
+      properties:
+        error:
+          type: "object"
+          properties:
+            message :
+              type: "string"
+    href:
+      type: "object"
+      properties:
+        href:
+          type: "string"
     impact:
       type: "object"
       properties:
         application_period_patterns:
           type: "array"
+          description: "Either application_period_patterns or application_periods could be used"
           items:
             $ref: "#/definitions/application_period_pattern"
         application_periods:
           type: "array"
+          description: "Either application_period_patterns or application_periods could be used"
           items:
             $ref: "#/definitions/period"
         created_at:
@@ -2776,6 +2336,51 @@
           type: "string"
           pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
           example: "2018-08-03T12:19:13Z"
+    impact_creation:
+      type: "object"
+      required: ["severity", "objects", ]
+      properties:
+        application_period_patterns:
+          type: "array"
+          items:
+            $ref: "#/definitions/application_period_pattern"
+        application_periods:
+          type: "array"
+          items:
+            $ref: "#/definitions/period_create"
+        severity:
+          type: "object"
+          properties:
+            id:
+              description: "Severity ID"
+              type: "string"
+              format: "uuid"
+        messages:
+          description: "List with messages by Channel"
+          type: "array"
+          items:
+            $ref: "#/definitions/disruption_impact_message"
+        objects:
+          type: "array"
+          description: "List with impacted PT objects"
+          items:
+            type: "object"
+            properties:
+              id:
+                description: "Impacted PT object ID in navitia"
+                type: "string"
+              type:
+                description: "Impacted PT object type in navitia"
+                type: "string"
+        send_notifications:
+          description: "If notification should be send or not"
+          type: "boolean"
+          default: false
+        notification_date:
+          description: "Date of notification (if not set and send_notification is true, it will be the current UTC date)"
+          type: "string"
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2018-08-03T12:19:13Z"
     impact_message:
       type: "object"
       properties:
@@ -2822,62 +2427,6 @@
           type: "array"
           items:
             type: "string"
-    impact_creation:
-      type: "object"
-      required: ["severity", "objects", ]
-      properties:
-        application_period_patterns:
-          type: "array"
-          items:
-            $ref: "#/definitions/application_period_pattern"
-        application_periods:
-          type: "array"
-          items:
-            $ref: "#/definitions/period_create"
-        severity:
-          type: "object"
-          properties:
-            id:
-              description: "Severity ID"
-              type: "string"
-              format: "uuid"
-        messages:
-          description: "List with messages by Channel"
-          type: "array"
-          items:
-            $ref: "#/definitions/disruption_impact_message"
-        objects:
-          type: "array"
-          description: "List with impacted PT objects"
-          items:
-            type: "object"
-            properties:
-              id:
-                description: "Impacted PT object ID in navitia"
-                type: "string"
-              type:
-                description: "Impacted PT object type in navitia"
-                type: "string"
-        send_notifications:
-          description: "If notification should be send or not"
-          type: "boolean"
-          default: false
-        notification_date:
-          description: "Date of notification (if not set and send_notification is true, it will be the current UTC date)"
-          type: "string"
-          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
-          example: "2018-08-03T12:19:13Z"
-    disruption_in_impact:
-      type: object
-      properties:
-        cause:
-          $ref: "#/definitions/cause"
-        id:
-          type: string
-          format: uuid
-          description: Disruption ID
-        self:
-          $ref: "#/definitions/href"
     impact_with_disruption:
       type: "object"
       properties:
@@ -2937,46 +2486,6 @@
           type: "string"
           pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
           example: "2018-08-03T12:19:13Z"
-    pagination:
-      type: "object"
-      properties:
-        start_page:
-          type: "integer"
-        items_per_page:
-          type: "integer"
-        total_result:
-          type: "integer"
-        prev:
-          $ref: "#/definitions/href"
-        next:
-          $ref: "#/definitions/href"
-        first:
-          $ref: "#/definitions/href"
-        last:
-          $ref: "#/definitions/href"
-    pagination_impacts_search:
-      type: "object"
-      properties:
-        start_page:
-          type: "integer"
-        items_per_page:
-          type: "integer"
-        total_result:
-          type: "integer"
-        items_on_page:
-          type: "integer"
-    meta:
-      type: "object"
-      required:
-        - key
-        - value
-      properties:
-        key:
-          type: "string"
-          example: "subject"
-        value:
-          type: "string"
-          example: "Mail subject"
     impacts_export_create:
       type: "object"
       required:
@@ -3031,3 +2540,495 @@
           type: "string"
           pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
           example: "2018-08-03T12:19:13Z"
+    impacts_search:
+      type: object
+      properties:
+        start_page:
+          description: Index of the first element returned (start at 1)
+          type: integer
+          default: 1
+          minimum: 1
+          example: 1
+        items_per_page:
+          description: Number of items per page
+          type: integer
+          default: 20
+        application_status:
+          description: Filter by application_status (on impact)
+          default:
+            - past
+            - ongoing
+            - coming
+          type: array
+          items:
+            type: string
+            enum:
+              - past
+              - ongoing
+              - coming
+        application_period:
+          required: [begin, end]
+          type: object
+          description: Filter on impact application_period
+          properties:
+            begin:
+              type: string
+              pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+              example: "2018-08-03T12:19:13Z"
+            end:
+              type: string
+              pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+              example: "2018-08-03T12:19:13Z"
+        current_time:
+          description: Parameter for settings the current time, mostly for debugging purpose
+          default: now
+          type: string
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2018-08-03T12:19:13Z"
+        cause_category_id:
+          description: Filter by category id
+          type: string
+          format: uuid
+        ptObjectFilter:
+          $ref: "#/definitions/pt_object_filter"
+    message_type:
+      type: "object"
+      properties:
+        message:
+          type: "string"
+    meta:
+      type: "object"
+      required:
+        - key
+        - value
+      properties:
+        key:
+          type: "string"
+          example: "subject"
+        value:
+          type: "string"
+          example: "Mail subject"
+    pagination:
+      type: "object"
+      properties:
+        start_page:
+          type: "integer"
+        items_per_page:
+          type: "integer"
+        total_result:
+          type: "integer"
+        prev:
+          $ref: "#/definitions/href"
+        next:
+          $ref: "#/definitions/href"
+        first:
+          $ref: "#/definitions/href"
+        last:
+          $ref: "#/definitions/href"
+    pagination_impacts_search:
+      type: "object"
+      properties:
+        start_page:
+          type: "integer"
+        items_per_page:
+          type: "integer"
+        total_result:
+          type: "integer"
+        items_on_page:
+          type: "integer"
+    period:
+      type: "object"
+      properties:
+        begin:
+          type: "string"
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2018-08-03T12:19:13Z"
+        end:
+          type: "string"
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2018-08-03T12:19:13Z"
+    period_create:
+      type: "object"
+      required:
+        - begin
+        - end
+      properties:
+        begin:
+          type: "string"
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2018-08-03T12:19:13Z"
+        end:
+          type: "string"
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2018-08-03T12:19:13Z"
+    property:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+          format: "uuid"
+        self:
+          $ref: "#/definitions/href"
+        key:
+          type: "string"
+        type:
+          type: "string"
+        created_at:
+          type: "string"
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2018-08-03T12:19:13Z"
+        updated_at:
+          type: "string"
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2018-08-03T12:19:13Z"
+    property_creation:
+      type: "object"
+      required: ["key", "type"]
+      properties:
+        key:
+          type: "string"
+        type:
+          type: "string"
+    pt_object_filter:
+      type: "object"
+      description: Filter by ptObject list. If set, return only disruptions who has all impacts ptObject in this list
+      properties:
+        networks:
+          type: "array"
+          items:
+            description: "Id of network object"
+            type: "string"
+        lines:
+          type: "array"
+          items:
+            description: "Id of line object"
+            type: "string"
+        routes:
+          type: "array"
+          items:
+            description: "Id of route object"
+            type: "string"
+        stop_points:
+          type: "array"
+          items:
+            description: "Id of stop_point object"
+            type: "string"
+        stop_areas:
+          type: "array"
+          items:
+            description: "Id of stop_area object"
+            type: "string"
+    severity:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+          format: "uuid"
+        self:
+          $ref: "#/definitions/href"
+        color:
+          type: "string"
+        created_at:
+          type: "string"
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2018-08-03T12:19:13Z"
+        effect:
+          type: "string"
+          enum:
+            - "no_service"
+            - "reduced_service"
+            - "significant_delays"
+            - "detour"
+            - "additional_service"
+            - "modified_service"
+            - "other_effect"
+            - "unknown_effect"
+            - "stop_moved"
+            - "None"
+        priority:
+          type: "integer"
+        updated_at:
+          type: "string"
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2018-08-03T12:19:13Z"
+        wording:
+          type: "string"
+        wordings:
+          type: "array"
+          items:
+            $ref: "#/definitions/wording"
+    severity_creation:
+      type: "object"
+      required: ["wordings"]
+      properties:
+        color:
+          type: "string"
+        effect:
+          type: "string"
+          enum:
+            - "no_service"
+            - "reduced_service"
+            - "significant_delays"
+            - "detour"
+            - "additional_service"
+            - "modified_service"
+            - "other_effect"
+            - "unknown_effect"
+            - "stop_moved"
+            - "None"
+        priority:
+          type: "integer"
+        wordings:
+          type: "array"
+          items:
+            $ref: "#/definitions/wording"
+    tag:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+          format: "uuid"
+        self:
+          $ref: "#/definitions/href"
+        name:
+          type: "string"
+        created_at:
+          type: "string"
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2018-08-03T12:19:13Z"
+        updated_at:
+          type: "string"
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2018-08-03T12:19:13Z"
+    tag_creation:
+      type: "object"
+      required: ["name"]
+      properties:
+        name:
+          type: "string"
+    traffic_report:
+      type: "array"
+      items:
+        $ref: "#/definitions/traffic_report_for_network"
+    traffic_report_disruption:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+          format: uuid
+          description: "Impact ID"
+        disruption_id:
+          type: "string"
+          format: uuid
+          description: "Impact ID"
+        status:
+          type: "string"
+          enum:
+            - "active"
+          description: "If impact is active or not"
+        cause:
+          type: "string"
+          description: "Label of related cause"
+        severity:
+          type: "object"
+          properties:
+            id:
+              type: "string"
+              format: uuid
+              description: "Severity ID"
+            name:
+              type: "string"
+              description: "Severity name"
+            effect:
+              type: "string"
+              description: "One of allowed severity effect"
+              enum:
+                - "no_service"
+                - "reduced_service"
+                - "significant_delays"
+                - "detour"
+                - "additional_service"
+                - "modified_service"
+                - "other_effect"
+                - "unknown_effect"
+                - "stop_moved"
+                - "None"
+            color:
+              type: "string"
+              description: "Hexadecimal color code"
+            priority:
+              type: "integer"
+        application_periods:
+          type: "array"
+          items:
+            $ref: "#/definitions/period"
+        messages:
+          type: "array"
+          items:
+            $ref: "#/definitions/traffic_report_message"
+    traffic_report_for_network:
+      type: "object"
+      required: ["network"]
+      properties:
+        network:
+          type: "object"
+          description: "Impacted Network"
+          properties:
+            name:
+              description: "Network name"
+              type: "string"
+            id:
+              description: "Network identifier in Navitia"
+              type: "string"
+        line_sections:
+          description: "Impacted line sections"
+          type: "array"
+          items:
+            $ref: "#/definitions/traffic_report_line_section"
+        lines:
+           description: "Impacted lines"
+           type: "array"
+           items:
+            $ref: "#/definitions/traffic_report_line"
+        stop_areas:
+            type: "array"
+            description: "Impacted stop areas"
+            items:
+              $ref: "#/definitions/traffic_report_stop"
+        stop_points:
+            type: "array"
+            description: "Impacted stop points"
+            items:
+              $ref: "#/definitions/traffic_report_stop"
+    traffic_report_line_section:
+      type: "object"
+      properties:
+        line_section:
+          type: "object"
+          properties:
+            start_point:
+              type: "object"
+              properties:
+                type:
+                  type: "string"
+                id:
+                  type: "string"
+            end_point:
+              type: "object"
+              properties:
+                type:
+                  type: "string"
+                id:
+                  type: "string"
+            metas:
+              type: "array"
+              items:
+                $ref: "#/definitions/traffic_report_line_section_meta"
+            routes:
+              type: "array"
+              items:
+                $ref: "#/definitions/traffic_report_line_section_route"
+            line:
+              type: "object"
+              properties:
+                id:
+                  type: "string"
+                code:
+                  type: "string"
+                type:
+                  type: "string"
+                name:
+                  type: "string"
+        type:
+          type: "string"
+        id:
+          type: "string"
+          format: "uuid"
+        links:
+          type: "array"
+          items:
+            $ref: "#/definitions/traffic_report_link"
+    traffic_report_line:
+      type: "object"
+      properties:
+        code:
+          description: "Line code"
+          type: "string"
+        name:
+          description: "Line name"
+          type: "string"
+        id:
+          description: "Line identifier in Navitia"
+          type: "string"
+        links:
+          type: "array"
+          items:
+            $ref: "#/definitions/traffic_report_link"
+    traffic_report_line_section_meta:
+      type: "object"
+      properties:
+        value:
+          type: "string"
+        key:
+          type: "string"
+    traffic_report_line_section_route:
+      type: "object"
+      properties:
+        type:
+          type: "string"
+        id:
+          type: "string"
+    traffic_report_link:
+      type: "object"
+      properties:
+        internal:
+          type: "boolean"
+        template:
+          type: "boolean"
+        type:
+          type: "string"
+        id:
+          type: "string"
+          format: "uuid"
+        rel:
+          type: "string"
+    traffic_report_message:
+        type: "object"
+        properties:
+          text:
+            type: "string"
+          channel:
+            type: "object"
+            properties:
+              id:
+                type: "string"
+                format: "uuid"
+              name:
+                type: "string"
+              content_type:
+                type: "string"
+              max_size:
+                type: "integer"
+              types:
+                type: "array"
+                items:
+                  type: "string"
+    traffic_report_stop:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        id:
+          type: "string"
+        links:
+          type: "array"
+          items:
+            $ref: "#/definitions/traffic_report_link"
+    wording:
+      type: "object"
+      required: ["key", "value"]
+      properties:
+        key:
+          type: "string"
+        value:
+          type: "string"

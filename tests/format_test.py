@@ -182,7 +182,9 @@ def test_validate_impact_format():
 
 def test_impact_without_application_period_validation():
     json = {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},
-            "objects": [{"id": "stop_area:RTP:SA:3786125","type": "network"},{"id": "line:RTP:LI:378","type": "network"}]}
+            "objects": [{"id": "stop_area:RTP:SA:3786125","type": "network"},{"id": "line:RTP:LI:378","type": "network"}],
+            "application_periods": [{"begin": "2014-04-29T16:52:00Z", "end": "2014-06-22T02:15:00Z"}]
+           }
     validate(json, formats.impact_input_format)
 
 
@@ -460,7 +462,9 @@ def test_impact_with_application_period_patterns_invalid():
 
 def test_impact_with_route():
     json = {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},
-            "objects": [{"id": "route:RTP:LI:378","type": "route"}]}
+            "objects": [{"id": "route:RTP:LI:378","type": "route"}],
+            "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]
+            }
     validate(json, formats.impact_input_format)
 
 
@@ -494,7 +498,7 @@ def test_impact_with_send_notifications_not_boolean():
 
 
 def test_impact_with_send_notifications_boolean():
-    json = {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"send_notifications": True,"objects": [{"id": "network:JDR:1", "type": "network"}]}
+    json = {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"send_notifications": True,"objects": [{"id": "network:JDR:1", "type": "network"}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}
     validate(json, formats.impact_input_format)
 
 
@@ -619,12 +623,12 @@ def test_associate_disruption_property_property_id_is_not_uuid():
 
 
 def test_impact_with_notification_date():
-    json = {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"notification_date": "2014-06-20T17:00:00Z","objects": [{"id": "network:JDR:1", "type": "network"}]}
+    json = {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"notification_date": "2014-06-20T17:00:00Z","objects": [{"id": "network:JDR:1", "type": "network"}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}
     validate(json, formats.impact_input_format)
 
 
 def test_impact_with_notification_date_and_None_value():
-    json = {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"notification_date": None,"objects": [{"id": "network:JDR:1", "type": "network"}]}
+    json = {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"notification_date": None,"objects": [{"id": "network:JDR:1", "type": "network"}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}
     validate(json, formats.impact_input_format)
 
 

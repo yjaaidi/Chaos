@@ -40,8 +40,8 @@ Feature: Manipulate impacts in a Disruption
         And the field "impact.application_periods" should contain all of "{"begin": "2015-02-02T06:45:00Z", "end": "2015-02-02T08:30:00Z"}"
         And the field "impact.application_periods" should contain all of "{"begin": "2015-02-06T06:45:00Z", "end": "2015-02-06T08:30:00Z"}"
 
-    #If an application_period pattern exist along with application_periods, application_periods is not treated.
-    Scenario: Add an impact in a disruption with a application_period pattern having one time_slot and application_periods
+    #One of application_period pattern or application_periods is required
+    Scenario: Add an impact in a disruption with a application_period pattern having one time_slot and application_periods fails
 
         Given I have the following clients in my database:
             | client_code   | created_at          | updated_at          | id                                   |
@@ -72,15 +72,9 @@ Feature: Manipulate impacts in a Disruption
         """
         {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "application_period_patterns":[{"start_date":"2015-02-01","end_date":"2015-02-06","weekly_pattern":"1111100","time_zone":"Europe/Paris","time_slots":[{"begin": "07:45", "end": "09:30"}]}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}],"objects": [{"id": "network:JDR:1","type": "network"}]}
         """
-        Then the status code should be "201"
+        Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
-        And the field "impact.application_periods" should exist
-        And the field "impact.severity.wording" should be "good news"
-        And the field "impact.application_period_patterns" should have a size of 1
-        And the field "impact.application_period_patterns.0.time_slots" should have a size of 1
-        And the field "impact.application_periods" should have a size of 5
-        And the field "impact.application_periods" should contain all of "{"begin": "2015-02-02T06:45:00Z", "end": "2015-02-02T08:30:00Z"}"
-        And the field "impact.application_periods" should contain all of "{"begin": "2015-02-06T06:45:00Z", "end": "2015-02-06T08:30:00Z"}"
+        And the field "error.message" should contain "is valid under each of {'required': ['application_period_patterns']}, {'required': ['application_periods']}"
 
     Scenario: Add an impact in a disruption with an application_periods
 
