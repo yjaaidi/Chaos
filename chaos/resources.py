@@ -2327,11 +2327,11 @@ class DisruptionsHistory(flask_restful.Resource):
                 for pt_object in impact['objects']:
                     impact_pt_object_id = pt_object['id']
                     if impact_pt_object_id in line_section_via[disruptionVersion]:
-                        pt_object['line_section']['via'] = line_section_via[impact_pt_object_id].values()
+                        pt_object['line_section']['via'] = line_section_via[disruptionVersion][impact_pt_object_id].values()
                     if impact_pt_object_id in line_section_routes[disruptionVersion]:
-                        pt_object['line_section']['routes'] = line_section_routes[impact_pt_object_id].values()
+                        pt_object['line_section']['routes'] = line_section_routes[disruptionVersion][impact_pt_object_id].values()
                     if impact_pt_object_id in line_section_metas[disruptionVersion]:
-                        pt_object['line_section']['wordings'] = line_section_metas[impact_pt_object_id].values()
+                        pt_object['line_section']['wordings'] = line_section_metas[disruptionVersion][impact_pt_object_id].values()
         if len(disruptions) == 0:
             return marshal({
                 'error': {'message': 'Disruption {} not found'.format(disruption_id)}
