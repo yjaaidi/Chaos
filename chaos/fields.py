@@ -154,6 +154,11 @@ class FieldObjectName(fields.Raw):
 class FieldLocalization(fields.Raw):
     def output(self, key, obj):
         to_return = []
+
+        #for history
+        if hasattr(obj, 'history_localization') and isinstance(obj.localizations, list):
+            return obj.history_localization
+
         navitia = Navitia(current_app.config['NAVITIA_URL'],
                           get_coverage(request),
                           get_token(request))
