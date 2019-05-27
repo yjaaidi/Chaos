@@ -236,8 +236,10 @@ def disruption_from_history(disruption, json):
 
     disruption_properties = []
     for property in json['properties']:
-        property_model = models.Property()
-        property_model.id = property['id']
+        property_model = models.AssociateDisruptionProperty()
+        property_model.disruption_id = json['id']
+        property_model.property_id = property['property_id']
+        property_model.value = property['value']
         disruption_properties.append(property_model)
 
     disruption.id = json['id']
