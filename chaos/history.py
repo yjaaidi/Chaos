@@ -34,5 +34,3 @@ def save_disruption_in_history(data):
     clean_before_save_in_history(disruption)
     disruption['impacts'] = disruption['impacts']['impacts']
     save_in_database(data.id, json.dumps(disruption))
-    print json.dumps(disruption)
-

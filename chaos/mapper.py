@@ -226,7 +226,6 @@ def disruption_from_history(disruption, json):
         cause.category.name = json['cause']['category']['name']
 
     disruption_tags = []
-
     for tag in json['tags']:
         tag_model = models.Tag()
         tag_model.id = tag['id']
@@ -234,6 +233,12 @@ def disruption_from_history(disruption, json):
         tag_model.updated_at = get_datetime_from_json_attr(tag, 'updated_at')
         tag_model.name = tag['name']
         disruption_tags.append(tag_model)
+
+    disruption_properties = []
+    for property in json['properties']:
+        property_model = models.Property()
+        property_model.id = property['id']
+        disruption_properties.append(property_model)
 
     disruption.id = json['id']
     disruption.reference = json['reference']
@@ -249,4 +254,5 @@ def disruption_from_history(disruption, json):
     disruption.contributor = contributor
     disruption.cause = cause
     disruption.tags = disruption_tags
+    disruption.properties = disruption_properties
     disruption.history_localization = json['localization']
