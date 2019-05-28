@@ -240,18 +240,18 @@ def disruption_from_history(disruption, json):
     disruption_properties = []
     for key, property in json['properties'].items():
         for sub_property in property:
-            property_model = models.AssociateDisruptionProperty()
-            property_model.disruption_id = json['id']
-            property_model.property_id = sub_property['property']['id']
-            property_model.value = sub_property['value']
-            prop_model = models.Property()
-            prop_model.id = sub_property['property']['id']
-            prop_model.type = sub_property['property']['type']
-            prop_model.key = sub_property['property']['key']
-            prop_model.created_at = get_datetime_from_json_attr(sub_property['property'], 'created_at')
-            prop_model.updated_at = get_datetime_from_json_attr(sub_property['property'], 'updated_at')
-            property_model.property = prop_model
-            disruption_properties.append(property_model)
+            adp_model = models.AssociateDisruptionProperty()
+            adp_model.disruption_id = json['id']
+            adp_model.property_id = sub_property['property']['id']
+            adp_model.value = sub_property['value']
+            property_model = models.Property()
+            property_model.id = sub_property['property']['id']
+            property_model.type = sub_property['property']['type']
+            property_model.key = sub_property['property']['key']
+            property_model.created_at = get_datetime_from_json_attr(sub_property['property'], 'created_at')
+            property_model.updated_at = get_datetime_from_json_attr(sub_property['property'], 'updated_at')
+            adp_model.property = property_model
+            disruption_properties.append(adp_model)
 
     disruption.id = json['id']
     disruption.reference = json['reference']
