@@ -237,6 +237,18 @@ def disruption_from_history(disruption, json):
         tag_model.name = tag['name']
         disruption_tags.append(tag_model)
 
+    impacts = []
+    for impact in json['impacts']:
+        impact_model = models.Impact()
+        impact_model.updated_at = get_datetime_from_json_attr(impact, 'updated_at')
+        impact_model.created_at = get_datetime_from_json_attr(impact, 'created_at')
+        impact_model.disruption_id = json['id']
+        impact_model.id = impact['id']
+        impact_model.send_notifications = impact['send_notifications']
+        impact_model.notification_date = impact['notification_date']
+
+        impacts.append(impact_model)
+
     disruption_properties = []
     for key, property in json['properties'].items():
         for sub_property in property:
@@ -269,3 +281,4 @@ def disruption_from_history(disruption, json):
     disruption.tags = disruption_tags
     disruption.properties = disruption_properties
     disruption.history_localization = json['localization']
+    disruption.impacts = impacts

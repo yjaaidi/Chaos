@@ -2026,6 +2026,7 @@ class DisruptionsHistory(flask_restful.Resource):
     @manage_navitia_error()
     @validate_client_token()
     def get(self, contributor, navitia, disruption_id):
+        g.display_impacts = True
         disruptions = OrderedDict()
         history_disruption_model = models.HistoryDisruption()
         history_disruptions = history_disruption_model.get_by_disruption_id(disruption_id)
