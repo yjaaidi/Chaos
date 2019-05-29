@@ -16,7 +16,7 @@ def save_in_database(disruption_id, disruption_json):
     db.session.commit()
 
 def clean_before_save_in_history(disruption):
-    if not isinstance(disruption, dict) and not isinstance(disruption, list):
+    if notgit isinstance(disruption, dict):
         return
     for key in disruption.keys():
         if key in ['self', 'href', 'pagination']:
