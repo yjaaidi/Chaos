@@ -237,18 +237,6 @@ def disruption_from_history(disruption, json):
         tag_model.name = tag['name']
         disruption_tags.append(tag_model)
 
-    impacts = []
-    for impact in json['impacts']:
-        impact_model = models.Impact()
-        impact_model.updated_at = get_datetime_from_json_attr(impact, 'updated_at')
-        impact_model.created_at = get_datetime_from_json_attr(impact, 'created_at')
-        impact_model.disruption_id = json['id']
-        impact_model.id = impact['id']
-        impact_model.send_notifications = impact['send_notifications']
-        impact_model.notification_date = impact['notification_date']
-
-        impacts.append(impact_model)
-
     disruption_properties = []
     for key, property in json['properties'].items():
         for sub_property in property:
@@ -264,6 +252,49 @@ def disruption_from_history(disruption, json):
             property_model.updated_at = get_datetime_from_json_attr(sub_property['property'], 'updated_at')
             adp_model.property = property_model
             disruption_properties.append(adp_model)
+
+    impacts = []
+    for impact in json['impacts']:
+        impact_model = models.Impact()
+        impact_model.updated_at = get_datetime_from_json_attr(impact, 'updated_at')
+        impact_model.created_at = get_datetime_from_json_attr(impact, 'created_at')
+        impact_model.disruption_id = json['id']
+        impact_model.id = impact['id']
+        impact_model.send_notifications = impact['send_notifications']
+        impact_model.notification_date = get_datetime_from_json_attr(impact, 'notification_date')
+
+        impact_model.severity_id = impact['severity']['id']
+        severity_model = models.Severity()
+        severity_model.id = impact['severity']['id']
+        severity_model.wording = impact['severity']['wording']
+        severity_model.color = impact['severity']['color']
+        severity_model.effect = impact['severity']['effect']
+        severity_model.priority = impact['severity']['priority']
+        severity_model.created_at = get_datetime_from_json_attr(impact['severity'], 'created_at')
+
+        severity_wordings = []
+        for wording in impact['severity']['wordings']:
+            wording_model = models.Wording()
+            wording_model.value = wording['value']
+            wording_model.key = wording['key']
+            severity_wordings.append(wording_model)
+
+        severity_model.wordings = severity_wordings
+        impact_model.severity = severity_model
+
+        application_periods = []
+        for application_period in impact['application_periods']:
+            application_period_model = models.ApplicationPeriods()
+            application_period_model.start_date = get_datetime_from_json_attr(application_period, 'begin')
+            application_period_model.end_date = get_datetime_from_json_attr(application_period, 'end')
+            application_period_model.impact_id = impact['id']
+            application_periods.append(application_period_model)
+
+        impact_model.application_periods = application_periods
+
+        # todo remove the following line
+        impact_model.status = 'published'
+        impacts.append(impact_model)
 
     disruption.id = json['id']
     disruption.reference = json['reference']
