@@ -202,6 +202,11 @@ export_mapping = {
 def get_datetime_from_json_attr(json, attr):
     return parse_datetime(json[attr]).replace(tzinfo=None) if attr in json and json[attr] else None
 
+def get_date_from_json_attr(json, attr):
+    return parse_date(json[attr])
+
+def get_time_from_json_attr(json, attr):
+    return parse_time(json[attr])
 
 def disruption_from_history(disruption, json):
     contributor = models.Contributor()
@@ -291,6 +296,65 @@ def disruption_from_history(disruption, json):
             application_periods.append(application_period_model)
 
         impact_model.application_periods = application_periods
+
+        application_period_patterns = []
+        for application_period_pattern in impact['application_period_patterns']:
+            application_period_pattern_model = models.Pattern()
+            application_period_pattern_model.weekly_pattern = application_period_pattern['weekly_pattern']
+            application_period_pattern_model.start_date = get_date_from_json_attr(application_period_pattern, 'start_date')
+            application_period_pattern_model.end_date = get_date_from_json_attr(application_period_pattern, 'end_date')
+
+            time_slots = []
+            for time_slot in application_period_pattern['time_slots']:
+                time_slot_model = models.TimeSlot()
+                time_slot_model.begin = get_time_from_json_attr(time_slot, 'begin')
+                time_slot_model.end = get_time_from_json_attr(time_slot, 'end')
+                time_slots.append(time_slot_model)
+
+            application_period_pattern_model.time_slots = time_slots
+            application_period_patterns.append(application_period_pattern_model)
+
+        impact_model.patterns = application_period_patterns
+
+        messages = []
+        for message in impact['messages']:
+            message_model = models.Message()
+            message_model.created_at = get_datetime_from_json_attr(message, 'created_at')
+            message_model.updated_at = get_datetime_from_json_attr(message, 'updated_at')
+            message_model.text = message['text']
+
+            channel_model = models.Channel()
+            channel_model.name = message['channel']['name']
+            channel_model.created_at = get_datetime_from_json_attr(message['channel'], 'created_at')
+            channel_model.updated_at = get_datetime_from_json_attr(message['channel'], 'updated_at')
+            channel_model.required = message['channel']['required']
+            channel_model.max_size = message['channel']['max_size']
+            channel_model.content_type = message['channel']['content_type']
+            channel_model.id = message['channel']['id']
+
+            channel_types = []
+            for channel_type in message['channel']['types']:
+                channel_type_model = models.ChannelType()
+                channel_type_model.name = channel_type
+                channel_types.append(channel_type_model)
+
+            channel_model.channel_types = channel_types
+
+            message_model.channel_id = message['channel']['id']
+            message_model.channel = channel_model
+
+            metas = []
+            for meta in message['meta']:
+                meta_model = models.Meta()
+                meta_model.key = meta['key']
+                meta_model.value = meta['value']
+                metas.append(meta_model)
+
+            message_model.meta = metas
+
+            messages.append(message_model)
+
+        impact_model.messages = messages
 
         # todo remove the following line
         impact_model.status = 'published'
