@@ -356,8 +356,17 @@ def disruption_from_history(disruption, json):
 
         impact_model.messages = messages
 
+        ptobjects = []
+        for ptobject in impact['objects']:
+           ptobject_model = models.PTobject()
+           ptobject_model.type = ptobject['type']
+           ptobject_model.uri = ptobject['id']
+           ptobject_model.name = ptobject['name']
+           ptobjects.append(ptobject_model)
+
         # todo remove the following line
         impact_model.status = 'published'
+        impact_model.objects = ptobjects
         impacts.append(impact_model)
 
     disruption.id = json['id']

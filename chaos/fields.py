@@ -134,6 +134,11 @@ class FieldUrlDisruption(fields.Raw):
 
 class FieldObjectName(fields.Raw):
     def output(self, key, obj):
+
+        # for history
+        if hasattr(obj, 'name'):
+            return obj.name
+
         if not obj:
             return None
         if isinstance(obj, dict) and 'uri' in obj and 'type' in obj:
