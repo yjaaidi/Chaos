@@ -52,7 +52,7 @@ from chaos.validate_params import validate_client, validate_contributor, validat
     manage_navitia_error, validate_id, validate_client_token, validate_send_notifications_and_notification_date
 from collections import OrderedDict
 from aniso8601 import parse_datetime
-from history import save_disruption_in_history
+from history import save_disruption_in_history, create_disruption_from_json
 
 __all__ = ['Disruptions', 'Index', 'Severity', 'Cause']
 
@@ -461,6 +461,7 @@ this disruption to Navitia. Please try again.'}}, error_fields), 503
             if chaos.utils.send_disruption_to_navitia(disruption):
                 db.session.commit()
                 db.session.refresh(disruption)
+                save_disruption_in_history(disruption)
                 return None, 204
             else:
                 db.session.rollback()
@@ -2031,11 +2032,7 @@ class DisruptionsHistory(flask_restful.Resource):
         history_disruption_model = models.HistoryDisruption()
         history_disruptions = history_disruption_model.get_by_disruption_id(disruption_id)
         for history_disruption in history_disruptions:
-            diruption_model = models.Disruption()
-            disruption_json = json.loads(history_disruption.data)
-            mapper.disruption_from_history(diruption_model, disruption_json)
-            disruptions[diruption_model.version] = diruption_model
+            disruption = create_disruption_from_json(json.loads(history_disruption.data))
+            disruptions[disruption.version] = disruption
 
-        rawData = {'disruptions': disruptions.values()}
-        result = marshal(rawData, disruptions_fields)
-        return result
+        return marshal({'disruptions': disruptions.values()}, disruptions_fields)
