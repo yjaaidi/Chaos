@@ -208,6 +208,13 @@ def get_date_from_json_attr(json, attr):
 def get_time_from_json_attr(json, attr):
     return parse_time(json[attr])
 
+def generate_ptobject_from_json(json):
+    ptobject = models.PTobject()
+    ptobject.type = json['type']
+    ptobject.uri = json['id']
+    ptobject.name = json['name']
+    return ptobject
+
 def disruption_from_history(disruption, json):
     contributor = models.Contributor()
     contributor.contributor_code = json['contributor']
@@ -361,10 +368,17 @@ def disruption_from_history(disruption, json):
            ptobject_model = models.PTobject()
            ptobject_model.type = ptobject['type']
            ptobject_model.uri = ptobject['id']
-           ptobject_model.name = ptobject['name']
+
+           if 'line_section' in ptobject:
+               line_section_model = models.LineSection()
+               line_section_model.line = generate_ptobject_from_json(ptobject['line_section']['line'])
+               line_section_model.start_point = generate_ptobject_from_json(ptobject['line_section']['start_point'])
+               line_section_model.end_point = generate_ptobject_from_json(ptobject['line_section']['end_point'])
+               ptobject_model.line_section = line_section_model
+           elif 'name' in ptobject:
+               ptobject_model.name = ptobject['name']
            ptobjects.append(ptobject_model)
 
-        # todo remove the following line
         impact_model.status = 'published'
         impact_model.objects = ptobjects
         impacts.append(impact_model)
