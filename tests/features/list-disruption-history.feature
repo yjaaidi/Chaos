@@ -128,10 +128,14 @@ Feature: disruption history
         And the field "disruptions.0.impacts.pagination" should have a size of 8
         And the field "disruptions.0.impacts.impacts" should have a size of 1
         And the field "disruptions.0.impacts.impacts.0.created_at" should be "2019-05-27T09:44:50Z"
+        And the field "disruptions.0.impacts.impacts.0.updated_at" should be null
+        And the field "disruptions.0.impacts.impacts.0.id" should be "121fd37d-8064-11e9-9e35-34e6d748c530"
+        And the field "disruptions.0.impacts.impacts.0.notification_date" should be null
+        And the field "disruptions.0.impacts.impacts.0.send_notifications" should be "False"
+
         And the field "disruptions.0.impacts.impacts.0.disruption" should have a size of 1
         And the field "disruptions.0.impacts.impacts.0.disruption.href" should contain "a750994c-01fe-11e4-b4fb-080027079ff3"
-        And the field "disruptions.0.impacts.impacts.0.id" should be "121fd37d-8064-11e9-9e35-34e6d748c530"
-        And the field "disruptions.0.impacts.impacts.0.send_notifications" should be "False"
+
         And the field "disruptions.0.impacts.impacts.0.severity" should have a size of 9
         And the field "disruptions.0.impacts.impacts.0.severity.color" should be "#654321"
         And the field "disruptions.0.impacts.impacts.0.severity.created_at" should be "2014-04-04T23:52:12Z"
@@ -142,3 +146,43 @@ Feature: disruption history
         And the field "disruptions.0.impacts.impacts.0.severity.self.href" should contain "7ffab232-3d48-4eea-aa2c-22f8680230b6"
         And the field "disruptions.0.impacts.impacts.0.severity.wordings" should have a size of 0
         And the field "disruptions.0.impacts.impacts.0.severity.priority" should be null
+
+        And the field "disruptions.0.impacts.impacts.0.application_period_patterns" should have a size of 1
+        And the field "disruptions.0.impacts.impacts.0.application_period_patterns.0.weekly_pattern" should contain "1111100"
+        And the field "disruptions.0.impacts.impacts.0.application_period_patterns.0.start_date" should be "2019-05-30"
+        And the field "disruptions.0.impacts.impacts.0.application_period_patterns.0.end_date" should be "2019-12-31"
+        And the field "disruptions.0.impacts.impacts.0.application_period_patterns.0.time_slots" should have a size of 2
+        And the field "disruptions.0.impacts.impacts.0.application_period_patterns.0.time_slots.0.begin" should be "00:00"
+        And the field "disruptions.0.impacts.impacts.0.application_period_patterns.0.time_slots.0.end" should be "14:00"
+        And the field "disruptions.0.impacts.impacts.0.application_period_patterns.0.time_slots.1.begin" should be "03:59"
+        And the field "disruptions.0.impacts.impacts.0.application_period_patterns.0.time_slots.1.end" should be "10:01"
+
+        And the field "disruptions.0.impacts.impacts.0.application_periods" should have a size of 1
+        And the field "disruptions.0.impacts.impacts.0.application_periods.0.begin" should be "2014-04-29T16:52:00Z"
+        And the field "disruptions.0.impacts.impacts.0.application_periods.0.end" should be "2014-06-22T02:15:00Z"
+
+        And the field "disruptions.0.impacts.impacts.0.messages" should have a size of 2
+        And the field "disruptions.0.impacts.impacts.0.messages.0" should have a size of 5
+        And the field "disruptions.0.impacts.impacts.0.messages.0.text" should be "test contenu email"
+        And the field "disruptions.0.impacts.impacts.0.messages.0.created_at" should be "2019-05-29T09:55:08Z"
+        And the field "disruptions.0.impacts.impacts.0.messages.0.updated_at" should be null
+        And the field "disruptions.0.impacts.impacts.0.messages.0.meta" should have a size of 1
+        And the field "disruptions.0.impacts.impacts.0.messages.0.meta.0.key" should be "subject"
+        And the field "disruptions.0.impacts.impacts.0.messages.0.meta.0.value" should be "test object"
+        And the field "disruptions.0.impacts.impacts.0.messages.0.channel" should have a size of 9
+        And the field "disruptions.0.impacts.impacts.0.messages.0.channel.name" should be "email"
+        And the field "disruptions.0.impacts.impacts.0.messages.0.channel.created_at" should be "2019-04-04T14:58:33Z"
+        And the field "disruptions.0.impacts.impacts.0.messages.0.channel.required" should be "False"
+        And the field "disruptions.0.impacts.impacts.0.messages.0.channel.updated_at" should be null
+        And the field "disruptions.0.impacts.impacts.0.messages.0.channel.max_size" should be "255"
+        And the field "disruptions.0.impacts.impacts.0.messages.0.channel.self.href" should contain "1decb83e-56ea-11e9-9d43-185e0fa9992b"
+        And the field "disruptions.0.impacts.impacts.0.messages.0.channel.id" should be "1decb83e-56ea-11e9-9d43-185e0fa9992b"
+        And the field "disruptions.0.impacts.impacts.0.messages.0.channel.content_type" should be "text/plain"
+        And the field "disruptions.0.impacts.impacts.0.messages.0.channel.types" should have a size of 1
+        And the field "disruptions.0.impacts.impacts.0.messages.0.channel.types.0" should be "email"
+
+        And the field "disruptions.0.impacts.impacts.0.objects" should have a size of 1
+        And the field "disruptions.0.impacts.impacts.0.objects.0" should have a size of 3
+        And the field "disruptions.0.impacts.impacts.0.objects.0.type" should be "network"
+        And the field "disruptions.0.impacts.impacts.0.objects.0.id" should be "network:JDR:1"
+        And the field "disruptions.0.impacts.impacts.0.objects.0.name" should be "RATP"
