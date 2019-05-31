@@ -29,10 +29,6 @@
 
 from collections import Mapping, Sequence
 from aniso8601 import parse_datetime, parse_time, parse_date
-from flask import logging
-
-from chaos import models
-import logging
 
 class Datetime(object):
     def __init__(self, attribute):
