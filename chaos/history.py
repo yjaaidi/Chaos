@@ -40,24 +40,31 @@ def save_disruption_in_history(data):
     save_in_database(data.id, json.dumps(disruption))
 
 
+def create_disruption_from_json(json):
+    disruption = models.Disruption()
+    disruption.id = json['id']
+    disruption.reference = json['reference']
+    disruption.note = json['note']
+    disruption.status = json['status']
+    disruption.version = json['version']
+    disruption.created_at = get_datetime_from_json_attr(json, 'created_at')
+    disruption.updated_at = get_datetime_from_json_attr(json, 'updated_at')
+    disruption.reference = json['reference']
+    disruption.start_publication_date = get_datetime_from_json_attr(json['publication_period'], 'begin')
+    disruption.end_publication_date = get_datetime_from_json_attr(json['publication_period'], 'end')
+    disruption.publicationStatus = json['publication_status']
+    disruption.history_localization = json['localization']
+    disruption.contributor = create_contributor_from_json(json['contributor'])
+    disruption.cause = create_cause_from_json(json['cause'])
+    disruption.tags = create_tags_from_json(json['tags'])
+    disruption.properties = create_properties_from_json(json['properties'], json['id'])
+    disruption.impacts = create_impacts_from_json(json['impacts'], json['id'])
+
+    return disruption
+
+
 def get_datetime_from_json_attr(json, attr):
     return parse_datetime(json[attr]).replace(tzinfo=None) if attr in json and json[attr] else None
-
-
-def get_date_from_json_attr(json, attr):
-    return parse_date(json[attr])
-
-
-def get_time_from_json_attr(json, attr):
-    return parse_time(json[attr])
-
-
-def generate_ptobject_from_json(json):
-    ptobject = models.PTobject()
-    ptobject.type = json['type']
-    ptobject.uri = json['id']
-    ptobject.name = json['name']
-    return ptobject
 
 
 def create_contributor_from_json(contributor_code):
@@ -66,16 +73,15 @@ def create_contributor_from_json(contributor_code):
     return contributor
 
 
-def create_cause_wordings_from_json(cause_wording_json):
-    cause_wordings = []
+def create_cause_from_json(cause_json):
+    cause = models.Cause()
+    cause.id = cause_json['id']
+    cause.created_at = get_datetime_from_json_attr(cause_json, 'created_at')
+    cause.updated_at = get_datetime_from_json_attr(cause_json, 'updated_at')
+    cause.wordings = create_cause_wordings_from_json(cause_json['wordings'])
+    cause.category = create_cause_category_from_json(cause_json)
 
-    for wording in cause_wording_json:
-        wording_model = models.Wording()
-        wording_model.key = wording['key']
-        wording_model.value = wording['value']
-        cause_wordings.append(wording_model)
-
-    return cause_wordings
+    return cause
 
 
 def create_cause_category_from_json(json_data):
@@ -92,49 +98,73 @@ def create_cause_category_from_json(json_data):
     return category
 
 
-def create_cause_from_json(cause_json):
-    cause = models.Cause()
-    cause.id = cause_json['id']
-    cause.created_at = get_datetime_from_json_attr(cause_json, 'created_at')
-    cause.updated_at = get_datetime_from_json_attr(cause_json, 'updated_at')
-    cause.wordings = create_cause_wordings_from_json(cause_json['wordings'])
-    cause.category = create_cause_category_from_json(cause_json)
+def create_cause_wordings_from_json(cause_wording_json):
+    cause_wordings = []
 
-    return cause
+    for wording in cause_wording_json:
+        cause_wordings.append(generate_wording_from_json(wording))
+
+    return cause_wordings
+
+
+def generate_wording_from_json(json):
+    wording = models.Wording()
+    wording.key = json['key']
+    wording.value = json['value']
+    return wording
 
 
 def create_tags_from_json(tags_json):
     tags = []
 
-    for item in tags_json:
-        tag = models.Tag()
-        tag.id = item['id']
-        tag.created_at = get_datetime_from_json_attr(item, 'created_at')
-        tag.updated_at = get_datetime_from_json_attr(item, 'updated_at')
-        tag.name = item['name']
+    for tag_json in tags_json:
+        tag = create_tag_from_json(tag_json)
         tags.append(tag)
 
     return tags
 
 
-def create_properties_from_json(properties_json, disruption_id):
-    disruption_properties = []
-    for key, property in properties_json.items():
-        for sub_property in property:
-            adp_model = models.AssociateDisruptionProperty()
-            adp_model.disruption_id = disruption_id
-            adp_model.property_id = sub_property['property']['id']
-            adp_model.value = sub_property['value']
-            property_model = models.Property()
-            property_model.id = sub_property['property']['id']
-            property_model.type = sub_property['property']['type']
-            property_model.key = sub_property['property']['key']
-            property_model.created_at = get_datetime_from_json_attr(sub_property['property'], 'created_at')
-            property_model.updated_at = get_datetime_from_json_attr(sub_property['property'], 'updated_at')
-            adp_model.property = property_model
-            disruption_properties.append(adp_model)
+def create_tag_from_json(json):
+    tag = models.Tag()
+    tag.id = json['id']
+    tag.created_at = get_datetime_from_json_attr(json, 'created_at')
+    tag.updated_at = get_datetime_from_json_attr(json, 'updated_at')
+    tag.name = json['name']
 
-    return disruption_properties
+    return tag
+
+
+def create_properties_from_json(json, disruption_id):
+    properties = []
+    for key, property in json.items():
+        for sub_property in property:
+            property_json = sub_property['property']
+            value = sub_property['value']
+            adp_model = create_associate_disruption_property_from_json(property_json, disruption_id, value)
+            properties.append(adp_model)
+
+    return properties
+
+
+def create_associate_disruption_property_from_json(json, disruption_id, value):
+    adp = models.AssociateDisruptionProperty()
+    adp.disruption_id = disruption_id
+    adp.property_id = json['id']
+    adp.value = value
+    adp.property = create_property_from_json(json)
+
+    return adp
+
+
+def create_property_from_json(json):
+    property = models.Property()
+    property.id = json['id']
+    property.type = json['type']
+    property.key = json['key']
+    property.created_at = get_datetime_from_json_attr(json, 'created_at')
+    property.updated_at = get_datetime_from_json_attr(json, 'updated_at')
+
+    return property
 
 
 def create_impacts_from_json(impacts_json, disruption_id):
@@ -261,24 +291,17 @@ def create_impacts_from_json(impacts_json, disruption_id):
     return impacts
 
 
-def create_disruption_from_json(json):
-    disruption = models.Disruption()
-    disruption.id = json['id']
-    disruption.reference = json['reference']
-    disruption.note = json['note']
-    disruption.status = json['status']
-    disruption.version = json['version']
-    disruption.created_at = get_datetime_from_json_attr(json, 'created_at')
-    disruption.updated_at = get_datetime_from_json_attr(json, 'updated_at')
-    disruption.reference = json['reference']
-    disruption.start_publication_date = get_datetime_from_json_attr(json['publication_period'], 'begin')
-    disruption.end_publication_date = get_datetime_from_json_attr(json['publication_period'], 'end')
-    disruption.publicationStatus = json['publication_status']
-    disruption.history_localization = json['localization']
-    disruption.contributor = create_contributor_from_json(json['contributor'])
-    disruption.cause = create_cause_from_json(json['cause'])
-    disruption.tags = create_tags_from_json(json['tags'])
-    disruption.properties = create_properties_from_json(json['properties'], json['id'])
-    disruption.impacts = create_impacts_from_json(json['impacts'], json['id'])
+def generate_ptobject_from_json(json):
+    pt_object = models.PTobject()
+    pt_object.type = json['type']
+    pt_object.uri = json['id']
+    pt_object.name = json['name']
+    return pt_object
 
-    return disruption
+
+def get_date_from_json_attr(json, attr):
+    return parse_date(json[attr])
+
+
+def get_time_from_json_attr(json, attr):
+    return parse_time(json[attr])
