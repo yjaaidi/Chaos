@@ -4,7 +4,7 @@ from flask_restful import marshal
 from flask import g
 from fields import disruption_fields
 from aniso8601 import parse_datetime, parse_time, parse_date
-from chaos import db, models
+from chaos import db, models, mapper
 
 
 def save_in_database(disruption_id, disruption_json):
@@ -169,126 +169,177 @@ def create_property_from_json(json):
 
 def create_impacts_from_json(impacts_json, disruption_id):
     impacts = []
-    for impact in impacts_json:
-        impact_model = models.Impact()
-        impact_model.updated_at = get_datetime_from_json_attr(impact, 'updated_at')
-        impact_model.created_at = get_datetime_from_json_attr(impact, 'created_at')
-        impact_model.disruption_id = disruption_id
-        impact_model.id = impact['id']
-        impact_model.send_notifications = impact['send_notifications']
-        impact_model.notification_date = get_datetime_from_json_attr(impact, 'notification_date')
-
-        impact_model.severity_id = impact['severity']['id']
-        severity_model = models.Severity()
-        severity_model.id = impact['severity']['id']
-        severity_model.wording = impact['severity']['wording']
-        severity_model.color = impact['severity']['color']
-        severity_model.effect = impact['severity']['effect']
-        severity_model.priority = impact['severity']['priority']
-        severity_model.created_at = get_datetime_from_json_attr(impact['severity'], 'created_at')
-        severity_model.updated_at = get_datetime_from_json_attr(impact['severity'], 'updated_at')
-
-        severity_wordings = []
-        for wording in impact['severity']['wordings']:
-            wording_model = models.Wording()
-            wording_model.value = wording['value']
-            wording_model.key = wording['key']
-            severity_wordings.append(wording_model)
-
-        severity_model.wordings = severity_wordings
-        impact_model.severity = severity_model
-
-        application_periods = []
-        for application_period in impact['application_periods']:
-            application_period_model = models.ApplicationPeriods()
-            application_period_model.start_date = get_datetime_from_json_attr(application_period, 'begin')
-            application_period_model.end_date = get_datetime_from_json_attr(application_period, 'end')
-            application_period_model.impact_id = impact['id']
-            application_periods.append(application_period_model)
-
-        impact_model.application_periods = application_periods
-
-        application_period_patterns = []
-        for application_period_pattern in impact['application_period_patterns']:
-            application_period_pattern_model = models.Pattern()
-            application_period_pattern_model.weekly_pattern = application_period_pattern['weekly_pattern']
-            application_period_pattern_model.start_date = get_date_from_json_attr(application_period_pattern,
-                                                                                  'start_date')
-            application_period_pattern_model.end_date = get_date_from_json_attr(application_period_pattern, 'end_date')
-
-            time_slots = []
-            for time_slot in application_period_pattern['time_slots']:
-                time_slot_model = models.TimeSlot()
-                time_slot_model.begin = get_time_from_json_attr(time_slot, 'begin')
-                time_slot_model.end = get_time_from_json_attr(time_slot, 'end')
-                time_slots.append(time_slot_model)
-
-            application_period_pattern_model.time_slots = time_slots
-            application_period_patterns.append(application_period_pattern_model)
-
-        impact_model.patterns = application_period_patterns
-
-        messages = []
-        for message in impact['messages']:
-            message_model = models.Message()
-            message_model.created_at = get_datetime_from_json_attr(message, 'created_at')
-            message_model.updated_at = get_datetime_from_json_attr(message, 'updated_at')
-            message_model.text = message['text']
-
-            channel_model = models.Channel()
-            channel_model.name = message['channel']['name']
-            channel_model.created_at = get_datetime_from_json_attr(message['channel'], 'created_at')
-            channel_model.updated_at = get_datetime_from_json_attr(message['channel'], 'updated_at')
-            channel_model.required = message['channel']['required']
-            channel_model.max_size = message['channel']['max_size']
-            channel_model.content_type = message['channel']['content_type']
-            channel_model.id = message['channel']['id']
-
-            channel_types = []
-            for channel_type in message['channel']['types']:
-                channel_type_model = models.ChannelType()
-                channel_type_model.name = channel_type
-                channel_types.append(channel_type_model)
-
-            channel_model.channel_types = channel_types
-
-            message_model.channel_id = message['channel']['id']
-            message_model.channel = channel_model
-
-            metas = []
-            for meta in message['meta']:
-                meta_model = models.Meta()
-                meta_model.key = meta['key']
-                meta_model.value = meta['value']
-                metas.append(meta_model)
-
-            message_model.meta = metas
-
-            messages.append(message_model)
-
-        impact_model.messages = messages
-
-        ptobjects = []
-        for ptobject in impact['objects']:
-            ptobject_model = models.PTobject()
-            ptobject_model.type = ptobject['type']
-            ptobject_model.uri = ptobject['id']
-
-            if 'line_section' in ptobject:
-                line_section_model = models.LineSection()
-                line_section_model.line = generate_ptobject_from_json(ptobject['line_section']['line'])
-                line_section_model.start_point = generate_ptobject_from_json(ptobject['line_section']['start_point'])
-                line_section_model.end_point = generate_ptobject_from_json(ptobject['line_section']['end_point'])
-                ptobject_model.line_section = line_section_model
-            elif 'name' in ptobject:
-                ptobject_model.name = ptobject['name']
-            ptobjects.append(ptobject_model)
-
-        impact_model.status = 'published'
-        impact_model.objects = ptobjects
-        impacts.append(impact_model)
+    for impact_json in impacts_json:
+        impact = create_impact_from_json(impact_json, disruption_id)
+        impacts.append(impact)
 
     return impacts
+
+
+def create_impact_from_json(json, disruption_id):
+    impact = models.Impact()
+    impact.id = json['id']
+    impact.status = 'published'
+    impact.disruption_id = disruption_id
+    impact.updated_at = get_datetime_from_json_attr(json, 'updated_at')
+    impact.created_at = get_datetime_from_json_attr(json, 'created_at')
+    impact.send_notifications = json['send_notifications']
+    impact.notification_date = get_datetime_from_json_attr(json, 'notification_date')
+
+    severity = create_severity_from_json(json['severity'])
+
+    impact.severity_id = severity.id
+    impact.severity = severity
+
+    impact.application_periods = create_application_periods_from_json(json)
+    impact.patterns = create_application_period_patterns_from_json(json)
+    impact.messages = create_messages_from_json(json)
+    impact.objects = create_pt_objects_from_json(json)
+
+    return impact
+
+
+def create_severity_from_json(json):
+    severity = models.Severity()
+    mapper.fill_from_json(severity, json, mapper.severity_mapping)
+    severity.id = json['id']
+    severity.wording = json['wording']
+    severity.created_at = get_datetime_from_json_attr(json, 'created_at')
+    severity.updated_at = get_datetime_from_json_attr(json, 'updated_at')
+
+    severity_wordings = []
+    for wording_json in json['wordings']:
+        wording = models.Wording()
+        mapper.fill_from_json(wording, wording_json, mapper.meta_mapping)
+        severity_wordings.append(wording)
+
+    severity.wordings = severity_wordings
+    return severity
+
+
+def create_application_periods_from_json(json):
+    periods = []
+    for app_period_json in json['application_periods']:
+        period = create_application_period_from_json(app_period_json, json['id'])
+        periods.append(period)
+
+    return periods
+
+
+def create_application_period_from_json(json, impact_id):
+    period = models.ApplicationPeriods()
+    period.start_date = get_datetime_from_json_attr(json, 'begin')
+    period.end_date = get_datetime_from_json_attr(json, 'end')
+    period.impact_id = impact_id
+
+    return period
+
+
+def create_application_period_patterns_from_json(json):
+    patterns = []
+    for pattern_json in json['application_period_patterns']:
+        pattern = create_application_period_pattern_from_json(pattern_json)
+        patterns.append(pattern)
+
+    return patterns
+
+
+def create_application_period_pattern_from_json(json):
+    pattern = models.Pattern()
+    mapper.fill_from_json(pattern, json, mapper.pattern_mapping)
+    pattern.time_slots = create_pattern_time_slots_from_json(json['time_slots'])
+
+    return pattern
+
+
+def create_pattern_time_slots_from_json(json):
+    time_slots = []
+    for time_slot_json in json:
+        time_slot = models.TimeSlot()
+        mapper.fill_from_json(time_slot, time_slot_json, mapper.time_slot_mapping)
+        time_slots.append(time_slot)
+
+    return time_slots
+
+
+def create_messages_from_json(json):
+    messages = []
+    for message_json in json['messages']:
+        message = create_message_from_json(message_json)
+        messages.append(message)
+
+    return messages
+
+
+def create_message_from_json(json):
+    message = models.Message()
+    message.created_at = get_datetime_from_json_attr(json, 'created_at')
+    message.updated_at = get_datetime_from_json_attr(json, 'updated_at')
+    message.text = json['text']
+
+    channel = create_channel_from_json(json['channel'])
+
+    message.channel_id = channel.id
+    message.channel = channel
+    message.meta = create_metas_from_json(json['meta'])
+
+    return message
+
+
+def create_pt_objects_from_json(json):
+    pt_objects = []
+    for pt_object_json in json['objects']:
+        pt_object = create_pt_object_from_json(pt_object_json)
+        pt_objects.append(pt_object)
+
+    return pt_objects
+
+def create_pt_object_from_json(json):
+    ptobject = models.PTobject()
+    ptobject.type = json['type']
+    ptobject.uri = json['id']
+
+    if 'line_section' in json:
+        line_section_model = models.LineSection()
+        line_section_model.line = generate_ptobject_from_json(json['line_section']['line'])
+        line_section_model.start_point = generate_ptobject_from_json(json['line_section']['start_point'])
+        line_section_model.end_point = generate_ptobject_from_json(json['line_section']['end_point'])
+        ptobject.line_section = line_section_model
+    elif 'name' in json:
+        ptobject.name = json['name']
+
+    return ptobject
+
+
+def create_metas_from_json(json):
+    metas = []
+    for meta_json in json:
+        meta = models.Meta()
+        mapper.fill_from_json(meta, meta_json, mapper.meta_mapping)
+        metas.append(meta)
+
+    return metas
+
+
+def create_channel_from_json(json):
+    channel = models.Channel()
+    channel.id = json['id']
+    mapper.fill_from_json(channel, json, mapper.channel_mapping)
+    channel.created_at = get_datetime_from_json_attr(json, 'created_at')
+    channel.updated_at = get_datetime_from_json_attr(json, 'updated_at')
+    channel.channel_types = create_channel_types_from_json(json)
+
+    return channel
+
+
+def create_channel_types_from_json(json):
+    channel_types = []
+    for channel_type in json['types']:
+        channel_type_model = models.ChannelType()
+        channel_type_model.name = channel_type
+        channel_types.append(channel_type_model)
+
+    return channel_types
 
 
 def generate_ptobject_from_json(json):
