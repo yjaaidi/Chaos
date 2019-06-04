@@ -206,15 +206,17 @@ def create_severity_from_json(json):
     severity.wording = json['wording']
     severity.created_at = get_datetime_from_json_attr(json, 'created_at')
     severity.updated_at = get_datetime_from_json_attr(json, 'updated_at')
+    severity.wordings = create_severity_wordings_from_json(json['wordings'])
+    return severity
 
-    severity_wordings = []
-    for wording_json in json['wordings']:
+
+def create_severity_wordings_from_json(json):
+    wordings = []
+    for wording_json in json:
         wording = models.Wording()
         mapper.fill_from_json(wording, wording_json, mapper.meta_mapping)
-        severity_wordings.append(wording)
-
-    severity.wordings = severity_wordings
-    return severity
+        wordings.append(wording)
+    return wordings
 
 
 def create_application_periods_from_json(json):
@@ -272,16 +274,15 @@ def create_messages_from_json(json):
 
 
 def create_message_from_json(json):
+    channel = create_channel_from_json(json['channel'])
+
     message = models.Message()
     message.created_at = get_datetime_from_json_attr(json, 'created_at')
     message.updated_at = get_datetime_from_json_attr(json, 'updated_at')
     message.text = json['text']
-
-    channel = create_channel_from_json(json['channel'])
-
+    message.meta = create_metas_from_json(json['meta'])
     message.channel_id = channel.id
     message.channel = channel
-    message.meta = create_metas_from_json(json['meta'])
 
     return message
 
@@ -295,21 +296,23 @@ def create_pt_objects_from_json(json):
     return pt_objects
 
 def create_pt_object_from_json(json):
-    ptobject = models.PTobject()
-    ptobject.type = json['type']
-    ptobject.uri = json['id']
-
+    pt_object = models.PTobject()
+    mapper.fill_from_json(pt_object, json, mapper.object_mapping)
+   
     if 'line_section' in json:
-        line_section_model = models.LineSection()
-        line_section_model.line = generate_ptobject_from_json(json['line_section']['line'])
-        line_section_model.start_point = generate_ptobject_from_json(json['line_section']['start_point'])
-        line_section_model.end_point = generate_ptobject_from_json(json['line_section']['end_point'])
-        ptobject.line_section = line_section_model
+        pt_object.line_section = create_line_section_from_json(json['line_section'])
     elif 'name' in json:
-        ptobject.name = json['name']
+        pt_object.name = json['name']
 
-    return ptobject
+    return pt_object
 
+def create_line_section_from_json(json):
+    line_section = models.LineSection()
+    line_section.line = generate_pt_object_from_json(json['line'])
+    line_section.start_point = generate_pt_object_from_json(json['start_point'])
+    line_section.end_point = generate_pt_object_from_json(json['end_point'])
+    
+    return line_section
 
 def create_metas_from_json(json):
     metas = []
@@ -334,19 +337,19 @@ def create_channel_from_json(json):
 
 def create_channel_types_from_json(json):
     channel_types = []
-    for channel_type in json['types']:
-        channel_type_model = models.ChannelType()
-        channel_type_model.name = channel_type
-        channel_types.append(channel_type_model)
+    for channel_type_json in json['types']:
+        channel_type = models.ChannelType()
+        channel_type.name = channel_type_json
+        channel_types.append(channel_type)
 
     return channel_types
 
 
-def generate_ptobject_from_json(json):
+def generate_pt_object_from_json(json):
     pt_object = models.PTobject()
-    pt_object.type = json['type']
-    pt_object.uri = json['id']
+    mapper.fill_from_json(pt_object, json, mapper.object_mapping)
     pt_object.name = json['name']
+
     return pt_object
 
 
