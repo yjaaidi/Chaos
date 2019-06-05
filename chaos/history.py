@@ -4,7 +4,7 @@ from flask_restful import marshal
 from flask import g
 from fields import disruption_fields
 from aniso8601 import parse_datetime, parse_time, parse_date
-from chaos import db, models
+from chaos import db, models, mapper
 
 
 def save_in_database(disruption_id, disruption_json):
@@ -40,227 +40,6 @@ def save_disruption_in_history(data):
     save_in_database(data.id, json.dumps(disruption))
 
 
-def get_datetime_from_json_attr(json, attr):
-    return parse_datetime(json[attr]).replace(tzinfo=None) if attr in json and json[attr] else None
-
-
-def get_date_from_json_attr(json, attr):
-    return parse_date(json[attr])
-
-
-def get_time_from_json_attr(json, attr):
-    return parse_time(json[attr])
-
-
-def generate_ptobject_from_json(json):
-    ptobject = models.PTobject()
-    ptobject.type = json['type']
-    ptobject.uri = json['id']
-    ptobject.name = json['name']
-    return ptobject
-
-
-def create_contributor_from_json(contributor_code):
-    contributor = models.Contributor()
-    contributor.contributor_code = contributor_code
-    return contributor
-
-
-def create_cause_wordings_from_json(cause_wording_json):
-    cause_wordings = []
-
-    for wording in cause_wording_json:
-        wording_model = models.Wording()
-        wording_model.key = wording['key']
-        wording_model.value = wording['value']
-        cause_wordings.append(wording_model)
-
-    return cause_wordings
-
-
-def create_cause_category_from_json(json_data):
-    if not json_data['category']:
-        return None
-
-    category = models.Category()
-    cause_json_data = json_data['category']
-    category.id = cause_json_data['id']
-    category.created_at = get_datetime_from_json_attr(cause_json_data, 'created_at')
-    category.updated_at = get_datetime_from_json_attr(cause_json_data, 'updated_at')
-    category.name = cause_json_data['name']
-
-    return category
-
-
-def create_cause_from_json(cause_json):
-    cause = models.Cause()
-    cause.id = cause_json['id']
-    cause.created_at = get_datetime_from_json_attr(cause_json, 'created_at')
-    cause.updated_at = get_datetime_from_json_attr(cause_json, 'updated_at')
-    cause.wordings = create_cause_wordings_from_json(cause_json['wordings'])
-    cause.category = create_cause_category_from_json(cause_json)
-
-    return cause
-
-
-def create_tags_from_json(tags_json):
-    tags = []
-
-    for item in tags_json:
-        tag = models.Tag()
-        tag.id = item['id']
-        tag.created_at = get_datetime_from_json_attr(item, 'created_at')
-        tag.updated_at = get_datetime_from_json_attr(item, 'updated_at')
-        tag.name = item['name']
-        tags.append(tag)
-
-    return tags
-
-
-def create_properties_from_json(properties_json, disruption_id):
-    disruption_properties = []
-    for key, property in properties_json.items():
-        for sub_property in property:
-            adp_model = models.AssociateDisruptionProperty()
-            adp_model.disruption_id = disruption_id
-            adp_model.property_id = sub_property['property']['id']
-            adp_model.value = sub_property['value']
-            property_model = models.Property()
-            property_model.id = sub_property['property']['id']
-            property_model.type = sub_property['property']['type']
-            property_model.key = sub_property['property']['key']
-            property_model.created_at = get_datetime_from_json_attr(sub_property['property'], 'created_at')
-            property_model.updated_at = get_datetime_from_json_attr(sub_property['property'], 'updated_at')
-            adp_model.property = property_model
-            disruption_properties.append(adp_model)
-
-    return disruption_properties
-
-
-def create_impacts_from_json(impacts_json, disruption_id):
-    impacts = []
-    for impact in impacts_json:
-        impact_model = models.Impact()
-        impact_model.updated_at = get_datetime_from_json_attr(impact, 'updated_at')
-        impact_model.created_at = get_datetime_from_json_attr(impact, 'created_at')
-        impact_model.disruption_id = disruption_id
-        impact_model.id = impact['id']
-        impact_model.send_notifications = impact['send_notifications']
-        impact_model.notification_date = get_datetime_from_json_attr(impact, 'notification_date')
-
-        impact_model.severity_id = impact['severity']['id']
-        severity_model = models.Severity()
-        severity_model.id = impact['severity']['id']
-        severity_model.wording = impact['severity']['wording']
-        severity_model.color = impact['severity']['color']
-        severity_model.effect = impact['severity']['effect']
-        severity_model.priority = impact['severity']['priority']
-        severity_model.created_at = get_datetime_from_json_attr(impact['severity'], 'created_at')
-        severity_model.updated_at = get_datetime_from_json_attr(impact['severity'], 'updated_at')
-
-        severity_wordings = []
-        for wording in impact['severity']['wordings']:
-            wording_model = models.Wording()
-            wording_model.value = wording['value']
-            wording_model.key = wording['key']
-            severity_wordings.append(wording_model)
-
-        severity_model.wordings = severity_wordings
-        impact_model.severity = severity_model
-
-        application_periods = []
-        for application_period in impact['application_periods']:
-            application_period_model = models.ApplicationPeriods()
-            application_period_model.start_date = get_datetime_from_json_attr(application_period, 'begin')
-            application_period_model.end_date = get_datetime_from_json_attr(application_period, 'end')
-            application_period_model.impact_id = impact['id']
-            application_periods.append(application_period_model)
-
-        impact_model.application_periods = application_periods
-
-        application_period_patterns = []
-        for application_period_pattern in impact['application_period_patterns']:
-            application_period_pattern_model = models.Pattern()
-            application_period_pattern_model.weekly_pattern = application_period_pattern['weekly_pattern']
-            application_period_pattern_model.start_date = get_date_from_json_attr(application_period_pattern,
-                                                                                  'start_date')
-            application_period_pattern_model.end_date = get_date_from_json_attr(application_period_pattern, 'end_date')
-
-            time_slots = []
-            for time_slot in application_period_pattern['time_slots']:
-                time_slot_model = models.TimeSlot()
-                time_slot_model.begin = get_time_from_json_attr(time_slot, 'begin')
-                time_slot_model.end = get_time_from_json_attr(time_slot, 'end')
-                time_slots.append(time_slot_model)
-
-            application_period_pattern_model.time_slots = time_slots
-            application_period_patterns.append(application_period_pattern_model)
-
-        impact_model.patterns = application_period_patterns
-
-        messages = []
-        for message in impact['messages']:
-            message_model = models.Message()
-            message_model.created_at = get_datetime_from_json_attr(message, 'created_at')
-            message_model.updated_at = get_datetime_from_json_attr(message, 'updated_at')
-            message_model.text = message['text']
-
-            channel_model = models.Channel()
-            channel_model.name = message['channel']['name']
-            channel_model.created_at = get_datetime_from_json_attr(message['channel'], 'created_at')
-            channel_model.updated_at = get_datetime_from_json_attr(message['channel'], 'updated_at')
-            channel_model.required = message['channel']['required']
-            channel_model.max_size = message['channel']['max_size']
-            channel_model.content_type = message['channel']['content_type']
-            channel_model.id = message['channel']['id']
-
-            channel_types = []
-            for channel_type in message['channel']['types']:
-                channel_type_model = models.ChannelType()
-                channel_type_model.name = channel_type
-                channel_types.append(channel_type_model)
-
-            channel_model.channel_types = channel_types
-
-            message_model.channel_id = message['channel']['id']
-            message_model.channel = channel_model
-
-            metas = []
-            for meta in message['meta']:
-                meta_model = models.Meta()
-                meta_model.key = meta['key']
-                meta_model.value = meta['value']
-                metas.append(meta_model)
-
-            message_model.meta = metas
-
-            messages.append(message_model)
-
-        impact_model.messages = messages
-
-        ptobjects = []
-        for ptobject in impact['objects']:
-            ptobject_model = models.PTobject()
-            ptobject_model.type = ptobject['type']
-            ptobject_model.uri = ptobject['id']
-
-            if 'line_section' in ptobject:
-                line_section_model = models.LineSection()
-                line_section_model.line = generate_ptobject_from_json(ptobject['line_section']['line'])
-                line_section_model.start_point = generate_ptobject_from_json(ptobject['line_section']['start_point'])
-                line_section_model.end_point = generate_ptobject_from_json(ptobject['line_section']['end_point'])
-                ptobject_model.line_section = line_section_model
-            elif 'name' in ptobject:
-                ptobject_model.name = ptobject['name']
-            ptobjects.append(ptobject_model)
-
-        impact_model.status = 'published'
-        impact_model.objects = ptobjects
-        impacts.append(impact_model)
-
-    return impacts
-
-
 def create_disruption_from_json(json):
     disruption = models.Disruption()
     disruption.id = json['id']
@@ -282,3 +61,301 @@ def create_disruption_from_json(json):
     disruption.impacts = create_impacts_from_json(json['impacts'], json['id'])
 
     return disruption
+
+
+def get_datetime_from_json_attr(json, attr):
+    return parse_datetime(json[attr]).replace(tzinfo=None) if attr in json and json[attr] else None
+
+
+def create_contributor_from_json(contributor_code):
+    contributor = models.Contributor()
+    contributor.contributor_code = contributor_code
+    return contributor
+
+
+def create_cause_from_json(cause_json):
+    cause = models.Cause()
+    cause.id = cause_json['id']
+    cause.created_at = get_datetime_from_json_attr(cause_json, 'created_at')
+    cause.updated_at = get_datetime_from_json_attr(cause_json, 'updated_at')
+    cause.wordings = create_cause_wordings_from_json(cause_json['wordings'])
+    cause.category = create_cause_category_from_json(cause_json)
+
+    return cause
+
+
+def create_cause_category_from_json(json_data):
+    if not json_data['category']:
+        return None
+
+    category = models.Category()
+    cause_json_data = json_data['category']
+    category.id = cause_json_data['id']
+    category.created_at = get_datetime_from_json_attr(cause_json_data, 'created_at')
+    category.updated_at = get_datetime_from_json_attr(cause_json_data, 'updated_at')
+    category.name = cause_json_data['name']
+
+    return category
+
+
+def create_cause_wordings_from_json(cause_wording_json):
+    cause_wordings = []
+
+    for wording in cause_wording_json:
+        cause_wordings.append(generate_wording_from_json(wording))
+
+    return cause_wordings
+
+
+def generate_wording_from_json(json):
+    wording = models.Wording()
+    wording.key = json['key']
+    wording.value = json['value']
+    return wording
+
+
+def create_tags_from_json(tags_json):
+    tags = []
+
+    for tag_json in tags_json:
+        tag = create_tag_from_json(tag_json)
+        tags.append(tag)
+
+    return tags
+
+
+def create_tag_from_json(json):
+    tag = models.Tag()
+    tag.id = json['id']
+    tag.created_at = get_datetime_from_json_attr(json, 'created_at')
+    tag.updated_at = get_datetime_from_json_attr(json, 'updated_at')
+    tag.name = json['name']
+
+    return tag
+
+
+def create_properties_from_json(json, disruption_id):
+    properties = []
+    for key, property in json.items():
+        for sub_property in property:
+            property_json = sub_property['property']
+            value = sub_property['value']
+            adp_model = create_associate_disruption_property_from_json(property_json, disruption_id, value)
+            properties.append(adp_model)
+
+    return properties
+
+
+def create_associate_disruption_property_from_json(json, disruption_id, value):
+    adp = models.AssociateDisruptionProperty()
+    adp.disruption_id = disruption_id
+    adp.property_id = json['id']
+    adp.value = value
+    adp.property = create_property_from_json(json)
+
+    return adp
+
+
+def create_property_from_json(json):
+    property = models.Property()
+    property.id = json['id']
+    property.type = json['type']
+    property.key = json['key']
+    property.created_at = get_datetime_from_json_attr(json, 'created_at')
+    property.updated_at = get_datetime_from_json_attr(json, 'updated_at')
+
+    return property
+
+
+def create_impacts_from_json(impacts_json, disruption_id):
+    impacts = []
+    for impact_json in impacts_json:
+        impact = create_impact_from_json(impact_json, disruption_id)
+        impacts.append(impact)
+
+    return impacts
+
+
+def create_impact_from_json(json, disruption_id):
+    impact = models.Impact()
+    impact.id = json['id']
+    impact.status = 'published'
+    impact.disruption_id = disruption_id
+    impact.updated_at = get_datetime_from_json_attr(json, 'updated_at')
+    impact.created_at = get_datetime_from_json_attr(json, 'created_at')
+    impact.send_notifications = json['send_notifications']
+    impact.notification_date = get_datetime_from_json_attr(json, 'notification_date')
+
+    severity = create_severity_from_json(json['severity'])
+
+    impact.severity_id = severity.id
+    impact.severity = severity
+
+    impact.application_periods = create_application_periods_from_json(json)
+    impact.patterns = create_application_period_patterns_from_json(json)
+    impact.messages = create_messages_from_json(json)
+    impact.objects = create_pt_objects_from_json(json)
+
+    return impact
+
+
+def create_severity_from_json(json):
+    severity = models.Severity()
+    mapper.fill_from_json(severity, json, mapper.severity_mapping)
+    severity.id = json['id']
+    severity.wording = json['wording']
+    severity.created_at = get_datetime_from_json_attr(json, 'created_at')
+    severity.updated_at = get_datetime_from_json_attr(json, 'updated_at')
+    severity.wordings = create_severity_wordings_from_json(json['wordings'])
+    return severity
+
+
+def create_severity_wordings_from_json(json):
+    wordings = []
+    for wording_json in json:
+        wording = models.Wording()
+        mapper.fill_from_json(wording, wording_json, mapper.meta_mapping)
+        wordings.append(wording)
+    return wordings
+
+
+def create_application_periods_from_json(json):
+    periods = []
+    for app_period_json in json['application_periods']:
+        period = create_application_period_from_json(app_period_json, json['id'])
+        periods.append(period)
+
+    return periods
+
+
+def create_application_period_from_json(json, impact_id):
+    period = models.ApplicationPeriods()
+    period.start_date = get_datetime_from_json_attr(json, 'begin')
+    period.end_date = get_datetime_from_json_attr(json, 'end')
+    period.impact_id = impact_id
+
+    return period
+
+
+def create_application_period_patterns_from_json(json):
+    patterns = []
+    for pattern_json in json['application_period_patterns']:
+        pattern = create_application_period_pattern_from_json(pattern_json)
+        patterns.append(pattern)
+
+    return patterns
+
+
+def create_application_period_pattern_from_json(json):
+    pattern = models.Pattern()
+    mapper.fill_from_json(pattern, json, mapper.pattern_mapping)
+    pattern.time_slots = create_pattern_time_slots_from_json(json['time_slots'])
+
+    return pattern
+
+
+def create_pattern_time_slots_from_json(json):
+    time_slots = []
+    for time_slot_json in json:
+        time_slot = models.TimeSlot()
+        mapper.fill_from_json(time_slot, time_slot_json, mapper.time_slot_mapping)
+        time_slots.append(time_slot)
+
+    return time_slots
+
+
+def create_messages_from_json(json):
+    messages = []
+    for message_json in json['messages']:
+        message = create_message_from_json(message_json)
+        messages.append(message)
+
+    return messages
+
+
+def create_message_from_json(json):
+    channel = create_channel_from_json(json['channel'])
+
+    message = models.Message()
+    message.created_at = get_datetime_from_json_attr(json, 'created_at')
+    message.updated_at = get_datetime_from_json_attr(json, 'updated_at')
+    message.text = json['text']
+    message.meta = create_metas_from_json(json['meta'])
+    message.channel_id = channel.id
+    message.channel = channel
+
+    return message
+
+
+def create_pt_objects_from_json(json):
+    pt_objects = []
+    for pt_object_json in json['objects']:
+        pt_object = create_pt_object_from_json(pt_object_json)
+        pt_objects.append(pt_object)
+
+    return pt_objects
+
+def create_pt_object_from_json(json):
+    pt_object = models.PTobject()
+    mapper.fill_from_json(pt_object, json, mapper.object_mapping)
+   
+    if 'line_section' in json:
+        pt_object.line_section = create_line_section_from_json(json['line_section'])
+    elif 'name' in json:
+        pt_object.name = json['name']
+
+    return pt_object
+
+def create_line_section_from_json(json):
+    line_section = models.LineSection()
+    line_section.line = generate_pt_object_from_json(json['line'])
+    line_section.start_point = generate_pt_object_from_json(json['start_point'])
+    line_section.end_point = generate_pt_object_from_json(json['end_point'])
+    
+    return line_section
+
+def create_metas_from_json(json):
+    metas = []
+    for meta_json in json:
+        meta = models.Meta()
+        mapper.fill_from_json(meta, meta_json, mapper.meta_mapping)
+        metas.append(meta)
+
+    return metas
+
+
+def create_channel_from_json(json):
+    channel = models.Channel()
+    channel.id = json['id']
+    mapper.fill_from_json(channel, json, mapper.channel_mapping)
+    channel.created_at = get_datetime_from_json_attr(json, 'created_at')
+    channel.updated_at = get_datetime_from_json_attr(json, 'updated_at')
+    channel.channel_types = create_channel_types_from_json(json)
+
+    return channel
+
+
+def create_channel_types_from_json(json):
+    channel_types = []
+    for channel_type_json in json['types']:
+        channel_type = models.ChannelType()
+        channel_type.name = channel_type_json
+        channel_types.append(channel_type)
+
+    return channel_types
+
+
+def generate_pt_object_from_json(json):
+    pt_object = models.PTobject()
+    mapper.fill_from_json(pt_object, json, mapper.object_mapping)
+    pt_object.name = json['name']
+
+    return pt_object
+
+
+def get_date_from_json_attr(json, attr):
+    return parse_date(json[attr])
+
+
+def get_time_from_json_attr(json, attr):
+    return parse_time(json[attr])
