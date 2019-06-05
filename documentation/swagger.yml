@@ -63,7 +63,7 @@
     - name: Traffic Reports
     - name: Search
     - name: Export
-    - name: History (Work In Progress)
+    - name: History
 
 
   ################################################################################
@@ -1253,7 +1253,6 @@
             description: Service unavailable
             schema:
               $ref: "#/definitions/error_occured"
-
     /disruptions/{id}/history:
       get:
         description: Get a list of historical states of a disruption
@@ -1268,7 +1267,7 @@
           type: string
           description: Entity identifier
         tags:
-          - History (Work In Progress)
+          - History
         responses:
           200:
             description: List of disruption histories
@@ -1278,7 +1277,7 @@
                 disruptions:
                   type: array
                   items:
-                    $ref: "#/definitions/disruption"
+                    $ref: "#/definitions/disruption_history"
                 meta:
                   type: object
                   properties:
@@ -1292,7 +1291,6 @@
             description: Not found
             schema:
               $ref: "#/definitions/error_occured"
-
     /disruptions/{id}/impacts:
       get:
         description: Return all impacts of a disruption
@@ -3032,3 +3030,88 @@
           type: "string"
         value:
           type: "string"
+    disruption_history:
+      type: object
+      properties:
+        cause:
+          $ref: "#/definitions/cause"
+        contributor:
+          type: string
+          description: Contributor code
+        created_at:
+          type: string
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2018-08-03T12:19:13Z"
+        id:
+          type: string
+          format: uuid
+          description: Disruption ID
+        impacts:
+          type: object
+          description: Links to impacts of this disruption
+          properties:
+            impacts:
+              type: array
+              items:
+                $ref: "#/definitions/impact"
+            pagination:
+              $ref: "#/definitions/pagination"
+        localization:
+          type: array
+          description: List of stop areas
+          items:
+            type: object
+            required:
+              - id
+              - type
+            properties:
+              id:
+                type: string
+                description: Stop area ID
+              type:
+                type: string
+                enum:
+                  - stop_area
+        note:
+          type: string
+          description: Service note of disruption
+        properties:
+          type: object
+          description: Associated properties
+        publication_period:
+          description: Dates whithin disruption is active
+          $ref: "#/definitions/period"
+        publication_status:
+          type: string
+          description: |
+            Status of publication.
+            past when publication end date is in past
+            ongoing when publication start date is in past and end date is in future
+            comming when publication start date is in future
+          enum:
+           - past
+           - ongoing
+           - coming
+        reference:
+          type: string
+          description: Publication reference label
+        self:
+          $ref: "#/definitions/href"
+        status:
+          type: string
+          enum:
+           - archived
+           - published
+           - draft
+        tags:
+          type: array
+          description: List of associated tags
+          items:
+            $ref: "#/definitions/tag"
+        updated_at:
+          type: string
+          pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+          example: "2018-08-03T12:19:13Z"
+        version:
+          type: integer
+          description: Number of how many time this disruption has been changed
