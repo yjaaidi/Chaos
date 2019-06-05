@@ -37,7 +37,7 @@ from datetime import datetime
 from formats import publication_status_values, application_status_values
 from sqlalchemy import or_, and_, between, bindparam, desc
 from sqlalchemy.orm import aliased
-from sqlalchemy.sql import text
+from sqlalchemy.sql import text, func
 
 #force the server to use UTC time for each connection checkouted from the pool
 import sqlalchemy
@@ -2250,7 +2250,7 @@ class HistoryDisruption(db.Model):
     __table_args__ = {"schema": "history"}
 
     id = db.Column(UUID, primary_key=True)
-    created_at = db.Column(db.DateTime(), default=datetime.utcnow(), nullable=False)
+    created_at = db.Column(db.DateTime(), server_default=func.now(), nullable=False)
     disruption_id = db.Column(UUID, db.ForeignKey(Disruption.id))
     data = db.Column(db.Text, unique=False, nullable=False)
 
