@@ -124,7 +124,7 @@ Feature: disruption with impacts history
             | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | published | 7ffab232-3d47-4eea-aa2c-22f8680230b1 | b750994c-01fe-11e4-b4fb-080027079ff5 |7ffab232-3d48-4eea-aa2c-22f8680230b6 |
             | 2014-04-04T23:53:13 | 2014-04-06T20:50:10 | published | 7ffab234-3d49-4eea-aa2c-22f8680230b2 | b750994c-01fe-11e4-b4fb-080027079ff5 |7ffab232-3d48-4eea-aa2c-22f8680230b6 |
 
-        When I delete to "/disruptions/b750994c-01fe-11e4-b4fb-080027079ff5/impacts/7ffab232-3d47-4eea-aa2c-22f8680230b1" with:
+        When I delete "/disruptions/b750994c-01fe-11e4-b4fb-080027079ff5/impacts/7ffab232-3d47-4eea-aa2c-22f8680230b1" with:
         Then the status code should be "204"
 
         When I get "/disruptions/b750994c-01fe-11e4-b4fb-080027079ff5/history"
@@ -133,7 +133,7 @@ Feature: disruption with impacts history
         And the field "disruptions" should have a size of 1
         And the field "disruptions.0.impacts.impacts" should have a size of 1
 
-        When I delete to "/disruptions/b750994c-01fe-11e4-b4fb-080027079ff5/impacts/7ffab234-3d49-4eea-aa2c-22f8680230b2" with:
+        When I delete "/disruptions/b750994c-01fe-11e4-b4fb-080027079ff5/impacts/7ffab234-3d49-4eea-aa2c-22f8680230b2" with:
         Then the status code should be "204"
 
         When I get "/disruptions/b750994c-01fe-11e4-b4fb-080027079ff5/history"

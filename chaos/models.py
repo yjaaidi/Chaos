@@ -2250,7 +2250,7 @@ class HistoryDisruption(db.Model):
     __table_args__ = {"schema": "history"}
 
     id = db.Column(UUID, primary_key=True)
-    created_at = db.Column(db.DateTime(), default=get_current_time, nullable=False)
+    created_at = db.Column(db.DateTime(), default=datetime.utcnow(), nullable=False)
     disruption_id = db.Column(UUID, db.ForeignKey(Disruption.id))
     data = db.Column(db.Text, unique=False, nullable=False)
 
