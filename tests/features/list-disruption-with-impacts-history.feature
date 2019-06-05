@@ -98,3 +98,4 @@ Feature: disruption with impacts history
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
         And the field "disruptions" should have a size of 2
+        And the field "disruptions.0.status" should be "archived"
