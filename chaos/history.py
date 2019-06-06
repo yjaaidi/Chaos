@@ -295,10 +295,11 @@ def create_pt_objects_from_json(json):
 
     return pt_objects
 
+
 def create_pt_object_from_json(json):
     pt_object = models.PTobject()
     mapper.fill_from_json(pt_object, json, mapper.object_mapping)
-   
+
     if 'line_section' in json:
         pt_object.line_section = create_line_section_from_json(json['line_section'])
     elif 'name' in json:
@@ -306,13 +307,15 @@ def create_pt_object_from_json(json):
 
     return pt_object
 
+
 def create_line_section_from_json(json):
     line_section = models.LineSection()
     line_section.line = generate_pt_object_from_json(json['line'])
     line_section.start_point = generate_pt_object_from_json(json['start_point'])
     line_section.end_point = generate_pt_object_from_json(json['end_point'])
-    
+
     return line_section
+
 
 def create_metas_from_json(json):
     metas = []
