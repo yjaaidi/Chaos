@@ -1,4 +1,4 @@
-# Copyright (c) 2001.2.124, Canal TP and/or its affiliates. All rights reserved.
+# Copyright (c) 2001.2.13-dev4, Canal TP and/or its affiliates. All rights reserved.
 #
 # This file is part of Navitia,
 #     the software to build cool stuff with public transport.
@@ -27,7 +27,7 @@
 # https://groups.google.com/d/forum/navitia
 # www.navitia.io
 
-VERSION = 'v1.2.12'
+VERSION = 'v1.2.13-dev'
 
 # remplace blocking method by a non blocking equivalent
 # this enable us to use gevent for launching background task
