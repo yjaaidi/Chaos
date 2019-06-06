@@ -34,6 +34,7 @@ from chaos.navitia import Navitia
 from copy import deepcopy
 import logging
 
+
 class FieldDateTime(fields.Raw):
     def format(self, value):
         if value:
@@ -63,14 +64,25 @@ class CustomImpacts(fields.Raw):
         if isinstance(val, dict) and 'impacts' in val:
             return marshal(val, {
                 'pagination': FieldPaginateImpacts(),
-                'impacts': PaginateObjects(fields.Nested(impact_fields, display_null=False))
+                'impacts': PaginateObjects(
+                                fields.Nested(
+                                    impact_fields,
+                                    display_null=False
+                                    )
+                                )
             }, display_null=False)
 
         val.impacts = [impact for impact in val.impacts if impact.status == 'published']
+
         return marshal(val, {
             'pagination': FieldPaginateImpacts(attribute='impacts'),
-            'impacts': PaginateObjects(fields.Nested(impact_fields, display_null=False,
-                                                    attribute='impacts'))
+            'impacts': PaginateObjects(
+                                        fields.Nested(
+                                            impact_fields,
+                                            display_null=False,
+                                            attribute='impacts'
+                                            )
+                                       )
         }, display_null=False)
 
 
@@ -160,7 +172,7 @@ class FieldLocalization(fields.Raw):
     def output(self, key, obj):
         to_return = []
 
-        #for history
+        # for history
         if hasattr(obj, 'history_localization') and isinstance(obj.localizations, list):
             return obj.history_localization
 
@@ -215,7 +227,7 @@ class FieldContributor(fields.Raw):
         return None
 
 
-#'types': {'channel_types': [{'name': 'email'}]},
+# 'types': {'channel_types': [{'name': 'email'}]},
 
 class FieldChannelTypes(fields.Raw):
     def output(self, key, obj):
@@ -223,7 +235,7 @@ class FieldChannelTypes(fields.Raw):
             return [ch['name'] for ch in obj['channel_types']]
 
         if hasattr(obj, 'channel_types'):
-           return [ch.name for ch in obj.channel_types]
+            return [ch.name for ch in obj.channel_types]
         return None
 
 
@@ -526,7 +538,7 @@ one_export_fields = {
     'export': fields.Nested(export_fields)
 }
 
-base_meta_fields= {
+base_meta_fields = {
     'key': fields.Raw,
     'value': fields.Raw
 }
@@ -557,14 +569,19 @@ application_period_pattern_fields = {
     'start_date': FieldDate,
     'end_date': FieldDate,
     'weekly_pattern': fields.Raw,
-    'time_slots': fields.List(fields.Nested(time_slot_fields, display_null=False), attribute='time_slots')
+    'time_slots': fields.List(
+                    fields.Nested(time_slot_fields, display_null=False),
+                    attribute='time_slots'
+                    )
 }
 
 impact_fields = {
     'id': fields.Raw,
     'created_at': FieldDateTime,
     'updated_at': FieldDateTime,
-    'objects': fields.List(fields.Nested(objectTC_fields, display_null=False)),
+    'objects': fields.List(
+                    fields.Nested(objectTC_fields, display_null=False)
+                    ),
     'application_periods':
         fields.List(fields.Nested(application_period_fields)),
     'severity': fields.Nested(severity_fields),
@@ -572,7 +589,10 @@ impact_fields = {
     'disruption': FieldUrlDisruption(),
     'messages': fields.List(fields.Nested(message_fields)),
     'application_period_patterns':
-        fields.List(fields.Nested(application_period_pattern_fields), attribute='patterns'),
+        fields.List(
+            fields.Nested(application_period_pattern_fields),
+            attribute='patterns'
+            ),
     'send_notifications': fields.Raw,
     'notification_date': FieldDateTime
 }
@@ -607,7 +627,9 @@ impact_search_fields = {
     'id': fields.Raw,
     'created_at': FieldDateTime,
     'updated_at': FieldDateTime,
-    'objects': fields.List(fields.Nested(objectTC_fields, display_null=False)),
+    'objects': fields.List(
+                    fields.Nested(objectTC_fields, display_null=False)
+                    ),
     'application_periods':
         fields.List(fields.Nested(application_period_fields)),
     'severity': fields.Nested(severity_fields),
@@ -615,7 +637,10 @@ impact_search_fields = {
     'disruption': fields.Nested(impacts_search_disruption_fields),
     'messages': fields.List(fields.Nested(message_fields)),
     'application_period_patterns':
-        fields.List(fields.Nested(application_period_pattern_fields), attribute='patterns'),
+        fields.List(
+                fields.Nested(application_period_pattern_fields),
+                attribute='patterns'
+                ),
     'send_notifications': fields.Raw,
     'notification_date': FieldDateTime
 }
@@ -687,8 +712,18 @@ traffic_report_impact_field = {
 }
 
 traffic_reports_marshaler = {
-    'traffic_reports': fields.List(fields.Nested(traffic_report_fields, display_null=False)),
-    'disruptions': fields.List(fields.Nested(traffic_report_impact_field, display_null=False))
+    'traffic_reports': fields.List(
+                                fields.Nested(
+                                            traffic_report_fields,
+                                            display_null=False
+                                            )
+                                   ),
+    'disruptions': fields.List(
+                            fields.Nested(
+                                        traffic_report_impact_field,
+                                        display_null=False
+                                        )
+                               )
 }
 
 disruption_fields = {
@@ -703,14 +738,14 @@ disruption_fields = {
     'publication_period': {
         'begin': FieldDateTime(attribute='start_publication_date'),
         'end': FieldDateTime(attribute='end_publication_date')
-    }
-    ,'publication_status': fields.Raw
-    ,'contributor': FieldContributor
-    ,'impacts': CustomImpacts()
-    ,'localization': FieldLocalization(attribute='localizations')
-    ,'cause': fields.Nested(cause_fields, allow_null=True)
-    ,'tags': fields.List(fields.Nested(tag_fields))
-    ,'properties': FieldAssociatedProperties(attribute='properties')
+    },
+    'publication_status': fields.Raw,
+    'contributor': FieldContributor,
+    'impacts': CustomImpacts(),
+    'localization': FieldLocalization(attribute='localizations'),
+    'cause': fields.Nested(cause_fields, allow_null=True),
+    'tags': fields.List(fields.Nested(tag_fields)),
+    'properties': FieldAssociatedProperties(attribute='properties')
 }
 
 disruptions_fields = {
