@@ -35,9 +35,9 @@ from utils import paginate, get_current_time, uri_is_not_in_pt_object_filter
 from sqlalchemy.dialects.postgresql import UUID, BIT
 from datetime import datetime
 from formats import publication_status_values, application_status_values
-from sqlalchemy import or_, and_, between, bindparam
+from sqlalchemy import or_, and_, between, bindparam, desc
 from sqlalchemy.orm import aliased
-from sqlalchemy.sql import text
+from sqlalchemy.sql import text, func
 
 #force the server to use UTC time for each connection checkouted from the pool
 import sqlalchemy
@@ -2244,3 +2244,22 @@ class Export(TimestampMixin, db.Model):
         vars['is_visible'] = True
 
         return db.engine.execute(stmt, vars)
+
+class HistoryDisruption(db.Model):
+    __tablename__ = 'disruption'
+    __table_args__ = {"schema": "history"}
+
+    id = db.Column(UUID, primary_key=True)
+    created_at = db.Column(db.DateTime(), server_default=func.now(), nullable=False)
+    disruption_id = db.Column(UUID, db.ForeignKey(Disruption.id))
+    data = db.Column(db.Text, unique=False, nullable=False)
+
+    def __repr__(self):
+        return '<HistoryDisruption %r>' % self.id
+
+    def __init__(self):
+        self.id = str(uuid.uuid4())
+
+    @classmethod
+    def get_by_disruption_id(cls, disruption_id):
+        return cls.query.filter_by(disruption_id=disruption_id).order_by(desc(cls.created_at))
