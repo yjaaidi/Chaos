@@ -39,9 +39,8 @@ from sqlalchemy import or_, and_, between, bindparam, desc
 from sqlalchemy.orm import aliased
 from sqlalchemy.sql import text, func
 
-# force the server to use UTC time for each connection checkouted from the pool
+#force the server to use UTC time for each connection checkouted from the pool
 import sqlalchemy
-
 
 @sqlalchemy.event.listens_for(sqlalchemy.pool.Pool, 'checkout')
 def set_utc_on_connect(dbapi_con, connection_record, connection_proxy):
@@ -512,9 +511,8 @@ class Disruption(TimestampMixin, db.Model):
             query=None,
             cause_category_id=None,
             current_time=None):
-        if current_time is None:
-            current_time = get_current_time()
-        if query is None:
+        if current_time is None: current_time = get_current_time()
+        if (query is None):
             query = cls.query
 
         query = query.filter(and_(
@@ -549,9 +547,9 @@ class Disruption(TimestampMixin, db.Model):
             query = query.filter(PTobject.uri == uri)
 
         publication_availlable_filters = {
-            'past': and_(cls.end_publication_date is not None, cls.end_publication_date < current_time),
+            'past': and_(cls.end_publication_date != None, cls.end_publication_date < current_time),
             'ongoing': and_(cls.start_publication_date <= current_time,
-                            or_(cls.end_publication_date is None, cls.end_publication_date >= current_time)),
+                            or_(cls.end_publication_date == None, cls.end_publication_date >= current_time)),
             'coming': Disruption.start_publication_date > current_time
         }
         publication_status = set(publication_status)
@@ -600,8 +598,7 @@ class Disruption(TimestampMixin, db.Model):
             cause_category_id,
             application_period,
             current_time=None):
-        if current_time is None:
-            current_time = get_current_time()
+        if current_time is None: current_time = get_current_time()
         query = cls.query
         object_types = []
         uris = []
@@ -634,25 +631,22 @@ class Disruption(TimestampMixin, db.Model):
                 query = cls.query.filter(uris_filter)
         if application_period is not None:
             query = cls.query.filter(
-                cls.impacts.any(
-                    Impact.application_periods.any(
-                        or_(
-                            and_(
-                                ApplicationPeriods.start_date >= application_period['begin'],
-                                ApplicationPeriods.start_date <= application_period['end']
-                            ),
-                            and_(
-                                ApplicationPeriods.end_date >= application_period['begin'],
-                                ApplicationPeriods.end_date <= application_period['end']
-                            ),
-                            and_(
-                                ApplicationPeriods.start_date <= application_period['begin'],
-                                ApplicationPeriods.end_date >= application_period['end']
-                            )
-                        )
+                cls.impacts.any(Impact.application_periods.any(
+                or_(
+                    and_(
+                        ApplicationPeriods.start_date >= application_period['begin'],
+                        ApplicationPeriods.start_date <= application_period['end']
+                    ),
+                    and_(
+                        ApplicationPeriods.end_date >= application_period['begin'],
+                        ApplicationPeriods.end_date <= application_period['end']
+                    ),
+                    and_(
+                        ApplicationPeriods.start_date <= application_period['begin'],
+                        ApplicationPeriods.end_date >= application_period['end']
                     )
                 )
-            )
+            )))
         return cls.get_query_with_args(
             contributor_id=contributor_id,
             application_status=application_status,
@@ -683,8 +677,7 @@ class Disruption(TimestampMixin, db.Model):
                                               cause_category_id,
                                               application_period,
                                               current_time=None):
-        if current_time is None:
-            current_time = get_current_time()
+        if current_time is None: current_time = get_current_time()
 
         andwheres = []
         vars = {}
@@ -942,7 +935,7 @@ class Disruption(TimestampMixin, db.Model):
             current_time = current_time
         )
         query_parts['select_columns'] = ['DISTINCT d.id, d.end_publication_date']
-        query_parts['order_by'] = ['d.end_publication_date', 'd.id']
+        query_parts['order_by'] = ['d.end_publication_date','d.id']
         query_parts['limit'] = ':limit'
         query_parts['offset'] = ':offset'
 
@@ -966,6 +959,7 @@ class Disruption(TimestampMixin, db.Model):
         vars['offset'] = offset
 
         return db.engine.execute(stmt, vars).fetchall()
+
 
     @classmethod
     def all_with_post_filter_native(
@@ -1002,7 +996,7 @@ class Disruption(TimestampMixin, db.Model):
             application_period,
             current_time)
 
-        if not disruption_ids:
+        if not disruption_ids :
             return []
 
         query_parts = cls.generate_disruption_search_query_args(
@@ -1055,7 +1049,7 @@ class Disruption(TimestampMixin, db.Model):
                 'po_via.id AS po_via_id, po_via.uri AS po_via_uri, po_via.type AS po_via_type'
             ]
         query_parts['and_wheres'].append('d.id IN :disruption_ids')
-        query_parts['order_by'] = ['d.end_publication_date', 'd.id', 'po.type', 'po.uri']
+        query_parts['order_by'] = ['d.end_publication_date','d.id', 'po.type','po.uri']
 
         query = cls.get_disruption_search_native_query(query_parts)
 
@@ -1187,6 +1181,7 @@ class Disruption(TimestampMixin, db.Model):
 
         return db.engine.execute(stmt, vars)
 
+
     @classmethod
     @paginate()
     def all_with_filter(
@@ -1215,11 +1210,11 @@ class Disruption(TimestampMixin, db.Model):
     def publication_status(self):
         current_time = utils.get_current_time()
         # Past
-        if (self.end_publication_date is not None) and (self.end_publication_date < current_time):
+        if (self.end_publication_date != None) and (self.end_publication_date < current_time):
             return "past"
         # ongoing
         if self.start_publication_date <= current_time\
-                and (self.end_publication_date is None or self.end_publication_date >= current_time):
+                and (self.end_publication_date == None or self.end_publication_date >= current_time):
             return "ongoing"
         # Coming
         if self.start_publication_date > current_time:
@@ -1423,12 +1418,12 @@ class Impact(TimestampMixin, db.Model):
 
     @classmethod
     def generate_impacts_search_query_args(cls,
-                                          contributor_id,
-                                          application_status,
-                                          ptObjectFilter,
-                                          cause_category_id,
-                                          application_period,
-                                          current_time=None):
+                                              contributor_id,
+                                              application_status,
+                                              ptObjectFilter,
+                                              cause_category_id,
+                                              application_period,
+                                              current_time=None):
         if current_time is None: current_time = get_current_time()
 
         andwheres = []
@@ -1714,7 +1709,7 @@ class Impact(TimestampMixin, db.Model):
             application_period,
             current_time)
 
-        if not impact_ids:
+        if not impact_ids :
             return []
 
         query_parts = cls.generate_impacts_search_query_args(
@@ -1757,7 +1752,7 @@ class Impact(TimestampMixin, db.Model):
                 'po_via.id AS po_via_id, po_via.uri AS po_via_uri, po_via.type AS po_via_type'
             ]
         query_parts['and_wheres'].append('i.id IN :impact_ids')
-        query_parts['order_by'] = ['ap.end_date', 'i.id', 'po.type', 'po.uri']
+        query_parts['order_by'] = ['ap.end_date','i.id', 'po.type','po.uri']
 
         query = cls.get_impacts_search_native_query(query_parts)
 
@@ -1959,7 +1954,6 @@ associate_wording_line_section = db.Table(
     )
 )
 
-
 class Meta(db.Model):
     """
     represent the channel for the message of an impact
@@ -1973,7 +1967,6 @@ class Meta(db.Model):
 
     def __repr__(self):
         return '<Meta %r>' % self.id
-
 
 class LineSection(TimestampMixin, db.Model):
     __tablename__ = 'line_section'
@@ -2181,10 +2174,10 @@ class Export(TimestampMixin, db.Model):
     @classmethod
     def exist_without_error(cls, client_id, start_date, end_date):
         return cls.query.filter(
-            cls.client_id == client_id,
-            cls.start_date == start_date,
-            cls.end_date == end_date,
-            cls.status != 'error'
+            cls.client_id==client_id,
+            cls.start_date==start_date,
+            cls.end_date==end_date,
+            cls.status!='error'
             ).first()
 
     @classmethod
@@ -2251,7 +2244,6 @@ class Export(TimestampMixin, db.Model):
         vars['is_visible'] = True
 
         return db.engine.execute(stmt, vars)
-
 
 class HistoryDisruption(db.Model):
     __tablename__ = 'disruption'
