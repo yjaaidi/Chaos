@@ -354,6 +354,7 @@ def generate_pt_object_from_json(json):
 
     return pt_object
 
+
 def generate_routes_pt_object_from_json(json):
     routes = []
     for route in json:
