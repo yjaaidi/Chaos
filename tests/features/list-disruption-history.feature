@@ -255,3 +255,16 @@ Scenario: Test disruptions history when impact is on line section (type route_po
     And the field "disruptions.0.impacts.impacts.0.objects.0.line_section.routes.0.type" should be "route"
     And the field "disruptions.0.impacts.impacts.0.objects.0.line_section.routes.0.id" should be "route:DUA:10011000100010"
     And the field "disruptions.0.impacts.impacts.0.objects.0.line_section.routes.0.name" should be "Melun"
+
+Scenario: Test disruptions history with invalid UUID
+    Given I have the following clients in my database:
+        | client_code   | created_at          | updated_at          | id                                   |
+        | 5             | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
+    Given I have the following contributors in my database:
+        | contributor_code   | created_at          | updated_at          | id                                   |
+        | contrib1           | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
+    When I get "/disruptions/invalidUUID/history"
+    Then the status code should be "400"
+    And the header "Content-Type" should be "application/json"
+    And the field "error" should have a size of 1
+    And the field "error.message" should be "id invalid"
