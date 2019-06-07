@@ -2030,6 +2030,11 @@ class DisruptionsHistory(flask_restful.Resource):
     @manage_navitia_error()
     @validate_client_token()
     def get(self, contributor, navitia, disruption_id):
+
+        if not id_format.match(disruption_id):
+            return marshal({'error': {'message': "id invalid"}},
+                           error_fields), 400
+
         g.display_impacts = True
         disruptions = OrderedDict()
         history_disruption_model = models.HistoryDisruption()
