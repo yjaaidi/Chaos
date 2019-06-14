@@ -295,6 +295,7 @@ def create_pt_objects_from_json(json):
 
     return pt_objects
 
+
 def create_pt_object_from_json(json):
     pt_object = models.PTobject()
     mapper.fill_from_json(pt_object, json, mapper.object_mapping)
@@ -306,6 +307,7 @@ def create_pt_object_from_json(json):
 
     return pt_object
 
+
 def create_line_section_from_json(json):
     line_section = models.LineSection()
     line_section.line = generate_pt_object_from_json(json['line'])
@@ -315,6 +317,7 @@ def create_line_section_from_json(json):
         line_section.routes = generate_routes_pt_object_from_json(json['routes'])
 
     return line_section
+
 
 def create_metas_from_json(json):
     metas = []
