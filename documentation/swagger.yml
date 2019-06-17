@@ -1651,7 +1651,7 @@
       required: false
       type: integer
       default: 20
-      minimum: 1
+      minimum: 0
       maximum: 1000
     publication_status:
       in: query
@@ -2165,7 +2165,7 @@
           description: Number of items per page
           type: integer
           default: 20
-          minimum: 1
+          minimum: 0
           maximum: 1000
           example: 20
         application_status:
@@ -2556,7 +2556,7 @@
           description: Number of items per page
           type: integer
           default: 20
-          minimum: 1
+          minimum: 0
           maximum: 1000
           example: 20
         application_status:

@@ -328,11 +328,6 @@ Feature: list impacts with pager
             | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | published | 7ffab234-3d49-4eea-aa2c-22f8680230b3 | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |7ffab232-3d48-4eea-aa2c-22f8680230b6 |
             | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | published | 7ffab234-3d49-4eec-aa2c-22f8680230b4 | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |7ffab232-3d48-4eea-aa2c-22f8680230b6 |
 
-        When I get "/disruptions/7ffab230-3d48-4eea-aa2c-22f8680230b6/impacts?start_page=1&items_per_page=0"
-        Then the status code should be "400"
-        And the header "Content-Type" should be "application/json"
-        And the field "message" should be "items_per_page argument value is not valid"
-
         When I get "/disruptions/7ffab230-3d48-4eea-aa2c-22f8680230b6/impacts?start_page=1&items_per_page=1001"
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
