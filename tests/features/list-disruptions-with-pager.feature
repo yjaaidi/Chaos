@@ -169,7 +169,7 @@ Feature: list disruptions with pager
         And the header "Content-Type" should be "application/json"
         And the field "message" should be "page_index argument value is not valid"
 
-    Scenario: Use pager to display disruptions with parameters (items_per_page=0)
+    Scenario: Use pager to display disruptions with parameters (items_per_page not valid)
 
         Given I have the following clients in my database:
             | client_code   | created_at          | updated_at          | id                                   |
@@ -191,10 +191,15 @@ Feature: list disruptions with pager
             | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | published | 7ffab232-3d47-4eea-aa2c-22f8680230b6 | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |
             | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | published | 7ffab234-3d49-4eea-aa2c-22f8680230b6 | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |
 
-        When I get "/disruptions?start_page=1&items_per_page=0"
+        When I get "/disruptions?start_page=1&items_per_page=-1"
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
         And the field "message" should be "items_per_page argument value is not valid"
+
+        When I get "/disruptions?start_page=1&items_per_page=1001"
+        Then the status code should be "400"
+        And the header "Content-Type" should be "application/json"
+        And the field "message" should be "items_per_page argument value can't be superior than 1000"
 
     Scenario: Use pager to order disruptions with identical end_publication_date
 
@@ -284,7 +289,7 @@ Feature: list disruptions with pager
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
         And the field "disruption.impacts.impacts" should have a size of 6
-        
+
     Scenario: Retrieve just published impacts
 
         Given I have the following contributors in my database:

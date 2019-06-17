@@ -49,7 +49,8 @@ from sqlalchemy.exc import IntegrityError
 import logging
 from utils import make_pager, option_value, get_current_time, add_notification_date_on_impacts
 from chaos.validate_params import validate_client, validate_contributor, validate_navitia, \
-    manage_navitia_error, validate_id, validate_client_token, validate_send_notifications_and_notification_date
+    manage_navitia_error, validate_id, validate_client_token, \
+    validate_send_notifications_and_notification_date, validate_pagination
 from collections import OrderedDict
 from aniso8601 import parse_datetime
 from history import save_disruption_in_history, create_disruption_from_json
@@ -210,6 +211,7 @@ class Disruptions(flask_restful.Resource):
     @manage_navitia_error()
     @validate_id()
     @validate_client_token()
+    @validate_pagination()
     def get(self, contributor, navitia, id=None):
         self.navitia = navitia
         args = self.parsers['get'].parse_args()
@@ -229,7 +231,6 @@ class Disruptions(flask_restful.Resource):
 
     def _get_disruptions(self, contributor_id, args):
 
-        self._validate_arguments_for_disruption_list(args)
         g.current_time = args['current_time']
         page_index = args['start_page']
         items_per_page = args['items_per_page']
@@ -264,13 +265,6 @@ class Disruptions(flask_restful.Resource):
         for o in result.items:
             models.db.session.expunge(o)
         return marshal(response, disruptions_fields)
-
-    def _validate_arguments_for_disruption_list(self, args):
-        if args['start_page'] == 0:
-            abort(400, message="page_index argument value is not valid")
-
-        if args['items_per_page'] == 0:
-            abort(400, message="items_per_page argument value is not valid")
 
     def get_post_error_response_and_log(self, exception, status_code):
         return self.get_error_response_and_log('POST', exception, status_code)
@@ -489,6 +483,7 @@ class ImpactsSearch(flask_restful.Resource):
     @validate_contributor()
     @manage_navitia_error()
     @validate_client_token()
+    @validate_pagination()
     def post(self, contributor, navitia):
         self.navitia = navitia
         args = self.parsers['post'].parse_args()
@@ -804,6 +799,7 @@ class DisruptionsSearch(flask_restful.Resource):
     @validate_contributor()
     @manage_navitia_error()
     @validate_client_token()
+    @validate_pagination()
     def post(self, contributor, navitia):
         self.navitia = navitia
         args = self.parsers['post'].parse_args()
@@ -1488,6 +1484,7 @@ class Impacts(flask_restful.Resource):
     @validate_navitia()
     @manage_navitia_error()
     @validate_id()
+    @validate_pagination()
     def get(self, contributor, disruption_id, navitia, id=None):
         self.navitia = navitia
         if id:
@@ -1498,15 +1495,9 @@ class Impacts(flask_restful.Resource):
                 return marshal({'error': {'message': "disruption_id invalid"}},
                                error_fields), 400
             args = self.parsers['get'].parse_args()
-            page_index = args['start_page']
-            if page_index == 0:
-                abort(400, message="page_index argument value is not valid")
-            items_per_page = args['items_per_page']
-            if items_per_page == 0:
-                abort(400, message="items_per_page argument value is not valid")
 
-            result = models.Impact.all(page_index=page_index,
-                                       items_per_page=items_per_page,
+            result = models.Impact.all(page_index=args['start_page'],
+                                       items_per_page=args['items_per_page'],
                                        disruption_id=disruption_id,
                                        contributor_id=contributor.id)
             response = {'impacts': result.items, 'meta': make_pager(result, 'impact', disruption_id=disruption_id)}
