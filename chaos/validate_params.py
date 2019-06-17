@@ -32,6 +32,7 @@ from chaos.navitia import Navitia
 from utils import get_client_code, get_contributor_code, get_token, get_coverage, get_clients_tokens, client_token_is_allowed
 from chaos import exceptions, models, utils, fields
 from flask_restful import marshal
+from flask.ext.restful import abort
 from flask import request, current_app
 from formats import id_format
 from os import path
@@ -176,4 +177,18 @@ class validate_send_notifications_and_notification_date(object):
                         fields.error_fields
                     ), 400
             return func(*args, **kwargs)
+        return wrapper
+
+class validate_pagination(object):
+    def __call__(self, func):
+        @wraps(func)
+        def wrapper(self, *args, **kwargs):
+            request_args = self.parsers[self.parsers.keys()[0]].parse_args()
+            if request_args['start_page'] == 0:
+                abort(400, message="page_index argument value is not valid")
+            if request_args['items_per_page'] == 0:
+                abort(400, message="items_per_page argument value is not valid")
+            if request_args['items_per_page'] > 1000:
+                abort(400, message="items_per_page argument value can't be superior than 1000")
+            return func(self, *args, **kwargs)
         return wrapper
