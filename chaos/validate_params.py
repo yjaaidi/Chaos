@@ -184,8 +184,10 @@ class validate_pagination(object):
         @wraps(func)
         def wrapper(self, *args, **kwargs):
             request_args = self.parsers[self.parsers.keys()[0]].parse_args()
-            if request_args['start_page'] == 0:
+            if request_args['start_page'] <= 0:
                 abort(400, message="page_index argument value is not valid")
+            if request_args['items_per_page'] < 0:
+                abort(400, message="items_per_page argument value is not valid")
             if request_args['items_per_page'] > 1000:
                 abort(400, message="items_per_page argument value can't be superior than 1000")
             return func(self, *args, **kwargs)

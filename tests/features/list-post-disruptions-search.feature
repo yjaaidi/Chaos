@@ -485,12 +485,28 @@ Feature: list disruptions with ptObjects filter
 
         When I post to "/disruptions/_search" with:
         """
+        {"current_time": "2014-04-15T14:00:00Z", "publication_status": ["ongoing"], "ptObjectFilter": {"networks": ["network:JDR:1"]}, "start_page": -1, "items_per_page": 3}
+        """
+        Then the status code should be "400"
+        And the header "Content-Type" should be "application/json"
+        And the field "message" should be "page_index argument value is not valid"
+
+        When I post to "/disruptions/_search" with:
+        """
         {"current_time": "2014-04-15T14:00:00Z", "publication_status": ["ongoing"], "ptObjectFilter": {"networks": ["network:JDR:1"]}, "start_page": 1, "items_per_page": 0}
         """
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
         And the field "disruptions" should have a size of 0
         And the field "meta" should exist
+
+        When I post to "/disruptions/_search" with:
+        """
+        {"current_time": "2014-04-15T14:00:00Z", "publication_status": ["ongoing"], "ptObjectFilter": {"networks": ["network:JDR:1"]}, "start_page": 1, "items_per_page": -3}
+        """
+        Then the status code should be "400"
+        And the header "Content-Type" should be "application/json"
+        And the field "message" should be "items_per_page argument value is not valid"
 
         When I post to "/disruptions/_search" with:
         """
