@@ -169,7 +169,7 @@ Feature: list disruptions with pager
         And the header "Content-Type" should be "application/json"
         And the field "message" should be "page_index argument value is not valid"
 
-    Scenario: Use pager to display disruptions with parameters (items_per_page=0)
+    Scenario: Use pager to display disruptions with parameters (items_per_page not valid)
 
         Given I have the following clients in my database:
             | client_code   | created_at          | updated_at          | id                                   |
@@ -195,6 +195,11 @@ Feature: list disruptions with pager
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
         And the field "message" should be "items_per_page argument value is not valid"
+
+        When I get "/disruptions?start_page=1&items_per_page=1001"
+        Then the status code should be "400"
+        And the header "Content-Type" should be "application/json"
+        And the field "message" should be "items_per_page argument value can't be superior than 1000"
 
     Scenario: Use pager to order disruptions with identical end_publication_date
 

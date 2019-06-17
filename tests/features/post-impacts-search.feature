@@ -439,6 +439,31 @@ Feature: list disruptions with ptObjects filter
         And the field "meta.pagination.start_page" should be 1
         And the field "meta.pagination.total_result" should be 4
 
+        When I post to "/impacts/_search" with:
+        """
+        {"current_time": "2014-04-15T14:00:00Z", "ptObjectFilter": {"networks": ["network:JDR:1"]}, "start_page": 0, "items_per_page": 3}
+        """
+        Then the status code should be "400"
+        And the header "Content-Type" should be "application/json"
+        And the field "message" should be "page_index argument value is not valid"
+
+        When I post to "/impacts/_search" with:
+        """
+        {"current_time": "2014-04-15T14:00:00Z", "ptObjectFilter": {"networks": ["network:JDR:1"]}, "start_page": 1, "items_per_page": 0}
+        """
+        Then the status code should be "400"
+        And the header "Content-Type" should be "application/json"
+        And the field "message" should be "items_per_page argument value is not valid"
+
+        When I post to "/impacts/_search" with:
+        """
+        {"current_time": "2014-04-15T14:00:00Z", "ptObjectFilter": {"networks": ["network:JDR:1"]}, "start_page": 1, "items_per_page": 1001}
+        """
+        Then the status code should be "400"
+        And the header "Content-Type" should be "application/json"
+        And the field "message" should be "items_per_page argument value can't be superior than 1000"
+
+
     Scenario: Test if about body when ptObjectFilter is not added
         Given I have the following clients in my database:
             | client_code   | created_at          | updated_at          | id                                   |
