@@ -62,6 +62,42 @@ Feature: list disruptions with ptObjects filter
         And the header "Content-Type" should be "application/json"
         And the field "disruptions" should have a size of 0
 
+    Scenario: Filter on network with empty publication_status
+
+        Given I have the following contributors in my database:
+            | contributor_code   | created_at          | updated_at          | id                                   |
+            | contrib1           | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
+
+        Given I have the following clients in my database:
+            | client_code   | created_at          | updated_at          | id                                   |
+            | 5             | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
+
+        When I post to "/disruptions/_search" with:
+        """
+        {"current_time": "2014-04-15T14:00:00Z", "publication_status": [], "ptObjectFilter": {"networks": ["network:JDR:1"]}}
+        """
+        Then the status code should be "400"
+        And the header "Content-Type" should be "application/json"
+        And the field "error.message" should be "publication_status should not be empty"
+
+    Scenario: Filter on network with empty status
+
+        Given I have the following contributors in my database:
+            | contributor_code   | created_at          | updated_at          | id                                   |
+            | contrib1           | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
+
+        Given I have the following clients in my database:
+            | client_code   | created_at          | updated_at          | id                                   |
+            | 5             | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
+
+        When I post to "/disruptions/_search" with:
+        """
+        {"current_time": "2014-04-15T14:00:00Z", "status": [], "ptObjectFilter": {"networks": ["network:JDR:1"]}}
+        """
+        Then the status code should be "400"
+        And the header "Content-Type" should be "application/json"
+        And the field "error.message" should be "status should not be empty"
+
     Scenario: Filter on network
 
         Given I have the following contributors in my database:
@@ -438,6 +474,47 @@ Feature: list disruptions with ptObjects filter
         And the field "meta.pagination.items_on_page" should be 3
         And the field "meta.pagination.start_page" should be 1
         And the field "meta.pagination.total_result" should be 4
+
+        When I post to "/disruptions/_search" with:
+        """
+        {"current_time": "2014-04-15T14:00:00Z", "publication_status": ["ongoing"], "ptObjectFilter": {"networks": ["network:JDR:1"]}, "start_page": 0, "items_per_page": 3}
+        """
+        Then the status code should be "400"
+        And the header "Content-Type" should be "application/json"
+        And the field "message" should be "page_index argument value is not valid"
+
+        When I post to "/disruptions/_search" with:
+        """
+        {"current_time": "2014-04-15T14:00:00Z", "publication_status": ["ongoing"], "ptObjectFilter": {"networks": ["network:JDR:1"]}, "start_page": -1, "items_per_page": 3}
+        """
+        Then the status code should be "400"
+        And the header "Content-Type" should be "application/json"
+        And the field "message" should be "page_index argument value is not valid"
+
+        When I post to "/disruptions/_search" with:
+        """
+        {"current_time": "2014-04-15T14:00:00Z", "publication_status": ["ongoing"], "ptObjectFilter": {"networks": ["network:JDR:1"]}, "start_page": 1, "items_per_page": 0}
+        """
+        Then the status code should be "200"
+        And the header "Content-Type" should be "application/json"
+        And the field "disruptions" should have a size of 0
+        And the field "meta" should exist
+
+        When I post to "/disruptions/_search" with:
+        """
+        {"current_time": "2014-04-15T14:00:00Z", "publication_status": ["ongoing"], "ptObjectFilter": {"networks": ["network:JDR:1"]}, "start_page": 1, "items_per_page": -3}
+        """
+        Then the status code should be "400"
+        And the header "Content-Type" should be "application/json"
+        And the field "message" should be "items_per_page argument value is not valid"
+
+        When I post to "/disruptions/_search" with:
+        """
+        {"current_time": "2014-04-15T14:00:00Z", "publication_status": ["ongoing"], "ptObjectFilter": {"networks": ["network:JDR:1"]}, "start_page": 1, "items_per_page": 1001}
+        """
+        Then the status code should be "400"
+        And the header "Content-Type" should be "application/json"
+        And the field "message" should be "items_per_page argument value can't be superior than 1000"
 
     Scenario: Test if about body when ptObjectFilter is not added
         Given I have the following clients in my database:
