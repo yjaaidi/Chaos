@@ -34,7 +34,6 @@ from chaos.navitia import Navitia
 from copy import deepcopy
 import logging
 
-
 class FieldDateTime(fields.Raw):
     def format(self, value):
         if value:
@@ -218,12 +217,19 @@ class FieldLocalization(fields.Raw):
         return self._clean_localizations(to_return)
 
     def _clean_localizations(self, localizations):
+        filtred_localizations = []
         for localization in localizations:
-            if localization.has_key('timezone'):
-                del localization['timezone']
-            if localization.has_key('links'):
-                del localization['links']
-        return localizations
+            filtred_localization = {
+                'id': localization["id"],
+                'label': localization["label"],
+                'name': localization["name"],
+                'type': localization["type"],
+                'codes': localization["codes"],
+                'coord': localization["coord"]
+            }
+            filtred_localizations.append(filtred_localization)
+
+        return filtred_localizations
 
 class FieldContributor(fields.Raw):
     def output(self, key, obj):
