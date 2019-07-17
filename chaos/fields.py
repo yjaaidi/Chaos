@@ -174,7 +174,7 @@ class FieldLocalization(fields.Raw):
 
         # for history
         if hasattr(obj, 'history_localization') and isinstance(obj.localizations, list):
-            return obj.history_localization
+            return self._clean_localizations(obj.history_localization)
 
         navitia = Navitia(current_app.config['NAVITIA_URL'],
                           get_coverage(request),
@@ -215,8 +215,15 @@ class FieldLocalization(fields.Raw):
                             "type": localization.type
                         }
                     )
-        return to_return
+        return self._clean_localizations(to_return)
 
+    def _clean_localizations(self, localizations):
+        for localization in localizations:
+            if localization.has_key('timezone'):
+                del localization['timezone']
+            if localization.has_key('links'):
+                del localization['links']
+        return localizations
 
 class FieldContributor(fields.Raw):
     def output(self, key, obj):
