@@ -32,7 +32,6 @@ from flask import current_app, request, g
 from utils import make_fake_pager, get_coverage, get_token, get_current_time
 from chaos.navitia import Navitia
 from copy import deepcopy
-import logging
 
 class FieldDateTime(fields.Raw):
     def format(self, value):
