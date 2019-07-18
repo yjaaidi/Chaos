@@ -217,19 +217,14 @@ class FieldLocalization(fields.Raw):
         return self._clean_localizations(to_return)
 
     def _clean_localizations(self, localizations):
-        filtred_localizations = []
+        filtered_localizations = []
         for localization in localizations:
-            filtred_localization = {
-                'id': localization["id"],
-                'label': localization["label"],
-                'name': localization["name"],
-                'type': localization["type"],
-                'codes': localization["codes"],
-                'coord': localization["coord"]
+            filtered_localization = {
+                key: localization[key] for key in localization.keys() if key in ('id','label','name','type','codes','coord')
             }
-            filtred_localizations.append(filtred_localization)
+            filtered_localizations.append(filtered_localization)
 
-        return filtred_localizations
+        return filtered_localizations
 
 class FieldContributor(fields.Raw):
     def output(self, key, obj):
