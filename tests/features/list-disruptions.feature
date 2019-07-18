@@ -176,7 +176,15 @@ Feature: list disruptions
         And the header "Content-Type" should be "application/json"
         And the field "disruption.localization" should exist
         And the field "disruption.localization.0.id" should be "stop_area:JDR:SA:CHVIN"
+        And the field "disruption.localization.0.name" should be "Château de Vincennes"
+        And the field "disruption.localization.0.label" should be "Château de Vincennes (Vincennes)"
         And the field "disruption.localization.0.type" should be "stop_area"
+        And the field "disruption.localization.0.coord.lat" should be "48.844536"
+        And the field "disruption.localization.0.coord.lon" should be "2.43951"
+        And the field "disruption.localization.0.codes.0.type" should be "external_code"
+        And the field "disruption.localization.0.codes.0.value" should be "JDRCHVIN"
+        And the field "disruption.localization.0.codes.1.type" should be "source"
+        And the field "disruption.localization.0.codes.1.value" should be "CHVIN"
 
     Scenario: list disruptions with localization not in navitia
 
