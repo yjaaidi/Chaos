@@ -1919,10 +1919,37 @@
               id:
                 type: string
                 description: Stop area ID
+              label:
+                type: string
+                description: Label of stop area
+              name:
+                type: string
+                description: Label of stop area
               type:
                 type: string
                 enum:
                   - stop_area
+              codes:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type:
+                      type: string
+                      description: Type of code
+                    value:
+                      type: string
+                      description: Value of code
+              coord:
+                type: object
+                description: Coordinates - WGS84
+                properties:
+                  lat:
+                    type: number
+                    format: float
+                  lon:
+                    type: number
+                    format: float
         note:
           type: string
           description: Service note of disruption
@@ -3076,10 +3103,37 @@
               id:
                 type: string
                 description: Stop area ID
+              label:
+                type: string
+                description: Label of stop area
+              name:
+                type: string
+                description: Label of stop area
               type:
                 type: string
                 enum:
                   - stop_area
+              codes:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type:
+                      type: string
+                      description: Type of code
+                    value:
+                      type: string
+                      description: Value of code
+              coord:
+                type: object
+                description: Coordinates - WGS84
+                properties:
+                  lat:
+                    type: number
+                    format: float
+                  lon:
+                    type: number
+                    format: float
         note:
           type: string
           description: Service note of disruption

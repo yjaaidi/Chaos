@@ -27,20 +27,18 @@
 # https://groups.google.com/d/forum/navitia
 # www.navitia.io
 
+from copy import deepcopy
 from flask_restful import fields, url_for, marshal
 from flask import current_app, request, g
-from utils import make_fake_pager, get_coverage, get_token, get_current_time
+from chaos.utils import make_fake_pager, get_coverage, get_token, get_current_time
 from chaos.navitia import Navitia
-from copy import deepcopy
-import logging
 
 
 class FieldDateTime(fields.Raw):
     def format(self, value):
         if value:
             return value.strftime('%Y-%m-%dT%H:%M:%SZ')
-        else:
-            return None
+        return None
 
 
 class FieldTime(fields.Raw):
@@ -55,8 +53,7 @@ class FieldDate(fields.Raw):
     def format(self, value):
         if value:
             return value.strftime('%Y-%m-%d')
-        else:
-            return None
+        return None
 
 
 class CustomImpacts(fields.Raw):
@@ -65,24 +62,25 @@ class CustomImpacts(fields.Raw):
             return marshal(val, {
                 'pagination': FieldPaginateImpacts(),
                 'impacts': PaginateObjects(
-                                fields.Nested(
-                                    impact_fields,
-                                    display_null=False
-                                    )
-                                )
+                    fields.Nested(
+                        impact_fields,
+                        display_null=False
+                    )
+                )
             }, display_null=False)
 
-        val.impacts = [impact for impact in val.impacts if impact.status == 'published']
+        val.impacts = [
+            impact for impact in val.impacts if impact.status == 'published']
 
         return marshal(val, {
             'pagination': FieldPaginateImpacts(attribute='impacts'),
             'impacts': PaginateObjects(
-                                        fields.Nested(
-                                            impact_fields,
-                                            display_null=False,
-                                            attribute='impacts'
-                                            )
-                                       )
+                fields.Nested(
+                    impact_fields,
+                    display_null=False,
+                    attribute='impacts'
+                )
+            )
         }, display_null=False)
 
 
@@ -98,7 +96,8 @@ class FieldPaginateImpacts(fields.Raw):
         else:
             impacts = disruption.impacts
             disruption_id = next((i.disruption_id for i in impacts), None)
-        pagination = make_fake_pager(len(impacts), 20, 'impact', disruption_id=disruption_id)
+        pagination = make_fake_pager(
+            len(impacts), 20, 'impact', disruption_id=disruption_id)
 
         return pagination.get('pagination')
 
@@ -110,8 +109,7 @@ class PaginateObjects(fields.Raw):
         self.container = nested
         self.display_null = display_null
 
-    classmethod
-
+    @classmethod
     def _filter(cls, impacts):
         return impacts[:10]  # todo use the pagination to filter
 
@@ -174,7 +172,7 @@ class FieldLocalization(fields.Raw):
 
         # for history
         if hasattr(obj, 'history_localization') and isinstance(obj.localizations, list):
-            return obj.history_localization
+            return self._clean_localizations(obj.history_localization)
 
         navitia = Navitia(current_app.config['NAVITIA_URL'],
                           get_coverage(request),
@@ -215,7 +213,17 @@ class FieldLocalization(fields.Raw):
                             "type": localization.type
                         }
                     )
-        return to_return
+        return self._clean_localizations(to_return)
+
+    @staticmethod
+    def _clean_localizations(localizations):
+        filtered_localizations = []
+        for localization in localizations:
+            filtered_localization = {key: localization[key] for key in localization.keys(
+            ) if key in ('id', 'label', 'name', 'type', 'codes', 'coord')}
+            filtered_localizations.append(filtered_localization)
+
+        return filtered_localizations
 
 
 class FieldContributor(fields.Raw):
@@ -570,9 +578,9 @@ application_period_pattern_fields = {
     'end_date': FieldDate,
     'weekly_pattern': fields.Raw,
     'time_slots': fields.List(
-                    fields.Nested(time_slot_fields, display_null=False),
-                    attribute='time_slots'
-                    )
+        fields.Nested(time_slot_fields, display_null=False),
+        attribute='time_slots'
+    )
 }
 
 impact_fields = {
@@ -580,8 +588,8 @@ impact_fields = {
     'created_at': FieldDateTime,
     'updated_at': FieldDateTime,
     'objects': fields.List(
-                    fields.Nested(objectTC_fields, display_null=False)
-                    ),
+        fields.Nested(objectTC_fields, display_null=False)
+        ),
     'application_periods':
         fields.List(fields.Nested(application_period_fields)),
     'severity': fields.Nested(severity_fields),
@@ -592,7 +600,7 @@ impact_fields = {
         fields.List(
             fields.Nested(application_period_pattern_fields),
             attribute='patterns'
-            ),
+        ),
     'send_notifications': fields.Raw,
     'notification_date': FieldDateTime
 }
@@ -628,8 +636,8 @@ impact_search_fields = {
     'created_at': FieldDateTime,
     'updated_at': FieldDateTime,
     'objects': fields.List(
-                    fields.Nested(objectTC_fields, display_null=False)
-                    ),
+        fields.Nested(objectTC_fields, display_null=False)
+    ),
     'application_periods':
         fields.List(fields.Nested(application_period_fields)),
     'severity': fields.Nested(severity_fields),
@@ -638,9 +646,9 @@ impact_search_fields = {
     'messages': fields.List(fields.Nested(message_fields)),
     'application_period_patterns':
         fields.List(
-                fields.Nested(application_period_pattern_fields),
-                attribute='patterns'
-                ),
+            fields.Nested(application_period_pattern_fields),
+            attribute='patterns'
+        ),
     'send_notifications': fields.Raw,
     'notification_date': FieldDateTime
 }
@@ -713,17 +721,17 @@ traffic_report_impact_field = {
 
 traffic_reports_marshaler = {
     'traffic_reports': fields.List(
-                                fields.Nested(
-                                            traffic_report_fields,
-                                            display_null=False
-                                            )
-                                   ),
+        fields.Nested(
+            traffic_report_fields,
+            display_null=False
+        )
+    ),
     'disruptions': fields.List(
-                            fields.Nested(
-                                        traffic_report_impact_field,
-                                        display_null=False
-                                        )
-                               )
+        fields.Nested(
+            traffic_report_impact_field,
+            display_null=False
+        )
+    )
 }
 
 disruption_fields = {
