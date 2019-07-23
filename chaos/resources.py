@@ -34,7 +34,7 @@ import flask_restful
 from flask_restful import marshal, reqparse, types
 from chaos import models, db, publisher
 from jsonschema import validate, ValidationError
-from flask.ext.restful import abort
+from flask_restful import abort
 from fields import *
 from formats import *
 from formats import impact_input_format, channel_input_format, pt_object_type_values,\

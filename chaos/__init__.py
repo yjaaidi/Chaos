@@ -40,7 +40,7 @@ import logging.config
 import sys
 from chaos.utils import Request
 from chaos.publisher import Publisher
-from flask_cache import Cache
+from flask_caching import Cache
 
 app = Flask(__name__)
 app.config.from_object('chaos.default_settings')
