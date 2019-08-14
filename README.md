@@ -33,8 +33,7 @@ pip install -r requirements.txt
 ```
 
 #### Build protobufs
-- Install protoc building it from source: [protobuf v2.6.1](https://github.com/google/protobuf/blob/master/src/README.md))
-note : you can use `sudo apt-get install protobuf-compiler` if you're sure it won't install version 3.x.x (incompatible)
+- Install protoc building it from source : [protobuf v2.6.1](https://github.com/google/protobuf/blob/master/src/README.md). You can use `sudo apt-get install protobuf-compiler` if you're sure it won't install version 3.x.x (incompatible).
 - Build protobufs
 
 ```
