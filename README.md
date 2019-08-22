@@ -18,7 +18,10 @@ git clone git@github.com:CanalTP/Chaos.git
 cd Chaos
 ```
 
-#### Python requirements
+#### Requirements
+- PostgreSQL 9.6
+
+##### Python
 - Install Python `sudo apt-get install python2.7 python2.7-dev`
 - Install [pip](https://pip.pypa.io/en/latest/installing/)
 - Install [virtualenv](http://virtualenv.readthedocs.org/en/latest/installation.html)
@@ -30,7 +33,7 @@ pip install -r requirements.txt
 ```
 
 #### Build protobufs
-- Install protoc `sudo apt-get install protobuf-compiler` (or build it from source: [protobuf v2.6.1](https://github.com/google/protobuf/blob/master/src/README.md))
+- Install protoc building it from source : [protobuf v2.6.1](https://github.com/google/protobuf/blob/master/src/README.md). You can use `sudo apt-get install protobuf-compiler` if you're sure it won't install version 3.x.x (incompatible).
 - Build protobufs
 
 ```
@@ -38,6 +41,7 @@ git submodule init
 git submodule update
 ./setup.py build_pbf
 ```
+
 
 #### Create the database
 ```
