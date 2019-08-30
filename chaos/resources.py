@@ -1108,7 +1108,8 @@ class DisruptionsSearch(flask_restful.Resource):
                     'tags' : [],
                     'impacts' : [],
                     'properties' : [],
-                    'localizations' : []
+                    'localizations' : [],
+                    'author': r.author
                 }
                 disruptions[disruptionId] = disruption
 

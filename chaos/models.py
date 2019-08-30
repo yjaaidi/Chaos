@@ -460,6 +460,7 @@ class Disruption(TimestampMixin, db.Model):
         back_populates='disruption',
         cascade='delete'
     )
+    author = db.Column(db.Text, unique=False, nullable=True)
 
     def __repr__(self):
         return '<Disruption %r>' % self.id
@@ -1017,7 +1018,7 @@ class Disruption(TimestampMixin, db.Model):
 
         query_parts['select_columns'] = [
                 'd.id', 'd.reference', 'd.note', 'd.status', 'd.version', 'd.created_at', 'd.updated_at',
-                'd.start_publication_date', 'd.end_publication_date',
+                'd.start_publication_date', 'd.end_publication_date, d.author,',
                 'i.id AS impact_id', 'i.created_at AS impact_created_at', 'i.updated_at AS impact_updated_at',
                 'i.send_notifications AS impact_send_notifications', 'i.notification_date AS impact_notification_date',
                 'c.id AS cause_id', 'c.created_at AS cause_created_at', 'c.updated_at AS cause_updated_at',
@@ -1066,7 +1067,7 @@ class Disruption(TimestampMixin, db.Model):
         query_parts = {}
         query_parts['select_columns'] = [
             'd.id', 'd.reference', 'd.note', 'd.status', 'd.version', 'd.created_at', 'd.updated_at',
-            'd.start_publication_date', 'd.end_publication_date',
+            'd.start_publication_date', 'd.end_publication_date, d.author,',
             'i.id AS impact_id', 'i.created_at AS impact_created_at', 'i.updated_at AS impact_updated_at',
             'i.send_notifications AS impact_send_notifications', 'i.notification_date AS impact_notification_date',
             'c.id AS cause_id', 'c.created_at AS cause_created_at', 'c.updated_at AS cause_updated_at',
@@ -1112,8 +1113,8 @@ class Disruption(TimestampMixin, db.Model):
     def __get_history_join_tables(cls):
         join_tables = []
         join_tables.append('(SELECT * FROM (' \
-                           ' SELECT created_at, updated_at,id,reference,note,start_publication_date,end_publication_date,version,client_id , contributor_id,cause_id,status::text from public.disruption where public.disruption.id = :disruption_id UNION' \
-                           ' SELECT created_at, updated_at,disruption_id as id,reference,note,start_publication_date,end_publication_date,version,client_id , contributor_id,cause_id,status from history.disruption where history.disruption.disruption_id = :disruption_id'\
+                           ' SELECT created_at, updated_at,id,reference,note,start_publication_date,end_publication_date,version,client_id,contributor_id,cause_id,status::text,author FROM public.disruption WHERE public.disruption.id = :disruption_id UNION' \
+                           ' SELECT created_at, updated_at,disruption_id as id,reference,note,start_publication_date,end_publication_date,version,client_id,contributor_id,cause_id,status,author FROM history.disruption WHERE history.disruption.disruption_id = :disruption_id'\
                            ') AS disruption_union ORDER BY version, updated_at) AS d')
         join_tables.append('LEFT JOIN impact i ON (i.disruption_id = d.id)')
         join_tables.append('LEFT JOIN cause c ON (d.cause_id = c.id)')
@@ -1723,7 +1724,7 @@ class Impact(TimestampMixin, db.Model):
 
         query_parts['select_columns'] = [
                 'd.id', 'd.reference', 'd.note', 'd.status', 'd.version', 'd.created_at', 'd.updated_at',
-                'd.start_publication_date', 'd.end_publication_date',
+                'd.start_publication_date', 'd.end_publication_date, d.author',
                 'i.id AS impact_id', 'i.created_at AS impact_created_at', 'i.updated_at AS impact_updated_at',
                 'i.send_notifications AS impact_send_notifications', 'i.notification_date AS impact_notification_date',
                 'c.id AS cause_id', 'c.created_at AS cause_created_at', 'c.updated_at AS cause_updated_at',
