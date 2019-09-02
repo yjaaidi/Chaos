@@ -58,7 +58,7 @@ def create_disruption_from_json(json):
     disruption.tags = create_tags_from_json(json['tags'])
     disruption.properties = create_properties_from_json(json['properties'], json['id'])
     disruption.impacts = create_impacts_from_json(json['impacts'], json['id'])
-    disruption.author = json['author']
+    disruption.author = get_athor_from_json(json)
 
     return disruption
 
@@ -66,6 +66,8 @@ def create_disruption_from_json(json):
 def get_datetime_from_json_attr(json, attr):
     return parse_datetime(json[attr]).replace(tzinfo=None) if attr in json and json[attr] else None
 
+def get_athor_from_json(json):
+    return json['author'] if 'author' in json else None
 
 def create_contributor_from_json(contributor_code):
     contributor = models.Contributor()
