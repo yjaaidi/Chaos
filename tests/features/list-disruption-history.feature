@@ -4,6 +4,7 @@ Feature: disruption history
         I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         I fill in header "X-Coverage" with "jdr"
         I fill in header "X-Contributors" with "contrib1"
+
     Scenario: List of an updated disruption
         Given I have the following clients in my database:
             | client_code   | created_at          | updated_at          | id                                   |
@@ -219,52 +220,52 @@ Feature: disruption history
         And the field "disruptions.0.impacts.impacts.0.objects.0.line_section.line.id" should be "line:DUA:800804081"
         And the field "disruptions.0.impacts.impacts.0.objects.0.line_section.line.name" should be "Creil - Corbeil Essonnes / Melun / Malesherbes"
 
-Scenario: Test disruptions history when impact is on line section (type route_point)
-    Given I have the following clients in my database:
-        | client_code   | created_at          | updated_at          | id                                   |
-        | 5             | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
-    Given I have the following contributors in my database:
-        | contributor_code   | created_at          | updated_at          | id                                   |
-        | contrib1           | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
-    Given I have the following history_disruption in my database:
-    | id                                    |disruption_id                         | created_at          |  data                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
-    | 8ffab555-3d48-4eea-aa2c-22f8680230b6  | a750994c-01fe-11e4-b4fb-080027079ff3 | 2019-05-30T23:52:12 | {"status":"published","created_at":"2019-05-31T09:21:25Z","impacts":[{"created_at":"2019-05-31T09:21:25Z","updated_at":null,"disruption":{},"objects":[{"line_section":{"end_point":{"type":"stop_area","id":"stop_area:DUA:SA:8775860","name":"PARIS GARE DE LYON"},"line":{"type":"line","id":"line:DUA:800804081","name":"Creil - Corbeil Essonnes / Melun / Malesherbes"},"routes":[{"type":"route","id":"route:DUA:10011000100010","name":"Melun"}],"start_point":{"type":"stop_area","id":"stop_area:DUA:SA:8775860","name":"PARIS GARE DE LYON"}},"type":"line_section","id":"line:DUA:800804081:76acb752-8385-11e9-ac12-185e0fa9992b"}],"id":"76acb7f5-8385-11e9-ac12-185e0fa9992b","severity":{"color":"#FF4455","created_at":"2016-05-31T09:13:36Z","effect":"significant_delays","updated_at":null,"priority":2,"wordings":[{"value":"ralenti","key":"short"},{"value":"20 à 30 minutes supplémentaires de trajet","key":"long"},{"value":"20 à 30 min de trajet en plus","key":"medium"}],"id":"f4b1eba4-270f-11e6-83cb-005056a47b86","wording":"20 à 30 minutes supplémentaires de trajet"},"messages":[],"send_notifications":true,"notification_date":"2019-05-31T09:21:25Z","application_period_patterns":[],"application_periods":[{"begin":"2019-05-31T09:20:00Z","end":"2019-05-31T11:20:00Z"}]}],"reference":"realtime_root-20190531112012","publication_status":"ongoing","publication_period":{"begin":"2019-05-31T09:20:00Z","end":"2019-05-31T11:20:00Z"},"localization":[],"updated_at":null,"properties":{},"note":null,"version":1,"contributor":"shortterm.tr_transilien","cause":{"category":{"updated_at":"2016-05-31T09:13:36Z","created_at":"2015-02-05T14:22:56Z","id":"7a8160fa-ad42-11e4-adc9-005056a47b86","name":"Trafic inopiné"},"updated_at":null,"id":"f4fb6568-270f-11e6-81b3-005056a44da2","wordings":[{"value":"accident de personne","key":"external_long"},{"value":"accident de personne","key":"external_short"},{"value":"accident de personne","key":"internal"},{"value":"S I accident de personne","key":"external_medium"}],"created_at":"2016-05-31T09:13:36Z"},"id":"76acb7f4-8385-11e9-ac12-185e0fa9992b","tags":[]} |
-    When I get "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/history"
-    Then the status code should be "200"
-    And the header "Content-Type" should be "application/json"
-    And the field "disruptions" should have a size of 1
-    And the field "disruptions.0.impacts.impacts.0.objects" should have a size of 1
-    And the field "disruptions.0.impacts.impacts.0.objects.0" should have a size of 3
-    And the field "disruptions.0.impacts.impacts.0.objects.0.type" should be "line_section"
-    And the field "disruptions.0.impacts.impacts.0.objects.0.id" should be "line:DUA:800804081:76acb752-8385-11e9-ac12-185e0fa9992b"
-    And the field "disruptions.0.impacts.impacts.0.objects.0.line_section" should have a size of 4
-    And the field "disruptions.0.impacts.impacts.0.objects.0.line_section.end_point" should have a size of 3
-    And the field "disruptions.0.impacts.impacts.0.objects.0.line_section.end_point.type" should be "stop_area"
-    And the field "disruptions.0.impacts.impacts.0.objects.0.line_section.end_point.id" should be "stop_area:DUA:SA:8775860"
-    And the field "disruptions.0.impacts.impacts.0.objects.0.line_section.end_point.name" should be "PARIS GARE DE LYON"
+    Scenario: Test disruptions history when impact is on line section (type route_point)
+        Given I have the following clients in my database:
+            | client_code   | created_at          | updated_at          | id                                   |
+            | 5             | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
+        Given I have the following contributors in my database:
+            | contributor_code   | created_at          | updated_at          | id                                   |
+            | contrib1           | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
+        Given I have the following history_disruption in my database:
+        | id                                    |disruption_id                         | created_at          |  data                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+        | 8ffab555-3d48-4eea-aa2c-22f8680230b6  | a750994c-01fe-11e4-b4fb-080027079ff3 | 2019-05-30T23:52:12 | {"status":"published","created_at":"2019-05-31T09:21:25Z","impacts":[{"created_at":"2019-05-31T09:21:25Z","updated_at":null,"disruption":{},"objects":[{"line_section":{"end_point":{"type":"stop_area","id":"stop_area:DUA:SA:8775860","name":"PARIS GARE DE LYON"},"line":{"type":"line","id":"line:DUA:800804081","name":"Creil - Corbeil Essonnes / Melun / Malesherbes"},"routes":[{"type":"route","id":"route:DUA:10011000100010","name":"Melun"}],"start_point":{"type":"stop_area","id":"stop_area:DUA:SA:8775860","name":"PARIS GARE DE LYON"}},"type":"line_section","id":"line:DUA:800804081:76acb752-8385-11e9-ac12-185e0fa9992b"}],"id":"76acb7f5-8385-11e9-ac12-185e0fa9992b","severity":{"color":"#FF4455","created_at":"2016-05-31T09:13:36Z","effect":"significant_delays","updated_at":null,"priority":2,"wordings":[{"value":"ralenti","key":"short"},{"value":"20 à 30 minutes supplémentaires de trajet","key":"long"},{"value":"20 à 30 min de trajet en plus","key":"medium"}],"id":"f4b1eba4-270f-11e6-83cb-005056a47b86","wording":"20 à 30 minutes supplémentaires de trajet"},"messages":[],"send_notifications":true,"notification_date":"2019-05-31T09:21:25Z","application_period_patterns":[],"application_periods":[{"begin":"2019-05-31T09:20:00Z","end":"2019-05-31T11:20:00Z"}]}],"reference":"realtime_root-20190531112012","publication_status":"ongoing","publication_period":{"begin":"2019-05-31T09:20:00Z","end":"2019-05-31T11:20:00Z"},"localization":[],"updated_at":null,"properties":{},"note":null,"version":1,"contributor":"shortterm.tr_transilien","cause":{"category":{"updated_at":"2016-05-31T09:13:36Z","created_at":"2015-02-05T14:22:56Z","id":"7a8160fa-ad42-11e4-adc9-005056a47b86","name":"Trafic inopiné"},"updated_at":null,"id":"f4fb6568-270f-11e6-81b3-005056a44da2","wordings":[{"value":"accident de personne","key":"external_long"},{"value":"accident de personne","key":"external_short"},{"value":"accident de personne","key":"internal"},{"value":"S I accident de personne","key":"external_medium"}],"created_at":"2016-05-31T09:13:36Z"},"id":"76acb7f4-8385-11e9-ac12-185e0fa9992b","tags":[]} |
+        When I get "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/history"
+        Then the status code should be "200"
+        And the header "Content-Type" should be "application/json"
+        And the field "disruptions" should have a size of 1
+        And the field "disruptions.0.impacts.impacts.0.objects" should have a size of 1
+        And the field "disruptions.0.impacts.impacts.0.objects.0" should have a size of 3
+        And the field "disruptions.0.impacts.impacts.0.objects.0.type" should be "line_section"
+        And the field "disruptions.0.impacts.impacts.0.objects.0.id" should be "line:DUA:800804081:76acb752-8385-11e9-ac12-185e0fa9992b"
+        And the field "disruptions.0.impacts.impacts.0.objects.0.line_section" should have a size of 4
+        And the field "disruptions.0.impacts.impacts.0.objects.0.line_section.end_point" should have a size of 3
+        And the field "disruptions.0.impacts.impacts.0.objects.0.line_section.end_point.type" should be "stop_area"
+        And the field "disruptions.0.impacts.impacts.0.objects.0.line_section.end_point.id" should be "stop_area:DUA:SA:8775860"
+        And the field "disruptions.0.impacts.impacts.0.objects.0.line_section.end_point.name" should be "PARIS GARE DE LYON"
 
-    And the field "disruptions.0.impacts.impacts.0.objects.0.line_section.start_point.type" should be "stop_area"
-    And the field "disruptions.0.impacts.impacts.0.objects.0.line_section.start_point.id" should be "stop_area:DUA:SA:8775860"
-    And the field "disruptions.0.impacts.impacts.0.objects.0.line_section.start_point.name" should be "PARIS GARE DE LYON"
+        And the field "disruptions.0.impacts.impacts.0.objects.0.line_section.start_point.type" should be "stop_area"
+        And the field "disruptions.0.impacts.impacts.0.objects.0.line_section.start_point.id" should be "stop_area:DUA:SA:8775860"
+        And the field "disruptions.0.impacts.impacts.0.objects.0.line_section.start_point.name" should be "PARIS GARE DE LYON"
 
-    And the field "disruptions.0.impacts.impacts.0.objects.0.line_section.line.type" should be "line"
-    And the field "disruptions.0.impacts.impacts.0.objects.0.line_section.line.id" should be "line:DUA:800804081"
-    And the field "disruptions.0.impacts.impacts.0.objects.0.line_section.line.name" should be "Creil - Corbeil Essonnes / Melun / Malesherbes"
+        And the field "disruptions.0.impacts.impacts.0.objects.0.line_section.line.type" should be "line"
+        And the field "disruptions.0.impacts.impacts.0.objects.0.line_section.line.id" should be "line:DUA:800804081"
+        And the field "disruptions.0.impacts.impacts.0.objects.0.line_section.line.name" should be "Creil - Corbeil Essonnes / Melun / Malesherbes"
 
-    And the field "disruptions.0.impacts.impacts.0.objects.0.line_section.routes" should have a size of 1
-    And the field "disruptions.0.impacts.impacts.0.objects.0.line_section.routes.0.type" should be "route"
-    And the field "disruptions.0.impacts.impacts.0.objects.0.line_section.routes.0.id" should be "route:DUA:10011000100010"
-    And the field "disruptions.0.impacts.impacts.0.objects.0.line_section.routes.0.name" should be "Melun"
+        And the field "disruptions.0.impacts.impacts.0.objects.0.line_section.routes" should have a size of 1
+        And the field "disruptions.0.impacts.impacts.0.objects.0.line_section.routes.0.type" should be "route"
+        And the field "disruptions.0.impacts.impacts.0.objects.0.line_section.routes.0.id" should be "route:DUA:10011000100010"
+        And the field "disruptions.0.impacts.impacts.0.objects.0.line_section.routes.0.name" should be "Melun"
 
-Scenario: Test disruptions history with invalid UUID
-    Given I have the following clients in my database:
-        | client_code   | created_at          | updated_at          | id                                   |
-        | 5             | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
-    Given I have the following contributors in my database:
-        | contributor_code   | created_at          | updated_at          | id                                   |
-        | contrib1           | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
-    When I get "/disruptions/invalidUUID/history"
-    Then the status code should be "400"
-    And the header "Content-Type" should be "application/json"
-    And the field "error" should have a size of 1
-    And the field "error.message" should be "id invalid"
+    Scenario: Test disruptions history with invalid UUID
+        Given I have the following clients in my database:
+            | client_code   | created_at          | updated_at          | id                                   |
+            | 5             | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
+        Given I have the following contributors in my database:
+            | contributor_code   | created_at          | updated_at          | id                                   |
+            | contrib1           | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
+        When I get "/disruptions/invalidUUID/history"
+        Then the status code should be "400"
+        And the header "Content-Type" should be "application/json"
+        And the field "error" should have a size of 1
+        And the field "error.message" should be "id invalid"

@@ -118,7 +118,8 @@ disruption_mapping = {
         'begin': Datetime(attribute='start_publication_date'),
         'end': Datetime(attribute='end_publication_date')
     },
-    'cause': {'id': AliasText(attribute='cause_id')}
+    'cause': {'id': AliasText(attribute='cause_id')},
+    'author': None
 }
 
 severity_mapping = {

@@ -392,7 +392,8 @@ disruptions_input_format = {
         'properties': {
             'type': 'array',
             'items': associate_disruption_property_input_format
-        }
+        },
+        'author': {'type': ['string', 'null']},
     },
     'required': ['reference', 'cause', 'contributor', 'impacts', 'publication_period']
 }
