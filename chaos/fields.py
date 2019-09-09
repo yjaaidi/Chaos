@@ -753,7 +753,8 @@ disruption_fields = {
     'localization': FieldLocalization(attribute='localizations'),
     'cause': fields.Nested(cause_fields, allow_null=True),
     'tags': fields.List(fields.Nested(tag_fields)),
-    'properties': FieldAssociatedProperties(attribute='properties')
+    'properties': FieldAssociatedProperties(attribute='properties'),
+    'author': fields.Raw
 }
 
 disruptions_fields = {

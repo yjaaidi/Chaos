@@ -1893,6 +1893,8 @@
         contributor:
           type: string
           description: Contributor code
+        author:
+          $ref: "#/definitions/author"
         created_at:
           type: string
           pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
@@ -2012,6 +2014,8 @@
         contributor:
           type: string
           description: Contributor code (same as header X-Contributors)
+        author:
+          $ref: "#/definitions/author"
         status:
           type: string
           enum:
@@ -3073,6 +3077,8 @@
         contributor:
           type: string
           description: Contributor code
+        author:
+          $ref: "#/definitions/author"
         created_at:
           type: string
           pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
@@ -3177,3 +3183,6 @@
         version:
           type: integer
           description: Number of how many time this disruption has been changed
+    author:
+      type: string
+      description: ID of disruption creator or editor
