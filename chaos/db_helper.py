@@ -160,8 +160,8 @@ def fill_and_add_line_section(navitia, impact_id, all_objects, pt_object_json):
     except exceptions.ObjectUnknown:
         raise exceptions.ObjectUnknown(
             '{} {} doesn\'t exist'.format(
-                line_section_json['line']['type'],
-                line_section_json['line']['id']))
+                line_section_json['start_point']['type'],
+                line_section_json['start_point']['id']))
     line_section.start_point = start_object
 
     try:
@@ -169,8 +169,8 @@ def fill_and_add_line_section(navitia, impact_id, all_objects, pt_object_json):
     except exceptions.ObjectUnknown:
         raise exceptions.ObjectUnknown(
             '{} {} doesn\'t exist'.format(
-                line_section_json['line']['type'],
-                line_section_json['line']['id']))
+                line_section_json['end_point']['type'],
+                line_section_json['end_point']['id']))
     line_section.end_point = end_object
 
     # Here we manage routes in line_section
