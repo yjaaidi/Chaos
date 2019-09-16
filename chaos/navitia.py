@@ -81,8 +81,8 @@ class Navitia(object):
             raise exceptions.NavitiaError('call to navitia failed, data : {}'.format(query))
 
     def get_pt_object(self, uri, object_type, pt_objects=None):
-        cache_key = 'Chaos.get_pt_object.{}.{}.{}.{}.{}'.format(self.coverage, self.get_coverage_publication_date(),
-                                                                uri, object_type, pt_objects)
+        cache_key = 'Chaos.get_pt_object.{}.{}.{}.{}.{}.{}'.format(self.coverage, self.get_coverage_publication_date(),
+                                                                self.token, uri, object_type, pt_objects)
         try:
             cached_pt_object = cache.get(cache_key)
         except:
