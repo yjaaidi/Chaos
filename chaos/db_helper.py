@@ -41,15 +41,15 @@ def fill_and_get_pt_object(navitia, all_objects, json, add_to_db=True):
 
     if json["id"] in all_objects:
         return all_objects[json["id"]]
+    
+    if not navitia.get_pt_object(json['id'], json['type']):
+        raise exceptions.ObjectUnknown()
 
     pt_object = models.PTobject.get_pt_object_by_uri(json["id"])
 
     if pt_object:
         all_objects[json["id"]] = pt_object
         return pt_object
-
-    if not navitia.get_pt_object(json['id'], json['type']):
-        raise exceptions.ObjectUnknown()
 
     pt_object = models.PTobject()
     mapper.fill_from_json(pt_object, json, mapper.object_mapping)
