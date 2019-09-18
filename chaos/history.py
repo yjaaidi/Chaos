@@ -2,7 +2,7 @@ import json
 
 from flask_restful import marshal
 from flask import g
-from fields import disruption_fields
+from chaos.fields import disruption_fields
 from aniso8601 import parse_datetime, parse_time, parse_date
 from chaos import db, models, mapper
 

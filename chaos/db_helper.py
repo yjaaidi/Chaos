@@ -28,7 +28,7 @@
 # www.navitia.io
 
 from chaos import models, exceptions, mapper, db
-from utils import get_application_periods
+from chaos.utils import get_application_periods
 
 
 def fill_and_get_pt_object(navitia, all_objects, json, add_to_db=True):

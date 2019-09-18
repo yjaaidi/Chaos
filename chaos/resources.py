@@ -34,26 +34,21 @@ import flask_restful
 from flask_restful import marshal, reqparse, types
 from chaos import models, db, publisher
 from jsonschema import validate, ValidationError
-from flask.ext.restful import abort
-from fields import *
-from formats import *
-from formats import impact_input_format, channel_input_format, pt_object_type_values,\
-    tag_input_format, category_input_format, channel_type_values,\
-    property_input_format, disruptions_search_input_format, application_status_values, \
-    impacts_search_input_format, export_input_format
+from chaos.fields import *
+from chaos.formats import *
 from chaos import mapper, exceptions
 from chaos import utils, db_helper
 import chaos
 import json
 from sqlalchemy.exc import IntegrityError
 import logging
-from utils import make_pager, option_value, get_current_time, add_notification_date_on_impacts
+from chaos.utils import make_pager, option_value, get_current_time, add_notification_date_on_impacts
 from chaos.validate_params import validate_client, validate_contributor, validate_navitia, \
     manage_navitia_error, validate_id, validate_client_token, \
     validate_send_notifications_and_notification_date, validate_pagination
 from collections import OrderedDict
 from aniso8601 import parse_datetime
-from history import save_disruption_in_history, create_disruption_from_json
+from chaos.history import save_disruption_in_history, create_disruption_from_json
 
 __all__ = ['Disruptions', 'Index', 'Severity', 'Cause']
 

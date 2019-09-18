@@ -29,12 +29,12 @@
 
 from functools import wraps
 from chaos.navitia import Navitia
-from utils import get_client_code, get_contributor_code, get_token, get_coverage, get_clients_tokens, client_token_is_allowed
+from chaos.utils import get_client_code, get_contributor_code, get_token, get_coverage, get_clients_tokens, client_token_is_allowed
 from chaos import exceptions, models, utils, fields
 from flask_restful import marshal
-from flask.ext.restful import abort
+from flask_restful import abort
 from flask import request, current_app
-from formats import id_format
+from chaos.formats import id_format
 from os import path
 
 
