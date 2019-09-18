@@ -8,6 +8,7 @@ Click==7.0
 Flask==1.1.1
 Flask-Caching==1.7.2
 Flask-Migrate==2.5.2
+git+https://github.com/CanalTP/flask-restful.git@python3.7
 Flask-RESTful==0.3.7
 Flask-Script==2.0.6
 Flask-SQLAlchemy==2.4.0
