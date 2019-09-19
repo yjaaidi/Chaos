@@ -27,7 +27,7 @@
 # https://groups.google.com/d/forum/navitia
 # www.navitia.io
 
-from chaos import chaos_pb2, gtfs_realtime_pb2
+import chaos_pb2, gtfs_realtime_pb2
 import datetime
 
 
