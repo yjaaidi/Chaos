@@ -330,13 +330,13 @@ def group_impacts_by_pt_object(impacts, object_type, uris, get_pt_object):
                     }
                     dictionary[pt_object.uri] = resp
                 resp['impacts'].append(impact)
-    result = dictionary.values()
+
+    result = list(dictionary.values())
     result.sort(key=lambda x: x['name'])
     return result
 
 
 def parse_error(error):
-    to_return = None
     try:
         if (isinstance(error, ValidationError) and error.validator ==
                 'minItems' and error.validator_value == 1):
@@ -346,7 +346,7 @@ def parse_error(error):
             to_return = error.message
     except AttributeError:
         to_return = str(error).replace("\n", " ")
-    return to_return.decode('utf-8')
+    return to_return
 
 
 def get_uuid(value, name):
