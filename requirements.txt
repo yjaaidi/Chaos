@@ -17,6 +17,7 @@ fuzzywuzzy==0.17.0
 gevent==1.4.0
 greenlet==0.4.15
 honcho==1.0.1
+httmock==1.3.0
 idna==2.8
 importlib-metadata==0.23
 itsdangerous==1.1.0
