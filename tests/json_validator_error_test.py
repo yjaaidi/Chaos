@@ -1,9 +1,9 @@
 from nose.tools import *
 from chaos.utils import parse_error
-from jsonschema import validate, ValidationError
+from jsonschema import validate
+from jsonschema.exceptions import ValidationError
 from chaos.formats import impact_input_format, channel_input_format, severity_input_format,\
-    cause_input_format, disruptions_input_format, tag_input_format, pt_object_type_values,\
-    pattern_input_format, channel_type_input_format, channel_type_values
+    disruptions_input_format, tag_input_format, pt_object_type_values, pattern_input_format
 
 
 def test_wording_is_required_in_severity():
