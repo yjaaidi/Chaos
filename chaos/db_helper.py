@@ -41,15 +41,15 @@ def fill_and_get_pt_object(navitia, all_objects, json, add_to_db=True):
 
     if json["id"] in all_objects:
         return all_objects[json["id"]]
+    
+    if not navitia.get_pt_object(json['id'], json['type']):
+        raise exceptions.ObjectUnknown()
 
     pt_object = models.PTobject.get_pt_object_by_uri(json["id"])
 
     if pt_object:
         all_objects[json["id"]] = pt_object
         return pt_object
-
-    if not navitia.get_pt_object(json['id'], json['type']):
-        raise exceptions.ObjectUnknown()
 
     pt_object = models.PTobject()
     mapper.fill_from_json(pt_object, json, mapper.object_mapping)
@@ -160,8 +160,8 @@ def fill_and_add_line_section(navitia, impact_id, all_objects, pt_object_json):
     except exceptions.ObjectUnknown:
         raise exceptions.ObjectUnknown(
             '{} {} doesn\'t exist'.format(
-                line_section_json['line']['type'],
-                line_section_json['line']['id']))
+                line_section_json['start_point']['type'],
+                line_section_json['start_point']['id']))
     line_section.start_point = start_object
 
     try:
@@ -169,8 +169,8 @@ def fill_and_add_line_section(navitia, impact_id, all_objects, pt_object_json):
     except exceptions.ObjectUnknown:
         raise exceptions.ObjectUnknown(
             '{} {} doesn\'t exist'.format(
-                line_section_json['line']['type'],
-                line_section_json['line']['id']))
+                line_section_json['end_point']['type'],
+                line_section_json['end_point']['id']))
     line_section.end_point = end_object
 
     # Here we manage routes in line_section
