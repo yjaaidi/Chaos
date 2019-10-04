@@ -29,6 +29,10 @@
 
 VERSION = 'v1.2.20-dev'
 
+# http://bugs.python.org/issue7980
+import datetime
+datetime.datetime.strptime('', '')
+
 # remplace blocking method by a non blocking equivalent
 # this enable us to use gevent for launching background task
 from gevent import monkey
