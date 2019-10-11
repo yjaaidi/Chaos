@@ -330,13 +330,13 @@ def group_impacts_by_pt_object(impacts, object_type, uris, get_pt_object):
                     }
                     dictionary[pt_object.uri] = resp
                 resp['impacts'].append(impact)
-    result = dictionary.values()
+
+    result = list(dictionary.values())
     result.sort(key=lambda x: x['name'])
     return result
 
 
 def parse_error(error):
-    to_return = None
     try:
         if (isinstance(error, ValidationError) and error.validator ==
                 'minItems' and error.validator_value == 1):
@@ -346,7 +346,7 @@ def parse_error(error):
             to_return = error.message
     except AttributeError:
         to_return = str(error).replace("\n", " ")
-    return to_return.decode('utf-8')
+    return to_return
 
 
 def get_uuid(value, name):
@@ -669,7 +669,7 @@ def client_token_is_allowed(clients_tokens, client_code, token):
     """
 
     # If the configuration doesn't exist, allow the action (backward compatibility)
-    if clients_tokens is None or (clients_tokens.has_key('master') is True and token in clients_tokens.get('master')):
+    if clients_tokens is None or ('master' in clients_tokens and token in clients_tokens.get('master')):
         return True
 
     client_tokens = clients_tokens.get(client_code)
@@ -917,6 +917,12 @@ def sanitize_csv_data(val):
     :param val: mixed
     :return: mixed
     """
+    # basestring is not available in Python 3
+    try:
+        basestring
+    except NameError:
+        basestring = str
+
     if isinstance(val, basestring):
         val = val.replace('\n', ' ').replace('\r', '')
 

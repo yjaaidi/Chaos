@@ -59,14 +59,23 @@ associations = {
     'associate_message_meta': associate_message_meta
 }
 
+def isbyte(value):
+    value_set = set(str(value))
+    if value_set == {'0', '1'} or value_set == {'0'} or value_set == {'1'}:
+        return True
+    return False
 
 def pythonify(value):
+    if isbyte(value):
+        return value
     if value.isdigit():
         return int(value)
     if value == 'False':
         return False
     if value == 'True':
         return True
+    if value == 'None':
+        return None
     return value
 
 def date_is_valid(field):
@@ -85,6 +94,8 @@ def find_field(json, fields):
     field_found = True
     for field in separated_fields:
         try:
+            if str(field).isdigit():
+                field = int(field)
             current_node = current_node[field]
         except KeyError:
             field_found = False
@@ -106,6 +117,11 @@ def when_i_post_to(step, method, url):
         headers = world.headers
     else:
         headers = {'content-type': 'application/json'}
+
+    if method.upper() == 'POST' or method.upper() == 'PUT':
+        headers['content-type'] = 'application/json'
+    else:
+        headers.pop("content-type", None)
     world.response = world.client.open(path=url, method=method, data=data, headers=headers)
 
 
@@ -191,7 +207,7 @@ def and_in_the_database_the_severity_group1_the_field_group2_should_be_group3(st
     #Context to allow Flask to manage sqlalchemy session
     with chaos.app.app_context():
         row = model_classes[cls].query.filter_by(id=id).first()
-        eq_(getattr(row, field), pythonify(value))
+        eq_(str(getattr(row, field)), str(value))
 
 
 @step(u'Given I have the following (\w+) in my database:')
@@ -200,10 +216,8 @@ def given_i_have_the_following_causes_in_my_database(step, cls):
     with chaos.app.app_context():
         for values_dict in step.hashes:
             row = model_classes[cls]()
-            for key, value in values_dict.iteritems():
-                if value == 'None':
-                    value = None
-                setattr(row, key, value)
+            for key, value in values_dict.items():
+                setattr(row, key, pythonify(value))
             db.session.add(row)
         db.session.commit()
 
@@ -212,7 +226,7 @@ def given_i_have_the_relation_in_my_database(step, cls):
     for values_dict in step.hashes:
         keys = []
         values = []
-        for key, value in values_dict.iteritems():
+        for key, value in values_dict.items():
             keys.append(key)
             values.append("'{}'".format(value))
         db.session.execute("INSERT INTO {} ({}) VALUES ({})".format(associations[cls], ','.join(keys), ','.join(values)))

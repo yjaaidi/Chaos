@@ -260,7 +260,7 @@ Feature: Create disruption
         And the field "disruption.localization" should exist
         And the field "disruption.localization.0.id" should be "stop_area:JDR:SA:CHVIN"
         And the field "disruption.localization.0.type" should be "stop_area"
-        And the field "disruption.version" should be "1"
+        And the field "disruption.version" should be 1
 
     Scenario: We cannot create a disruption with localization not in navitia
 
@@ -446,7 +446,7 @@ Feature: Create disruption
         """
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
-        And the field "error.message" should be "u'42' is not one of ['published', 'draft']"
+        And the field "error.message" should be "'42' is not one of ['published', 'draft']"
 
     Scenario: Error when creating disruption without impact
 
