@@ -2250,6 +2250,25 @@ class Export(TimestampMixin, db.Model):
 
         return db.engine.execute(stmt, vars)
 
+    @classmethod
+    def get_client_channels(cls, client_id):
+        query = 'SELECT' \
+                ' c.id' \
+                ', c.name AS channel_name' \
+                ', ct.name AS channel_type' \
+                ' FROM ' \
+                ' channel as c' \
+                ' LEFT JOIN channel_type as ct ON (ct.channel_id = c.id)' \
+                ' WHERE' \
+                ' c.client_id = :client_id'
+
+        stmt = text(query)
+        stmt = stmt.bindparams(bindparam('client_id', type_=db.String))
+        vars = {}
+        vars['client_id'] = client_id
+
+        return db.engine.execute(stmt, vars)
+
 class HistoryDisruption(db.Model):
     __tablename__ = 'disruption'
     __table_args__ = {"schema": "history"}

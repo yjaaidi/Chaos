@@ -127,6 +127,8 @@ class impactsExporter:
             sys.exit(1)
 
     def format_impacts(self, impacts):
+        channels = Export.get_client_channels(self.client.id)
+        #to be continue
 
         navitia = Navitia(self.navitia_url, self.coverage, self.token)
 
