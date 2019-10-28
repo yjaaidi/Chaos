@@ -72,6 +72,12 @@ class impactsExporter:
     def get_client_impacts_between_application_dates(self, client_id, start_date, end_date):
         return Export.get_client_impacts_between_application_dates(client_id, start_date, end_date)
 
+    def get_client_channels(self, client_id):
+        return Export.get_client_channels(client_id)
+
+    def get_channel_message(self, channel_id, impact_id):
+        return Export.get_channel_message(channel_id, impact_id)
+
     def generate_file_path(self, item):
         datePattern = '%Y_%m_%d'
 
@@ -112,7 +118,7 @@ class impactsExporter:
             item = self.get_oldest_waiting_export(self.client.id)
             self.update_export_status(item, 'handling')
             impacts = self.get_client_impacts_between_application_dates(item.client_id, item.start_date, item.end_date)
-            formated_impacts = self.format_impacts(impacts)
+            formated_impacts = self.format_impacts(item.client_id, impacts)
             filePath = self.generate_file_path(item)
             self.create_csv(filePath, formated_impacts['columns'], formated_impacts['rows'])
             self.mark_export_as_done(item, filePath)
@@ -126,28 +132,31 @@ class impactsExporter:
             self.logger.debug(e)
             sys.exit(1)
 
-    def format_impacts(self, impacts):
-        channels = Export.get_client_channels(self.client.id)
-        #to be continue
-
+    def format_impacts(self, client_id, impacts):
         navitia = Navitia(self.navitia_url, self.coverage, self.token)
-
+        channels = self.get_client_channels(client_id)
         columns = impacts.keys()
+        channels_ids = {}
+        for channel in channels.fetchall():
+            columns.append(channel['channel_name'])
+            channels_ids[channel['channel_name']] = channel['id']
 
         rows = []
         for sub_dict in impacts.fetchall():
             row = []
             for column in columns:
-                val = sub_dict[column]
-                if column == 'pt_object_name' :
-                    val = navitia.find_tc_object_name(sub_dict['pt_object_uri'], sub_dict['pt_object_type'])
-                elif column == 'periodicity':
-                    val = 'yes' if val else 'no'
-                elif column == 'status' and val == 'archived':
-                    val = 'deleted'
-                elif isinstance(val, datetime.date):
-                    val = utils.utc_to_local(val, self.time_zone)
-
+                if column in channels_ids:
+                    val = self.get_channel_message(str(channels_ids[column]), str(sub_dict['impact_id']))
+                else:
+                    val = sub_dict[column]
+                    if column == 'pt_object_name' :
+                        val = navitia.find_tc_object_name(sub_dict['pt_object_uri'], sub_dict['pt_object_type'])
+                    elif column == 'periodicity':
+                        val = 'yes' if val else 'no'
+                    elif column == 'status' and val == 'archived':
+                        val = 'deleted'
+                    elif isinstance(val, datetime.date):
+                        val = utils.utc_to_local(val, self.time_zone)
                 row.append(utils.sanitize_csv_data(val))
 
             rows.append(row)

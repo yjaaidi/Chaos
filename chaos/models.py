@@ -2198,6 +2198,7 @@ class Export(TimestampMixin, db.Model):
 
         query = 'SELECT DISTINCT' \
                 ' d.reference' \
+                ', i.id AS impact_id' \
                 ', tag.name AS tag_name' \
                 ', c.wording AS cause' \
                 ', d.start_publication_date AS publication_start_date' \
@@ -2206,11 +2207,7 @@ class Export(TimestampMixin, db.Model):
                 ', po.uri AS pt_object_uri' \
                 ', po.uri AS pt_object_name' \
                 ', s.wording AS severity' \
-                ', (CASE WHEN cht.name=\'title\' THEN m.text ELSE \'\' END) as impact_title' \
                 ', i.status' \
-                ', ch.name AS channel_name' \
-                ', cht.name AS channel_type_name' \
-                ', m.text AS channel_message' \
                 ', app.start_date AS application_start_date' \
                 ', app.end_date AS application_end_date' \
                 ', (CASE WHEN (SELECT COUNT(1) FROM application_periods app_period WHERE app_period.impact_id = i.id) > 1 THEN True ELSE False END) AS periodicity' \
@@ -2226,16 +2223,11 @@ class Export(TimestampMixin, db.Model):
                 ' LEFT JOIN associate_impact_pt_object aipto ON (i.id = aipto.impact_id)' \
                 ' LEFT JOIN pt_object po ON (aipto.pt_object_id = po.id)' \
                 ' LEFT JOIN severity s ON (i.severity_id = s.id)' \
-                ' LEFT JOIN channel ch ON (ch.client_id = :client_id)' \
-                ' LEFT JOIN channel_type cht ON (cht.channel_id = ch.id)' \
-                ' LEFT JOIN message m ON (i.id = m.impact_id and m.channel_id = ch.id) ' \
                 ' WHERE' \
                 ' d.client_id = :client_id' \
-                ' AND ch.client_id = :client_id'\
                 ' AND app.start_date >= :app_start_date' \
                 ' AND app.end_date <= :app_end_date' \
-                ' AND c.is_visible = :is_visible' \
-                ' AND ch.is_visible = :is_visible'
+                ' AND c.is_visible = :is_visible'
 
         stmt = text(query)
         stmt = stmt.bindparams(bindparam('client_id', type_=db.String))
@@ -2252,22 +2244,42 @@ class Export(TimestampMixin, db.Model):
 
     @classmethod
     def get_client_channels(cls, client_id):
-        query = 'SELECT' \
-                ' c.id' \
-                ', c.name AS channel_name' \
-                ', ct.name AS channel_type' \
-                ' FROM ' \
-                ' channel as c' \
-                ' LEFT JOIN channel_type as ct ON (ct.channel_id = c.id)' \
-                ' WHERE' \
-                ' c.client_id = :client_id'
+        query = 'SELECT ch.id,' \
+                '       ch.client_id,' \
+                '       CONCAT (ch.name,\' (\',array_to_string(array_agg(cht.name), \',\'),\')\') AS channel_name ' \
+                'FROM channel AS ch ' \
+                'LEFT JOIN channel_type AS cht ON (cht.channel_id = ch.id) ' \
+                'WHERE ch.client_id = :client_id' \
+                '  AND ch.is_visible = :is_visible ' \
+                'GROUP BY ch.id'
 
         stmt = text(query)
         stmt = stmt.bindparams(bindparam('client_id', type_=db.String))
         vars = {}
         vars['client_id'] = client_id
+        vars['is_visible'] = True
 
         return db.engine.execute(stmt, vars)
+
+    @classmethod
+    def get_channel_message(cls, channel_id, impact_id):
+        query = 'SELECT text ' \
+                'FROM message ' \
+                'WHERE impact_id = :impact_id ' \
+                'AND channel_id = :channel_id'
+
+        stmt = text(query)
+        stmt = stmt.bindparams(bindparam('impact_id', type_=db.String))
+        stmt = stmt.bindparams(bindparam('channel_id', type_=db.String))
+        vars = {}
+        vars['impact_id'] = impact_id
+        vars['channel_id'] = channel_id
+        result = db.engine.execute(stmt, vars).fetchone()
+        message = ''
+        if result:
+            return result['text']
+        return message
+
 
 class HistoryDisruption(db.Model):
     __tablename__ = 'disruption'
