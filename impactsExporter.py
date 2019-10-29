@@ -112,7 +112,7 @@ class impactsExporter:
             item = self.get_oldest_waiting_export(self.client.id)
             self.update_export_status(item, 'handling')
             impacts = self.get_client_impacts_between_application_dates(item.client_id, item.start_date, item.end_date)
-            formated_impacts = self.format_impacts(item.client_id, impacts)
+            formated_impacts = self.format_impacts(impacts)
             filePath = self.generate_file_path(item)
             self.create_csv(filePath, formated_impacts['columns'], formated_impacts['rows'])
             self.mark_export_as_done(item, filePath)
@@ -126,9 +126,12 @@ class impactsExporter:
             self.logger.debug(e)
             sys.exit(1)
 
-    def format_impacts(self, client_id, impacts):
+    def format_impacts(self, impacts):
+
         navitia = Navitia(self.navitia_url, self.coverage, self.token)
+
         columns = impacts.keys()
+
         rows = []
         for sub_dict in impacts.fetchall():
             row = []
@@ -142,6 +145,7 @@ class impactsExporter:
                     val = 'deleted'
                 elif isinstance(val, datetime.date):
                     val = utils.utc_to_local(val, self.time_zone)
+
                 row.append(utils.sanitize_csv_data(val))
 
             rows.append(row)
