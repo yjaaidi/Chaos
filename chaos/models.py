@@ -2272,26 +2272,6 @@ class Export(TimestampMixin, db.Model):
 
         return db.engine.execute(stmt, vars)
 
-    @classmethod
-    def get_channel_message(cls, channel_id, impact_id):
-        query = 'SELECT text ' \
-                'FROM message ' \
-                'WHERE impact_id = :impact_id ' \
-                'AND channel_id = :channel_id'
-
-        stmt = text(query)
-        stmt = stmt.bindparams(bindparam('impact_id', type_=db.String))
-        stmt = stmt.bindparams(bindparam('channel_id', type_=db.String))
-        vars = {}
-        vars['impact_id'] = impact_id
-        vars['channel_id'] = channel_id
-        result = db.engine.execute(stmt, vars).fetchone()
-        message = ''
-        if result:
-            return result['text']
-        return message
-
-
 class HistoryDisruption(db.Model):
     __tablename__ = 'disruption'
     __table_args__ = {"schema": "history"}
