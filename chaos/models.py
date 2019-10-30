@@ -2195,7 +2195,7 @@ class Export(TimestampMixin, db.Model):
 
     @classmethod
     def get_client_impacts_between_application_dates(cls, client_id, app_start_date, app_end_date):
-        channels = Export.get_client_channels(client_id)
+        channels = cls.get_client_channels(client_id)
         selectQuery = ''
         leftjoinQuery = ''
         i = 0
@@ -2203,9 +2203,11 @@ class Export(TimestampMixin, db.Model):
             selectQuery =  selectQuery + 'chmsg' + str(i) + '.text AS "' + channel['channel_name'] + '", '
             leftjoinQuery = (
                 leftjoinQuery + 
-                ' LEFT JOIN (' +
-                '    SELECT impact_id, text FROM message WHERE channel_id = \'' + channel['id'] +
-                '\') AS chmsg' + str(i) + ' ON (chmsg' + str(i) + '.impact_id = i.id) '
+                'LEFT JOIN (' +
+                '   SELECT impact_id, text' +
+                '   FROM message ' +
+                '   WHERE channel_id = \'' + channel['id'] + '\'' +
+                ') AS chmsg' + str(i) + ' ON (chmsg' + str(i) + '.impact_id = i.id) '
             )
             i += 1
 
