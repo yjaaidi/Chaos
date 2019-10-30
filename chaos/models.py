@@ -2263,11 +2263,12 @@ class Export(TimestampMixin, db.Model):
                 'FROM channel AS ch ' \
                 'LEFT JOIN channel_type AS cht ON (cht.channel_id = ch.id) ' \
                 'WHERE ch.client_id = :client_id' \
-                '  AND ch.is_visible = :is_visible ' \
+                ' AND ch.is_visible = :is_visible ' \
                 'GROUP BY ch.id'
 
         stmt = text(query)
         stmt = stmt.bindparams(bindparam('client_id', type_=db.String))
+        stmt = stmt.bindparams(bindparam('is_visible', type_=db.Boolean))
         vars = {}
         vars['client_id'] = client_id
         vars['is_visible'] = True
