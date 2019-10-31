@@ -41,7 +41,7 @@ def fill_and_get_pt_object(navitia, all_objects, json, add_to_db=True):
 
     if json["id"] in all_objects:
         return all_objects[json["id"]]
-    
+
     if not navitia.get_pt_object(json['id'], json['type']):
         raise exceptions.ObjectUnknown()
 
@@ -139,6 +139,8 @@ def fill_and_add_line_section(navitia, impact_id, all_objects, pt_object_json):
     mapper.fill_from_json(ptobject, pt_object_json, mapper.object_mapping)
 
     # Here we treat all the objects in line_section like line, start_point, end_point
+    if 'line_section' not in pt_object_json:
+        raise exceptions.InvalidJson('Object of type line_section must have a line_section entry')
     line_section_json = pt_object_json['line_section']
 
     ptobject.uri = ":".join((line_section_json['line']['id'], ptobject.id))
