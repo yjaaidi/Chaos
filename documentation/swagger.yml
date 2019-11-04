@@ -2879,7 +2879,7 @@ components:
           items:
             oneOf:
               - $ref: "#/components/schemas/impact_object"
-              - $ref: "#/components/schemas/impact_line_section_object"
+              - $ref: "#/components/schemas/impact_object_line_section"
         send_notifications:
           description: If notification should be send or not
           type: boolean
