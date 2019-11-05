@@ -333,6 +333,10 @@ class Cause(TimestampMixin, db.Model):
             db.session.delete(wording)
             index -= 1
 
+    def is_used_in_disruption(self):
+        return db.engine.execute(
+            'SELECT count(*) FROM disruption WHERE cause_id = \'{}\''.format(self.id)
+        ).scalar() > 0
 
 associate_disruption_tag = db.Table(
     'associate_disruption_tag',
@@ -1229,11 +1233,6 @@ class Disruption(TimestampMixin, db.Model):
             between(get_current_time(), cls.start_publication_date, cls.end_publication_date))
         return query.all()
 
-    @classmethod
-    def have_disruption_by_cause_id(cls, cause_id):
-        return db.engine.execute(
-            'SELECT count(*) FROM disruption WHERE cause_id = \'{}\''.format(cause_id)
-        ).scalar() > 0
        
 associate_impact_pt_object = db.Table(
     'associate_impact_pt_object',
