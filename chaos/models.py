@@ -1229,7 +1229,10 @@ class Disruption(TimestampMixin, db.Model):
             between(get_current_time(), cls.start_publication_date, cls.end_publication_date))
         return query.all()
 
-
+    @classmethod
+    def have_disruption_by_cause_id(cls, cause_id):
+        return cls.query.filter_by(cause_id=cause_id).count() > 0
+       
 associate_impact_pt_object = db.Table(
     'associate_impact_pt_object',
     db.metadata,

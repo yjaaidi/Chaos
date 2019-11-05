@@ -361,6 +361,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/error_404"
+        "409":
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error_occured"
   /channels:
     get:
       description: Retrieves all the channels
