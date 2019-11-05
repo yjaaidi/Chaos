@@ -1265,7 +1265,7 @@ class Cause(flask_restful.Resource):
         if (models.Disruption.have_disruption_by_cause_id(id)):
             return marshal({
                 'error': {
-                    'message': 'The current {} is linked to at least one disruption and cannot be deleted'.format(cause)
+                    'message': 'The current \'{}\' is linked to at least one disruption and cannot be deleted'.format(cause.wording)
                 }
             }, error_fields), 409
         cause.is_visible = False

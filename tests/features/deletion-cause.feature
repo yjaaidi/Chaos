@@ -117,7 +117,7 @@ Feature: Cause can be deleted
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
         And the field "error.message" should be "id invalid"
-@test
+
     Scenario: deletion cause linked to at least one disruption and cannot be deleted
         Given I have the following clients in my database:
             | client_code   | created_at          | updated_at          | id                                   |
@@ -139,4 +139,4 @@ Feature: Cause can be deleted
         When I delete "/causes/7ffab230-3d48-4eea-aa2c-22f8680230b6"
         Then the status code should be "409"
         And the header "Content-Type" should be "application/json"
-        And the field "error.message" should be "The current <Cause '7ffab230-3d48-4eea-aa2c-22f8680230b6'> is linked to at least one disruption and cannot be deleted"
+        And the field "error.message" should be "The current 'weather' is linked to at least one disruption and cannot be deleted"
