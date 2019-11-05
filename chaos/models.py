@@ -1231,7 +1231,9 @@ class Disruption(TimestampMixin, db.Model):
 
     @classmethod
     def have_disruption_by_cause_id(cls, cause_id):
-        return cls.query.filter_by(cause_id=cause_id).count() > 0
+        return db.engine.execute(
+            'SELECT count(*) FROM disruption WHERE cause_id = \'{}\''.format(cause_id)
+        ).scalar() > 0
        
 associate_impact_pt_object = db.Table(
     'associate_impact_pt_object',
