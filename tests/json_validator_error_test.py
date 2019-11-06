@@ -110,7 +110,7 @@ def test_cause_is_required_in_disruption():
         eq_(parse_error(e), "'cause' is a required property", True)
 
 
-def test_severity_is_required_in_impcat():
+def test_severity_is_required_in_impact():
     try:
         validate({"application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-05-22T02:15:00Z"},{"begin": "2014-04-29T16:52:00Z","end": "2014-05-22T02:15:00Z"}]}, impact_input_format)
         assert False
@@ -118,7 +118,7 @@ def test_severity_is_required_in_impcat():
         eq_(parse_error(e), "'severity' is a required property", True)
 
 
-def test_begin_date_is_required_in_impcat():
+def test_begin_date_is_required_in_impact():
     try:
         validate({"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "application_periods": [{"end": "2014-05-22T02:15:00Z"}, {"begin": None,"end": "2014-05-22T02:15:00Z"}],"objects": [{"id": "network:JDR:1", "type": "network"}]}, impact_input_format)
         assert False
@@ -126,7 +126,7 @@ def test_begin_date_is_required_in_impcat():
         eq_(parse_error(e), "'begin' is a required property", True)
 
 
-def test_id_object_is_required_in_impcat():
+def test_id_object_is_required_in_impact():
     try:
         validate({"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "network:JDR:2","type": "network"}, {"type": "stop_area"}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}, impact_input_format)
         assert False
@@ -134,18 +134,18 @@ def test_id_object_is_required_in_impcat():
         eq_(parse_error(e), "'id' is a required property", True)
 
 
-def test_type_object_is_required_in_impcat():
+def test_type_object_is_required_in_impact():
     try:
         validate({"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "network:JDR:2","type": "network"}, {"id": "network:JDR:1"}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}, impact_input_format)
         assert False
     except ValidationError, e:
         eq_(parse_error(e), "'type' is a required property", True)
 
-def test_pt_object_stop_point_in_impcat():
+def test_pt_object_stop_point_in_impact():
     validate({"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "stop_point:JDR:2", "type": "stop_point"}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}, impact_input_format)
 
 
-def test_not_pt_object_in_impcat():
+def test_not_pt_object_in_impact():
     try:
         validate({"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "route_point:JDR:2", "type": "route_point"}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}, impact_input_format)
         assert False
