@@ -2195,6 +2195,21 @@ class Export(TimestampMixin, db.Model):
 
     @classmethod
     def get_client_impacts_between_application_dates(cls, client_id, app_start_date, app_end_date):
+        channels = cls.get_client_channels(client_id)
+        selectQuery = ''
+        leftjoinQuery = ''
+        i = 0
+        for channel in channels.fetchall():
+            selectQuery =  selectQuery + 'chmsg' + str(i) + '.text AS "' + channel['channel_name'] + '", '
+            leftjoinQuery = (
+                leftjoinQuery + 
+                'LEFT JOIN (' +
+                '   SELECT impact_id, text' +
+                '   FROM message ' +
+                '   WHERE channel_id = \'' + channel['id'] + '\'' +
+                ') AS chmsg' + str(i) + ' ON (chmsg' + str(i) + '.impact_id = i.id) '
+            )
+            i += 1
 
         query = 'SELECT DISTINCT' \
                 ' d.reference' \
@@ -2205,12 +2220,9 @@ class Export(TimestampMixin, db.Model):
                 ', po.type AS pt_object_type' \
                 ', po.uri AS pt_object_uri' \
                 ', po.uri AS pt_object_name' \
-                ', s.wording AS severity' \
-                ', (CASE WHEN cht.name=\'title\' THEN m.text ELSE \'\' END) as impact_title' \
-                ', i.status' \
-                ', ch.name AS channel_name' \
-                ', cht.name AS channel_type_name' \
-                ', m.text AS channel_message' \
+                ', s.wording AS severity, ' \
+                + selectQuery \
+                + ' i.status' \
                 ', app.start_date AS application_start_date' \
                 ', app.end_date AS application_end_date' \
                 ', (CASE WHEN (SELECT COUNT(1) FROM application_periods app_period WHERE app_period.impact_id = i.id) > 1 THEN True ELSE False END) AS periodicity' \
@@ -2225,17 +2237,11 @@ class Export(TimestampMixin, db.Model):
                 ' LEFT JOIN cause c ON (c.id = d.cause_id)' \
                 ' LEFT JOIN associate_impact_pt_object aipto ON (i.id = aipto.impact_id)' \
                 ' LEFT JOIN pt_object po ON (aipto.pt_object_id = po.id)' \
-                ' LEFT JOIN severity s ON (i.severity_id = s.id)' \
-                ' LEFT JOIN channel ch ON (ch.client_id = :client_id)' \
-                ' LEFT JOIN channel_type cht ON (cht.channel_id = ch.id)' \
-                ' LEFT JOIN message m ON (i.id = m.impact_id and m.channel_id = ch.id) ' \
-                ' WHERE' \
+                ' LEFT JOIN severity s ON (i.severity_id = s.id)' + leftjoinQuery + ' WHERE' \
                 ' d.client_id = :client_id' \
-                ' AND ch.client_id = :client_id'\
                 ' AND app.start_date >= :app_start_date' \
                 ' AND app.end_date <= :app_end_date' \
-                ' AND c.is_visible = :is_visible' \
-                ' AND ch.is_visible = :is_visible'
+                ' AND c.is_visible = :is_visible'
 
         stmt = text(query)
         stmt = stmt.bindparams(bindparam('client_id', type_=db.String))
@@ -2246,6 +2252,25 @@ class Export(TimestampMixin, db.Model):
         vars['client_id'] = client_id
         vars['app_start_date'] = app_start_date
         vars['app_end_date'] = app_end_date
+        vars['is_visible'] = True
+
+        return db.engine.execute(stmt, vars)
+
+    @classmethod
+    def get_client_channels(cls, client_id):
+        query = 'SELECT ch.id,' \
+                '       CONCAT (ch.name,\' (\', string_agg(cht.name::text, \',\'),\')\') AS channel_name ' \
+                'FROM channel AS ch ' \
+                'LEFT JOIN channel_type AS cht ON (cht.channel_id = ch.id) ' \
+                'WHERE ch.client_id = :client_id' \
+                ' AND ch.is_visible = :is_visible ' \
+                'GROUP BY ch.id'
+
+        stmt = text(query)
+        stmt = stmt.bindparams(bindparam('client_id', type_=db.String))
+        stmt = stmt.bindparams(bindparam('is_visible', type_=db.Boolean))
+        vars = {}
+        vars['client_id'] = client_id
         vars['is_visible'] = True
 
         return db.engine.execute(stmt, vars)
