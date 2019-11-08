@@ -224,10 +224,56 @@ class Disruptions(flask_restful.Resource):
             return self._get_disruptions(contributor.id, args)
 
     def _get_disruption_by_id(self, id, contributor_id):
-        return marshal(
-            {'disruption': models.Disruption.get(id, contributor_id)},
-            one_disruption_fields
-        )
+        results = models.Disruption.get(id, contributor_id)
+
+        if not results:
+            abort(404)
+
+        disruption = {}
+        cause_wordings = {}
+
+        for r in results:
+            disruption_id = r.disruption_id
+            cause_category_id = r.cause_category_id
+
+            cause = {}
+            cause_id = r.cause_id
+            if cause_id is not None:
+                cause['id'] = r.cause_id
+                cause['created_at'] = r.cause_created_at
+                cause['updated_at'] = r.cause_updated_at
+                cause['wordings'] = []
+                if cause_category_id is not None:
+                    cause['category'] = {
+                        'id' : r.cause_category_id,
+                        'name' : r.cause_category_name,
+                        'created_at' : r.cause_category_created_at,
+                        'updated_at' : r.cause_category_updated_at
+                    }
+
+            if disruption_id is not None:
+                disruption['id'] = disruption_id
+                disruption['reference'] = r.reference
+                disruption['status'] = r.status
+                disruption['version'] = r.version
+                disruption['created_at'] = r.created_at
+                disruption['updated_at'] = r.updated_at
+                disruption['author'] = r.author
+                disruption['contributor'] = {'contributor_code': r.contributor_code}
+                disruption['cause'] = cause
+
+                if disruption_id not in cause_wordings:
+                    cause_wordings[disruption_id] = {}
+
+                wording_id = r.cause_wording_id
+                cause_wordings[disruption_id][wording_id] = {
+                    'key': r.cause_wording_key,
+                    'value': r.cause_wording_value
+                }
+
+        disruption['cause']['wordings'] = cause_wordings[disruption_id].values()
+
+        return marshal({'disruption': disruption}, one_disruption_fields)
 
     def _get_disruptions(self, contributor_id, args):
 
@@ -755,8 +801,7 @@ class ImpactsSearch(flask_restful.Resource):
             total_results_count = total_results_count,
             endpoint = '')}
 
-        result = marshal(rawData, impacts_search_fields)
-        return result
+        return marshal(rawData, impacts_search_fields)
 
     def createPager(self, resultset, current_page, per_page, total_results_count,  endpoint):
 
