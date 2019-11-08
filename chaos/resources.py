@@ -473,7 +473,6 @@ this disruption to Navitia. Please try again.'}}, error_fields), 503
             {'error': {'message': 'An error occurred during deletion\
 . Please try again.'}}, error_fields), 500
 
-
 class ImpactsSearch(flask_restful.Resource):
     def __init__(self):
         self.navitia = None
