@@ -495,11 +495,53 @@ class Disruption(TimestampMixin, db.Model):
 
     @classmethod
     def get(cls, id, contributor_id):
-        return cls.query.filter(
-            (cls.id == id) and
-            (cls.contributor == contributor_id) and
-            (cls.status != 'archived')
-        ).first_or_404()
+        query = 'SELECT ' \
+                ' d.id AS disruption_id' \
+                ',d.reference AS reference' \
+                ',d.note AS note' \
+                ',d.status AS status' \
+                ',d.version AS version' \
+                ',d.created_at AS created_at' \
+                ',d.updated_at AS updated_at' \
+                ',d.author AS author' \
+                ',d.end_publication_date AS end_publication_date' \
+                ',d.start_publication_date AS start_publication_date ' \
+                ',c.id AS cause_id' \
+                ',c.created_at AS cause_created_at' \
+                ',c.updated_at AS cause_updated_at' \
+                ',ctg.id AS cause_category_id' \
+                ',ctg.name AS cause_category_name' \
+                ',ctg.created_at AS cause_category_created_at' \
+                ',ctg.updated_at AS cause_category_updated_at' \
+                ',cw.id AS cause_wording_id' \
+                ',cw.key AS cause_wording_key' \
+                ',cw.value AS cause_wording_value' \
+                ',contrib.contributor_code AS contributor_code' \
+                ' FROM ' \
+                '   disruption d ' \
+                '   JOIN cause c ON (d.cause_id = c.id) ' \
+                '   LEFT JOIN category ctg ON (c.category_id = ctg.id) ' \
+                '   LEFT JOIN associate_wording_cause awc ON (c.id = awc.cause_id) ' \
+                '   LEFT JOIN wording AS cw ON (awc.wording_id = cw.id)' \
+                '   JOIN contributor AS contrib ON (contrib.id = d.contributor_id)' \
+                ' WHERE ' \
+                '   d.id = :disruption_id ' \
+                '   AND contributor_id = :contributor_id ' \
+                '   AND c.is_visible = :cause_is_visisble ' \
+
+
+
+        stmt = text(query)
+        stmt = stmt.bindparams(bindparam('disruption_id', type_=db.String))
+        stmt = stmt.bindparams(bindparam('contributor_id', type_=db.String))
+        stmt = stmt.bindparams(bindparam('cause_is_visisble', type_=db.Boolean))
+
+        vars = {}
+        vars['disruption_id'] = id
+        vars['contributor_id'] = contributor_id
+        vars['cause_is_visisble'] = True
+
+        return db.engine.execute(stmt, vars).fetchall()
 
     @classmethod
     def get_query_with_args(
