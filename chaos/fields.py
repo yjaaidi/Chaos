@@ -749,7 +749,7 @@ disruption_fields = {
     },
     'publication_status': fields.Raw,
     'contributor': FieldContributor,
-    # 'impacts': CustomImpacts(),
+    'impacts': CustomImpacts(),
     'localization': FieldLocalization(attribute='localizations'),
     'cause': fields.Nested(cause_fields, allow_null=True),
     'tags': fields.List(fields.Nested(tag_fields)),

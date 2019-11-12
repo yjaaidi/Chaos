@@ -495,71 +495,65 @@ class Disruption(TimestampMixin, db.Model):
 
     @classmethod
     def get(cls, id, contributor_id):
-        query = 'SELECT ' \
-                ' d.id AS disruption_id' \
-                ',d.reference AS reference' \
-                ',d.note AS note' \
-                ',d.status AS status' \
-                ',d.version AS version' \
-                ',d.created_at AS created_at' \
-                ',d.updated_at AS updated_at' \
-                ',d.author AS author' \
-                ',d.end_publication_date AS end_publication_date' \
-                ',d.start_publication_date AS start_publication_date ' \
-                ',c.id AS cause_id' \
-                ',c.created_at AS cause_created_at' \
-                ',c.updated_at AS cause_updated_at' \
-                ',ctg.id AS cause_category_id' \
-                ',ctg.name AS cause_category_name' \
-                ',ctg.created_at AS cause_category_created_at' \
-                ',ctg.updated_at AS cause_category_updated_at' \
-                ',cw.id AS cause_wording_id' \
-                ',cw.key AS cause_wording_key' \
-                ',cw.value AS cause_wording_value' \
-                ',contrib.contributor_code AS contributor_code' \
-                ',localization.uri AS localization_uri' \
-                ',localization.type AS localization_type' \
-                ',localization.id AS localization_id' \
-                ',t.id AS tag_id'\
-                ',t.name AS tag_name'\
-                ',t.created_at AS tag_created_at'\
-                ',t.updated_at AS tag_updated_at' \
-                ',p.id AS property_id'\
-                ',p.key AS property_key'\
-                ',p.type AS property_type'\
-                ',adp.value AS property_value'\
-                ',p.created_at AS property_created_at'\
-                ',p.updated_at AS property_updated_at'\
-                ' FROM ' \
-                '   disruption d ' \
-                '   JOIN cause c ON (d.cause_id = c.id) ' \
-                '   LEFT JOIN category ctg ON (c.category_id = ctg.id) ' \
-                '   LEFT JOIN associate_wording_cause awc ON (c.id = awc.cause_id) ' \
-                '   LEFT JOIN wording AS cw ON (awc.wording_id = cw.id)' \
-                '   JOIN contributor AS contrib ON (contrib.id = d.contributor_id)' \
-                '   LEFT JOIN associate_disruption_pt_object AS adpo ON (adpo.disruption_id = d.id)' \
-                '   LEFT JOIN pt_object AS localization ON (localization.id = adpo.pt_object_id)' \
-                '   LEFT JOIN associate_disruption_tag adt ON (d.id = adt.disruption_id)' \
-                '   LEFT JOIN tag t ON (t.id = adt.tag_id)'\
-                '   LEFT JOIN associate_disruption_property AS adp ON (d.id = adp.disruption_id)'\
-                '   LEFT JOIN property AS p ON (p.id = adp.property_id)'\
-                ' WHERE ' \
-                '   d.id = :disruption_id ' \
-                '   AND contributor_id = :contributor_id ' \
-                '   AND c.is_visible = :cause_is_visisble ' \
 
+        query_parts = {
+            'select_columns': [
+                'd.id', 'd.reference', 'd.note', 'd.status', 'd.version', 'd.created_at', 'd.updated_at',
+                'd.start_publication_date', 'd.end_publication_date', 'd.author',
+                'i.id AS impact_id', 'i.created_at AS impact_created_at', 'i.updated_at AS impact_updated_at',
+                'i.send_notifications AS impact_send_notifications', 'i.notification_date AS impact_notification_date',
+                'c.id AS cause_id', 'c.created_at AS cause_created_at', 'c.updated_at AS cause_updated_at',
+                'ctg.id AS cause_category_id', 'ctg.name AS cause_category_name', 'ctg.created_at AS cause_category_created_at',
+                'ctg.updated_at AS cause_category_updated_at', 'cw.id AS cause_wording_id', 'cw.key AS cause_wording_key',
+                'cw.value AS cause_wording_value', 's.created_at AS severity_created_at', 's.updated_at AS severity_updated_at',
+                's.id AS severity_id', 's.wording AS severity_wording', 's.color AS severity_color', 's.is_visible AS severity_is_visible',
+                's.priority AS severity_priority', 's.effect AS severity_effect', 's.client_id AS severity_client_id',
+                'sw.id AS severity_wording_id', 'sw.key AS severity_wording_key', 'sw.value AS severity_wording_value',
+                'contrib.contributor_code AS contributor_code', 't.id AS tag_id', 't.name AS tag_name', 't.created_at AS tag_created_at',
+                't.updated_at AS tag_updated_at', 'p.id AS property_id', 'p.key AS property_key', 'p.type AS property_type',
+                'adp.value AS property_value', 'p.created_at AS property_created_at', 'p.updated_at AS property_updated_at',
+                'localization.uri AS localization_uri', 'localization.type AS localization_type', 'localization.id AS localization_id',
+                'po.id AS pt_object_id', 'po.type AS pt_object_type', 'po.uri AS pt_object_uri', 'ap.id AS application_period_id',
+                'ap.start_date AS application_period_start_date', 'ap.end_date AS application_period_end_date',
+                'm.id AS message_id', 'm.created_at AS message_created_at', 'm.updated_at AS message_updated_at',
+                'm.text AS message_text', 'ch.id AS channel_id', 'ch.content_type AS channel_content_type',
+                'ch.created_at AS channel_created_at', 'ch.updated_at AS channel_updated_at', 'ch.max_size AS channel_max_size',
+                'ch.name AS channel_name', 'ch.required AS channel_required', 'cht.id AS channel_type_id', 'cht.name AS channel_type_name',
+                'me.id AS meta_id', 'me.key AS meta_key', 'me.value AS meta_value',
+                'pa.id AS pattern_id, pa.start_date AS pattern_start_date, pa.end_date AS pattern_end_date, pa.weekly_pattern AS pattern_weekly_pattern',
+                'ts.id AS time_slot_id, ts.begin AS time_slot_begin, ts.end AS time_slot_end',
+                'ls.id AS line_section_id, ls.sens AS line_section_sens',
+                'po_line.uri AS line_section_line_uri, po_line.type AS line_section_line_type',
+                'po_start.uri AS line_section_start_uri, po_start.type AS line_section_start_type',
+                'po_end.uri AS line_section_end_uri, po_end.type AS line_section_end_type',
+                'po_route.id AS po_route_id, po_route.uri AS po_route_uri, po_route.type AS po_route_type',
+                'awlsw.id AS awlsw_id, awlsw.key AS awlsw_key, awlsw.value AS awlsw_value',
+                'po_via.id AS po_via_id, po_via.uri AS po_via_uri, po_via.type AS po_via_type'
+            ],
+            'and_wheres' : [
+                'd.id = :disruption_id',
+                'contributor_id = :contributor_id',
+                'c.is_visible = :cause_is_visisble'
+            ],
+            'vars':{
+                'disruption_id': id,
+                'contributor_id': contributor_id,
+                'cause_is_visisble': True
+            },
+            'order_by' : {
+                'd.end_publication_date', 'd.id'
+            }
+        }
+
+        query = cls.get_disruption_search_native_query(query_parts)
+
+        if not query:
+            return []
 
         stmt = text(query)
-        stmt = stmt.bindparams(bindparam('disruption_id', type_=db.String))
-        stmt = stmt.bindparams(bindparam('contributor_id', type_=db.String))
-        stmt = stmt.bindparams(bindparam('cause_is_visisble', type_=db.Boolean))
 
-        vars = {}
-        vars['disruption_id'] = id
-        vars['contributor_id'] = contributor_id
-        vars['cause_is_visisble'] = True
+        return db.engine.execute(stmt, query_parts['vars']).fetchall()
 
-        return db.engine.execute(stmt, vars).fetchall()
 
     @classmethod
     def get_query_with_args(
