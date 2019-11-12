@@ -743,17 +743,17 @@ disruption_fields = {
     'version': fields.Raw,
     'created_at': FieldDateTime,
     'updated_at': FieldDateTime,
-    # 'publication_period': {
-    #     'begin': FieldDateTime(attribute='start_publication_date'),
-    #     'end': FieldDateTime(attribute='end_publication_date')
-    # },
-    # 'publication_status': fields.Raw,
+    'publication_period': {
+        'begin': FieldDateTime(attribute='start_publication_date'),
+        'end': FieldDateTime(attribute='end_publication_date')
+    },
+    'publication_status': fields.Raw,
     'contributor': FieldContributor,
     # 'impacts': CustomImpacts(),
-    # 'localization': FieldLocalization(attribute='localizations'),
+    'localization': FieldLocalization(attribute='localizations'),
     'cause': fields.Nested(cause_fields, allow_null=True),
-    # 'tags': fields.List(fields.Nested(tag_fields)),
-    # 'properties': FieldAssociatedProperties(attribute='properties'),
+    'tags': fields.List(fields.Nested(tag_fields)),
+    'properties': FieldAssociatedProperties(attribute='properties'),
     'author': fields.Raw
 }
 

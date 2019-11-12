@@ -921,3 +921,13 @@ def sanitize_csv_data(val):
         val = val.replace('\n', ' ').replace('\r', '')
 
     return val
+
+def get_publication_status(start_publication_date, end_publication_date):
+    current_time = get_current_time()
+    if (end_publication_date != None) and (end_publication_date < current_time):
+        return "past"
+    if start_publication_date <= current_time\
+            and (end_publication_date == None or end_publication_date >= current_time):
+        return "ongoing"
+    if start_publication_date > current_time:
+        return "coming"
