@@ -517,6 +517,19 @@ class Disruption(TimestampMixin, db.Model):
                 ',cw.key AS cause_wording_key' \
                 ',cw.value AS cause_wording_value' \
                 ',contrib.contributor_code AS contributor_code' \
+                ',localization.uri AS localization_uri' \
+                ',localization.type AS localization_type' \
+                ',localization.id AS localization_id' \
+                ',t.id AS tag_id'\
+                ',t.name AS tag_name'\
+                ',t.created_at AS tag_created_at'\
+                ',t.updated_at AS tag_updated_at' \
+                ',p.id AS property_id'\
+                ',p.key AS property_key'\
+                ',p.type AS property_type'\
+                ',adp.value AS property_value'\
+                ',p.created_at AS property_created_at'\
+                ',p.updated_at AS property_updated_at'\
                 ' FROM ' \
                 '   disruption d ' \
                 '   JOIN cause c ON (d.cause_id = c.id) ' \
@@ -524,11 +537,16 @@ class Disruption(TimestampMixin, db.Model):
                 '   LEFT JOIN associate_wording_cause awc ON (c.id = awc.cause_id) ' \
                 '   LEFT JOIN wording AS cw ON (awc.wording_id = cw.id)' \
                 '   JOIN contributor AS contrib ON (contrib.id = d.contributor_id)' \
+                '   LEFT JOIN associate_disruption_pt_object AS adpo ON (adpo.disruption_id = d.id)' \
+                '   LEFT JOIN pt_object AS localization ON (localization.id = adpo.pt_object_id)' \
+                '   LEFT JOIN associate_disruption_tag adt ON (d.id = adt.disruption_id)' \
+                '   LEFT JOIN tag t ON (t.id = adt.tag_id)'\
+                '   LEFT JOIN associate_disruption_property AS adp ON (d.id = adp.disruption_id)'\
+                '   LEFT JOIN property AS p ON (p.id = adp.property_id)'\
                 ' WHERE ' \
                 '   d.id = :disruption_id ' \
                 '   AND contributor_id = :contributor_id ' \
                 '   AND c.is_visible = :cause_is_visisble ' \
-
 
 
         stmt = text(query)

@@ -231,6 +231,9 @@ class Disruptions(flask_restful.Resource):
 
         disruption = {}
         cause_wordings = {}
+        localizations = {}
+        tags = {}
+        properties = {}
 
         for r in results:
             disruption_id = r.disruption_id
@@ -271,7 +274,40 @@ class Disruptions(flask_restful.Resource):
                     'value': r.cause_wording_value
                 }
 
+                localization_id = r.localization_id
+                if localization_id is not None:
+                    localizations[localization_id] = {
+                        'uri': r.localization_uri,
+                        'type': r.localization_type
+                    }
+
+                tag_id = r.tag_id
+                if tag_id is not None:
+                    tags[tag_id] = {
+                        'id' : tag_id,
+                        'name' : r.tag_name,
+                        'created_at' : r.tag_created_at,
+                        'updated_at' : r.tag_updated_at
+                    }
+
+            property_id = r.property_id
+            if property_id is not None:
+                properties[property_id] = {
+                    'id' : r.property_id,
+                    'key' : r.property_key,
+                    'type' : r.property_type,
+                    'value' : r.property_value,
+                    'created_at' : r.property_created_at,
+                    'updated_at' : r.property_updated_at
+                }
+
         disruption['cause']['wordings'] = cause_wordings[disruption_id].values()
+        disruption['localizations'] = localizations.values()
+        disruption['tags'] = tags.values()
+        disruption['properties'] = properties.values()
+        disruption['start_publication_date'] = r.start_publication_date
+        disruption['end_publication_date'] = r.end_publication_date
+        disruption['publication_status'] = utils.get_publication_status(r.start_publication_date, r.end_publication_date)
 
         return marshal({'disruption': disruption}, one_disruption_fields)
 
@@ -513,6 +549,7 @@ this disruption to Navitia. Please try again.'}}, error_fields), 503
         return marshal(
             {'error': {'message': 'An error occurred during deletion\
 . Please try again.'}}, error_fields), 500
+
 
 class ImpactsSearch(flask_restful.Resource):
     def __init__(self):
@@ -815,6 +852,7 @@ class ImpactsSearch(flask_restful.Resource):
 
         return make_pager(pagination, endpoint)
 
+
 class DisruptionsSearch(flask_restful.Resource):
     def __init__(self):
         self.navitia = None
@@ -829,16 +867,6 @@ class DisruptionsSearch(flask_restful.Resource):
         parser_post.add_argument("line_section", type=types.boolean, default=False, location='json')
         parser_post.add_argument("current_time", type=utils.get_datetime, location='json')
         parser_post.add_argument("depth", type=int, default=1, location='json')
-
-    def get_publication_status(self, start_publication_date, end_publication_date):
-        current_time = utils.get_current_time()
-        if (end_publication_date != None) and (end_publication_date < current_time):
-            return "past"
-        if start_publication_date <= current_time\
-                and (end_publication_date == None or end_publication_date >= current_time):
-            return "ongoing"
-        if start_publication_date > current_time:
-            return "coming"
 
     @validate_navitia()
     @validate_contributor()
@@ -1134,7 +1162,7 @@ class DisruptionsSearch(flask_restful.Resource):
                     'updated_at': r.updated_at,
                     'start_publication_date': r.start_publication_date,
                     'end_publication_date': r.end_publication_date,
-                    'publication_status': self.get_publication_status(r.start_publication_date, r.end_publication_date),
+                    'publication_status': utils.get_publication_status(r.start_publication_date, r.end_publication_date),
                     'contributor' : {
                         'contributor_code' : r.contributor_code
                     },
@@ -2055,16 +2083,6 @@ class DisruptionsHistory(flask_restful.Resource):
         self.navitia = None
         self.parsers = {}
         self.parsers["get"] = reqparse.RequestParser()
-
-    def _get_publication_status(self, start_publication_date, end_publication_date):
-        current_time = utils.get_current_time()
-        if (end_publication_date != None) and (end_publication_date < current_time):
-            return "past"
-        if start_publication_date <= current_time\
-                and (end_publication_date == None or end_publication_date >= current_time):
-            return "ongoing"
-        if start_publication_date > current_time:
-            return "coming"
 
     @validate_navitia()
     @validate_contributor()
