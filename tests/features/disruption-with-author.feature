@@ -42,8 +42,8 @@ Feature: Handle Disruption with author
             | contrib1           | 2019-04-02T23:52:12 | 2019-04-02T23:55:12 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
 
         Given I have the following disruptions in my database:
-            | reference | note  | created_at          | updated_at          | status    | id                                   | start_publication_date | end_publication_date |cause_id                              | client_id                            | contributor_id                       | author |
-            | foo       | hello | 2019-04-02T23:52:12 | 2019-04-02T23:55:12 | published | 7bbab230-3d48-4eea-aa2c-22f8680230b6 | None                   | None                 | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 | tcy    |
+            | reference | note  | created_at          | updated_at          | status    | id                                   | start_publication_date     | end_publication_date  |cause_id                              | client_id                            | contributor_id                       | author |
+            | foo       | hello | 2019-04-02T23:52:12 | 2019-04-02T23:55:12 | published | 7bbab230-3d48-4eea-aa2c-22f8680230b6 | 2019-04-01T00:00:00        | 2019-04-02T00:00:00   | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 | tcy    |
 
         Given I have the following severities in my database:
             | wording   | color   | created_at          | updated_at          | is_visible | id                                   |client_id                            |
@@ -132,7 +132,6 @@ Feature: Handle Disruption with author
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
         And the field "disruptions.1.author" should be null
-
 
     Scenario: List of an updated disruption without author
         Given I have the following clients in my database:
