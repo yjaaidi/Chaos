@@ -495,6 +495,14 @@ class Disruption(TimestampMixin, db.Model):
 
     @classmethod
     def get(cls, id, contributor_id):
+        return cls.query.filter(
+            (cls.id == id) and
+            (cls.contributor == contributor_id) and
+            (cls.status != 'archived')
+        ).first_or_404()
+
+    @classmethod
+    def get_native(cls, id, contributor_id):
 
         query_parts = {
             'select_columns': [

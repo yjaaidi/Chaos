@@ -225,7 +225,7 @@ class Disruptions(flask_restful.Resource):
             return self._get_disruptions(contributor.id, args)
 
     def _get_disruption_by_id(self, id, contributor_id):
-        results = models.Disruption.get(id, contributor_id)
+        results = models.Disruption.get_native(id, contributor_id)
 
         if not results:
             abort(404)
