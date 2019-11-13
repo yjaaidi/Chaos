@@ -164,7 +164,7 @@ Feature: list severity
         Then the status code should be "404"
         And the header "Content-Type" should be "application/json"
         And the field "error" should have a size of 1
-        And the field "error.message" should be "The severty with id 5ffab229-3d48-4eea-aa2c-22f8680230b5 does not exist for this client"
+        And the field "error.message" should be "The severity with id 5ffab229-3d48-4eea-aa2c-22f8680230b5 does not exist for this client"
 
         #A severity created by client is visible for that client
         When I get "/severities/6ffab229-3d48-4eea-aa2c-22f8680230b6"

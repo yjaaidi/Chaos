@@ -681,7 +681,7 @@ def client_token_is_allowed(clients_tokens, client_code, token):
 
     # check if token for this client exists
     if token not in client_tokens:
-        error = "The client is not permited for this operation with this token. Provided client code : {}, token : {}".\
+        error = "The client is not permitted for this operation with this token. Provided client code : {}, token : {}".\
             format(client_code, token)
         raise_client_token_error(error)
 

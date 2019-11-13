@@ -138,7 +138,7 @@ Feature: Severity can be deleted
         Then the status code should be "404"
         And the header "Content-Type" should be "application/json"
         And the field "error" should have a size of 1
-        And the field "error.message" should be "The severty with id 7ffab230-3d48-4eea-aa2c-22f8680230b6 does not exist for this client"
+        And the field "error.message" should be "The severity with id 7ffab230-3d48-4eea-aa2c-22f8680230b6 does not exist for this client"
 
         #client_8 could be able to remove severity created by himself
         When I delete to "/severities/6ffab229-3d48-4eea-aa2c-22f8680230b6":

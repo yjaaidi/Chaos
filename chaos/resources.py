@@ -1262,6 +1262,10 @@ class Cause(flask_restful.Resource):
     @validate_client_token()
     def delete(self, client, id):
         cause = models.Cause.get(id, client.id)
+        if (cause.is_used_in_disruption()):
+            error_msg = 'The current \'{}\' is linked to at least one disruption and cannot be deleted'.format(cause.wording)
+            logging.getLogger(__name__).warning(error_msg)
+            return marshal({'error': {'message': error_msg}}, error_fields), 409
         cause.is_visible = False
         db.session.commit()
         return None, 204
