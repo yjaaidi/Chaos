@@ -6,7 +6,7 @@ Feature: update disruption
         I fill in header "X-Coverage" with "jdr"
         I fill in header "X-Contributors" with "contrib1"
 
-   Scenario: update disruption without contributor in the header
+    Scenario: update disruption without contributor in the header
 
         Given I have the following clients in my database:
             | client_code   | created_at          | updated_at          | id                                   |
@@ -32,7 +32,7 @@ Feature: update disruption
         And the header "Content-Type" should be "application/json"
         And the field "error.message" should be "The parameter X-Contributors does not exist in the header"
 
-   Scenario: update disruption with id not valid
+    Scenario: update disruption with id not valid
 
         Given I have the following clients in my database:
             | client_code   | created_at          | updated_at          | id                                   |
@@ -58,7 +58,7 @@ Feature: update disruption
         And the header "Content-Type" should be "application/json"
         And the field "error.message" should be "id invalid"
 
-   Scenario: update disruption with id not not in url
+    Scenario: update disruption with id not not in url
 
         Given I have the following clients in my database:
             | client_code   | created_at          | updated_at          | id                                   |
@@ -92,7 +92,7 @@ Feature: update disruption
         And the header "Content-Type" should be "application/json"
         And the field "error.message" should be "id invalid"
 
-   Scenario: update disruption with localization not in navitia
+    Scenario: update disruption with localization not in navitia
 
         Given I have the following clients in my database:
             | client_code   | created_at          | updated_at          | id                                   |
@@ -118,7 +118,7 @@ Feature: update disruption
         And the header "Content-Type" should be "application/json"
         And the field "error.message" should be "ptobject AA doesn't exist"
 
-   Scenario: update disruption without contributor
+    Scenario: update disruption without contributor
 
         Given I have the following clients in my database:
             | client_code   | created_at          | updated_at          | id                                   |
@@ -144,7 +144,7 @@ Feature: update disruption
         And the header "Content-Type" should be "application/json"
         And the field "error.message" should be "'contributor' is a required property"
 
-   Scenario: update disruption without reference
+    Scenario: update disruption without reference
 
         Given I have the following clients in my database:
             | client_code   | created_at          | updated_at          | id                                   |
@@ -170,7 +170,7 @@ Feature: update disruption
         And the header "Content-Type" should be "application/json"
         And the field "error.message" should be "'reference' is a required property"
 
-   Scenario: I can update the wording of a cause
+    Scenario: I can update the wording of a cause
 
         Given I have the following clients in my database:
             | client_code   | created_at          | updated_at          | id                                   |
@@ -201,7 +201,7 @@ Feature: update disruption
         And the field "disruption.publication_period.begin" should be "2014-06-24T13:35:00Z"
         And the field "disruption.publication_period.end" should be "2014-07-08T18:00:00Z"
 
-   Scenario: I can update with tag and associate_disruption_tag is empty
+    Scenario: I can update with tag and associate_disruption_tag is empty
 
         Given I have the following clients in my database:
             | client_code   | created_at          | updated_at          | id                                   |
@@ -238,7 +238,7 @@ Feature: update disruption
         And the field "disruption.tags.0.id" should be "7ffab230-3d48-4eea-aa2c-22f8680230b6"
         And the field "disruption.tags.0.name" should be "weather"
 
-   Scenario: I can update with add tag and associate_disruption_tag is not empty (1 associate_disruption_tag)
+    Scenario: I can update with add tag and associate_disruption_tag is not empty (1 associate_disruption_tag)
 
         Given I have the following clients in my database:
             | client_code   | created_at          | updated_at          | id                                   |
@@ -281,7 +281,7 @@ Feature: update disruption
         And the header "Content-Type" should be "application/json"
         And the field "disruption.tags" should have a size of 2
 
-   Scenario: I can update with delete tag and associate_disruption_tag is not empty (2 associate_disruption_tag)
+    Scenario: I can update with delete tag and associate_disruption_tag is not empty (2 associate_disruption_tag)
 
         Given I have the following clients in my database:
             | client_code   | created_at          | updated_at          | id                                   |
@@ -326,7 +326,7 @@ Feature: update disruption
         And the field "disruption.tags.0.id" should be "5ffab230-3d48-4eea-aa2c-22f8680230b6"
         And the field "disruption.tags.0.name" should be "weather"
 
-   Scenario: I can update with delete 2 tags and associate_disruption_tag is not empty (2 associate_disruption_tag)
+    Scenario: I can update with delete 2 tags and associate_disruption_tag is not empty (2 associate_disruption_tag)
 
         Given I have the following clients in my database:
             | client_code   | created_at          | updated_at          | id                                   |
@@ -374,7 +374,7 @@ Feature: update disruption
         And the header "Content-Type" should be "application/json"
         And the field "tags" should have a size of 2
 
-   Scenario: I can update, verification version
+    Scenario: I can update, verification version
 
         Given I have the following clients in my database:
             | client_code   | created_at          | updated_at          | id                                   |
@@ -412,7 +412,7 @@ Feature: update disruption
         And the header "Content-Type" should be "application/json"
         And the field "disruption.version" should be "3"
 
-   Scenario: I can update with add 1 localization and associate_disruption_tag is empty
+    Scenario: I can update with add 1 localization and associate_disruption_tag is empty
 
         Given I have the following clients in my database:
             | client_code   | created_at          | updated_at          | id                                   |
@@ -442,7 +442,7 @@ Feature: update disruption
         And the header "Content-Type" should be "application/json"
         And the field "disruption.localization" should have a size of 1
 
-   Scenario: I can update with add 2 localization and associate_disruption_tag is empty
+    Scenario: I can update with add 2 localization and associate_disruption_tag is empty
 
         Given I have the following clients in my database:
             | client_code   | created_at          | updated_at          | id                                   |
@@ -472,7 +472,7 @@ Feature: update disruption
         And the header "Content-Type" should be "application/json"
         And the field "disruption.localization" should have a size of 2
 
-   Scenario: I can update with add 2 localization and associate_disruption_tag is not empty (2 element)
+    Scenario: I can update with add 2 localization and associate_disruption_tag is not empty (2 element)
 
         Given I have the following clients in my database:
             | client_code   | created_at          | updated_at          | id                                   |
@@ -512,7 +512,7 @@ Feature: update disruption
         And the header "Content-Type" should be "application/json"
         And the field "disruption.localization" should have a size of 2
 
-   Scenario: I can update with add 1 localization and associate_disruption_tag is not empty (2 element)
+    Scenario: I can update with add 1 localization and associate_disruption_tag is not empty (2 element)
 
         Given I have the following clients in my database:
             | client_code   | created_at          | updated_at          | id                                   |
@@ -553,7 +553,7 @@ Feature: update disruption
         And the field "disruption.localization" should have a size of 1
         And the field "disruption.localization.0.id" should be "stop_area:JDR:SA:ALESI"
 
-   Scenario: I can update with add 0 localization and associate_disruption_tag is not empty (2 element)
+    Scenario: I can update with add 0 localization and associate_disruption_tag is not empty (2 element)
 
         Given I have the following clients in my database:
             | client_code   | created_at          | updated_at          | id                                   |
@@ -593,7 +593,7 @@ Feature: update disruption
         And the header "Content-Type" should be "application/json"
         And the field "disruption.localization" should have a size of 0
 
-   Scenario: I can update with add 2 localization and associate_disruption_tag is not empty (1 element)
+    Scenario: I can update with add 2 localization and associate_disruption_tag is not empty (1 element)
 
         Given I have the following clients in my database:
             | client_code   | created_at          | updated_at          | id                                   |
