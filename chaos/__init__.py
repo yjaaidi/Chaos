@@ -27,7 +27,7 @@
 # https://groups.google.com/d/forum/navitia
 # www.navitia.io
 
-VERSION = 'v1.2.22-dev'
+VERSION = 'v1.2.23-dev'
 
 # http://bugs.python.org/issue7980
 import datetime
