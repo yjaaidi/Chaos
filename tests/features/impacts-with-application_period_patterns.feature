@@ -75,7 +75,6 @@ Feature: Manipulate impacts in a Disruption
         And the header "Content-Type" should be "application/json"
         And the field "error.message" should be "time_slots should not be empty"
 
-
     #One of application_period pattern or application_periods is required
     Scenario: Add an impact in a disruption with a application_period pattern having one time_slot and application_periods fails
 
@@ -285,7 +284,6 @@ Feature: Manipulate impacts in a Disruption
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
         And the field "error.message" should be "time_slots should not be empty"
-
 
     Scenario: Update an impact in a disruption having a pattern with two application_period
 
@@ -710,7 +708,6 @@ Feature: Manipulate impacts in a Disruption
         And the field "impact.application_periods.0.begin" should be "2015-05-26T22:00:00Z"
         And the field "impact.application_periods.0.end" should be "2015-05-27T14:45:00Z"
 
-
     Scenario: Add an impact in a disruption with a application_periods having "begin" à minuit et end "end" à "23:59:59"
 
         Given I have the following clients in my database:
@@ -750,7 +747,6 @@ Feature: Manipulate impacts in a Disruption
         And the field "impact.application_periods" should have a size of 1
         And the field "impact.application_periods.0.begin" should be "2015-06-01T00:00:00Z"
         And the field "impact.application_periods.0.end" should be "2015-06-01T23:59:59Z"
-
 
     Scenario: Add an impact in a disruption with a application_period pattern having one time_slot and midnight change
 
@@ -796,7 +792,6 @@ Feature: Manipulate impacts in a Disruption
         And the field "impact.application_period_patterns.0.end_date" should be "2015-09-21"
         And the field "impact.application_period_patterns.0.time_slots.0.begin" should be "18:00"
         And the field "impact.application_period_patterns.0.time_slots.0.end" should be "03:00"
-
 
     Scenario: Add an impact in a disruption with a application_period pattern having one time_slot and midnight change for more than one day
 
@@ -845,8 +840,7 @@ Feature: Manipulate impacts in a Disruption
         And the field "impact.application_period_patterns.0.time_slots.0.begin" should be "18:00"
         And the field "impact.application_period_patterns.0.time_slots.0.end" should be "03:00"
 
-
-Scenario: Add an impact in a disruption with a application_period pattern having one time_slot and midnight change and winter daylight saving change
+    Scenario: Add an impact in a disruption with a application_period pattern having one time_slot and midnight change and winter daylight saving change
 
         Given I have the following clients in my database:
             | client_code   | created_at          | updated_at          | id                                   |

@@ -4,12 +4,12 @@ Feature: list category
         I fill in header "X-Customer-Id" with "5"
         I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
 
-      Scenario: Call without client in the header fails
+    Scenario: Call without client in the header fails
           I remove header "X-Customer-Id"
           When I get "/categories"
           Then the status code should be "400"
 
-      Scenario: if there is no category the list is empty
+    Scenario: if there is no category the list is empty
           Given I have the following clients in my database:
           | client_code   | created_at          | updated_at          | id                                   |
           | 5             | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
@@ -19,7 +19,7 @@ Feature: list category
           And the header "Content-Type" should be "application/json"
           and "categories" should be empty
 
-      Scenario: list of two category
+    Scenario: list of two category
           Given I have the following clients in my database:
           | client_code   | created_at          | updated_at          | id                                   |
           | 5             | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
@@ -33,7 +33,7 @@ Feature: list category
           And the header "Content-Type" should be "application/json"
           And the field "categories" should have a size of 2
 
-      Scenario: only visible categories have to be return
+    Scenario: only visible categories have to be return
           Given I have the following clients in my database:
           | client_code   | created_at          | updated_at          | id                                   |
           | 5             | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
@@ -48,7 +48,7 @@ Feature: list category
           And the header "Content-Type" should be "application/json"
           And the field "categories" should have a size of 2
 
-      Scenario: I can view one category
+    Scenario: I can view one category
           Given I have the following clients in my database:
           | client_code   | created_at          | updated_at          | id                                   |
           | 5             | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
@@ -62,7 +62,7 @@ Feature: list category
           And the header "Content-Type" should be "application/json"
           And the field "category.name" should be "weather"
 
-      Scenario: I have a 400 if the id doesn't have the correct format
+    Scenario: I have a 400 if the id doesn't have the correct format
           Given I have the following clients in my database:
           | client_code   | created_at          | updated_at          | id                                   |
           | 5             | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
@@ -75,7 +75,7 @@ Feature: list category
           Then the status code should be "400"
 
 
-      Scenario: The client in the header must exist in database
+    Scenario: The client in the header must exist in database
           Given I have the following clients in my database:
           | client_code   | created_at          | updated_at          | id                                   |
           | 5             | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
