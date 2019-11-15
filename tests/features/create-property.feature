@@ -1,6 +1,6 @@
 Feature: Create property
 
-  Background:
+    Background:
         I fill in header "X-Customer-Id" with "test"
         I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
 

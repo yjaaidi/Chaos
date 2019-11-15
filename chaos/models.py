@@ -335,7 +335,7 @@ class Cause(TimestampMixin, db.Model):
 
     def is_used_in_disruption(self):
         return db.engine.execute(
-            'SELECT count(*) FROM disruption WHERE cause_id = \'{}\''.format(self.id)
+            'SELECT count(*) FROM disruption WHERE cause_id = \'{}\' AND status != \'archived\''.format(self.id)
         ).scalar() > 0
 
 associate_disruption_tag = db.Table(
@@ -1233,7 +1233,6 @@ class Disruption(TimestampMixin, db.Model):
             between(get_current_time(), cls.start_publication_date, cls.end_publication_date))
         return query.all()
 
-       
 associate_impact_pt_object = db.Table(
     'associate_impact_pt_object',
     db.metadata,
@@ -1245,7 +1244,6 @@ associate_impact_pt_object = db.Table(
         name='impact_pt_object_pk'
     )
 )
-
 
 class Impact(TimestampMixin, db.Model):
     id = db.Column(UUID, primary_key=True)
@@ -2202,7 +2200,7 @@ class Export(TimestampMixin, db.Model):
         for channel in channels.fetchall():
             selectQuery =  selectQuery + 'chmsg' + str(i) + '.text AS "' + channel['channel_name'] + '", '
             leftjoinQuery = (
-                leftjoinQuery + 
+                leftjoinQuery +
                 'LEFT JOIN (' +
                 '   SELECT impact_id, text' +
                 '   FROM message ' +
