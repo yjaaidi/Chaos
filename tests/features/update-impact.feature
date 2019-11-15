@@ -727,6 +727,4 @@ Feature: Update (put) impacts in a Disruption
         And the header "Content-Type" should be "application/json"
 
         When I get "/disruptions/6a826e64-028f-11e4-92d0-090027079ff3"
-        Then the status code should be "200"
-        And the header "Content-Type" should be "application/json"
-        And the field "disruption.version" should be "2"
+        Then the status code should be "404"
