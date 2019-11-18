@@ -1,4 +1,4 @@
-# Copyright (c) Kisio Digital and/or its affiliates. All rights reserved.
+# Copyright (c) since 2001, Kisio Digital and/or its affiliates. All rights reserved.
 #
 # This file is part of Navitia,
 #     the software to build cool stuff with public transport.
