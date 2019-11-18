@@ -161,4 +161,33 @@ cd tests
 honcho run lettuce --failfast
 ```
 
+## Copyright
 
+Copyright © since 2001, Kisio Digital and/or its affiliates. All rights reserved.
+This project is part of Navitia surround, the sprawling API to build cool stuff with public transport.
+
+Hope you'll enjoy and contribute to this project, powered by Kisio Digital (www.kisio.com).
+    
+Help us simplify mobility and open public transport: a non ending quest to the responsive locomotion way of traveling !
+   
+## Licence
+
+This program is free software; you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+## Stay tuned
+
+[Twitter @navitia](https://twitter.com/navitia)
+
+Tchat channel [`#navitia` on riot](https://riot.im/app/#/room/#navitia:matrix.org)
+
+Forum [Navitia on googlegroups](https://groups.google.com/d/forum/navitia)
+
+www.navitia.io
