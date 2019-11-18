@@ -14,7 +14,7 @@ Feature: list disruptions
         When I get "/disruptions"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
-        and "disruptions" should be empty
+        And "disruptions" should be empty
 
     Scenario: list of two disruptions
 
