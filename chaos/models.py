@@ -542,13 +542,15 @@ class Disruption(TimestampMixin, db.Model):
                 'd.id = :disruption_id',
                 'contributor_id = :contributor_id',
                 'c.is_visible = :cause_is_visible',
-                'd.status <> :excluded_disruption_status'
+                'd.status <> :excluded_disruption_status',
+                'i.status <> :excluded_impact_status'
             ],
             'vars':{
                 'disruption_id': id,
                 'contributor_id': contributor_id,
                 'cause_is_visible': True,
-                'excluded_disruption_status': 'archived'
+                'excluded_disruption_status': 'archived',
+                'excluded_impact_status': 'archived'
             },
             'order_by' : {
                 'd.end_publication_date', 'd.id'

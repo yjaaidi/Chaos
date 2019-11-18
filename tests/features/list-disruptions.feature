@@ -14,7 +14,7 @@ Feature: list disruptions
         When I get "/disruptions"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
-        and "disruptions" should be empty
+        And "disruptions" should be empty
 
     Scenario: list of two disruptions
 
@@ -116,6 +116,14 @@ Feature: list disruptions
             | foo       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |  2014-04-02T14:00:00   | None                 | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
             | bar       | bye   | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | published | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |  2014-04-02T14:00:00   | 2014-04-02T19:00:00  | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
 
+        Given I have the following severities in my database:
+            | wording   | color   | created_at          | updated_at          | is_visible | id                                   |client_id                            |
+            | good news | #654321 | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | True       | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
+
+        Given I have the following impacts in my database:
+            | created_at          | updated_at          | status    | id                                   | disruption_id                        |severity_id                          |
+            | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | published | 7ffab232-3d47-4eea-aa2c-22f8680230b6 | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |7ffab232-3d48-4eea-aa2c-22f8680230b6 |
+
         When I get "/disruptions/7ffab230-3d48-4eea-aa2c-22f8680230b6"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
@@ -171,6 +179,15 @@ Feature: list disruptions
             | pt_object_id                               | disruption_id                        |
             | 1ffab232-3d48-4eea-aa2c-22f8680230b6       | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |
 
+        Given I have the following severities in my database:
+            | wording   | color   | created_at          | updated_at          | is_visible | id                                   |client_id                            |
+            | good news | #654321 | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | True       | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
+
+        Given I have the following impacts in my database:
+            | created_at          | updated_at          | status    | id                                   | disruption_id                        |severity_id                          |
+            | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | published | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |7ffab232-3d48-4eea-aa2c-22f8680230b6 |
+
+
         When I get "/disruptions/7ffab230-3d48-4eea-aa2c-22f8680230b6"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
@@ -211,6 +228,15 @@ Feature: list disruptions
         Given I have the relation associate_disruption_pt_object in my database:
             | pt_object_id                               | disruption_id                        |
             | 1ffab232-3d48-4eea-aa2c-22f8680230b6       | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |
+
+        Given I have the following severities in my database:
+            | wording   | color   | created_at          | updated_at          | is_visible | id                                   |client_id                            |
+            | good news | #654321 | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | True       | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
+
+        Given I have the following impacts in my database:
+            | created_at          | updated_at          | status    | id                                   | disruption_id                        |severity_id                          |
+            | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | published | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |7ffab232-3d48-4eea-aa2c-22f8680230b6 |
+
 
         When I get "/disruptions/7ffab230-3d48-4eea-aa2c-22f8680230b6"
         Then the status code should be "200"
