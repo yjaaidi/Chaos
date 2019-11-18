@@ -710,111 +710,151 @@ Feature: Manipulate impacts in a Disruption
         And the header "Content-Type" should be "application/json"
         And the field "error.message" should be "u'' does not match '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$'"
 
-        Scenario: Add an impact in a disruption without objects
+    Scenario: Add an impact in a disruption without objects
 
-	        Given I have the following clients in my database:
-	            | client_code   | created_at          | updated_at          | id                                   |
-	            | 5             | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
+        Given I have the following clients in my database:
+            | client_code   | created_at          | updated_at          | id                                   |
+            | 5             | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
 
-	        Given I have the following contributors in my database:
-	            | contributor_code   | created_at          | updated_at          | id                                   |
-	            | contrib1           | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
+        Given I have the following contributors in my database:
+            | contributor_code   | created_at          | updated_at          | id                                   |
+            | contrib1           | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
 
-	        Given I have the following causes in my database:
-	            | wording   | created_at          | updated_at          | is_visible | id                                   | client_id                            |
-	            | weather   | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | True       | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
+        Given I have the following causes in my database:
+            | wording   | created_at          | updated_at          | is_visible | id                                   | client_id                            |
+            | weather   | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | True       | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
 
-	        Given I have the following disruptions in my database:
-	            | reference | note  | created_at          | updated_at          | status    | id                                   | start_publication_date | end_publication_date     | cause_id                             | client_id                            | contributor_id                       |
-	            | bar       | bye   | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | published | a750994c-01fe-11e4-b4fb-080027079ff3 | 2014-04-15T23:52:12    | 2014-04-19T23:55:12      | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
-	            | toto      |       | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | published | 6a826e64-028f-11e4-92d0-090027079ff3 | 2014-04-20T23:52:12    | 2014-04-30T23:55:12      | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
+        Given I have the following disruptions in my database:
+            | reference | note  | created_at          | updated_at          | status    | id                                   | start_publication_date | end_publication_date     | cause_id                             | client_id                            | contributor_id                       |
+            | bar       | bye   | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | published | a750994c-01fe-11e4-b4fb-080027079ff3 | 2014-04-15T23:52:12    | 2014-04-19T23:55:12      | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
+            | toto      |       | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | published | 6a826e64-028f-11e4-92d0-090027079ff3 | 2014-04-20T23:52:12    | 2014-04-30T23:55:12      | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
 
-	        Given I have the following severities in my database:
-	            | wording   | color   | created_at          | updated_at          | is_visible | id                                   |client_id                            |
-	            | good news | #654321 | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | True       | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
-
-
-	        I fill in header "X-Customer-Id" with "5"
-	        I fill in header "X-Contributors" with "contrib1"
-	        I fill in header "X-Coverage" with "jdr"
-	        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
-	        When I post to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/impacts" with:
-	        """
-	        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}
-	        """
-	        Then the status code should be "400"
-	        And the header "Content-Type" should be "application/json"
-	        And the field "error.message" should be "objects should not be empty"
-
-	    Scenario: Add an impact in a disruption without application_periods
-
-	        Given I have the following clients in my database:
-	            | client_code   | created_at          | updated_at          | id                                   |
-	            | 5             | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
-
-	        Given I have the following contributors in my database:
-	            | contributor_code   | created_at          | updated_at          | id                                   |
-	            | contrib1           | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
-
-	        Given I have the following causes in my database:
-	            | wording   | created_at          | updated_at          | is_visible | id                                   | client_id                            |
-	            | weather   | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | True       | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
-
-	        Given I have the following disruptions in my database:
-	            | reference | note  | created_at          | updated_at          | status    | id                                   | start_publication_date | end_publication_date     | cause_id                             | client_id                            | contributor_id                       |
-	            | bar       | bye   | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | published | a750994c-01fe-11e4-b4fb-080027079ff3 | 2014-04-15T23:52:12    | 2014-04-19T23:55:12      | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
-	            | toto      |       | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | published | 6a826e64-028f-11e4-92d0-090027079ff3 | 2014-04-20T23:52:12    | 2014-04-30T23:55:12      | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
-
-	        Given I have the following severities in my database:
-	            | wording   | color   | created_at          | updated_at          | is_visible | id                                   |client_id                            |
-	            | good news | #654321 | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | True       | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
+        Given I have the following severities in my database:
+            | wording   | color   | created_at          | updated_at          | is_visible | id                                   |client_id                            |
+            | good news | #654321 | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | True       | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
 
 
-	        I fill in header "X-Customer-Id" with "5"
-	        I fill in header "X-Contributors" with "contrib1"
-	        I fill in header "X-Coverage" with "jdr"
-	        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
-	        When I post to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/impacts" with:
-	        """
-	        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "route:JDR:M1","type": "route"}], "application_periods": []}
-	        """
-	        Then the status code should be "400"
-	        And the header "Content-Type" should be "application/json"
-	        And the field "error.message" should be "application_periods should not be empty"
+        I fill in header "X-Customer-Id" with "5"
+        I fill in header "X-Contributors" with "contrib1"
+        I fill in header "X-Coverage" with "jdr"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
+        When I post to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/impacts" with:
+        """
+        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}
+        """
+        Then the status code should be "400"
+        And the header "Content-Type" should be "application/json"
+        And the field "error.message" should be "objects should not be empty"
+
+    Scenario: Add an impact in a disruption without application_periods
+
+        Given I have the following clients in my database:
+            | client_code   | created_at          | updated_at          | id                                   |
+            | 5             | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
+
+        Given I have the following contributors in my database:
+            | contributor_code   | created_at          | updated_at          | id                                   |
+            | contrib1           | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
+
+        Given I have the following causes in my database:
+            | wording   | created_at          | updated_at          | is_visible | id                                   | client_id                            |
+            | weather   | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | True       | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
+
+        Given I have the following disruptions in my database:
+            | reference | note  | created_at          | updated_at          | status    | id                                   | start_publication_date | end_publication_date     | cause_id                             | client_id                            | contributor_id                       |
+            | bar       | bye   | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | published | a750994c-01fe-11e4-b4fb-080027079ff3 | 2014-04-15T23:52:12    | 2014-04-19T23:55:12      | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
+            | toto      |       | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | published | 6a826e64-028f-11e4-92d0-090027079ff3 | 2014-04-20T23:52:12    | 2014-04-30T23:55:12      | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
+
+        Given I have the following severities in my database:
+            | wording   | color   | created_at          | updated_at          | is_visible | id                                   |client_id                            |
+            | good news | #654321 | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | True       | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
 
 
-	    Scenario: Add an impact in a disruption without application_period_patterns
+        I fill in header "X-Customer-Id" with "5"
+        I fill in header "X-Contributors" with "contrib1"
+        I fill in header "X-Coverage" with "jdr"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
+        When I post to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/impacts" with:
+        """
+        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "route:JDR:M1","type": "route"}], "application_periods": []}
+        """
+        Then the status code should be "400"
+        And the header "Content-Type" should be "application/json"
+        And the field "error.message" should be "application_periods should not be empty"
 
-	        Given I have the following clients in my database:
-	            | client_code   | created_at          | updated_at          | id                                   |
-	            | 5             | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
+    Scenario: Add an impact in a disruption without application_period_patterns
 
-	        Given I have the following contributors in my database:
-	            | contributor_code   | created_at          | updated_at          | id                                   |
-	            | contrib1           | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
+        Given I have the following clients in my database:
+            | client_code   | created_at          | updated_at          | id                                   |
+            | 5             | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
 
-	        Given I have the following causes in my database:
-	            | wording   | created_at          | updated_at          | is_visible | id                                   | client_id                            |
-	            | weather   | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | True       | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
+        Given I have the following contributors in my database:
+            | contributor_code   | created_at          | updated_at          | id                                   |
+            | contrib1           | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
 
-	        Given I have the following disruptions in my database:
-	            | reference | note  | created_at          | updated_at          | status    | id                                   | start_publication_date | end_publication_date     | cause_id                             | client_id                            | contributor_id                       |
-	            | bar       | bye   | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | published | a750994c-01fe-11e4-b4fb-080027079ff3 | 2014-04-15T23:52:12    | 2014-04-19T23:55:12      | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
-	            | toto      |       | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | published | 6a826e64-028f-11e4-92d0-090027079ff3 | 2014-04-20T23:52:12    | 2014-04-30T23:55:12      | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
+        Given I have the following causes in my database:
+            | wording   | created_at          | updated_at          | is_visible | id                                   | client_id                            |
+            | weather   | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | True       | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
 
-	        Given I have the following severities in my database:
-	            | wording   | color   | created_at          | updated_at          | is_visible | id                                   |client_id                            |
-	            | good news | #654321 | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | True       | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
+        Given I have the following disruptions in my database:
+            | reference | note  | created_at          | updated_at          | status    | id                                   | start_publication_date | end_publication_date     | cause_id                             | client_id                            | contributor_id                       |
+            | bar       | bye   | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | published | a750994c-01fe-11e4-b4fb-080027079ff3 | 2014-04-15T23:52:12    | 2014-04-19T23:55:12      | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
+            | toto      |       | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | published | 6a826e64-028f-11e4-92d0-090027079ff3 | 2014-04-20T23:52:12    | 2014-04-30T23:55:12      | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
+
+        Given I have the following severities in my database:
+            | wording   | color   | created_at          | updated_at          | is_visible | id                                   |client_id                            |
+            | good news | #654321 | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | True       | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
 
 
-	        I fill in header "X-Customer-Id" with "5"
-	        I fill in header "X-Contributors" with "contrib1"
-	        I fill in header "X-Coverage" with "jdr"
-	        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
-	        When I post to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/impacts" with:
-	        """
-	        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "route:JDR:M1","type": "route"}], "application_period_patterns": []}
-	        """
-	        Then the status code should be "400"
-	        And the header "Content-Type" should be "application/json"
-	        And the field "error.message" should be "application_period_patterns should not be empty"
+        I fill in header "X-Customer-Id" with "5"
+        I fill in header "X-Contributors" with "contrib1"
+        I fill in header "X-Coverage" with "jdr"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
+        When I post to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/impacts" with:
+        """
+        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "route:JDR:M1","type": "route"}], "application_period_patterns": []}
+        """
+        Then the status code should be "400"
+        And the header "Content-Type" should be "application/json"
+        And the field "error.message" should be "application_period_patterns should not be empty"
+
+    Scenario: Disruption with archived impacts
+
+        Given I have the following clients in my database:
+            | client_code   | created_at          | updated_at          | id                                   |
+            | 5             | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
+
+        Given I have the following contributors in my database:
+            | contributor_code   | created_at          | updated_at          | id                                   |
+            | contrib1           | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
+
+        Given I have the following causes in my database:
+            | wording   | created_at          | updated_at          | is_visible | id                                   | client_id                            |
+            | weather   | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | True       | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
+
+        Given I have the following severities in my database:
+            | wording   | color   | created_at          | updated_at          | is_visible | id                                   |client_id                            |
+            | good news | #654321 | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | True       | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
+
+
+        Given I have the following disruptions in my database:
+            | reference  | note   | created_at          | updated_at          | status    | id                                   | client_id                            | contributor_id                       |start_publication_date  |end_publication_date   | cause_id                             |
+            | foo1       | hello1 | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 7ffab230-3d48-4eea-aa2c-22f8680230b1 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |2014-01-01 16:52:00     |2034-02-02 16:52:00    | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |
+
+        Given I have the following impacts in my database:
+            | created_at          | updated_at          | status    | id                                   | disruption_id                          |severity_id                            |
+            | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | archived  | 7ffab232-3d47-4eea-aa2c-22f8680230b1 | 7ffab230-3d48-4eea-aa2c-22f8680230b1   |7ffab232-3d48-4eea-aa2c-22f8680230b6   |
+            | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | archived  | 7ffab232-3d47-4eea-aa2c-22f8680230b2 | 7ffab230-3d48-4eea-aa2c-22f8680230b1   |7ffab232-3d48-4eea-aa2c-22f8680230b6   |
+
+        Given I have the following ptobject in my database:
+            | type          | uri           | created_at          | updated_at          | id                                    |
+            | network       | network:JDR:2 | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b1  |
+
+        I fill in header "X-Customer-Id" with "5"
+        I fill in header "X-Coverage" with "jdr"
+        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
+        I fill in header "X-Contributors" with "contrib1"
+
+        When I get to "/disruptions/7ffab230-3d48-4eea-aa2c-22f8680230b1":
+        Then the status code should be "404"
+        And the header "Content-Type" should be "application/json"
