@@ -84,7 +84,7 @@ class PaginateObjects(fields.Raw):
 
     @classmethod
     def _filter(cls, impacts):
-        return impacts[:10]  # todo use the pagination to filter
+        return impacts[:20]  # todo use the pagination to filter
 
     def output(self, key, disruption):
         if isinstance(disruption, dict) and 'impacts' in disruption:
