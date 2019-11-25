@@ -119,7 +119,6 @@ Feature: Delete impacts in a Disruption
         And the header "Content-Type" should be "application/json"
         And the field "error.message" should be "id invalid"
 
-
     Scenario: Delete an impact whith id not in url
 
         Given I have the following clients in my database:
@@ -194,5 +193,4 @@ Feature: Delete impacts in a Disruption
         Then the status code should be "204"
 
         When I get "/disruptions/6a826e64-028f-11e4-92d0-090027079ff3"
-        Then the status code should be "200"
-        And the field "disruption.status" should be "archived"
+        Then the status code should be "404"
