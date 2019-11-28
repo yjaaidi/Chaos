@@ -11,7 +11,7 @@ datetime.datetime.strptime('', '')
 from gevent import monkey
 monkey.patch_all(thread=False, subprocess=False, os=False, signal=False)
 
-from flask import Flask
+from flask import Flask, got_request_exception
 from flask_sqlalchemy import SQLAlchemy
 import logging.config
 import sys
@@ -24,6 +24,11 @@ app.config.from_object('chaos.default_settings')
 app.config.from_envvar('CHAOS_CONFIG_FILE')
 app.request_class = Request
 
+from chaos import new_relic
+new_relic.init(app.config.get(str('NEWRELIC_CONFIG_FILE'), None))
+
+from chaos.exceptions import log_exception
+got_request_exception.connect(log_exception, app)
 
 if 'LOGGER' in app.config:
     logging.config.dictConfig(app.config['LOGGER'])
