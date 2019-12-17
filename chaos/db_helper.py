@@ -52,7 +52,7 @@ def manage_pt_object_without_line_section(navitia, db_objects, json_attribute, j
             try:
                 ptobject = fill_and_get_pt_object(navitia, pt_object_dict, pt_object_json, False)
             except exceptions.ObjectUnknown:
-                raise exceptions.ObjectUnknown('ptobject {} doesn\'t exist'.format(pt_object_json['id']))
+                raise exceptions.ObjectUnknown("ptobject '{}' doesn't exist".format(pt_object_json['id']))
 
             if ptobject.uri not in pt_object_db:
                 db_objects.append(ptobject)
@@ -101,9 +101,9 @@ def manage_tags(disruption, json):
         disruption.tags.remove(tag)
 
 
-def fill_and_add_line_section(navitia, impact_id, all_objects, pt_object_json):
+def fill_and_add_line_section(navitia, all_objects, pt_object_json):
     """
-    :param impact_id: impact_id to construct uri of line_section object
+    :param navitia: Class Navitia
     :param all_objects: dictionary of objects to be added in this session
     :param pt_object_json: Flux which contains json information of pt_object
     :return: pt_object and modify all_objects param
@@ -190,30 +190,37 @@ def clean_message(msg, type=''):
         msg.text = msg.text.replace('\r\n', ' ')
 
 def manage_message(impact, json, client_id):
+    # Same management for every cases as 'messages' is not required
+    if 'messages' not in json:
+        json['messages'] = []
     messages_db = dict((msg.channel_id, msg) for msg in impact.messages)
-    messages_json = dict()
-    if 'messages' in json:
-        messages_json = dict((msg["channel"]["id"], msg) for msg in json['messages'])
-        manage_channels_required(messages_json, client_id)
-        for message_json in json['messages']:
-            if message_json["channel"]["id"] in messages_db:
-                msg = messages_db[message_json["channel"]["id"]]
-                mapper.fill_from_json(msg, message_json, mapper.message_mapping)
-                clean_message(msg,  msg.channel.content_type)
-                manage_message_meta(msg, message_json)
-            else:
-                message = models.Message()
-                message.impact_id = impact.id
-                mapper.fill_from_json(message, message_json, mapper.message_mapping)
-                channel = models.Channel.get(message.channel_id, client_id)
-                clean_message(message, channel.content_type)
-                impact.insert_message(message)
-                manage_message_meta(message, message_json)
-                messages_db[message.channel_id] = message
+    messages_json = dict((msg["channel"]["id"], msg) for msg in json['messages'])
 
+    manage_channels_required(messages_json, client_id)
+    manage_message_db(impact, json, messages_json, messages_db, client_id)
+    manage_delete_message_db(impact, messages_json, messages_db)
+
+def manage_delete_message_db(impact, messages_json, messages_db):
     difference = set(messages_db) - set(messages_json)
     for diff in difference:
         impact.delete_message(messages_db[diff])
+
+def manage_message_db(impact, json, messages_json, messages_db, client_id):
+    for message_json in json['messages']:
+        if message_json["channel"]["id"] in messages_db:
+            msg = messages_db[message_json["channel"]["id"]]
+            mapper.fill_from_json(msg, message_json, mapper.message_mapping)
+            clean_message(msg, msg.channel.content_type)
+            manage_message_meta(msg, message_json)
+        else:
+            message = models.Message()
+            message.impact_id = impact.id
+            mapper.fill_from_json(message, message_json, mapper.message_mapping)
+            channel = models.Channel.get(message.channel_id, client_id)
+            clean_message(message, channel.content_type)
+            impact.insert_message(message)
+            manage_message_meta(message, message_json)
+            messages_db[message.channel_id] = message
 
 def manage_channels_required(messages_json, client_id):
     channels_required = models.Channel.get_channels_required(client_id)
@@ -299,7 +306,7 @@ def create_or_update_impact(disruption, json_impact, navitia, impact_id=None):
             # we insert this object in the table pt_object
             if pt_object_json["type"] == 'line_section':
                 try:
-                    ptobject = fill_and_add_line_section(navitia, impact_bd.id, all_objects, pt_object_json)
+                    ptobject = fill_and_add_line_section(navitia, all_objects, pt_object_json)
                 except exceptions.ObjectUnknown as xxx_todo_changeme:
                     exceptions.InvalidJson = xxx_todo_changeme
                     raise

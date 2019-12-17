@@ -13,7 +13,7 @@ from formats import *
 from formats import impact_input_format, channel_input_format, pt_object_type_values,\
     tag_input_format, category_input_format, channel_type_values,\
     property_input_format, disruptions_search_input_format, application_status_values, \
-    impacts_search_input_format, export_input_format
+    impacts_search_input_format, export_input_format, contributor_input_format
 from chaos import mapper, exceptions
 from chaos import utils, db_helper
 import chaos
@@ -23,7 +23,8 @@ import logging
 from utils import make_pager, option_value, get_current_time, add_notification_date_on_impacts
 from chaos.validate_params import validate_client, validate_contributor, validate_navitia, \
     manage_navitia_error, validate_id, validate_client_token, \
-    validate_send_notifications_and_notification_date, validate_pagination
+    validate_send_notifications_and_notification_date, validate_pagination, \
+    validate_cause
 from collections import OrderedDict
 from aniso8601 import parse_datetime
 from history import save_disruption_in_history, create_disruption_from_json
@@ -271,6 +272,7 @@ class Disruptions(flask_restful.Resource):
     @validate_client(True)
     @manage_navitia_error()
     @validate_client_token()
+    @validate_cause()
     @validate_send_notifications_and_notification_date()
     def post(self, client, navitia):
         self.navitia = navitia
@@ -348,6 +350,7 @@ class Disruptions(flask_restful.Resource):
     @manage_navitia_error()
     @validate_id(True)
     @validate_client_token()
+    @validate_cause()
     @validate_send_notifications_and_notification_date()
     def put(self, client, contributor, navitia, id):
         self.navitia = navitia
@@ -1310,6 +1313,37 @@ this impact to Navitia. Please try again.'}}, error_fields), 503
         return marshal(
             {'error': {'message': 'An error occurred during deletion\
 . Please try again.'}}, error_fields), 500
+
+class Contributor(flask_restful.Resource):
+    @validate_client()
+    @validate_client_token()
+    def post(self, client):
+        json = request.get_json(silent=True)
+        logging.getLogger(__name__).debug('Post contributor: %s', json)
+
+        try:
+            validate(json, contributor_input_format)
+        except ValidationError as e:
+            logging.debug(str(e))
+            return marshal({'error': {'message': utils.parse_error(e)}},
+                           error_fields), 400
+
+        contributor = models.Contributor.get_by_code(json.get('code'))
+        if contributor:
+            return marshal({"error": {"message": "Contributor with code '{}' already exist".format(json.get('code'))}}, error_fields), 409
+
+        contributor = models.Contributor()
+        mapper.fill_from_json(contributor, json, mapper.contributor_mapping)
+        db.session.add(contributor)
+        try:
+            db.session.commit()
+            db.session.refresh(contributor)
+        except IntegrityError as e:
+            logging.debug(str(e))
+            return marshal({'error': {'message': utils.parse_error(e)}},
+                           error_fields), 400
+
+        return marshal({'code': contributor.contributor_code}, contributor_field), 201
 
 
 class Channel(flask_restful.Resource):
