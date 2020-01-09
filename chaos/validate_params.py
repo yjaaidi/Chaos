@@ -176,7 +176,7 @@ class validate_cause(object):
                 cause_id = json['cause']['id']
                 client = models.Client.get_by_code(get_client_code(request))
                 try:
-                    cause = models.Cause.get(cause_id, client.id)
+                    models.Cause.get(cause_id, client.id)
                 except NotFound as e:
                     return marshal(
                         {'error': {'message': 'The cause with id {} does not exist for this client'.format(cause_id)}},
