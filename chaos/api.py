@@ -1,6 +1,7 @@
 # Copyright (c) since 2001, Kisio Digital and/or its affiliates. All rights reserved.
 
 from chaos import resources
+from chaos.exceptions import log_exception
 import flask_restful
 
 from chaos import app
@@ -97,7 +98,7 @@ def error_handler(exception):
     """
     log all exceptions not catch before
     """
-    app.logger.exception('')
+    log_exception(None, exception)
 
 
 if api.app.config.get('ACTIVATE_PROFILING'):
