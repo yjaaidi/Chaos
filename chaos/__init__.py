@@ -25,7 +25,7 @@ app.config.from_envvar('CHAOS_CONFIG_FILE')
 app.request_class = Request
 
 from chaos import new_relic
-new_relic.init(app.config.get(str('NEWRELIC_CONFIG_FILE'), None))
+new_relic.init(app.config.get(str('NEW_RELIC_CONFIG_FILE'), None))
 
 from chaos.exceptions import log_exception
 got_request_exception.connect(log_exception, app)

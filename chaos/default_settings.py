@@ -98,4 +98,4 @@ LOGGER = {
 }
 
 # Newrelic file
-NEWRELIC_CONFIG_FILE = str(os.getenv('NEWRELIC_CONFIG_FILE', None))
+NEW_RELIC_CONFIG_FILE = str(os.getenv('NEW_RELIC_CONFIG_FILE', None))
