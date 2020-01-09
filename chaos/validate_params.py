@@ -34,7 +34,9 @@ from chaos import exceptions, models, utils, fields
 from flask_restful import marshal
 from flask.ext.restful import abort
 from flask import request, current_app
-from formats import id_format, id_format_text
+from formats import id_format, disruptions_input_format
+from jsonschema import validate, ValidationError
+import logging
 from os import path
 from werkzeug.exceptions import NotFound
 
@@ -165,12 +167,13 @@ class validate_cause(object):
         def wrapper(*args, **kwargs):
             json = request.get_json(silent=True)
             if json and 'cause' in json:
+                try:
+                    validate(json['cause'], disruptions_input_format['properties']['cause'])
+                except ValidationError as e:
+                    logging.getLogger(__name__).debug(str(e))
+                    return marshal({'error': {'message': utils.parse_error(e)}},
+                                fields.error_fields), 400
                 cause_id = json['cause']['id']
-                if not id_format.match(cause_id):
-                    return marshal(
-                        {'error': {'message': "'{}' does not match '{}'".format(cause_id, id_format_text)}},
-                        fields.error_fields
-                    ), 400
                 client = models.Client.get_by_code(get_client_code(request))
                 try:
                     cause = models.Cause.get(cause_id, client.id)

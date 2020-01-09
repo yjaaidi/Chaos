@@ -592,4 +592,4 @@ Feature: Create disruption
         """
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
-        And the field "error.message" should be "'AA-BB' does not match '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'"
+        And the field "error.message" should be "u'AA-BB' does not match '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'"
