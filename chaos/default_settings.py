@@ -96,3 +96,6 @@ LOGGER = {
         },
     }
 }
+
+# Newrelic file
+NEW_RELIC_CONFIG_FILE = str(os.getenv('NEW_RELIC_CONFIG_FILE', None))
