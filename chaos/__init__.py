@@ -1,6 +1,6 @@
 # Copyright (c) since 2001, Kisio Digital and/or its affiliates. All rights reserved.
 
-VERSION = 'v1.2.26'
+VERSION = 'v1.2.27'
 
 # http://bugs.python.org/issue7980
 import datetime
