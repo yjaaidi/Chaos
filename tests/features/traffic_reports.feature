@@ -914,8 +914,8 @@ Feature: traffic report api
         | stop_area    | stop_area:JDR:SA:CHVIN                           | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 8ffab232-3d48-4eea-aa2c-22f8680230b6       |
 
     Given I have the following line_section in my database:
-        | id                                    | line_object_id                        | created_at            | updated_at          | start_object_id                      |end_object_id                       |sens|object_id                           |
-        | 7ffab234-3d49-4eea-aa2c-22f8680230b6  | 1ffab232-3d48-4eea-aa2c-22f8680230b6  | 2014-04-04T23:52:12   | 2014-04-04T23:52:12 | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |8ffab232-3d48-4eea-aa2c-22f8680230b6|0   |3ffab232-3d48-4eea-aa2c-22f8680230b6|
+        | id                                    | line_object_id                        | created_at            | updated_at          | start_object_id                      |end_object_id                       |object_id                           |
+        | 7ffab234-3d49-4eea-aa2c-22f8680230b6  | 1ffab232-3d48-4eea-aa2c-22f8680230b6  | 2014-04-04T23:52:12   | 2014-04-04T23:52:12 | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |8ffab232-3d48-4eea-aa2c-22f8680230b6|3ffab232-3d48-4eea-aa2c-22f8680230b6|
 
     Given I have the relation associate_line_section_route_object in my database:
         | route_object_id                               | line_section_id                      |
@@ -1015,9 +1015,9 @@ Feature: traffic report api
         | stop_area    | stop_area:JDR:SA:CHVIN                           | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 8ffab232-3d48-4eea-aa2c-22f8680230b6       |
 
     Given I have the following line_section in my database:
-        | id                                    | line_object_id                        | created_at            | updated_at          | start_object_id                      |end_object_id                       |sens|object_id                           |
-        | 7ffab234-3d49-4eea-aa2c-22f8680230b6  | 1ffab232-3d48-4eea-aa2c-22f8680230b6  | 2014-04-04T23:52:12   | 2014-04-04T23:52:12 | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |8ffab232-3d48-4eea-aa2c-22f8680230b6|0   |3ffab232-3d48-4eea-aa2c-22f8680230b6|
-        | 7ffab234-3d49-4eea-aa2c-22f8680230b7  | 1ffab232-3d48-4eea-aa2c-22f8680230b6  | 2014-04-04T23:52:12   | 2014-04-04T23:52:12 | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |8ffab232-3d48-4eea-aa2c-22f8680230b6|0   |3ffab232-3d48-4eea-aa2c-22f8680230b7|
+        | id                                    | line_object_id                        | created_at            | updated_at          | start_object_id                      |end_object_id                       |object_id                           |
+        | 7ffab234-3d49-4eea-aa2c-22f8680230b6  | 1ffab232-3d48-4eea-aa2c-22f8680230b6  | 2014-04-04T23:52:12   | 2014-04-04T23:52:12 | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |8ffab232-3d48-4eea-aa2c-22f8680230b6|3ffab232-3d48-4eea-aa2c-22f8680230b6|
+        | 7ffab234-3d49-4eea-aa2c-22f8680230b7  | 1ffab232-3d48-4eea-aa2c-22f8680230b6  | 2014-04-04T23:52:12   | 2014-04-04T23:52:12 | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |8ffab232-3d48-4eea-aa2c-22f8680230b6|3ffab232-3d48-4eea-aa2c-22f8680230b7|
 
     Given I have the relation associate_line_section_route_object in my database:
         | route_object_id                               | line_section_id                      |
