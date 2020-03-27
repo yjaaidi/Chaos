@@ -82,7 +82,6 @@ line_section_format = {
         'line': get_object_format('line'),
         'start_point': get_object_format('stop_area'),
         'end_point': get_object_format('stop_area'),
-        'sens': {'type': ['integer', 'null']},
         'routes': {
             'type': 'array',
             'items': get_object_format('route'),

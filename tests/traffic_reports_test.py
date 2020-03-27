@@ -322,7 +322,6 @@ def test_get_traffic_report_with_impact_on_line_sections():
     ptobject.type = "line_section"
     ptobject.line_section = chaos.models.LineSection()
     ptobject.line_section.id = '7ffab234-3d49-4eea-aa2c-22f8680230b6'
-    ptobject.line_section.sens = 1
     ptobject.line_section.line = chaos.models.PTobject()
     ptobject.line_section.line.uri = 'line:uri3'
     ptobject.line_section.line.type = 'line'
@@ -386,7 +385,6 @@ def test_filter_disruptions_by_ptobjects():
     ptobject_1.type = "line_section"
     ptobject_1.line_section = chaos.models.LineSection()
     ptobject_1.line_section.id = '7ffab234-3d49-4eea-aa2c-22f8680230b6'
-    ptobject_1.line_section.sens = 1
     ptobject_1.line_section.line = chaos.models.PTobject()
     ptobject_1.line_section.line.uri = 'line:uri3'
     ptobject_1.line_section.line.type = 'line'

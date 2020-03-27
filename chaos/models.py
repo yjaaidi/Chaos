@@ -503,7 +503,7 @@ class Disruption(TimestampMixin, db.Model):
                 'me.id AS meta_id', 'me.key AS meta_key', 'me.value AS meta_value',
                 'pa.id AS pattern_id, pa.start_date AS pattern_start_date, pa.end_date AS pattern_end_date, pa.weekly_pattern AS pattern_weekly_pattern',
                 'ts.id AS time_slot_id, ts.begin AS time_slot_begin, ts.end AS time_slot_end',
-                'ls.id AS line_section_id, ls.sens AS line_section_sens',
+                'ls.id AS line_section_id',
                 'po_line.uri AS line_section_line_uri, po_line.type AS line_section_line_type',
                 'po_start.uri AS line_section_start_uri, po_start.type AS line_section_start_type',
                 'po_end.uri AS line_section_end_uri, po_end.type AS line_section_end_type',
@@ -1084,7 +1084,7 @@ class Disruption(TimestampMixin, db.Model):
                 'me.id AS meta_id', 'me.key AS meta_key', 'me.value AS meta_value',
                 'pa.id AS pattern_id, pa.start_date AS pattern_start_date, pa.end_date AS pattern_end_date, pa.weekly_pattern AS pattern_weekly_pattern',
                 'ts.id AS time_slot_id, ts.begin AS time_slot_begin, ts.end AS time_slot_end',
-                'ls.id AS line_section_id, ls.sens AS line_section_sens',
+                'ls.id AS line_section_id',
                 'po_line.uri AS line_section_line_uri, po_line.type AS line_section_line_type',
                 'po_start.uri AS line_section_start_uri, po_start.type AS line_section_start_type',
                 'po_end.uri AS line_section_end_uri, po_end.type AS line_section_end_type',
@@ -1141,7 +1141,7 @@ class Disruption(TimestampMixin, db.Model):
             'me.id AS meta_id', 'me.key AS meta_key', 'me.value AS meta_value',
             'pa.id AS pattern_id, pa.start_date AS pattern_start_date, pa.end_date AS pattern_end_date, pa.weekly_pattern AS pattern_weekly_pattern',
             'ts.id AS time_slot_id, ts.begin AS time_slot_begin, ts.end AS time_slot_end',
-            'ls.id AS line_section_id, ls.sens AS line_section_sens',
+            'ls.id AS line_section_id',
             'po_line.uri AS line_section_line_uri, po_line.type AS line_section_line_type',
             'po_start.uri AS line_section_start_uri, po_start.type AS line_section_start_type',
             'po_end.uri AS line_section_end_uri, po_end.type AS line_section_end_type',
@@ -1785,7 +1785,7 @@ class Impact(TimestampMixin, db.Model):
                 'me.id AS meta_id', 'me.key AS meta_key', 'me.value AS meta_value',
                 'pa.id AS pattern_id, pa.start_date AS pattern_start_date, pa.end_date AS pattern_end_date, pa.weekly_pattern AS pattern_weekly_pattern',
                 'ts.id AS time_slot_id, ts.begin AS time_slot_begin, ts.end AS time_slot_end',
-                'ls.id AS line_section_id, ls.sens AS line_section_sens',
+                'ls.id AS line_section_id',
                 'po_line.uri AS line_section_line_uri, po_line.type AS line_section_line_type',
                 'po_start.uri AS line_section_start_uri, po_start.type AS line_section_start_type',
                 'po_end.uri AS line_section_end_uri, po_end.type AS line_section_end_type',
@@ -2016,7 +2016,6 @@ class LineSection(TimestampMixin, db.Model):
     line_object_id = db.Column(UUID, db.ForeignKey(PTobject.id), nullable=False)
     start_object_id = db.Column(UUID, db.ForeignKey(PTobject.id), nullable=False)
     end_object_id = db.Column(UUID, db.ForeignKey(PTobject.id), nullable=False)
-    sens = db.Column(db.Integer, unique=False, nullable=True)
     object_id = db.Column(UUID, db.ForeignKey(PTobject.id))
     line = db.relationship('PTobject', foreign_keys=line_object_id)
     start_point = db.relationship('PTobject', foreign_keys=start_object_id, lazy="joined")

@@ -148,8 +148,7 @@ channel_mapping = {
 line_section_mapping = {
     'line': None,
     'start_point': None,
-    'end_point': None,
-    'sens': None
+    'end_point': None
 }
 
 pattern_mapping = {

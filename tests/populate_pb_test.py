@@ -84,7 +84,6 @@ def get_disruption(contributor_code, with_via=True, with_routes=True, with_messa
     ptobject.uri = "line_section:123"
     ptobject.type = "line_section"
     ptobject.line_section = chaos.models.LineSection()
-    ptobject.line_section.sens = 1
     ptobject.line_section.line = chaos.models.PTobject()
     ptobject.line_section.line.uri = 'line:1'
     ptobject.line_section.line.type = 'line'

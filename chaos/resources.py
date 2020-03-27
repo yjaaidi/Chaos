@@ -698,7 +698,6 @@ class ImpactsSearch(flask_restful.Resource):
                             'uri': r.line_section_end_uri,
                             'type': r.line_section_end_type
                         },
-                        'sens': r.line_section_sens,
                         'routes': [],
                         'via': [],
                         'metas': []

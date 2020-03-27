@@ -168,10 +168,6 @@ def fill_and_add_line_section(navitia, all_objects, pt_object_json):
             except exceptions.ObjectUnknown:
                 raise exceptions.ObjectUnknown('{} {} doesn\'t exist'.format(via['type'], via['id']))
 
-    # Fill sens from json
-    if 'sens' in line_section_json:
-        line_section.sens = line_section_json["sens"]
-
     # Fill wordings from json
     #"meta":[{"key":"direction", "value": "1234"}, {"key":"direction", "value": "5678"}]
     if 'metas' in line_section_json:
