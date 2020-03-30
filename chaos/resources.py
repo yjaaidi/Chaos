@@ -141,9 +141,12 @@ class Severity(flask_restful.Resource):
     @validate_id(True)
     @validate_client_token()
     def delete(self, client, id):
-
         try:
             severity = models.Severity.get(id, client.id)
+            if (severity.is_used_in_impact()):
+                error_msg = 'The current \'{}\' is linked to at least one impact and cannot be deleted'.format(severity.wording)
+                logging.getLogger(__name__).warning(error_msg)
+                return marshal({'error': {'message': error_msg}}, error_fields), 409
         except exceptions.ObjectUnknown as e:
             return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 404

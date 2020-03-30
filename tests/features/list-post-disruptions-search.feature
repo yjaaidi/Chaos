@@ -203,7 +203,7 @@ Feature: list disruptions with ptObjects filter
 
         Given I have the following applicationperiods in my database:
             | created_at          | updated_at          |id                                   | impact_id                            |start_date                           |end_date            |
-            | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab232-3d47-4eea-aa2c-22f8680230b1 | 7ffab232-3d47-4eea-aa2c-22f8680230b6 |2014-04-10 16:52:00                  |2014-04-30 16:52:00 |                 |2014-01-30 16:52:00 |
+            | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab232-3d47-4eea-aa2c-22f8680230b1 | 7ffab232-3d47-4eea-aa2c-22f8680230b6 |2014-04-10 16:52:00                  |2014-04-30 16:52:00 |
             | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab232-3d47-4eea-aa2c-22f8680230b5 | 7ffab234-3d49-4eea-aa2c-22f8680230b3 |2014-04-10 16:52:00                  |2014-04-30 16:52:00 |
             | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab232-3d47-4eea-aa2c-22f8680230b6 | 7ffab234-3d49-4eec-aa2c-22f8680230b4 |2014-04-10 16:52:00                  |2014-04-30 16:52:00 |
             | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab232-3d47-4eea-aa2c-22f8680230b7 | 7ffab234-3d49-4eec-aa2c-22f8680230b5 |2014-04-10 16:52:00                  |2014-04-30 16:52:00 |
@@ -698,9 +698,28 @@ Feature: list disruptions with ptObjects filter
             | created_at          | updated_at          |id                                   | impact_id                            |start_date                           |end_date            |
             | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab232-3d47-4eea-aa2c-22f8680230b1 | 7ffab232-3d47-4eea-aa2c-22f8680230b6 |2014-04-10 16:52:00                  |2014-04-17 16:52:00 |
 
+        # string accepted as boolean
         When I post to "/disruptions/_search" with:
         """
         {"current_time": "2014-04-15T14:00:00Z", "publication_status": ["ongoing"], "ptObjectFilter": {"lines": ["line:JDR:M1"]}, "line_section": "true"}
+        """
+        Then the status code should be "200"
+        And the header "Content-Type" should be "application/json"
+        And the field "disruptions" should have a size of 1
+
+        # boolean
+        When I post to "/disruptions/_search" with:
+        """
+        {"current_time": "2014-04-15T14:00:00Z", "publication_status": ["ongoing"], "ptObjectFilter": {"lines": ["line:JDR:M1"]}, "line_section": true}
+        """
+        Then the status code should be "200"
+        And the header "Content-Type" should be "application/json"
+        And the field "disruptions" should have a size of 1
+
+        # int accepted as boolean
+        When I post to "/disruptions/_search" with:
+        """
+        {"current_time": "2014-04-15T14:00:00Z", "publication_status": ["ongoing"], "ptObjectFilter": {"lines": ["line:JDR:M1"]}, "line_section": 1}
         """
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"

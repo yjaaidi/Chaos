@@ -190,6 +190,11 @@ class Severity(TimestampMixin, db.Model):
 
         return severity
 
+    def is_used_in_impact(self):
+        return db.engine.execute(
+            'SELECT count(*) FROM impact WHERE severity_id = \'{}\' AND status != \'archived\''.format(self.id)
+        ).scalar() > 0
+
 
 class Category(TimestampMixin, db.Model):
     """
