@@ -362,7 +362,6 @@ def test_get_traffic_report_with_impact_on_line_sections():
                             "type": "stop_area"
                         },
                         "routes": [],
-                        "via": [],
                         "metas": []
                     },
                     "type": "line_section",

@@ -18,7 +18,6 @@ def map_disruption(results):
     application_period_patterns = {}
     time_slots = {}
     line_section_metas = {}
-    line_section_via = {}
     line_section_routes = {}
 
     for r in results:
@@ -148,8 +147,6 @@ def map_disruption(results):
             if line_section_id is not None:
                 if impact_pt_object_id not in line_section_metas:
                     line_section_metas[impact_pt_object_id] = {}
-                if impact_pt_object_id not in line_section_via:
-                    line_section_via[impact_pt_object_id] = {}
                 if impact_pt_object_id not in line_section_routes:
                     line_section_routes[impact_pt_object_id] = {}
 
@@ -157,11 +154,6 @@ def map_disruption(results):
                     line_section_metas[impact_pt_object_id][r.awlsw_id] = {
                         'key': r.awlsw_key,
                         'value': r.awlsw_value
-                    }
-                if r.po_via_id is not None:
-                    line_section_via[impact_pt_object_id][r.po_via_id] = {
-                        'uri': r.po_via_uri,
-                        'type': r.po_via_type
                     }
                 if r.po_route_id is not None:
                     line_section_routes[impact_pt_object_id][r.po_route_id] = {
@@ -182,7 +174,6 @@ def map_disruption(results):
                         'type': r.line_section_end_type
                     },
                     'routes': [],
-                    'via': [],
                     'metas': []
                 }
 
@@ -283,8 +274,6 @@ def map_disruption(results):
                 application_period_pattern['time_slots'] = time_slots[application_period_pattern_id].values()
             for pt_object in impact['objects']:
                 impact_pt_object_id = pt_object['id']
-                if impact_pt_object_id in line_section_via:
-                    pt_object['line_section']['via'] = line_section_via[impact_pt_object_id].values()
                 if impact_pt_object_id in line_section_routes:
                     pt_object['line_section']['routes'] = line_section_routes[impact_pt_object_id].values()
                 if impact_pt_object_id in line_section_metas:

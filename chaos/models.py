@@ -513,8 +513,7 @@ class Disruption(TimestampMixin, db.Model):
                 'po_start.uri AS line_section_start_uri, po_start.type AS line_section_start_type',
                 'po_end.uri AS line_section_end_uri, po_end.type AS line_section_end_type',
                 'po_route.id AS po_route_id, po_route.uri AS po_route_uri, po_route.type AS po_route_type',
-                'awlsw.id AS awlsw_id, awlsw.key AS awlsw_key, awlsw.value AS awlsw_value',
-                'po_via.id AS po_via_id, po_via.uri AS po_via_uri, po_via.type AS po_via_type'
+                'awlsw.id AS awlsw_id, awlsw.key AS awlsw_key, awlsw.value AS awlsw_value'
             ],
             'and_wheres' : [
                 'd.id = :disruption_id',
@@ -872,8 +871,6 @@ class Disruption(TimestampMixin, db.Model):
         join_tables.append('LEFT JOIN pt_object AS po_end ON (po_end.id = ls.end_object_id)')
         join_tables.append('LEFT JOIN associate_line_section_route_object AS alsro ON (alsro.line_section_id = ls.id)')
         join_tables.append('LEFT JOIN pt_object AS po_route ON (alsro.route_object_id = po_route.id)')
-        join_tables.append('LEFT JOIN associate_line_section_via_object AS alsvo ON (alsvo.line_section_id = ls.id)')
-        join_tables.append('LEFT JOIN pt_object AS po_via ON (alsvo.stop_area_object_id = po_via.id)')
         join_tables.append('LEFT JOIN associate_wording_line_section AS awls ON (awls.line_section_id = ls.id)')
         join_tables.append('LEFT JOIN wording AS awlsw ON (awls.wording_id = awlsw.id)')
 
@@ -1094,8 +1091,7 @@ class Disruption(TimestampMixin, db.Model):
                 'po_start.uri AS line_section_start_uri, po_start.type AS line_section_start_type',
                 'po_end.uri AS line_section_end_uri, po_end.type AS line_section_end_type',
                 'po_route.id AS po_route_id, po_route.uri AS po_route_uri, po_route.type AS po_route_type',
-                'awlsw.id AS awlsw_id, awlsw.key AS awlsw_key, awlsw.value AS awlsw_value',
-                'po_via.id AS po_via_id, po_via.uri AS po_via_uri, po_via.type AS po_via_type'
+                'awlsw.id AS awlsw_id, awlsw.key AS awlsw_key, awlsw.value AS awlsw_value'
             ]
         query_parts['and_wheres'].append('d.id IN :disruption_ids')
         query_parts['order_by'] = ['d.end_publication_date','d.id', 'po.type','po.uri']
@@ -1151,8 +1147,7 @@ class Disruption(TimestampMixin, db.Model):
             'po_start.uri AS line_section_start_uri, po_start.type AS line_section_start_type',
             'po_end.uri AS line_section_end_uri, po_end.type AS line_section_end_type',
             'po_route.id AS po_route_id, po_route.uri AS po_route_uri, po_route.type AS po_route_type',
-            'awlsw.id AS awlsw_id, awlsw.key AS awlsw_key, awlsw.value AS awlsw_value',
-            'po_via.id AS po_via_id, po_via.uri AS po_via_uri, po_via.type AS po_via_type'
+            'awlsw.id AS awlsw_id, awlsw.key AS awlsw_key, awlsw.value AS awlsw_value'
         ]
         query_parts['order_by'] = ['d.version']
         return query_parts
@@ -1207,8 +1202,6 @@ class Disruption(TimestampMixin, db.Model):
         join_tables.append('LEFT JOIN pt_object AS po_end ON (po_end.id = ls.end_object_id)')
         join_tables.append('LEFT JOIN associate_line_section_route_object AS alsro ON (alsro.line_section_id = ls.id)')
         join_tables.append('LEFT JOIN pt_object AS po_route ON (alsro.route_object_id = po_route.id)')
-        join_tables.append('LEFT JOIN associate_line_section_via_object AS alsvo ON (alsvo.line_section_id = ls.id)')
-        join_tables.append('LEFT JOIN pt_object AS po_via ON (alsvo.stop_area_object_id = po_via.id)')
         join_tables.append('LEFT JOIN associate_wording_line_section AS awls ON (awls.line_section_id = ls.id)')
         join_tables.append('LEFT JOIN wording AS awlsw ON (awls.wording_id = awlsw.id)')
         return join_tables
@@ -1427,7 +1420,6 @@ class Impact(TimestampMixin, db.Model):
             alias_start_point = aliased(PTobject)
             alias_end_point = aliased(PTobject)
             alias_route = aliased(PTobject)
-            alias_via = aliased(PTobject)
 
             query_line_section = query_line_section.filter(pt_object_alias.type == 'line_section')
             query_line_section = query_line_section.join(pt_object_alias.line_section)
@@ -1437,7 +1429,6 @@ class Impact(TimestampMixin, db.Model):
             query_line_section = query_line_section.join(
                 alias_end_point, LineSection.end_object_id == alias_end_point.id)
             query_line_section = query_line_section.outerjoin(alias_route, LineSection.routes)
-            query_line_section = query_line_section.outerjoin(alias_via, LineSection.via)
         else:
             filter_with_line_section = False
 
@@ -1455,7 +1446,6 @@ class Impact(TimestampMixin, db.Model):
             uri_filters.append(alias_start_point.uri.in_(uris))
             uri_filters.append(alias_end_point.uri.in_(uris))
             uri_filters.append(alias_route.uri.in_(uris))
-            uri_filters.append(alias_via.uri.in_(uris))
             query_line_section = query_line_section.filter(or_(*uri_filters))
 
         if filter_with_line_section:
@@ -1568,8 +1558,6 @@ class Impact(TimestampMixin, db.Model):
         join_tables.append('LEFT JOIN pt_object AS po_end ON (po_end.id = ls.end_object_id)')
         join_tables.append('LEFT JOIN associate_line_section_route_object AS alsro ON (alsro.line_section_id = ls.id)')
         join_tables.append('LEFT JOIN pt_object AS po_route ON (alsro.route_object_id = po_route.id)')
-        join_tables.append('LEFT JOIN associate_line_section_via_object AS alsvo ON (alsvo.line_section_id = ls.id)')
-        join_tables.append('LEFT JOIN pt_object AS po_via ON (alsvo.stop_area_object_id = po_via.id)')
         join_tables.append('LEFT JOIN associate_wording_line_section AS awls ON (awls.line_section_id = ls.id)')
         join_tables.append('LEFT JOIN wording AS awlsw ON (awls.wording_id = awlsw.id)')
 
@@ -1707,8 +1695,6 @@ class Impact(TimestampMixin, db.Model):
         join_tables.append('LEFT JOIN pt_object AS po_end ON (po_end.id = ls.end_object_id)')
         join_tables.append('LEFT JOIN associate_line_section_route_object AS alsro ON (alsro.line_section_id = ls.id)')
         join_tables.append('LEFT JOIN pt_object AS po_route ON (alsro.route_object_id = po_route.id)')
-        join_tables.append('LEFT JOIN associate_line_section_via_object AS alsvo ON (alsvo.line_section_id = ls.id)')
-        join_tables.append('LEFT JOIN pt_object AS po_via ON (alsvo.stop_area_object_id = po_via.id)')
         join_tables.append('LEFT JOIN associate_wording_line_section AS awls ON (awls.line_section_id = ls.id)')
         join_tables.append('LEFT JOIN wording AS awlsw ON (awls.wording_id = awlsw.id)')
 
@@ -1795,8 +1781,7 @@ class Impact(TimestampMixin, db.Model):
                 'po_start.uri AS line_section_start_uri, po_start.type AS line_section_start_type',
                 'po_end.uri AS line_section_end_uri, po_end.type AS line_section_end_type',
                 'po_route.id AS po_route_id, po_route.uri AS po_route_uri, po_route.type AS po_route_type',
-                'awlsw.id AS awlsw_id, awlsw.key AS awlsw_key, awlsw.value AS awlsw_value',
-                'po_via.id AS po_via_id, po_via.uri AS po_via_uri, po_via.type AS po_via_type'
+                'awlsw.id AS awlsw_id, awlsw.key AS awlsw_key, awlsw.value AS awlsw_value'
             ]
         query_parts['and_wheres'].append('i.id IN :impact_ids')
         query_parts['order_by'] = ['ap.end_date','i.id', 'po.type','po.uri']
@@ -1822,20 +1807,6 @@ associate_line_section_route_object = db.Table(
         name='line_section_route_object_pk'
     )
 )
-
-
-associate_line_section_via_object = db.Table(
-    'associate_line_section_via_object',
-    db.metadata,
-    db.Column('line_section_id', UUID, db.ForeignKey('line_section.id')),
-    db.Column('stop_area_object_id', UUID, db.ForeignKey('pt_object.id')),
-    db.PrimaryKeyConstraint(
-        'line_section_id',
-        'stop_area_object_id',
-        name='line_section_stop_area_object_pk'
-    )
-)
-
 
 class PTobject(TimestampMixin, db.Model):
     __tablename__ = 'pt_object'
@@ -2026,7 +1997,6 @@ class LineSection(TimestampMixin, db.Model):
     start_point = db.relationship('PTobject', foreign_keys=start_object_id, lazy="joined")
     end_point = db.relationship('PTobject', foreign_keys=end_object_id, lazy="joined")
     routes = db.relationship("PTobject", secondary=associate_line_section_route_object, lazy="joined")
-    via = db.relationship("PTobject", secondary=associate_line_section_via_object, lazy="joined")
     wordings = db.relationship(
         "Wording",
         secondary=associate_wording_line_section,

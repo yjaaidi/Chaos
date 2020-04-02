@@ -158,16 +158,6 @@ def fill_and_add_line_section(navitia, all_objects, pt_object_json):
             except exceptions.ObjectUnknown:
                 raise exceptions.ObjectUnknown('{} {} doesn\'t exist'.format(route['type'], route['id']))
 
-    # Here we manage via in line_section
-    #"via":[{"id":"stop_area:MTD:9", "type": "stop_area"}, {"id":"stop_area:MTD:Nav23", "type": "stop_area"}]
-    if 'via' in line_section_json:
-        for via in line_section_json["via"]:
-            try:
-                via_object = fill_and_get_pt_object(navitia, all_objects, via, True)
-                line_section.via.append(via_object)
-            except exceptions.ObjectUnknown:
-                raise exceptions.ObjectUnknown('{} {} doesn\'t exist'.format(via['type'], via['id']))
-
     # Fill wordings from json
     #"meta":[{"key":"direction", "value": "1234"}, {"key":"direction", "value": "5678"}]
     if 'metas' in line_section_json:

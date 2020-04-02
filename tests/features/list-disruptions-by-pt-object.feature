@@ -234,7 +234,7 @@ Feature: list impacts by ptobject and/or uri(s)
 
     #Here we have a disruption with one impact, two objects (one object is present also in a line_section of another disruption/impact)
     #Another disruption with one impact, one object line_section having route, another object (network)
-    Scenario: Use uri filter to display disruption with impact having line_section, routes and via
+    Scenario: Use uri filter to display disruption with impact having line_section and routes
         Given I have the following contributors in my database:
             | contributor_code   | created_at          | updated_at          | id                                   |
             | contrib1           | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
@@ -298,7 +298,7 @@ Feature: list impacts by ptobject and/or uri(s)
         And the field "disruptions.0.id" should be "8ffab230-3d48-4eea-aa2c-22f8680230b6"
 
         #Query on object 'stop_area:JDR:SA:REUIL' present in two disruptions
-        #One as a simple object and another as 'stop_area' of via in a line_section
+        #One as a simple object and another as 'stop_area' in a line_section
         When I get "/disruptions?uri=stop_area:JDR:SA:REUIL"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"

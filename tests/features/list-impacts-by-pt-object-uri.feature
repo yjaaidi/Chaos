@@ -444,8 +444,8 @@ Feature: list impacts by ptobject and/or uri(s)
             | 5             | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
 
         Given I have the following severities in my database:
-                | wording   | color   | created_at          | updated_at          | is_visible | id                                   |client_id                            |
-                | good news | #654321 | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | True       | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
+            | wording   | color   | created_at          | updated_at          | is_visible | id                                   |client_id                            |
+            | good news | #654321 | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | True       | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
 
         Given I have the following contributors in my database:
             | contributor_code   | created_at          | updated_at          | id                                   |
@@ -485,11 +485,6 @@ Feature: list impacts by ptobject and/or uri(s)
             | 5ffab200-3d48-4eea-aa2c-22f8680230b6          | 7ffab234-3d49-4eea-aa2c-22f8680230b6 |
             | 6ffab200-3d48-4eea-aa2c-22f8680230b6          | 7ffab234-3d49-4eea-aa2c-22f8680230b6 |
 
-        Given I have the relation associate_line_section_via_object in my database:
-            | stop_area_object_id                           | line_section_id                      |
-            | 7ffab232-3d48-4eea-aa2c-22f8680230b6          | 7ffab234-3d49-4eea-aa2c-22f8680230b6 |
-            | 8ffab232-3d48-4eea-aa2c-22f8680230b6          | 7ffab234-3d49-4eea-aa2c-22f8680230b6 |
-
         Given I have the following applicationperiods in my database:
             | created_at          | updated_at          |id                                   | impact_id                            |start_date                           |end_date            |
             | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab232-3d47-4eea-aa2c-22f8680230b1 | 7ffab232-3d47-4eea-aa2c-22f8680230b6 |2014-01-20 16:52:00                  |2014-01-30 16:52:00 |
@@ -518,15 +513,12 @@ Feature: list impacts by ptobject and/or uri(s)
         And the field "objects.0.impacts" should have a size of 1
         And the field "objects.0.impacts.0.objects" should have a size of 2
 
-        #Fetch impact by uri of object in via of line_section
         When I get "/impacts?uri[]=stop_area:JDR:SA:REUIL&start_date=2013-12-02T23:52:12Z&end_date=2014-10-21T23:52:12Z"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
-        And the field "objects" should have a size of 1
-        And the field "objects.0.impacts" should have a size of 1
-        And the field "objects.0.impacts.0.objects" should have a size of 2
+        And the field "objects" should have a size of 0
 
-        #Fetch impact by uri of object in via et route of line_section
+        #Fetch impact by uri of object route of line_section
         When I get "/impacts?uri[]=stop_area:JDR:SA:NATIO&uri[]=route:JDR:M1_R&start_date=2013-12-02T23:52:12Z&end_date=2014-10-21T23:52:12Z"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
@@ -583,11 +575,6 @@ Feature: list impacts by ptobject and/or uri(s)
             | 5ffab200-3d48-4eea-aa2c-22f8680230b6          | 7ffab234-3d49-4eea-aa2c-22f8680230b6 |
             | 6ffab200-3d48-4eea-aa2c-22f8680230b6          | 7ffab234-3d49-4eea-aa2c-22f8680230b6 |
 
-        Given I have the relation associate_line_section_via_object in my database:
-            | stop_area_object_id                           | line_section_id                      |
-            | 7ffab232-3d48-4eea-aa2c-22f8680230b6          | 7ffab234-3d49-4eea-aa2c-22f8680230b6 |
-            | 8ffab232-3d48-4eea-aa2c-22f8680230b6          | 7ffab234-3d49-4eea-aa2c-22f8680230b6 |
-
         Given I have the following applicationperiods in my database:
             | created_at          | updated_at          |id                                   | impact_id                            |start_date                           |end_date            |
             | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab232-3d47-4eea-aa2c-22f8680230b1 | 7ffab232-3d47-4eea-aa2c-22f8680230b6 |2014-01-20 16:50:00                  |2014-01-30 16:50:00 |
@@ -598,12 +585,10 @@ Feature: list impacts by ptobject and/or uri(s)
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
         And the field "objects" should have a size of 1
-        And the field "objects.0.impacts" should have a size of 2
-        And the field "objects.0.impacts.0.objects" should have a size of 2
-        And the field "objects.0.impacts.1.objects.0.type" should be "stop_area"
-        And the field "objects.0.impacts.1.objects.0.id" should be "stop_area:JDR:SA:NATIO"
+        And the field "objects.0.impacts" should have a size of 1
+        And the field "objects.0.impacts.0.objects" should have a size of 1
 
-    Scenario: Filter on uri of an object in line_section to display impacts (no via)
+    Scenario: Filter on uri of an object in line_section to display impacts
         Given I have the following clients in my database:
             | client_code   | created_at          | updated_at          | id                                   |
             | 5             | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |

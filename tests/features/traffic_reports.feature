@@ -922,11 +922,6 @@ Feature: traffic report api
         | 5ffab200-3d48-4eea-aa2c-22f8680230b6          | 7ffab234-3d49-4eea-aa2c-22f8680230b6 |
         | 6ffab200-3d48-4eea-aa2c-22f8680230b6          | 7ffab234-3d49-4eea-aa2c-22f8680230b6 |
 
-    Given I have the relation associate_line_section_via_object in my database:
-        | stop_area_object_id                           | line_section_id                      |
-        | 7ffab232-3d48-4eea-aa2c-22f8680230b6          | 7ffab234-3d49-4eea-aa2c-22f8680230b6 |
-        | 8ffab232-3d48-4eea-aa2c-22f8680230b6          | 7ffab234-3d49-4eea-aa2c-22f8680230b6 |
-
     Given I have the relation associate_impact_pt_object in my database:
         | pt_object_id                               | impact_id                            |
         | 1ffab232-3d48-4eea-aa2c-22f8680230b6       | 7ffab232-3d47-4eea-aa2c-22f8680230b6 |
@@ -958,8 +953,6 @@ Feature: traffic report api
     And the field "traffic_reports.0.line_sections.0.line_section.routes" should have a size of 2
     And the field "traffic_reports.0.line_sections.0.line_section.routes" should contain all of "{"type": "route", "id": "route:JDR:M1_R"}"
     And the field "traffic_reports.0.line_sections.0.line_section.routes" should contain all of "{"type": "route", "id": "route:JDR:M14"}"
-    And the field "traffic_reports.0.line_sections.0.line_section.via" should exist
-    And the field "traffic_reports.0.line_sections.0.line_section.via" should have a size of 2
     And the field "traffic_reports.0.network.id" should be "network:JDR:1"
     And the field "traffic_reports.0.network.name" should be "RATP"
     And the field "traffic_reports.0.network.links" should not exist
@@ -1025,13 +1018,6 @@ Feature: traffic report api
         | 6ffab200-3d48-4eea-aa2c-22f8680230b6          | 7ffab234-3d49-4eea-aa2c-22f8680230b6 |
         | 5ffab200-3d48-4eea-aa2c-22f8680230b6          | 7ffab234-3d49-4eea-aa2c-22f8680230b7 |
         | 6ffab200-3d48-4eea-aa2c-22f8680230b6          | 7ffab234-3d49-4eea-aa2c-22f8680230b7 |
-
-    Given I have the relation associate_line_section_via_object in my database:
-        | stop_area_object_id                           | line_section_id                      |
-        | 7ffab232-3d48-4eea-aa2c-22f8680230b6          | 7ffab234-3d49-4eea-aa2c-22f8680230b6 |
-        | 8ffab232-3d48-4eea-aa2c-22f8680230b6          | 7ffab234-3d49-4eea-aa2c-22f8680230b6 |
-        | 7ffab232-3d48-4eea-aa2c-22f8680230b6          | 7ffab234-3d49-4eea-aa2c-22f8680230b7 |
-        | 8ffab232-3d48-4eea-aa2c-22f8680230b6          | 7ffab234-3d49-4eea-aa2c-22f8680230b7 |
 
     Given I have the relation associate_impact_pt_object in my database:
         | pt_object_id                               | impact_id                            |

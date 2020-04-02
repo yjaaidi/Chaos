@@ -120,10 +120,6 @@ def populate_pt_objects(impact, impact_pb):
                 for route in pt_object.line_section.routes:
                     route_pb = informed_entitie.pt_line_section.routes.add()
                     populate_informed_entitie(route, route_pb)
-            if hasattr(pt_object.line_section, 'via'):
-                for via in pt_object.line_section.via:
-                    via_pb = informed_entitie.pt_line_section.via.add()
-                    populate_informed_entitie(via, via_pb)
 
 
 def populate_impact(disruption, disruption_pb):

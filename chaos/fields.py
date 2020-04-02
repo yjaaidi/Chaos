@@ -449,11 +449,6 @@ line_section_fields = {
     'routes': fields.List(
         fields.Nested(one_objectTC_fields, display_null=False),
         display_empty=False),
-    'via': fields.List(
-        fields.Nested(
-            one_objectTC_fields,
-            display_null=False),
-        display_empty=False),
     'metas': fields.List(fields.Nested(wording_fields),
                          attribute='wordings',
                          display_empty=False),
@@ -657,11 +652,6 @@ line_section_for_traffic_report_fields = {
     "end_point": fields.Nested(generic_type, display_null=False),
     'routes': fields.List(
         fields.Nested(one_objectTC_generic_fields, display_null=False),
-        display_empty=False),
-    'via': fields.List(
-        fields.Nested(
-            one_objectTC_generic_fields,
-            display_null=False),
         display_empty=False),
     'metas': fields.List(fields.Nested(wording_fields)),
 }
