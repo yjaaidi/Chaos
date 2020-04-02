@@ -324,7 +324,7 @@ def test_disruption():
 
 
 def test_disruption_raw():
-    disruption = get_disruption('KISIO-DIGITAL', False)
+    disruption = get_disruption('KISIO-DIGITAL', True)
     feed_entity = populate_pb(disruption).entity[0]
     eq_(feed_entity.is_deleted, False)
     disruption_pb = feed_entity.Extensions[chaos.chaos_pb2.disruption]
@@ -407,7 +407,7 @@ def test_disruption_raw():
 
 
 def test_disruption_without_routes():
-    disruption = get_disruption('KISIO-DIGITAL', True, False)
+    disruption = get_disruption('KISIO-DIGITAL', False)
     feed_entity = populate_pb(disruption).entity[0]
     eq_(feed_entity.is_deleted, False)
     disruption_pb = feed_entity.Extensions[chaos.chaos_pb2.disruption]
@@ -486,7 +486,7 @@ def test_disruption_without_routes():
 
 
 def test_disruption_without_routes():
-    disruption = get_disruption('KISIO-DIGITAL', False, False)
+    disruption = get_disruption('KISIO-DIGITAL', False)
     feed_entity = populate_pb(disruption).entity[0]
     eq_(feed_entity.is_deleted, False)
     disruption_pb = feed_entity.Extensions[chaos.chaos_pb2.disruption]
@@ -597,7 +597,7 @@ def test_get_channel_type():
     eq_(get_channel_type('foo'), chaos_pb2.Channel.unkown_type)
 
 def test_disruption_with_message_meta():
-    disruption = get_disruption('KISIO-DIGITAL', True, True, True)
+    disruption = get_disruption('KISIO-DIGITAL', True, True)
     feed_entity = populate_pb(disruption).entity[0]
     eq_(feed_entity.is_deleted, False)
     disruption_pb = feed_entity.Extensions[chaos.chaos_pb2.disruption]
