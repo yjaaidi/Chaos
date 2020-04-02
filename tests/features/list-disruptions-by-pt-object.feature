@@ -234,7 +234,7 @@ Feature: list impacts by ptobject and/or uri(s)
 
     #Here we have a disruption with one impact, two objects (one object is present also in a line_section of another disruption/impact)
     #Another disruption with one impact, one object line_section having route, another object (network)
-    Scenario: Use uri filter to display disruption with impact having line_section, routes and via
+    Scenario: Use uri filter to display disruption with impact having line_section and routes
         Given I have the following contributors in my database:
             | contributor_code   | created_at          | updated_at          | id                                   |
             | contrib1           | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
@@ -271,8 +271,8 @@ Feature: list impacts by ptobject and/or uri(s)
             | stop_area    | stop_area:JDR:SA:ESDEN                           | 2014-04-04T23:52:12 | 9ffab232-4d48-4eea-aa2c-22f8680230b6       |
 
         Given I have the following line_section in my database:
-            | id                                    | line_object_id                        | created_at            | updated_at          | start_object_id                      |end_object_id|sens|object_id|
-            | 7ffab234-3d49-4eea-aa2c-22f8680230b6  | 4ffab232-3d48-4eea-aa2c-22f8680230b6  | 2014-04-04T23:52:12   | 2014-04-04T23:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b6 |2ffab232-3d48-4eea-aa2c-22f8680230b6|0|3ffab232-3d48-4eea-aa2c-22f8680230b6|
+            | id                                    | line_object_id                        | created_at            | updated_at          | start_object_id                      |end_object_id                       |object_id                           |
+            | 7ffab234-3d49-4eea-aa2c-22f8680230b6  | 4ffab232-3d48-4eea-aa2c-22f8680230b6  | 2014-04-04T23:52:12   | 2014-04-04T23:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b6 |2ffab232-3d48-4eea-aa2c-22f8680230b6|3ffab232-3d48-4eea-aa2c-22f8680230b6|
 
         Given I have the relation associate_impact_pt_object in my database:
             | pt_object_id                                  | impact_id                            |
@@ -298,7 +298,7 @@ Feature: list impacts by ptobject and/or uri(s)
         And the field "disruptions.0.id" should be "8ffab230-3d48-4eea-aa2c-22f8680230b6"
 
         #Query on object 'stop_area:JDR:SA:REUIL' present in two disruptions
-        #One as a simple object and another as 'stop_area' of via in a line_section
+        #One as a simple object and another as 'stop_area' in a line_section
         When I get "/disruptions?uri=stop_area:JDR:SA:REUIL"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
@@ -348,9 +348,9 @@ Feature: list impacts by ptobject and/or uri(s)
             | line         | line:JDR:M12                                     | 2014-04-04T23:52:12 | 9ffab200-3d48-4eea-aa2c-22f8680230b6       |
 
         Given I have the following line_section in my database:
-            | id                                    | line_object_id                        | created_at            | updated_at          | start_object_id                      |end_object_id|sens|object_id|
-            | 7ffab234-3d49-4eea-aa2c-22f8680230b6  | 4ffab200-3d48-4eea-aa2c-22f8680230b6  | 2014-04-04T23:52:12   | 2014-04-04T23:52:12 | 7ffab200-3d48-4eea-aa2c-22f8680230b6 |8ffab200-3d48-4eea-aa2c-22f8680230b6|0|2ffab200-3d48-4eea-aa2c-22f8680230b6|
-            | 8ffab234-3d49-4eea-aa2c-22f8680230b6  | 4ffab200-3d48-4eea-aa2c-22f8680230b6  | 2014-04-04T23:52:12   | 2014-04-04T23:52:12 | 7ffab200-3d48-4eea-aa2c-22f8680230b6 |8ffab200-3d48-4eea-aa2c-22f8680230b6|0|3ffab200-3d48-4eea-aa2c-22f8680230b6|
+            | id                                    | line_object_id                        | created_at            | updated_at          | start_object_id                      |end_object_id                       |object_id                           |
+            | 7ffab234-3d49-4eea-aa2c-22f8680230b6  | 4ffab200-3d48-4eea-aa2c-22f8680230b6  | 2014-04-04T23:52:12   | 2014-04-04T23:52:12 | 7ffab200-3d48-4eea-aa2c-22f8680230b6 |8ffab200-3d48-4eea-aa2c-22f8680230b6|2ffab200-3d48-4eea-aa2c-22f8680230b6|
+            | 8ffab234-3d49-4eea-aa2c-22f8680230b6  | 4ffab200-3d48-4eea-aa2c-22f8680230b6  | 2014-04-04T23:52:12   | 2014-04-04T23:52:12 | 7ffab200-3d48-4eea-aa2c-22f8680230b6 |8ffab200-3d48-4eea-aa2c-22f8680230b6|3ffab200-3d48-4eea-aa2c-22f8680230b6|
 
         Given I have the relation associate_impact_pt_object in my database:
             | pt_object_id                                  | impact_id                            |

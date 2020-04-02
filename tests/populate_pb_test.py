@@ -5,7 +5,7 @@ from aniso8601 import parse_datetime
 import datetime
 
 
-def get_disruption(contributor_code, with_via=True, with_routes=True, with_message_meta=False):
+def get_disruption(contributor_code, with_routes=True, with_message_meta=False):
 
     # Disruption
     disruption = chaos.models.Disruption()
@@ -84,7 +84,6 @@ def get_disruption(contributor_code, with_via=True, with_routes=True, with_messa
     ptobject.uri = "line_section:123"
     ptobject.type = "line_section"
     ptobject.line_section = chaos.models.LineSection()
-    ptobject.line_section.sens = 1
     ptobject.line_section.line = chaos.models.PTobject()
     ptobject.line_section.line.uri = 'line:1'
     ptobject.line_section.line.type = 'line'
@@ -107,17 +106,6 @@ def get_disruption(contributor_code, with_via=True, with_routes=True, with_messa
         route.uri = 'route:2'
         route.type = 'route'
         ptobject.line_section.routes.append(route)
-
-    if with_via:
-        via = chaos.models.PTobject()
-        via.uri = 'stop_area:11'
-        via.type = 'stop_area'
-        ptobject.line_section.via.append(via)
-
-        via = chaos.models.PTobject()
-        via.uri = 'stop_area:22'
-        via.type = 'stop_area'
-        ptobject.line_section.via.append(via)
 
     impact.objects.append(ptobject)
 
@@ -308,7 +296,6 @@ def test_disruption():
     get_pt_object_type(disruption.impacts[0].objects[2].line_section.end_point.type))
 
     eq_(len(disruption_pb.impacts[0].informed_entities[2].pt_line_section.routes), 2)
-    eq_(len(disruption_pb.impacts[0].informed_entities[2].pt_line_section.via), 2)
 
     eq_(disruption_pb.impacts[0].messages[0].text, disruption.impacts[0].messages[0].text)
     eq_(disruption_pb.impacts[0].messages[0].channel.name, disruption.impacts[0].messages[0].channel.name)
@@ -336,8 +323,8 @@ def test_disruption():
     eq_(disruption_pb.impacts[2].HasField('notification_date'), False)
 
 
-def test_disruption_without_via():
-    disruption = get_disruption('KISIO-DIGITAL', False)
+def test_disruption_raw():
+    disruption = get_disruption('KISIO-DIGITAL', True)
     feed_entity = populate_pb(disruption).entity[0]
     eq_(feed_entity.is_deleted, False)
     disruption_pb = feed_entity.Extensions[chaos.chaos_pb2.disruption]
@@ -387,7 +374,6 @@ def test_disruption_without_via():
     get_pt_object_type(disruption.impacts[0].objects[2].line_section.end_point.type))
 
     eq_(len(disruption_pb.impacts[0].informed_entities[2].pt_line_section.routes), 2)
-    eq_(len(disruption_pb.impacts[0].informed_entities[2].pt_line_section.via), 0)
 
     eq_(disruption_pb.impacts[0].informed_entities[3].uri, disruption.impacts[0].objects[3].uri)
     eq_(disruption_pb.impacts[0].informed_entities[3].pt_object_type,
@@ -421,7 +407,7 @@ def test_disruption_without_via():
 
 
 def test_disruption_without_routes():
-    disruption = get_disruption('KISIO-DIGITAL', True, False)
+    disruption = get_disruption('KISIO-DIGITAL', False)
     feed_entity = populate_pb(disruption).entity[0]
     eq_(feed_entity.is_deleted, False)
     disruption_pb = feed_entity.Extensions[chaos.chaos_pb2.disruption]
@@ -471,7 +457,6 @@ def test_disruption_without_routes():
     get_pt_object_type(disruption.impacts[0].objects[2].line_section.end_point.type))
 
     eq_(len(disruption_pb.impacts[0].informed_entities[2].pt_line_section.routes), 0)
-    eq_(len(disruption_pb.impacts[0].informed_entities[2].pt_line_section.via), 2)
 
     eq_(disruption_pb.impacts[0].messages[0].text, disruption.impacts[0].messages[0].text)
     eq_(disruption_pb.impacts[0].messages[0].channel.name, disruption.impacts[0].messages[0].channel.name)
@@ -501,7 +486,7 @@ def test_disruption_without_routes():
 
 
 def test_disruption_without_routes():
-    disruption = get_disruption('KISIO-DIGITAL', False, False)
+    disruption = get_disruption('KISIO-DIGITAL', False)
     feed_entity = populate_pb(disruption).entity[0]
     eq_(feed_entity.is_deleted, False)
     disruption_pb = feed_entity.Extensions[chaos.chaos_pb2.disruption]
@@ -552,7 +537,6 @@ def test_disruption_without_routes():
     get_pt_object_type(disruption.impacts[0].objects[3].type))
 
     eq_(len(disruption_pb.impacts[0].informed_entities[2].pt_line_section.routes), 0)
-    eq_(len(disruption_pb.impacts[0].informed_entities[2].pt_line_section.via), 0)
     eq_(disruption_pb.impacts[0].messages[0].text, disruption.impacts[0].messages[0].text)
     eq_(disruption_pb.impacts[0].messages[0].channel.name, disruption.impacts[0].messages[0].channel.name)
     eq_(disruption_pb.impacts[0].messages[0].channel.max_size, disruption.impacts[0].messages[0].channel.max_size)
@@ -613,7 +597,7 @@ def test_get_channel_type():
     eq_(get_channel_type('foo'), chaos_pb2.Channel.unkown_type)
 
 def test_disruption_with_message_meta():
-    disruption = get_disruption('KISIO-DIGITAL', True, True, True)
+    disruption = get_disruption('KISIO-DIGITAL', True, True)
     feed_entity = populate_pb(disruption).entity[0]
     eq_(feed_entity.is_deleted, False)
     disruption_pb = feed_entity.Extensions[chaos.chaos_pb2.disruption]

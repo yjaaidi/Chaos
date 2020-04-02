@@ -221,10 +221,6 @@ def get_object_in_line_section_by_uri(pt_object, uris):
             if route.uri in uris:
                 return route
 
-        # Search object.uri in line_section.via
-        for via in object.via:
-            if via.uri in uris:
-                return via
     return None
 
 
@@ -540,7 +536,6 @@ def create_line_section(navitia_object, line_section_obj):
                     "type": line_section_obj.end_point.type
                 },
                 "routes": line_section_obj.routes,
-                "via": line_section_obj.via,
                 "metas": line_section_obj.wordings
             }
     }

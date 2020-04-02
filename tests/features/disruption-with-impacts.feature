@@ -182,7 +182,7 @@ Feature: Manipulate impacts in a Disruption
         And the field "impact.disruption.href" should exist
         And the field "impact.self.href" should exist
 
-    Scenario: Add two impacts via URL in a disruption
+    Scenario: Add two impacts URL in a disruption
 
         Given I have the following clients in my database:
             | client_code   | created_at          | updated_at          | id                                   |
