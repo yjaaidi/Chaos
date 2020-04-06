@@ -113,9 +113,6 @@ def populate_pt_objects(impact, impact_pb):
         informed_entitie = impact_pb.informed_entities.add()
         populate_informed_entitie(pt_object, informed_entitie)
         if pt_object.type == 'line_section':
-            if hasattr(pt_object.line_section, 'sens'):
-                if pt_object.line_section.sens:
-                    informed_entitie.pt_line_section.sens = long(pt_object.line_section.sens)
             populate_informed_entitie(pt_object.line_section.line, informed_entitie.pt_line_section.line)
             populate_informed_entitie(pt_object.line_section.start_point, informed_entitie.pt_line_section.start_point)
             populate_informed_entitie(pt_object.line_section.end_point, informed_entitie.pt_line_section.end_point)
@@ -123,10 +120,6 @@ def populate_pt_objects(impact, impact_pb):
                 for route in pt_object.line_section.routes:
                     route_pb = informed_entitie.pt_line_section.routes.add()
                     populate_informed_entitie(route, route_pb)
-            if hasattr(pt_object.line_section, 'via'):
-                for via in pt_object.line_section.via:
-                    via_pb = informed_entitie.pt_line_section.via.add()
-                    populate_informed_entitie(via, via_pb)
 
 
 def populate_impact(disruption, disruption_pb):

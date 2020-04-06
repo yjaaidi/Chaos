@@ -433,8 +433,8 @@ Feature: list impacts by ptobject
             | line        | line:JDR:M1| 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 7ffab200-3d48-4eea-aa2c-22f8680230b6       |
 
         Given I have the following line_section in my database:
-            | id                                    | line_object_id                        | created_at            | updated_at          | start_object_id                      |end_object_id|sens|object_id|
-            | 7ffab234-3d49-4eea-aa2c-22f8680230b6  | 7ffab200-3d48-4eea-aa2c-22f8680230b6  | 2014-04-04T23:52:12   | 2014-04-04T23:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b6|3ffab232-3d48-4eea-aa2c-22f8680230b6|0|7ffab232-3d48-4eea-aa2c-22f8680230b6|
+            | id                                    | line_object_id                        | created_at            | updated_at          | start_object_id                      |end_object_id                      |object_id                           |
+            | 7ffab234-3d49-4eea-aa2c-22f8680230b6  | 7ffab200-3d48-4eea-aa2c-22f8680230b6  | 2014-04-04T23:52:12   | 2014-04-04T23:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b6|3ffab232-3d48-4eea-aa2c-22f8680230b6|7ffab232-3d48-4eea-aa2c-22f8680230b6|
 
         Given I have the relation associate_impact_pt_object in my database:
             | pt_object_id                                  | impact_id                            |
@@ -485,8 +485,8 @@ Feature: list impacts by ptobject
             | route        | route:JDR:M14| 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 8ffab200-3d48-4eea-aa2c-22f8680230b6       |
 
         Given I have the following line_section in my database:
-            | id                                    | line_object_id                        | created_at            | updated_at          | start_object_id                      |end_object_id|sens|object_id|
-            | 7ffab234-3d49-4eea-aa2c-22f8680230b6  | 7ffab200-3d48-4eea-aa2c-22f8680230b6  | 2014-04-04T23:52:12   | 2014-04-04T23:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b6|3ffab232-3d48-4eea-aa2c-22f8680230b6|0|7ffab232-3d48-4eea-aa2c-22f8680230b6|
+            | id                                    | line_object_id                        | created_at            | updated_at          | start_object_id                      |end_object_id                      |object_id                           |
+            | 7ffab234-3d49-4eea-aa2c-22f8680230b6  | 7ffab200-3d48-4eea-aa2c-22f8680230b6  | 2014-04-04T23:52:12   | 2014-04-04T23:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b6|3ffab232-3d48-4eea-aa2c-22f8680230b6|7ffab232-3d48-4eea-aa2c-22f8680230b6|
 
         Given I have the relation associate_impact_pt_object in my database:
             | pt_object_id                                  | impact_id                            |
@@ -510,7 +510,7 @@ Feature: list impacts by ptobject
         And the field "objects.0.id" should be "line:JDR:M1:7ffab234-3d49-4eea-aa2c-22f8680230b6"
         And the field "objects.0.impacts.0.objects" should have a size of 2
 
-    Scenario: Use ptobject 'line_section' filter to display impacts with line_section with routes and via (sort ptobject by name)
+    Scenario: Use ptobject 'line_section' filter to display impacts with line_section with routes (sort ptobject by name)
         Given I have the following clients in my database:
             | client_code   | created_at          | updated_at          | id                                   |
             | 5             | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
@@ -541,8 +541,8 @@ Feature: list impacts by ptobject
             | route        | route:JDR:M14| 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 8ffab200-3d48-4eea-aa2c-22f8680230b6       |
 
         Given I have the following line_section in my database:
-            | id                                    | line_object_id                        | created_at            | updated_at          | start_object_id                      |end_object_id|sens|object_id|
-            | 7ffab234-3d49-4eea-aa2c-22f8680230b6  | 7ffab200-3d48-4eea-aa2c-22f8680230b6  | 2014-04-04T23:52:12   | 2014-04-04T23:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b6|3ffab232-3d48-4eea-aa2c-22f8680230b6|0|7ffab232-3d48-4eea-aa2c-22f8680230b6|
+            | id                                    | line_object_id                        | created_at            | updated_at          | start_object_id                      |end_object_id                      |object_id                           |
+            | 7ffab234-3d49-4eea-aa2c-22f8680230b6  | 7ffab200-3d48-4eea-aa2c-22f8680230b6  | 2014-04-04T23:52:12   | 2014-04-04T23:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b6|3ffab232-3d48-4eea-aa2c-22f8680230b6|7ffab232-3d48-4eea-aa2c-22f8680230b6|
 
         Given I have the relation associate_impact_pt_object in my database:
             | pt_object_id                                  | impact_id                            |
@@ -553,10 +553,6 @@ Feature: list impacts by ptobject
         Given I have the relation associate_line_section_route_object in my database:
             | route_object_id                               | line_section_id                      |
             | 8ffab200-3d48-4eea-aa2c-22f8680230b6          | 7ffab234-3d49-4eea-aa2c-22f8680230b6 |
-
-        Given I have the relation associate_line_section_via_object in my database:
-            | stop_area_object_id                               | line_section_id                      |
-            | 1ffab232-3d48-4eea-aa2c-22f8680230b6              | 7ffab234-3d49-4eea-aa2c-22f8680230b6 |
 
         Given I have the following applicationperiods in my database:
             | created_at          | updated_at          |id                                   | impact_id                            |start_date                           |end_date            |
@@ -605,8 +601,8 @@ Feature: list impacts by ptobject
             | network      | network:TAD:CanalTP                              | 2014-04-04T23:52:12 | 9ffab232-3d48-4eea-aa2c-22f8680230b6       |
 
         Given I have the following line_section in my database:
-            | id                                    | line_object_id                        | created_at            | updated_at          | start_object_id                      |end_object_id|sens|object_id|
-            | 7ffab234-3d49-4eea-aa2c-22f8680230b6  | 4ffab232-3d48-4eea-aa2c-22f8680230b6  | 2014-04-04T23:52:12   | 2014-04-04T23:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b6 |2ffab232-3d48-4eea-aa2c-22f8680230b6|0|3ffab232-3d48-4eea-aa2c-22f8680230b6|
+            | id                                    | line_object_id                        | created_at            | updated_at          | start_object_id                      |end_object_id                       |object_id                           |
+            | 7ffab234-3d49-4eea-aa2c-22f8680230b6  | 4ffab232-3d48-4eea-aa2c-22f8680230b6  | 2014-04-04T23:52:12   | 2014-04-04T23:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b6 |2ffab232-3d48-4eea-aa2c-22f8680230b6|3ffab232-3d48-4eea-aa2c-22f8680230b6|
 
         Given I have the relation associate_impact_pt_object in my database:
             | pt_object_id                                  | impact_id                            |
@@ -616,11 +612,6 @@ Feature: list impacts by ptobject
             | route_object_id                               | line_section_id                      |
             | 5ffab200-3d48-4eea-aa2c-22f8680230b6          | 7ffab234-3d49-4eea-aa2c-22f8680230b6 |
             | 6ffab200-3d48-4eea-aa2c-22f8680230b6          | 7ffab234-3d49-4eea-aa2c-22f8680230b6 |
-
-        Given I have the relation associate_line_section_via_object in my database:
-            | stop_area_object_id                           | line_section_id                      |
-            | 7ffab232-3d48-4eea-aa2c-22f8680230b6          | 7ffab234-3d49-4eea-aa2c-22f8680230b6 |
-            | 8ffab232-3d48-4eea-aa2c-22f8680230b6          | 7ffab234-3d49-4eea-aa2c-22f8680230b6 |
 
         Given I have the following applicationperiods in my database:
             | created_at          | updated_at          |id                                   | impact_id                            |start_date                           |end_date            |

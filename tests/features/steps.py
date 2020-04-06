@@ -6,7 +6,7 @@ from chaos.formats import id_format
 from chaos.models import Disruption, Severity, Cause, Impact, PTobject,\
     Channel, Message, ApplicationPeriods, Tag, associate_impact_pt_object,\
     associate_disruption_tag, LineSection,\
-    associate_line_section_route_object, associate_line_section_via_object,\
+    associate_line_section_route_object, \
     Client, Contributor, associate_disruption_pt_object, Category, Wording, \
     associate_wording_severity, Pattern, TimeSlot, ChannelType,\
     associate_wording_line_section, Property, AssociateDisruptionProperty, Meta,\
@@ -52,7 +52,6 @@ associations = {
     'associate_impact_pt_object': associate_impact_pt_object,
     'associate_disruption_tag': associate_disruption_tag,
     'associate_line_section_route_object': associate_line_section_route_object,
-    'associate_line_section_via_object': associate_line_section_via_object,
     'associate_disruption_pt_object': associate_disruption_pt_object,
     'associate_wording_severity': associate_wording_severity,
     'associate_wording_line_section': associate_wording_line_section,
@@ -272,3 +271,10 @@ def and_the_field_group1_should_have_obj_with_group2(step, source_field, search_
             if exists:
                 break
     assert exists
+
+@step(u'Then I dump response in "([^"]*)"')
+def then_i_dump_response_in_file(step, path):
+    import codecs
+    file = codecs.open(path, "w", "utf-8")
+    file.write(world.response.data)
+    file.close()
