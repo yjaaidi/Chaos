@@ -19,7 +19,7 @@ cd Chaos
 ```
 
 #### Requirements
-- PostgreSQL 9.6 `sudo apt-get install postgresql-9.6 postgresql-server-dev-9.6`
+- PostgreSQL 9.6 `sudo apt-get install postgresql-9.6 postgresql-server-dev-9.6 libpq-dev`
 
 ##### Python
 - Install Python2.7 `sudo apt-get install python2.7 python2.7-dev`
@@ -35,7 +35,7 @@ pip install -r requirements.txt
 ```
 
 #### Build protobufs
-- Install protoc building it from source : [protobuf v2.6.1](https://github.com/google/protobuf/blob/master/src/README.md). You can use `sudo apt-get install protobuf-compiler` if you're sure it won't install version 3.x.x (incompatible).
+- Install protoc building it from source : [protobuf v2.6.1](https://github.com/protocolbuffers/protobuf/releases/download/v2.6.1/protobuf-2.6.1.zip). You can use `sudo apt-get install protobuf-compiler` if you're sure it won't install version 3.x.x (incompatible).
 - Build protobufs
 
 ```
@@ -47,7 +47,6 @@ git submodule update
 
 #### Create the database
 ```
-sudo apt-get install postgresql libpq-dev
 sudo -i -u postgres
 # Create a user
 createuser -P navitia (password "navitia")
