@@ -19,12 +19,12 @@ cd Chaos
 ```
 
 #### Requirements
-- PostgreSQL 9.6
+- PostgreSQL 9.6 `sudo apt-get install postgresql-9.6 postgresql-server-dev-9.6`
 
 ##### Python
 - Install Python2.7 `sudo apt-get install python2.7 python2.7-dev`
   
-  or `sudo apt-get install python2 python2-dev` on recent linux release
+  or `sudo apt install python2 python2-dev` on recent linux release
 - Install [pip](https://pip.pypa.io/en/latest/installing/)
 - Install [virtualenv](http://virtualenv.readthedocs.org/en/latest/installation.html)
 
