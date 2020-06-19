@@ -20,7 +20,7 @@ cd Chaos
 
 #### Requirements
 - PostgreSQL 9.6 `sudo apt-get install postgresql-9.6 postgresql-server-dev-9.6 libpq-dev`
-
+- [RabbitMQ](https://www.rabbitmq.com/download.html)
 ##### Python
 - Install Python2.7 `sudo apt-get install python2.7 python2.7-dev`
   
@@ -49,7 +49,8 @@ git submodule update
 ```
 sudo -i -u postgres
 # Create a user
-createuser -P navitia (password "navitia")
+createuser -P navitia
+(password "navitia")
 
 # Create database
 createdb -O navitia chaos
@@ -65,10 +66,10 @@ To improve its performance Chaos can use [Redis](https://redis.io/).
 [Installing Redis](https://redis.io/topics/quickstart)
 
 ##### Using Chaos without Redis
-You can deactivate Redis usage in [default_settings.py](https://github.com/CanalTP/Chaos/blob/master/chaos/default_settings.py#L17) by changing 'CACHE_TYPE' to 'simple'
+You can deactivate Redis usage in [default_settings.py](https://github.com/CanalTP/Chaos/blob/master/chaos/default_settings.py#L18) by changing 'CACHE_TYPE' to 'simple'
 
 ##### Using Chaos without cache
-For development purpose you can deactivate cache usage in [default_settings.py](https://github.com/CanalTP/Chaos/blob/master/chaos/default_settings.py#L17) by forcing 'CACHE_TYPE' to 'null'
+For development purpose you can deactivate cache usage in [default_settings.py](https://github.com/CanalTP/Chaos/blob/master/chaos/default_settings.py#L18) by forcing 'CACHE_TYPE' to 'null'
 
 #### Run Chaos with honcho (optional)
 ##### Install honcho
@@ -76,12 +77,6 @@ You can use [honcho](https://github.com/nickstenning/honcho) for managing Procfi
 
 ```
 pip install honcho
-```
-
-##### create a `.env` file
-Write this line inside
-```
-CHAOS_CONFIG_FILE=default_settings.py
 ```
 
 ##### Upgrade database
