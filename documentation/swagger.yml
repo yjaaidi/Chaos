@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: v1.3
+  version: v1.4
   title: Documentation of API Chaos
   description: >
     Chaos is the web service which can feed
@@ -82,7 +82,6 @@ paths:
         - $ref: "#/components/parameters/header_authorization"
         - $ref: "#/components/parameters/header_coverage"
         - $ref: "#/components/parameters/header_customer_id"
-        - $ref: "#/components/parameters/header_contributors"
       tags:
         - Category
       responses:
@@ -104,8 +103,7 @@ paths:
       parameters:
         - $ref: "#/components/parameters/header_authorization"
         - $ref: "#/components/parameters/header_coverage"
-        - $ref: "#/components/parameters/header_customer_id"
-        - $ref: "#/components/parameters/header_contributors"
+        - $ref: "#/components/parameters/header_customer_id_create_client"
       requestBody:
         $ref: "#/components/requestBodies/category_creation"
       tags:
@@ -133,7 +131,6 @@ paths:
         - $ref: "#/components/parameters/header_authorization"
         - $ref: "#/components/parameters/header_coverage"
         - $ref: "#/components/parameters/header_customer_id"
-        - $ref: "#/components/parameters/header_contributors"
         - name: id
           in: path
           required: true
@@ -167,7 +164,6 @@ paths:
         - $ref: "#/components/parameters/header_authorization"
         - $ref: "#/components/parameters/header_coverage"
         - $ref: "#/components/parameters/header_customer_id"
-        - $ref: "#/components/parameters/header_contributors"
         - name: id
           in: path
           required: true
@@ -200,7 +196,6 @@ paths:
         - $ref: "#/components/parameters/header_authorization"
         - $ref: "#/components/parameters/header_coverage"
         - $ref: "#/components/parameters/header_customer_id"
-        - $ref: "#/components/parameters/header_contributors"
         - name: id
           in: path
           required: true
@@ -228,7 +223,6 @@ paths:
         - $ref: "#/components/parameters/header_authorization"
         - $ref: "#/components/parameters/header_coverage"
         - $ref: "#/components/parameters/header_customer_id"
-        - $ref: "#/components/parameters/header_contributors"
       tags:
         - Cause
       responses:
@@ -250,8 +244,7 @@ paths:
       parameters:
         - $ref: "#/components/parameters/header_authorization"
         - $ref: "#/components/parameters/header_coverage"
-        - $ref: "#/components/parameters/header_customer_id"
-        - $ref: "#/components/parameters/header_contributors"
+        - $ref: "#/components/parameters/header_customer_id_create_client"
       requestBody:
         $ref: "#/components/requestBodies/cause_creation"
       tags:
@@ -279,7 +272,6 @@ paths:
         - $ref: "#/components/parameters/header_authorization"
         - $ref: "#/components/parameters/header_coverage"
         - $ref: "#/components/parameters/header_customer_id"
-        - $ref: "#/components/parameters/header_contributors"
         - name: id
           in: path
           required: true
@@ -319,7 +311,6 @@ paths:
         - $ref: "#/components/parameters/header_authorization"
         - $ref: "#/components/parameters/header_coverage"
         - $ref: "#/components/parameters/header_customer_id"
-        - $ref: "#/components/parameters/header_contributors"
         - name: id
           in: path
           required: true
@@ -358,7 +349,6 @@ paths:
         - $ref: "#/components/parameters/header_authorization"
         - $ref: "#/components/parameters/header_coverage"
         - $ref: "#/components/parameters/header_customer_id"
-        - $ref: "#/components/parameters/header_contributors"
         - name: id
           in: path
           required: true
@@ -398,7 +388,6 @@ paths:
         - $ref: "#/components/parameters/header_authorization"
         - $ref: "#/components/parameters/header_coverage"
         - $ref: "#/components/parameters/header_customer_id"
-        - $ref: "#/components/parameters/header_contributors"
       tags:
         - Channel
       responses:
@@ -420,8 +409,7 @@ paths:
       parameters:
         - $ref: "#/components/parameters/header_authorization"
         - $ref: "#/components/parameters/header_coverage"
-        - $ref: "#/components/parameters/header_customer_id"
-        - $ref: "#/components/parameters/header_contributors"
+        - $ref: "#/components/parameters/header_customer_id_create_client"
       requestBody:
         content:
           application/json:
@@ -453,7 +441,6 @@ paths:
         - $ref: "#/components/parameters/header_authorization"
         - $ref: "#/components/parameters/header_coverage"
         - $ref: "#/components/parameters/header_customer_id"
-        - $ref: "#/components/parameters/header_contributors"
         - name: id
           in: path
           required: true
@@ -490,7 +477,6 @@ paths:
         - $ref: "#/components/parameters/header_authorization"
         - $ref: "#/components/parameters/header_coverage"
         - $ref: "#/components/parameters/header_customer_id"
-        - $ref: "#/components/parameters/header_contributors"
         - name: id
           in: path
           required: true
@@ -533,7 +519,6 @@ paths:
         - $ref: "#/components/parameters/header_authorization"
         - $ref: "#/components/parameters/header_coverage"
         - $ref: "#/components/parameters/header_customer_id"
-        - $ref: "#/components/parameters/header_contributors"
         - name: id
           in: path
           required: true
@@ -564,7 +549,6 @@ paths:
         - $ref: "#/components/parameters/header_authorization"
         - $ref: "#/components/parameters/header_coverage"
         - $ref: "#/components/parameters/header_customer_id"
-        - $ref: "#/components/parameters/header_contributors"
       tags:
         - Channel type
       responses:
@@ -606,7 +590,7 @@ paths:
       parameters:
         - $ref: "#/components/parameters/header_authorization"
         - $ref: "#/components/parameters/header_coverage"
-        - $ref: "#/components/parameters/header_customer_id"
+        - $ref: "#/components/parameters/header_customer_id_create_client"
         - $ref: "#/components/parameters/header_contributors"
       requestBody:
         $ref: "#/components/requestBodies/property_creation"
@@ -641,7 +625,6 @@ paths:
         - $ref: "#/components/parameters/header_authorization"
         - $ref: "#/components/parameters/header_coverage"
         - $ref: "#/components/parameters/header_customer_id"
-        - $ref: "#/components/parameters/header_contributors"
         - name: id
           in: path
           required: true
@@ -678,7 +661,6 @@ paths:
         - $ref: "#/components/parameters/header_authorization"
         - $ref: "#/components/parameters/header_coverage"
         - $ref: "#/components/parameters/header_customer_id"
-        - $ref: "#/components/parameters/header_contributors"
         - name: id
           in: path
           required: true
@@ -720,7 +702,6 @@ paths:
         - $ref: "#/components/parameters/header_authorization"
         - $ref: "#/components/parameters/header_coverage"
         - $ref: "#/components/parameters/header_customer_id"
-        - $ref: "#/components/parameters/header_contributors"
         - name: id
           in: path
           required: true
@@ -751,7 +732,6 @@ paths:
         - $ref: "#/components/parameters/header_authorization"
         - $ref: "#/components/parameters/header_coverage"
         - $ref: "#/components/parameters/header_customer_id"
-        - $ref: "#/components/parameters/header_contributors"
       tags:
         - Severity
       responses:
@@ -773,8 +753,7 @@ paths:
       parameters:
         - $ref: "#/components/parameters/header_authorization"
         - $ref: "#/components/parameters/header_coverage"
-        - $ref: "#/components/parameters/header_customer_id"
-        - $ref: "#/components/parameters/header_contributors"
+        - $ref: "#/components/parameters/header_customer_id_create_client"
       requestBody:
         content:
           application/json:
@@ -806,7 +785,6 @@ paths:
         - $ref: "#/components/parameters/header_authorization"
         - $ref: "#/components/parameters/header_coverage"
         - $ref: "#/components/parameters/header_customer_id"
-        - $ref: "#/components/parameters/header_contributors"
         - name: id
           in: path
           required: true
@@ -843,7 +821,6 @@ paths:
         - $ref: "#/components/parameters/header_authorization"
         - $ref: "#/components/parameters/header_coverage"
         - $ref: "#/components/parameters/header_customer_id"
-        - $ref: "#/components/parameters/header_contributors"
         - name: id
           in: path
           required: true
@@ -886,7 +863,6 @@ paths:
         - $ref: "#/components/parameters/header_authorization"
         - $ref: "#/components/parameters/header_coverage"
         - $ref: "#/components/parameters/header_customer_id"
-        - $ref: "#/components/parameters/header_contributors"
         - name: id
           in: path
           required: true
@@ -984,7 +960,6 @@ paths:
         - $ref: "#/components/parameters/header_authorization"
         - $ref: "#/components/parameters/header_coverage"
         - $ref: "#/components/parameters/header_customer_id"
-        - $ref: "#/components/parameters/header_contributors"
       tags:
         - Tag
       responses:
@@ -1015,8 +990,7 @@ paths:
       parameters:
         - $ref: "#/components/parameters/header_authorization"
         - $ref: "#/components/parameters/header_coverage"
-        - $ref: "#/components/parameters/header_customer_id"
-        - $ref: "#/components/parameters/header_contributors"
+        - $ref: "#/components/parameters/header_customer_id_create_client"
       requestBody:
         content:
           application/json:
@@ -1051,7 +1025,6 @@ paths:
         - $ref: "#/components/parameters/header_authorization"
         - $ref: "#/components/parameters/header_coverage"
         - $ref: "#/components/parameters/header_customer_id"
-        - $ref: "#/components/parameters/header_contributors"
         - name: id
           in: path
           required: true
@@ -1091,7 +1064,6 @@ paths:
         - $ref: "#/components/parameters/header_authorization"
         - $ref: "#/components/parameters/header_coverage"
         - $ref: "#/components/parameters/header_customer_id"
-        - $ref: "#/components/parameters/header_contributors"
         - name: id
           in: path
           required: true
@@ -1137,7 +1109,6 @@ paths:
         - $ref: "#/components/parameters/header_authorization"
         - $ref: "#/components/parameters/header_coverage"
         - $ref: "#/components/parameters/header_customer_id"
-        - $ref: "#/components/parameters/header_contributors"
         - name: id
           in: path
           required: true
@@ -1889,10 +1860,17 @@ servers:
   - url: http://127.0.0.1:5000/
 components:
   parameters:
+    header_customer_id_create_client:
+      in: header
+      required: true
+      description: Client code. A client is owner of cause, channel, severity and tag. If this Client code doesn't exist, it will be created.
+      name: X-Customer-Id
+      schema:
+        type: string
     header_customer_id:
       in: header
       required: true
-      description: Client code. A client is owner of cause, channel, severity and tag
+      description: Client code. A client is owner of cause, channel, severity and tag.
       name: X-Customer-Id
       schema:
         type: string
