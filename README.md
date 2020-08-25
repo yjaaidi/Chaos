@@ -19,10 +19,12 @@ cd Chaos
 ```
 
 #### Requirements
-- PostgreSQL 9.6
-
+- PostgreSQL 9.6 `sudo apt-get install postgresql-9.6 postgresql-server-dev-9.6 libpq-dev`
+- [RabbitMQ](https://www.rabbitmq.com/download.html)
 ##### Python
-- Install Python `sudo apt-get install python2.7 python2.7-dev`
+- Install Python2.7 `sudo apt-get install python2.7 python2.7-dev`
+  
+  or `sudo apt install python2 python2-dev` on recent linux release
 - Install [pip](https://pip.pypa.io/en/latest/installing/)
 - Install [virtualenv](http://virtualenv.readthedocs.org/en/latest/installation.html)
 
@@ -33,7 +35,7 @@ pip install -r requirements.txt
 ```
 
 #### Build protobufs
-- Install protoc building it from source : [protobuf v2.6.1](https://github.com/google/protobuf/blob/master/src/README.md). You can use `sudo apt-get install protobuf-compiler` if you're sure it won't install version 3.x.x (incompatible).
+- Install protoc building it from source : [protobuf v2.6.1](https://github.com/protocolbuffers/protobuf/releases/download/v2.6.1/protobuf-2.6.1.zip). You can use `sudo apt-get install protobuf-compiler` if you're sure it won't install version 3.x.x (incompatible).
 - Build protobufs
 
 ```
@@ -45,10 +47,10 @@ git submodule update
 
 #### Create the database
 ```
-sudo apt-get install postgresql libpq-dev
 sudo -i -u postgres
 # Create a user
-createuser -P navitia (password "navitia")
+createuser -P navitia
+(password "navitia")
 
 # Create database
 createdb -O navitia chaos
@@ -64,10 +66,10 @@ To improve its performance Chaos can use [Redis](https://redis.io/).
 [Installing Redis](https://redis.io/topics/quickstart)
 
 ##### Using Chaos without Redis
-You can deactivate Redis usage in [default_settings.py](https://github.com/CanalTP/Chaos/blob/master/chaos/default_settings.py#L17) by changing 'CACHE_TYPE' to 'simple'
+You can deactivate Redis usage in [default_settings.py](https://github.com/CanalTP/Chaos/blob/master/chaos/default_settings.py#L18) by changing 'CACHE_TYPE' to 'simple'
 
 ##### Using Chaos without cache
-For development purpose you can deactivate cache usage in [default_settings.py](https://github.com/CanalTP/Chaos/blob/master/chaos/default_settings.py#L17) by forcing 'CACHE_TYPE' to 'null'
+For development purpose you can deactivate cache usage in [default_settings.py](https://github.com/CanalTP/Chaos/blob/master/chaos/default_settings.py#L18) by forcing 'CACHE_TYPE' to 'null'
 
 #### Run Chaos with honcho (optional)
 ##### Install honcho
@@ -75,12 +77,6 @@ You can use [honcho](https://github.com/nickstenning/honcho) for managing Procfi
 
 ```
 pip install honcho
-```
-
-##### create a `.env` file
-Write this line inside
-```
-CHAOS_CONFIG_FILE=default_settings.py
 ```
 
 ##### Upgrade database
@@ -138,12 +134,6 @@ You can add a 'master' key in the file. It will allow you to access all resource
 
 ## Tests
 
-The following commands for tests are also working in Docker environment, you just have to run before: 
-```
-docker-compose exec ws bash
-cd tests
-```
-
 ### Unit tests
 ```
 cd tests
@@ -159,6 +149,14 @@ To stop directly on faulty test
 ```
 cd tests
 honcho run lettuce --failfast
+```
+
+### With docker
+```
+docker-compose -f docker-compose.test.yml build --pull
+docker-compose -f docker-compose.test.yml up -d
+docker-compose -f docker-compose.test.yml exec -T chaos /bin/sh ./docker/tests.sh
+docker-compose -f docker-compose.test.yml down --remove-orphans
 ```
 
 ## Copyright

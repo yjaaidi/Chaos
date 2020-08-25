@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: v1.2
+  version: v1.4
   title: Documentation of API Chaos
   description: >
     Chaos is the web service which can feed
@@ -14,24 +14,47 @@ info:
     Chaos manage disruptions and help you to communicate with your travelers on the best.
 
 
-    ** Requirements **
+    **Requirements**
 
 
     Before using Chaos, you will need few things:
-     * a Navitia token, allowing you to request navitia on a data coverage
+     * a Navitia token, allowing you to request Navitia on a data coverage
      * a customer ID
      * a contributor ID
 
-    Your usual Kisio Digital interlocutor can provide you these elements, and an access to the production or pre-production platform.
+    Your usual Kisio Digital interlocutor can provide you these elements and an access to the production or pre-production platform.
 
-    Before using the API in production, you will need to provide:
+
+    ***customer ID***
+
+
+    A customer (aka 'client') is a string value of your choice that will be set at your first cause, channel, severity or tag creation.
+    When set, all created resources will be related to this client.
+
+
+    ***contributor ID***
+
+
+    A contributor is a string value shared with Navitia to identify who's providing disruptions in your coverage(s). It's named 'rt_topics' in Navitia configuration.
+    You can use several contributors per client and in your coverage(s) for example to differentiate disruptions creators (web UI(s)/automated bot(s)).
+
+
+
+    ***Work with us***
+
+
+    Before using this fabulous API in production, you will need to share with Kisio Digital:
      * integration specifications
      * expected load your application will generate.
 
-    These two points are recquired to manage the Chaos platform.
+    These two points are required to manage the Chaos platform.
 
 
-    **The values of hostname and port number should be updated depending on the configuration of WebService**
+    ---
+
+
+    To properly use following examples the values of hostname and port number should be updated depending on your configuration of the WebService access.
+
   license:
     name: AGPL
     url: http://www.gnu.org/licenses/agpl-3.0.html
@@ -59,7 +82,6 @@ paths:
         - $ref: "#/components/parameters/header_authorization"
         - $ref: "#/components/parameters/header_coverage"
         - $ref: "#/components/parameters/header_customer_id"
-        - $ref: "#/components/parameters/header_contributors"
       tags:
         - Category
       responses:
@@ -81,8 +103,7 @@ paths:
       parameters:
         - $ref: "#/components/parameters/header_authorization"
         - $ref: "#/components/parameters/header_coverage"
-        - $ref: "#/components/parameters/header_customer_id"
-        - $ref: "#/components/parameters/header_contributors"
+        - $ref: "#/components/parameters/header_customer_id_create_client"
       requestBody:
         $ref: "#/components/requestBodies/category_creation"
       tags:
@@ -102,7 +123,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/error_occured"
+                $ref: "#/components/schemas/error_occurred"
   "/categories/{id}":
     get:
       description: Retrieve the category identified by ID
@@ -110,7 +131,6 @@ paths:
         - $ref: "#/components/parameters/header_authorization"
         - $ref: "#/components/parameters/header_coverage"
         - $ref: "#/components/parameters/header_customer_id"
-        - $ref: "#/components/parameters/header_contributors"
         - name: id
           in: path
           required: true
@@ -144,7 +164,6 @@ paths:
         - $ref: "#/components/parameters/header_authorization"
         - $ref: "#/components/parameters/header_coverage"
         - $ref: "#/components/parameters/header_customer_id"
-        - $ref: "#/components/parameters/header_contributors"
         - name: id
           in: path
           required: true
@@ -170,14 +189,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/error_occured"
+                $ref: "#/components/schemas/error_occurred"
     delete:
       description: remove a category
       parameters:
         - $ref: "#/components/parameters/header_authorization"
         - $ref: "#/components/parameters/header_coverage"
         - $ref: "#/components/parameters/header_customer_id"
-        - $ref: "#/components/parameters/header_contributors"
         - name: id
           in: path
           required: true
@@ -205,7 +223,6 @@ paths:
         - $ref: "#/components/parameters/header_authorization"
         - $ref: "#/components/parameters/header_coverage"
         - $ref: "#/components/parameters/header_customer_id"
-        - $ref: "#/components/parameters/header_contributors"
       tags:
         - Cause
       responses:
@@ -227,8 +244,7 @@ paths:
       parameters:
         - $ref: "#/components/parameters/header_authorization"
         - $ref: "#/components/parameters/header_coverage"
-        - $ref: "#/components/parameters/header_customer_id"
-        - $ref: "#/components/parameters/header_contributors"
+        - $ref: "#/components/parameters/header_customer_id_create_client"
       requestBody:
         $ref: "#/components/requestBodies/cause_creation"
       tags:
@@ -248,7 +264,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/error_occured"
+                $ref: "#/components/schemas/error_occurred"
   "/causes/{id}":
     get:
       description: Retrieve the cause identified by ID
@@ -256,7 +272,6 @@ paths:
         - $ref: "#/components/parameters/header_authorization"
         - $ref: "#/components/parameters/header_coverage"
         - $ref: "#/components/parameters/header_customer_id"
-        - $ref: "#/components/parameters/header_contributors"
         - name: id
           in: path
           required: true
@@ -296,7 +311,6 @@ paths:
         - $ref: "#/components/parameters/header_authorization"
         - $ref: "#/components/parameters/header_coverage"
         - $ref: "#/components/parameters/header_customer_id"
-        - $ref: "#/components/parameters/header_contributors"
         - name: id
           in: path
           required: true
@@ -322,7 +336,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/error_occured"
+                $ref: "#/components/schemas/error_occurred"
         "404":
           description: Not Found
           content:
@@ -335,7 +349,6 @@ paths:
         - $ref: "#/components/parameters/header_authorization"
         - $ref: "#/components/parameters/header_coverage"
         - $ref: "#/components/parameters/header_customer_id"
-        - $ref: "#/components/parameters/header_contributors"
         - name: id
           in: path
           required: true
@@ -367,7 +380,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/error_occured"
+                $ref: "#/components/schemas/error_occurred"
   /channels:
     get:
       description: Retrieves all the channels
@@ -375,7 +388,6 @@ paths:
         - $ref: "#/components/parameters/header_authorization"
         - $ref: "#/components/parameters/header_coverage"
         - $ref: "#/components/parameters/header_customer_id"
-        - $ref: "#/components/parameters/header_contributors"
       tags:
         - Channel
       responses:
@@ -397,8 +409,7 @@ paths:
       parameters:
         - $ref: "#/components/parameters/header_authorization"
         - $ref: "#/components/parameters/header_coverage"
-        - $ref: "#/components/parameters/header_customer_id"
-        - $ref: "#/components/parameters/header_contributors"
+        - $ref: "#/components/parameters/header_customer_id_create_client"
       requestBody:
         content:
           application/json:
@@ -422,7 +433,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/error_occured"
+                $ref: "#/components/schemas/error_occurred"
   "/channels/{id}":
     get:
       description: Retrieve the channel identified by ID
@@ -430,7 +441,6 @@ paths:
         - $ref: "#/components/parameters/header_authorization"
         - $ref: "#/components/parameters/header_coverage"
         - $ref: "#/components/parameters/header_customer_id"
-        - $ref: "#/components/parameters/header_contributors"
         - name: id
           in: path
           required: true
@@ -454,7 +464,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/error_occured"
+                $ref: "#/components/schemas/error_occurred"
         "404":
           description: Not Found
           content:
@@ -467,7 +477,6 @@ paths:
         - $ref: "#/components/parameters/header_authorization"
         - $ref: "#/components/parameters/header_coverage"
         - $ref: "#/components/parameters/header_customer_id"
-        - $ref: "#/components/parameters/header_contributors"
         - name: id
           in: path
           required: true
@@ -497,7 +506,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/error_occured"
+                $ref: "#/components/schemas/error_occurred"
         "404":
           description: Not Found
           content:
@@ -510,7 +519,6 @@ paths:
         - $ref: "#/components/parameters/header_authorization"
         - $ref: "#/components/parameters/header_coverage"
         - $ref: "#/components/parameters/header_customer_id"
-        - $ref: "#/components/parameters/header_contributors"
         - name: id
           in: path
           required: true
@@ -527,7 +535,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/error_occured"
+                $ref: "#/components/schemas/error_occurred"
         "404":
           description: Not Found
           content:
@@ -541,7 +549,6 @@ paths:
         - $ref: "#/components/parameters/header_authorization"
         - $ref: "#/components/parameters/header_coverage"
         - $ref: "#/components/parameters/header_customer_id"
-        - $ref: "#/components/parameters/header_contributors"
       tags:
         - Channel type
       responses:
@@ -583,7 +590,7 @@ paths:
       parameters:
         - $ref: "#/components/parameters/header_authorization"
         - $ref: "#/components/parameters/header_coverage"
-        - $ref: "#/components/parameters/header_customer_id"
+        - $ref: "#/components/parameters/header_customer_id_create_client"
         - $ref: "#/components/parameters/header_contributors"
       requestBody:
         $ref: "#/components/requestBodies/property_creation"
@@ -604,13 +611,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/error_occured"
+                $ref: "#/components/schemas/error_occurred"
         "409":
           description: Conflict
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/error_occured"
+                $ref: "#/components/schemas/error_occurred"
   "/properties/{id}":
     get:
       description: Retrieve the property identified by ID
@@ -618,7 +625,6 @@ paths:
         - $ref: "#/components/parameters/header_authorization"
         - $ref: "#/components/parameters/header_coverage"
         - $ref: "#/components/parameters/header_customer_id"
-        - $ref: "#/components/parameters/header_contributors"
         - name: id
           in: path
           required: true
@@ -642,20 +648,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/error_occured"
+                $ref: "#/components/schemas/error_occurred"
         "404":
           description: Not Found
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/error_occured"
+                $ref: "#/components/schemas/error_occurred"
     put:
       description: Update a property
       parameters:
         - $ref: "#/components/parameters/header_authorization"
         - $ref: "#/components/parameters/header_coverage"
         - $ref: "#/components/parameters/header_customer_id"
-        - $ref: "#/components/parameters/header_contributors"
         - name: id
           in: path
           required: true
@@ -678,26 +683,25 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/error_occured"
+                $ref: "#/components/schemas/error_occurred"
         "404":
           description: Not Found
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/error_occured"
+                $ref: "#/components/schemas/error_occurred"
         "409":
           description: Conflict
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/error_occured"
+                $ref: "#/components/schemas/error_occurred"
     delete:
       description: remove a property
       parameters:
         - $ref: "#/components/parameters/header_authorization"
         - $ref: "#/components/parameters/header_coverage"
         - $ref: "#/components/parameters/header_customer_id"
-        - $ref: "#/components/parameters/header_contributors"
         - name: id
           in: path
           required: true
@@ -714,13 +718,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/error_occured"
+                $ref: "#/components/schemas/error_occurred"
         "404":
           description: Not Found
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/error_occured"
+                $ref: "#/components/schemas/error_occurred"
   /severities:
     get:
       description: Retrieves all the severities ordered by priority
@@ -728,7 +732,6 @@ paths:
         - $ref: "#/components/parameters/header_authorization"
         - $ref: "#/components/parameters/header_coverage"
         - $ref: "#/components/parameters/header_customer_id"
-        - $ref: "#/components/parameters/header_contributors"
       tags:
         - Severity
       responses:
@@ -750,8 +753,7 @@ paths:
       parameters:
         - $ref: "#/components/parameters/header_authorization"
         - $ref: "#/components/parameters/header_coverage"
-        - $ref: "#/components/parameters/header_customer_id"
-        - $ref: "#/components/parameters/header_contributors"
+        - $ref: "#/components/parameters/header_customer_id_create_client"
       requestBody:
         content:
           application/json:
@@ -775,7 +777,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/error_occured"
+                $ref: "#/components/schemas/error_occurred"
   "/severities/{id}":
     get:
       description: Retrieve the severity identified by ID
@@ -783,7 +785,6 @@ paths:
         - $ref: "#/components/parameters/header_authorization"
         - $ref: "#/components/parameters/header_coverage"
         - $ref: "#/components/parameters/header_customer_id"
-        - $ref: "#/components/parameters/header_contributors"
         - name: id
           in: path
           required: true
@@ -813,14 +814,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/error_occured"
+                $ref: "#/components/schemas/error_occurred"
     put:
       description: Update a severity
       parameters:
         - $ref: "#/components/parameters/header_authorization"
         - $ref: "#/components/parameters/header_coverage"
         - $ref: "#/components/parameters/header_customer_id"
-        - $ref: "#/components/parameters/header_contributors"
         - name: id
           in: path
           required: true
@@ -856,14 +856,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/error_occured"
+                $ref: "#/components/schemas/error_occurred"
     delete:
       description: remove a severity
       parameters:
         - $ref: "#/components/parameters/header_authorization"
         - $ref: "#/components/parameters/header_coverage"
         - $ref: "#/components/parameters/header_customer_id"
-        - $ref: "#/components/parameters/header_contributors"
         - name: id
           in: path
           required: true
@@ -886,13 +885,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/error_occured"
+                $ref: "#/components/schemas/error_occurred"
         "409":
           description: Conflict
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/error_occured"
+                $ref: "#/components/schemas/error_occurred"
   /status:
     get:
       description: Renders state of application
@@ -961,7 +960,6 @@ paths:
         - $ref: "#/components/parameters/header_authorization"
         - $ref: "#/components/parameters/header_coverage"
         - $ref: "#/components/parameters/header_customer_id"
-        - $ref: "#/components/parameters/header_contributors"
       tags:
         - Tag
       responses:
@@ -986,14 +984,13 @@ paths:
                 type: object
                 properties:
                   severity:
-                    $ref: "#/components/schemas/error_occured"
+                    $ref: "#/components/schemas/error_occurred"
     post:
       description: Creates a tag
       parameters:
         - $ref: "#/components/parameters/header_authorization"
         - $ref: "#/components/parameters/header_coverage"
-        - $ref: "#/components/parameters/header_customer_id"
-        - $ref: "#/components/parameters/header_contributors"
+        - $ref: "#/components/parameters/header_customer_id_create_client"
       requestBody:
         content:
           application/json:
@@ -1020,7 +1017,7 @@ paths:
                 type: object
                 properties:
                   tag:
-                    $ref: "#/components/schemas/error_occured"
+                    $ref: "#/components/schemas/error_occurred"
   "/tags/{id}":
     get:
       description: Retrieve the tag identified by ID
@@ -1028,7 +1025,6 @@ paths:
         - $ref: "#/components/parameters/header_authorization"
         - $ref: "#/components/parameters/header_coverage"
         - $ref: "#/components/parameters/header_customer_id"
-        - $ref: "#/components/parameters/header_contributors"
         - name: id
           in: path
           required: true
@@ -1068,7 +1064,6 @@ paths:
         - $ref: "#/components/parameters/header_authorization"
         - $ref: "#/components/parameters/header_coverage"
         - $ref: "#/components/parameters/header_customer_id"
-        - $ref: "#/components/parameters/header_contributors"
         - name: id
           in: path
           required: true
@@ -1101,7 +1096,7 @@ paths:
                 type: object
                 properties:
                   tag:
-                    $ref: "#/components/schemas/error_occured"
+                    $ref: "#/components/schemas/error_occurred"
         "404":
           description: Not Found
           content:
@@ -1114,7 +1109,6 @@ paths:
         - $ref: "#/components/parameters/header_authorization"
         - $ref: "#/components/parameters/header_coverage"
         - $ref: "#/components/parameters/header_customer_id"
-        - $ref: "#/components/parameters/header_contributors"
         - name: id
           in: path
           required: true
@@ -1203,7 +1197,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/error_occured"
+                $ref: "#/components/schemas/error_occurred"
   /disruptions:
     get:
       description: Return all visible disruptions
@@ -1268,25 +1262,25 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/error_occured"
+                $ref: "#/components/schemas/error_occurred"
         "404":
           description: Not found
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/error_occured"
+                $ref: "#/components/schemas/error_occurred"
         "500":
           description: Server error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/error_occured"
+                $ref: "#/components/schemas/error_occurred"
         "503":
           description: Error during transferring of disruption to Navitia
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/error_occured"
+                $ref: "#/components/schemas/error_occurred"
   "/disruptions/{id}":
     get:
       description: Retrieve the disruption identified by ID
@@ -1319,7 +1313,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/error_occured"
+                $ref: "#/components/schemas/error_occurred"
         "404":
           description: Not found
           content:
@@ -1358,7 +1352,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/error_occured"
+                $ref: "#/components/schemas/error_occurred"
         "404":
           description: Not found
           content:
@@ -1370,7 +1364,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/error_occured"
+                $ref: "#/components/schemas/error_occurred"
     delete:
       description: Change the disruption and its impacts statuses to "archived". Archived
         elements aren't used by Navitia.
@@ -1395,7 +1389,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/error_occured"
+                $ref: "#/components/schemas/error_occurred"
         "404":
           description: Not found
           content:
@@ -1407,13 +1401,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/error_occured"
+                $ref: "#/components/schemas/error_occurred"
         "503":
           description: Service unavailable
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/error_occured"
+                $ref: "#/components/schemas/error_occurred"
   "/disruptions/{id}/history":
     get:
       description: Get a list of historical states of a disruption
@@ -1452,13 +1446,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/error_occured"
+                $ref: "#/components/schemas/error_occurred"
         "404":
           description: Not found
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/error_occured"
+                $ref: "#/components/schemas/error_occurred"
   "/disruptions/{id}/impacts":
     get:
       description: Return all impacts of a disruption
@@ -1657,7 +1651,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/error_occured"
+                $ref: "#/components/schemas/error_occurred"
   /impacts/_search:
     post:
       description: Return filtered impacts
@@ -1696,7 +1690,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/error_occured"
+                $ref: "#/components/schemas/error_occurred"
   /impacts/exports:
     get:
       description: Get exports status
@@ -1755,13 +1749,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/error_occured"
+                $ref: "#/components/schemas/error_occurred"
         "409":
           description: Conflict
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/error_occured"
+                $ref: "#/components/schemas/error_occurred"
   "/impacts/exports/{id}":
     get:
       description: Get the status of one export
@@ -1842,34 +1836,41 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/error_occured"
+                $ref: "#/components/schemas/error_occurred"
         "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/error_occured"
+                $ref: "#/components/schemas/error_occurred"
         "404":
           description: Not Found (Customer not found)
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/error_occured"
+                $ref: "#/components/schemas/error_occurred"
         "409":
           description: Conflict
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/error_occured"
+                $ref: "#/components/schemas/error_occurred"
 
 servers:
   - url: http://127.0.0.1:5000/
 components:
   parameters:
+    header_customer_id_create_client:
+      in: header
+      required: true
+      description: Client code. A client is owner of cause, channel, severity and tag. If this Client code doesn't exist, it will be created.
+      name: X-Customer-Id
+      schema:
+        type: string
     header_customer_id:
       in: header
       required: true
-      description: Client code. A client is owner of cause, channel, severity and tag
+      description: Client code. A client is owner of cause, channel, severity and tag.
       name: X-Customer-Id
       schema:
         type: string
@@ -2830,7 +2831,7 @@ components:
           type: number
         message:
           type: string
-    error_occured:
+    error_occurred:
       type: object
       properties:
         error:
