@@ -1,0 +1,47 @@
+# Installation
+
+## Table of Contents
+1. [Environment variable](#environment-variables)
+2. [Install with Makefile](#install-with-makefile)
+
+## Environment variables
+
+| Name | Description | Example value |
+| --- |--- | --- |
+| SQLALCHEMY_DATABASE_URI | DB URI | postgresql://navitia:navitia@localhost/chaos |
+| DEBUG | enable mode DEBUG | 0 |
+| NAVITIA_URL | Navitia api to use | http://navitia2-ws.ctp.dev.canaltp.fr |
+| NAVITIA_TIMEOUT | Navitia request timeout in seconds | 1 |
+| RABBITMQ_CONNECTION_STRING | RabbitMQ to use | pyamqp://guest:guest@localhost:5672//?heartbeat=60 |
+| CACHE_TYPE | Type cache | redis |
+| CACHE_DEFAULT_TIMEOUT | Default cache timeout | 86400 |
+| NAVITIA_CACHE_TIMEOUT | Navitia cache timeout in seconds | 2 * 24 * 3600 |
+| NAVITIA_PUBDATE_CACHE_TIMEOUT | Check Navitia publication date every 'n' seconds | 600 |
+| CACHE_REDIS_HOST | Redis host | localhost |
+| CACHE_REDIS_PORT | Redis port | 6379 |
+| CACHE_REDIS_PASSWORD | Redis password | None |
+| CACHE_REDIS_DB | Redis DB enabled  | 0 |
+| CACHE_KEY_PREFIX | Cache key prefix | chaos |
+| RABBITMQ_EXCHANGE | amqp exchange used to send disruptions | navitia |
+| RABBITMQ_ENABLED | RabbitMQ enabled | 1 |
+| PROFILING_ENABLED | Profiling enabled | 0 |
+| IMPACT_EXPORT_DIR | Export api, paht for csv files generation | /tmp |
+| IMPACT_EXPORT_PYTHON | Python path (possible local config problems) |  |
+| NEW_RELIC_CONFIG_FILE | NewRelic config file | newrelic.ini |
+| CACHE_CONFIGURATION | array of various other VARS | { <br>'CACHE_TYPE': 'redis', <br>'CACHE_DEFAULT_TIMEOUT': ${CACHE_DEFAULT_TIMEOUT}, <br>'NAVITIA_CACHE_TIMEOUT': ${NAVITIA_CACHE_TIMEOUT}, <br>'NAVITIA_PUBDATE_CACHE_TIMEOUT': ${NAVITIA_PUBDATE_CACHE_TIMEOUT}, <br>'CACHE_REDIS_HOST' : ${CACHE_REDIS_HOST}, <br> 'CACHE_REDIS_PORT' : ${CACHE_REDIS_PORT}, <br>'CACHE_REDIS_PASSWORD' : ${CACHE_REDIS_PASSWORD}, <br>'CACHE_REDIS_DB' : ${CACHE_REDIS_DB}, <br>'CACHE_KEY_PREFIX' : ${CACHE_KEY_PREFIX} <br>} |
+| VERSION | Application version | 1.0.42 |
+| ENV | Environment to be deployed | internal |
+| REGISTRY_HOST | Docker registry for app images | localhost |
+
+For more information about cache configurations, see https://pythonhosted.org/Flask-Cache/
+
+
+## Install with Makefile
+
+### Build images
+
+If undefined you will be asked to set some environment variables.
+
+```
+make build_prod_env
+```
