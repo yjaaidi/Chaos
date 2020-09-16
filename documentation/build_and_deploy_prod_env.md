@@ -25,15 +25,19 @@
 | RABBITMQ_EXCHANGE | amqp exchange used to send disruptions | navitia |
 | RABBITMQ_ENABLED | RabbitMQ enabled | 1 |
 | PROFILING_ENABLED | Profiling enabled | 0 |
-| IMPACT_EXPORT_DIR | Export api, paht for csv files generation | /tmp |
+| IMPACT_EXPORT_DIR | Path to export files storage | /tmp |
 | IMPACT_EXPORT_PYTHON | Python path (possible local config problems) |  |
 | NEW_RELIC_CONFIG_FILE | NewRelic config file | newrelic.ini |
-| CACHE_CONFIGURATION | array of various other VARS | { <br>'CACHE_TYPE': 'redis', <br>'CACHE_DEFAULT_TIMEOUT': ${CACHE_DEFAULT_TIMEOUT}, <br>'NAVITIA_CACHE_TIMEOUT': ${NAVITIA_CACHE_TIMEOUT}, <br>'NAVITIA_PUBDATE_CACHE_TIMEOUT': ${NAVITIA_PUBDATE_CACHE_TIMEOUT}, <br>'CACHE_REDIS_HOST' : ${CACHE_REDIS_HOST}, <br> 'CACHE_REDIS_PORT' : ${CACHE_REDIS_PORT}, <br>'CACHE_REDIS_PASSWORD' : ${CACHE_REDIS_PASSWORD}, <br>'CACHE_REDIS_DB' : ${CACHE_REDIS_DB}, <br>'CACHE_KEY_PREFIX' : ${CACHE_KEY_PREFIX} <br>} |
+| CACHE_CONFIGURATION* | array of mandatory ENV VARS for cache configurations ENV VARS | { <br>'CACHE_TYPE': 'redis', <br>'CACHE_DEFAULT_TIMEOUT': ${CACHE_DEFAULT_TIMEOUT}, <br>'NAVITIA_CACHE_TIMEOUT': ${NAVITIA_CACHE_TIMEOUT}, <br>'NAVITIA_PUBDATE_CACHE_TIMEOUT': ${NAVITIA_PUBDATE_CACHE_TIMEOUT} <br>} |
+| CACHE_CONFIGURATION* | if CACHE_TYPE is 'redis', array of mandatory ENV VARS for cache + redis configurations | { <br>'CACHE_TYPE': 'redis', <br>'CACHE_DEFAULT_TIMEOUT': ${CACHE_DEFAULT_TIMEOUT}, <br>'NAVITIA_CACHE_TIMEOUT': ${NAVITIA_CACHE_TIMEOUT}, <br>'NAVITIA_PUBDATE_CACHE_TIMEOUT': ${NAVITIA_PUBDATE_CACHE_TIMEOUT}, <br>'CACHE_REDIS_HOST' : ${CACHE_REDIS_HOST}, <br> 'CACHE_REDIS_PORT' : ${CACHE_REDIS_PORT}, <br>'CACHE_REDIS_PASSWORD' : ${CACHE_REDIS_PASSWORD}, <br>'CACHE_REDIS_DB' : ${CACHE_REDIS_DB}, <br>'CACHE_KEY_PREFIX' : ${CACHE_KEY_PREFIX} <br>} |
 | VERSION | Application version | 1.0.42 |
 | ENV | Environment to be deployed | internal |
 | REGISTRY_HOST | Docker registry for app images | localhost |
 
+* CACHE_CONFIGURATION : one definition only. Content is related to your CACHE_TYPE choice
+
 For more information about cache configurations, see https://pythonhosted.org/Flask-Cache/
+
 
 
 ## Install with Makefile
