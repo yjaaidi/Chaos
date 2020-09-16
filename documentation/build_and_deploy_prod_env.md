@@ -1,8 +1,18 @@
-# Installation
+# Build & Deploy for Production
 
 ## Table of Contents
-1. [Environment variable](#environment-variables)
-2. [Install with Makefile](#install-with-makefile)
+1. [Requirements](#requirements)
+2. [Environment variables](#environment-variables)
+3. [Build](#build-image)
+4. [Deploy](#deploy)
+
+
+## Requirements
+
+- [Traefik](https://docs.traefik.io/) in Swarm mode
+- Docker attachable network `lb-common`
+- [Fluentd](https://docs.fluentd.org/) for data log
+
 
 ## Environment variables
 
@@ -34,18 +44,33 @@
 | ENV | Environment to be deployed | internal |
 | REGISTRY_HOST | Docker registry for app images | localhost |
 
-* CACHE_CONFIGURATION : one definition only. Content is related to your CACHE_TYPE choice
+\* CACHE_CONFIGURATION : one definition only. Content is related to your CACHE_TYPE choice
 
 For more information about cache configurations, see https://pythonhosted.org/Flask-Cache/
 
+## Build image
 
+### Automated method
 
-## Install with Makefile
-
-### Build images
+A [Makefile](../Makefile) is dedicated to this.
 
 If undefined you will be asked to set some environment variables.
 
 ```
 make build_prod_env
 ```
+
+### Manual method
+
+    git submodule init
+    git submodule update
+    
+    REGISTRY_HOST=localhost VERSION=1.0.42 ./docker/build.sh
+
+
+
+## Deploy
+
+Use the deployment technique of you choice to use your freshly generated app image.
+
+If with Jenkins, we recommend [Jenkinsfile](https://www.jenkins.io/doc/book/pipeline/jenkinsfile/) usage.
