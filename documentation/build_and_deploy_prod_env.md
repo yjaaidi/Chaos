@@ -1,20 +1,20 @@
 # Build & Deploy for Production
 
 ## Table of Contents
-1. [Requirements](#requirements)
-2. [Environment variables](#environment-variables)
-3. [Build](#build-image)
-4. [Deploy](#deploy)
+1. [Requirements](#1-requirements)
+2. [Environment variables](#2-environment-variables)
+3. [Build](#3-build-image)
+4. [Deploy](#4-deploy)
 
 
-## Requirements
+## 1. Requirements
 
 - [Traefik](https://docs.traefik.io/) in Swarm mode
 - Docker attachable network `lb-common`
 - [Fluentd](https://docs.fluentd.org/) for data log
 
 
-## Environment variables
+## 2. Environment variables
 
 | Name | Description | Example value |
 | --- |--- | --- |
@@ -42,13 +42,14 @@
 | CACHE_CONFIGURATION* | if CACHE_TYPE is 'redis', array of mandatory ENV VARS for cache + redis configurations | { <br>'CACHE_TYPE': 'redis', <br>'CACHE_DEFAULT_TIMEOUT': ${CACHE_DEFAULT_TIMEOUT}, <br>'NAVITIA_CACHE_TIMEOUT': ${NAVITIA_CACHE_TIMEOUT}, <br>'NAVITIA_PUBDATE_CACHE_TIMEOUT': ${NAVITIA_PUBDATE_CACHE_TIMEOUT}, <br>'CACHE_REDIS_HOST' : ${CACHE_REDIS_HOST}, <br> 'CACHE_REDIS_PORT' : ${CACHE_REDIS_PORT}, <br>'CACHE_REDIS_PASSWORD' : ${CACHE_REDIS_PASSWORD}, <br>'CACHE_REDIS_DB' : ${CACHE_REDIS_DB}, <br>'CACHE_KEY_PREFIX' : ${CACHE_KEY_PREFIX} <br>} |
 | VERSION | Application version | 1.0.42 |
 | ENV | Environment to be deployed | internal |
-| REGISTRY_HOST | Docker registry for app images | localhost |
+| FLUENTD_ADDRESS | URL of fluentd | localhost:24224 |
+| REGISTRY_HOST | Docker registry host for app images | localhost |
 
 \* CACHE_CONFIGURATION : one definition only. Content is related to your CACHE_TYPE choice
 
 For more information about cache configurations, see https://pythonhosted.org/Flask-Cache/
 
-## Build image
+## 3. Build image
 
 ### Automated method
 
@@ -56,9 +57,7 @@ A [Makefile](../Makefile) is dedicated to this.
 
 If undefined you will be asked to set some environment variables.
 
-```
-make build_prod_env
-```
+    make build_prod_env
 
 ### Manual method
 
@@ -69,7 +68,7 @@ make build_prod_env
 
 
 
-## Deploy
+## 4. Deploy
 
 Use the deployment technique of you choice to use your freshly generated app image.
 
