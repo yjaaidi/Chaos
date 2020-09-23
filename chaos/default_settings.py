@@ -38,7 +38,7 @@ ENABLE_RABBITMQ = (os.getenv('RABBITMQ_ENABLED', 1) == 1)
 
 ACTIVATE_PROFILING = (os.getenv('PROFILING_ENABLED', 0) == 1)
 
-# Directory for store export files
+# Directory for export files storage
 IMPACT_EXPORT_DIR = str(os.getenv('IMPACT_EXPORT_DIR', '/tmp'))
 # Path of python if problem with venv
 IMPACT_EXPORT_PYTHON = str(os.getenv('IMPACT_EXPORT_PYTHON', ''))

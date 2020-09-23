@@ -1,7 +1,8 @@
 #!/bin/sh
 
-# Description:
-# Before to continuous keep in mind, there are two parts. FUNCTIONS and MAIN
+# Script to build an app image.
+# Two sections : FUNCTIONS are used in MAIN section
+
 
 ############################ FUNCTIONS ############################
 askMissingParams()
@@ -12,8 +13,8 @@ askMissingParams()
 
 validateParams()
 {
-    if [ -z "${REGISTRY_HOST}" ]; then echo "Environment variable \$REGISTRY_HOST is empty, please set this before run build script" && exit 1; fi
-    if [ -z "${VERSION}" ]; then echo "Environment variable \$VERSION is empty, please set this before run build script" && exit 1; fi
+    if [ -z "${REGISTRY_HOST}" ]; then echo "Environment variable \$REGISTRY_HOST is empty, please set it before running script" && exit 1; fi
+    if [ -z "${VERSION}" ]; then echo "Environment variable \$VERSION is empty, please set it before running script" && exit 1; fi
 }
 
 build()
@@ -32,8 +33,8 @@ build()
     CACHE_REDIS_PASSWORD="" \
     CACHE_REDIS_DB="" \
     CACHE_KEY_PREFIX="" \
-    EXCHANGE="" \
-    ENABLE_RABBITMQ="" \
+    RABBITMQ_EXCHANGE="" \
+    RABBITMQ_ENABLED="" \
     PROFILING_ENABLED="" \
     IMPACT_EXPORT_DIR="" \
     IMPACT_EXPORT_PYTHON="" \
