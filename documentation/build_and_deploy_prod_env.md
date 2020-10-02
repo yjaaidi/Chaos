@@ -20,7 +20,7 @@
 | --- |--- | --- |
 | SQLALCHEMY_DATABASE_URI | DB URI | postgresql://navitia:navitia@localhost/chaos |
 | DEBUG | enable mode DEBUG | 0 |
-| NAVITIA_URL | Navitia api to use | http://navitia2-ws.ctp.dev.canaltp.fr |
+| NAVITIA_URL | Navitia api to use | https://api.navitia.io |
 | NAVITIA_TIMEOUT | Navitia request timeout in seconds | 1 |
 | RABBITMQ_CONNECTION_STRING | RabbitMQ to use | pyamqp://guest:guest@localhost:5672//?heartbeat=60 |
 | CACHE_TYPE | Type cache | redis |
