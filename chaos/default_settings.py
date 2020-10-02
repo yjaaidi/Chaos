@@ -16,7 +16,7 @@ RABBITMQ_CONNECTION_STRING = str(
         'pyamqp://guest:guest@localhost:5672//?heartbeat=60'))
 
 # Cache configuration, see https://pythonhosted.org/Flask-Cache/ for more information
-cache_type = str(os.getenv('CACHE_TYPE', 'simple'))
+cache_type = str(os.getenv('CACHE_TYPE', 'redis'))
 CACHE_CONFIGURATION = {
     'CACHE_TYPE': cache_type,
     'CACHE_DEFAULT_TIMEOUT': os.getenv('CACHE_DEFAULT_TIMEOUT', 86400),  # in seconds
