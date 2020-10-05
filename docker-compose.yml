@@ -26,7 +26,7 @@ services:
     deploy:
       replicas: "${REPLICAS_CHAOS_APACHE}"
       labels:
-        - "traefik.frontend.rule=Host:chaos-${ENV}.canaltp.fr,chaos-${ENV}.canaltp.prod"
+        - "traefik.frontend.rule=Host:chaos-${ENV}.navitia.io,chaos-${ENV}.canaltp.prod"
         - "traefik.docker.network=lb-common"
         - "traefik.port=5000"
         - "traefik.frontend.entryPoints=http"
