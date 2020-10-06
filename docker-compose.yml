@@ -33,7 +33,7 @@ services:
         - "traefik.enable=true"
     volumes:
       - ${chaos_ws_path}/exports:/data/exports:rw
-      - ./newrelic.ini:/conf/newrelic.ini:ro
+      - ${chaos_ws_path}/newrelic.ini:/conf/newrelic.ini:ro
 
 networks:
   chaos:
