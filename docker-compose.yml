@@ -32,7 +32,7 @@ services:
         - "traefik.enable=true"
     volumes:
       - ${IMPACT_EXPORT_DIR}:/data/exports:rw
-      - ${NEW_RELIC_CONFIG_FILE}/newrelic.ini:/conf/newrelic.ini:ro
+      - ${NEW_RELIC_CONFIG_FILE}:/conf/newrelic.ini:ro
 
   chaos-ws-redis:
     image: redis:${REDIS_VERSION}
