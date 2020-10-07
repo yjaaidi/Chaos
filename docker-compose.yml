@@ -19,7 +19,7 @@ services:
     logging:
       driver: "fluentd"
       options:
-        fluentd-address: ${FLUENTD_ADDRESS}
+        fluentd-address: "localhost:24224"
         tag: chaos.ws.http
         fluentd-async-connect: "true"
     deploy:
