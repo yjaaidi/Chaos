@@ -3,6 +3,8 @@ version: '3.5'
 services:
   ws:
     image: ${REGISTRY_HOST}/navitia/chaos-ws:${VERSION}
+    depends_on:
+      - redis
     build:
       context: .
       dockerfile: docker/Dockerfile
@@ -34,6 +36,11 @@ services:
     volumes:
       - ${IMPACT_EXPORT_DIR}:/data/exports:rw
       - ${NEW_RELIC_CONFIG_FILE}/newrelic.ini:/conf/newrelic.ini:ro
+
+  redis:
+    image: redis:${REDIS_VERSION}
+    networks:
+      - chaos
 
 networks:
   chaos:
