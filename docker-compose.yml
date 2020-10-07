@@ -32,8 +32,8 @@ services:
         - "traefik.frontend.entryPoints=http"
         - "traefik.enable=true"
     volumes:
-      - ${chaos_ws_path}/exports:/data/exports:rw
-      - ${chaos_ws_path}/newrelic.ini:/conf/newrelic.ini:ro
+      - ${IMPACT_EXPORT_DIR}:/data/exports:rw
+      - ${NEW_RELIC_CONFIG_FILE}/newrelic.ini:/conf/newrelic.ini:ro
 
 networks:
   chaos:
