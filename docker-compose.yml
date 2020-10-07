@@ -2,7 +2,7 @@ version: '3.5'
 
 services:
   chaos-ws:
-    image: ${REGISTRY_HOST}/navitia/chaos-ws:${VERSION}
+    image: ${REGISTRY_HOST}/chaos/chaos-ws:${VERSION}
     depends_on:
       - chaos-ws-redis
     networks:
