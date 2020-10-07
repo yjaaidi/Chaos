@@ -1,7 +1,7 @@
 version: '3.5'
 
 services:
-  ws:
+  chaos-ws:
     image: ${REGISTRY_HOST}/navitia/chaos-ws:${VERSION}
     depends_on:
       - redis
@@ -26,7 +26,7 @@ services:
         tag: chaos.ws.http
         fluentd-async-connect: "true"
     deploy:
-      replicas: "${REPLICAS_CHAOS_APACHE}"
+      replicas: "${REPLICAS_CHAOS_WS}"
       labels:
         - "traefik.frontend.rule=Host:chaos-${ENV}.navitia.io,chaos-${ENV}.canaltp.prod"
         - "traefik.docker.network=lb-common"
