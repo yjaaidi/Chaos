@@ -5,9 +5,6 @@ services:
     image: ${REGISTRY_HOST}/navitia/chaos-ws:${VERSION}
     depends_on:
       - chaos-ws-redis
-    build:
-      context: .
-      dockerfile: docker/Dockerfile
     networks:
       - chaos
       - lb-common
