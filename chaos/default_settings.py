@@ -4,7 +4,7 @@ import os
 # http://docs.sqlalchemy.org/en/rel_0_9/dialects/postgresql.html#psycopg2
 SQLALCHEMY_DATABASE_URI = str(os.getenv('SQLALCHEMY_DATABASE_URI', 'postgresql://navitia:navitia@localhost/chaos'))
 
-DEBUG = (os.getenv('DEBUG', 1) == 0)
+DEBUG = (os.getenv('DEBUG', 0) == 1)
 
 NAVITIA_URL = str(os.getenv('NAVITIA_URL', 'https://api.navitia.io'))
 NAVITIA_TIMEOUT = os.getenv('NAVITIA_TIMEOUT', 1)
