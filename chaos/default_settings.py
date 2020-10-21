@@ -1,10 +1,12 @@
 import os
+from distutils import util
+
 # URI for postgresql
 # postgresql://<user>:<password>@<host>:<port>/<dbname>
 # http://docs.sqlalchemy.org/en/rel_0_9/dialects/postgresql.html#psycopg2
 SQLALCHEMY_DATABASE_URI = str(os.getenv('SQLALCHEMY_DATABASE_URI', 'postgresql://navitia:navitia@localhost/chaos'))
 
-DEBUG = (os.getenv('DEBUG', 0) == 1)
+DEBUG = bool(util.strtobool(os.getenv('DEBUG', '0')))
 
 NAVITIA_URL = str(os.getenv('NAVITIA_URL', 'https://api.navitia.io'))
 NAVITIA_TIMEOUT = os.getenv('NAVITIA_TIMEOUT', 1)
@@ -28,15 +30,15 @@ if cache_type == 'redis':
     CACHE_CONFIGURATION['CACHE_REDIS_HOST'] = str(os.getenv('CACHE_REDIS_HOST', 'localhost'))
     CACHE_CONFIGURATION['CACHE_REDIS_PORT'] = os.getenv('CACHE_REDIS_PORT', 6379)
     CACHE_CONFIGURATION['CACHE_REDIS_PASSWORD'] = os.getenv('CACHE_REDIS_PASSWORD', None)
-    CACHE_CONFIGURATION['CACHE_REDIS_DB'] = os.getenv('CACHE_REDIS_DB', 0)
+    CACHE_CONFIGURATION['CACHE_REDIS_DB'] = bool(util.strtobool(os.getenv('CACHE_REDIS_DB', '0')))
     CACHE_CONFIGURATION['CACHE_KEY_PREFIX'] = 'Chaos'
 
 # amqp exchange used for sending disruptions
 EXCHANGE = str(os.getenv('RABBITMQ_EXCHANGE', 'navitia'))
 
-ENABLE_RABBITMQ = (os.getenv('RABBITMQ_ENABLED', 1) == 1)
+ENABLE_RABBITMQ = bool(util.strtobool(os.getenv('RABBITMQ_ENABLED', '1')))
 
-ACTIVATE_PROFILING = (os.getenv('PROFILING_ENABLED', 0) == 1)
+ACTIVATE_PROFILING = bool(util.strtobool(os.getenv('PROFILING_ENABLED', '0')))
 
 # Directory for export files storage
 IMPACT_EXPORT_DIR = str(os.getenv('IMPACT_EXPORT_DIR', '/tmp'))
