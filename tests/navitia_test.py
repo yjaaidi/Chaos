@@ -29,6 +29,10 @@ class NavitiaMock(object):
 def navitia_mock_navitia_error(url, request):
     raise exceptions.NavitiaError
 
+@all_requests
+def navitia_mock_navitia_unauthorized(url, request):
+    return response(401, json.dumps({'message': 'test unauthorized'}))
+
 
 @all_requests
 def navitia_mock_unknown_object_type(url, request):
@@ -101,3 +105,13 @@ def test_navitia_retry():
     requests.get = navitia_timeout_response
     n._navitia_caller('http://api.navitia.io')
     eq_(navitia_timeout_count, 3)
+
+@raises(exceptions.Unauthorized)
+def test_navitia_unauthorized():
+    n = Navitia('http://api.navitia.io', 'jdr')
+    with HTTMock(navitia_mock_navitia_unauthorized):
+        try:
+            n._navitia_caller('http://api.navitia.io')
+        except exceptions.Unauthorized as e:
+            eq_(e.message, 'test unauthorized')
+            raise
