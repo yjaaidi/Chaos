@@ -302,6 +302,9 @@ class Disruptions(flask_restful.Resource):
         except exceptions.ObjectUnknown as e:
             response = self.get_post_error_response_and_log(e, 404)
             return response, 404
+        except exceptions.Unauthorized as e:
+            response = self.get_post_error_response_and_log(e, 401)
+            return response, 401
 
         # Add all tags present in Json
         db_helper.manage_tags(disruption, json)
@@ -311,6 +314,9 @@ class Disruptions(flask_restful.Resource):
         except exceptions.ObjectUnknown as e:
             response = self.get_post_error_response_and_log(e, 404)
             return response, 404
+        except exceptions.Unauthorized as e:
+            response = self.get_post_error_response_and_log(e, 401)
+            return response, 401
 
         except exceptions.InvalidJson as e:
             response = self.get_post_error_response_and_log(e, 400)
@@ -385,6 +391,9 @@ class Disruptions(flask_restful.Resource):
         except exceptions.ObjectUnknown as e:
             response = self.get_put_error_response_and_log(e, 404)
             return response, 404
+        except exceptions.Unauthorized as e:
+            response = self.get_post_error_response_and_log(e, 401)
+            return response, 401
 
         # Add/delete tags present/ not present in Json
         db_helper.manage_tags(disruption, json)
@@ -395,6 +404,9 @@ class Disruptions(flask_restful.Resource):
         except exceptions.ObjectUnknown as e:
             response = self.get_put_error_response_and_log(e, 404)
             return response, 404
+        except exceptions.Unauthorized as e:
+            response = self.get_post_error_response_and_log(e, 401)
+            return response, 401
 
         except exceptions.InvalidJson as e:
             response = self.get_put_error_response_and_log(e, 400)
@@ -1210,6 +1222,9 @@ class Impacts(flask_restful.Resource):
         except exceptions.ObjectUnknown as e:
             return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 404
+        except exceptions.Unauthorized as e:
+            return marshal({'error': {'message': utils.parse_error(e)}},
+                           error_fields), 401
         except exceptions.InvalidJson as e:
             return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 400
 
@@ -1258,6 +1273,9 @@ class Impacts(flask_restful.Resource):
         except exceptions.ObjectUnknown as e:
             return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 404
+        except exceptions.Unauthorized as e:
+            return marshal({'error': {'message': utils.parse_error(e)}},
+                           error_fields), 401
         except exceptions.InvalidJson as e:
             return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 400
         disruption = models.Disruption.get(disruption_id, contributor.id)
