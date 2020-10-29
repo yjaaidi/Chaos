@@ -93,6 +93,17 @@ def test_query_formater_all_objects_invalid():
     eq_(n.query_formater('uri', 'network', 'stop_areas'), 'http://api.navitia.io/v1/coverage/jdr/networks/uri/networks?depth=0&disable_disruption=true')
 
 
+@raises(exceptions.Unauthorized)
+def test_navitia_unauthorized():
+    n = Navitia('http://api.navitia.io', 'jdr')
+    with HTTMock(navitia_mock_navitia_unauthorized):
+        try:
+            n._navitia_caller('http://api.navitia.io')
+        except exceptions.Unauthorized as e:
+            eq_(e.message, 'test unauthorized')
+            raise
+
+
 navitia_timeout_count = 0
 @raises(requests.exceptions.Timeout)
 def test_navitia_retry():
@@ -105,13 +116,3 @@ def test_navitia_retry():
     requests.get = navitia_timeout_response
     n._navitia_caller('http://api.navitia.io')
     eq_(navitia_timeout_count, 3)
-
-@raises(exceptions.Unauthorized)
-def test_navitia_unauthorized():
-    n = Navitia('http://api.navitia.io', 'jdr')
-    with HTTMock(navitia_mock_navitia_unauthorized):
-        try:
-            n._navitia_caller('http://api.navitia.io')
-        except exceptions.Unauthorized as e:
-            eq_(e.message, 'test unauthorized')
-            raise
