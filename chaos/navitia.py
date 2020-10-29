@@ -40,15 +40,15 @@ class Navitia(object):
             query = '{q}/{objects}'.format(q=query, objects=pt_objects)
         return query + '?depth=0&disable_disruption=true'
 
-    def _get_navitia_error_message(response, default_message):
-        if response:
-            json = response.json()
-            default_message = json['message']
+    def _get_navitia_error_message(self, response, default_message):
+        json = response.json()
+        if json.get('message'):
+            default_message = json.get('message')
         return default_message
 
-    def _manage_unauthorized_response(response):
+    def _manage_unauthorized_response(self, response):
         if response.status_code == 401:
-            error_message = self._get_navitia_error_message(response, 'call to navitia unauthorized')
+            error_message = self._get_navitia_error_message(response=response, default_message='call to navitia unauthorized')
             raise exceptions.Unauthorized(error_message)
 
     @retry(retry_on_exception=lambda e: isinstance(e, requests.exceptions.Timeout),
