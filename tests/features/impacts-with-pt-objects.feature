@@ -1268,6 +1268,6 @@ Feature: Manipulate impacts in a Disruption
         """
         {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "network:JDR:2","type": "network"}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}
         """
-        Then the status code should be "404"
+        Then the status code should be "401"
         And the header "Content-Type" should be "application/json"
-        And the field "error.message" should be "ptobject 'network:JDR:2' doesn't exist"
+        And the field "error.message" should be "The server could not verify that you are authorized to access the URL requested. You either supplied the wrong credentials (e.g. a bad password), or your browser doesn't understand how to supply the credentials required."

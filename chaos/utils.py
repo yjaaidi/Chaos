@@ -313,9 +313,12 @@ def parse_error(error):
             to_return = '{} should not be empty'.format(error.schema_path.pop())
         else:
             to_return = error.message
+            to_return = to_return.decode('utf-8')
     except AttributeError:
         to_return = str(error).replace("\n", " ")
-    return to_return.decode('utf-8')
+    except (UnicodeEncodeError, UnicodeDecodeError):
+        pass
+    return to_return
 
 
 def get_uuid(value, name):
