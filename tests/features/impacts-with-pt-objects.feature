@@ -126,12 +126,12 @@ Feature: Manipulate impacts in a Disruption
         I fill navitia authorization in header
         When I post to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/impacts" with:
         """
-        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "stop_area:JDR:SA:PTVIN","type": "stop_area"}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"},{"begin": "2014-04-29T16:52:00Z","end": "2014-05-22T02:15:00Z"}]}
+        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "stop_area:JDR:PTVIN","type": "stop_area"}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"},{"begin": "2014-04-29T16:52:00Z","end": "2014-05-22T02:15:00Z"}]}
         """
         Then the status code should be "201"
         And the header "Content-Type" should be "application/json"
         And the field "impact.objects" should exist
-        And the field "impact.objects.0.id" should be "stop_area:JDR:SA:PTVIN"
+        And the field "impact.objects.0.id" should be "stop_area:JDR:PTVIN"
         And the field "impact.objects.0.type" should be "stop_area"
         And the field "impact.objects.0.name" should be "Porte de Vincennes"
 
@@ -164,12 +164,12 @@ Feature: Manipulate impacts in a Disruption
         I fill navitia authorization in header
         When I post to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/impacts" with:
         """
-        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "stop_point:JDR:SP:BREGS1","type": "stop_point"}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"},{"begin": "2014-04-29T16:52:00Z","end": "2014-05-22T02:15:00Z"}]}
+        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "stop_point:JDR:BREGS1","type": "stop_point"}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"},{"begin": "2014-04-29T16:52:00Z","end": "2014-05-22T02:15:00Z"}]}
         """
         Then the status code should be "201"
         And the header "Content-Type" should be "application/json"
         And the field "impact.objects" should exist
-        And the field "impact.objects.0.id" should be "stop_point:JDR:SP:BREGS1"
+        And the field "impact.objects.0.id" should be "stop_point:JDR:BREGS1"
         And the field "impact.objects.0.type" should be "stop_point"
         And the field "impact.objects.0.name" should be "Bréguet - Sabin"
 
@@ -375,15 +375,15 @@ Feature: Manipulate impacts in a Disruption
         I fill navitia authorization in header
         When I post to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/impacts" with:
         """
-        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id":"line:JDR:M1", "type":"line_section","line_section": {"line":{"id":"line:JDR:M1","type":"line"}, "start_point":{"id":"stop_area:JDR:SA:PTVIN", "type":"stop_area"}, "end_point":{"id":"stop_area:JDR:SA:BERAU", "type":"stop_area"}}}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"},{"begin": "2014-04-29T16:52:00Z","end": "2014-05-22T02:15:00Z"}]}
+        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id":"line:JDR:M1", "type":"line_section","line_section": {"line":{"id":"line:JDR:M1","type":"line"}, "start_point":{"id":"stop_area:JDR:PTVIN", "type":"stop_area"}, "end_point":{"id":"stop_area:JDR:BERAU", "type":"stop_area"}}}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"},{"begin": "2014-04-29T16:52:00Z","end": "2014-05-22T02:15:00Z"}]}
         """
         Then the status code should be "201"
         And the header "Content-Type" should be "application/json"
         And the field "impact.objects" should exist
         And the field "impact.objects.0.type" should be "line_section"
         And the field "impact.objects.0.line_section.line.id" should be "line:JDR:M1"
-        And the field "impact.objects.0.line_section.start_point.id" should be "stop_area:JDR:SA:PTVIN"
-        And the field "impact.objects.0.line_section.end_point.id" should be "stop_area:JDR:SA:BERAU"
+        And the field "impact.objects.0.line_section.start_point.id" should be "stop_area:JDR:PTVIN"
+        And the field "impact.objects.0.line_section.end_point.id" should be "stop_area:JDR:BERAU"
 
     Scenario: Add an impact in a disruption with one object line_section invalid
 
@@ -414,7 +414,7 @@ Feature: Manipulate impacts in a Disruption
         I fill navitia authorization in header
         When I post to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/impacts" with:
         """
-        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id":"line:JDR:M1", "type":"line_section", "line":{"id":"line:JDR:M1","type":"line"}, "start_point":{"id":"stop_area:JDR:SA:PTVIN", "type":"stop_area"}, "end_point":{"id":"stop_area:JDR:SA:BERAU", "type":"stop_area"}}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"},{"begin": "2014-04-29T16:52:00Z","end": "2014-05-22T02:15:00Z"}]}
+        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id":"line:JDR:M1", "type":"line_section", "line":{"id":"line:JDR:M1","type":"line"}, "start_point":{"id":"stop_area:JDR:PTVIN", "type":"stop_area"}, "end_point":{"id":"stop_area:JDR:BERAU", "type":"stop_area"}}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"},{"begin": "2014-04-29T16:52:00Z","end": "2014-05-22T02:15:00Z"}]}
         """
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
@@ -452,7 +452,7 @@ Feature: Manipulate impacts in a Disruption
         I fill navitia authorization in header
         When I post to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/impacts" with:
         """
-        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id":"line:JDR:M1", "type":"line_section","line_section":{"line":{"id":"line:JDR:M1","type":"line"},"start_point":{"id":"stop_area:JDR:SA:PTVIN", "type":"stop_area"},"end_point":{"id":"stop_area:JDR:SA:BERAU", "type":"stop_area"}}},{"id":"line:JDR:M2", "type":"line_section","line_section":{"line":{"id":"line:JDR:M2","type":"line"},"start_point":{"id":"stop_area:JDR:SA:PTVIN", "type":"stop_area"},"end_point":{"id":"stop_area:JDR:SA:BERAU", "type":"stop_area"}}}],"application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"},{"begin": "2014-04-29T16:52:00Z","end": "2014-05-22T02:15:00Z"}]}
+        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id":"line:JDR:M1", "type":"line_section","line_section":{"line":{"id":"line:JDR:M1","type":"line"},"start_point":{"id":"stop_area:JDR:PTVIN", "type":"stop_area"},"end_point":{"id":"stop_area:JDR:BERAU", "type":"stop_area"}}},{"id":"line:JDR:M2", "type":"line_section","line_section":{"line":{"id":"line:JDR:M2","type":"line"},"start_point":{"id":"stop_area:JDR:PTVIN", "type":"stop_area"},"end_point":{"id":"stop_area:JDR:BERAU", "type":"stop_area"}}}],"application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"},{"begin": "2014-04-29T16:52:00Z","end": "2014-05-22T02:15:00Z"}]}
         """
         Then the status code should be "201"
         And the header "Content-Type" should be "application/json"
@@ -490,7 +490,7 @@ Feature: Manipulate impacts in a Disruption
         I fill navitia authorization in header
         When I post to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/impacts" with:
         """
-        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id":"line:JDR:M1", "type":"line"},{"id":"line:JDR:M1", "type":"line_section","line_section": {"line":{"id":"line:JDR:M1","type":"line"}, "start_point":{"id":"stop_area:JDR:SA:PTVIN", "type":"stop_area"}, "end_point":{"id":"stop_area:JDR:SA:BERAU", "type":"stop_area"}}}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"},{"begin": "2014-04-29T16:52:00Z","end": "2014-05-22T02:15:00Z"}]}
+        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id":"line:JDR:M1", "type":"line"},{"id":"line:JDR:M1", "type":"line_section","line_section": {"line":{"id":"line:JDR:M1","type":"line"}, "start_point":{"id":"stop_area:JDR:PTVIN", "type":"stop_area"}, "end_point":{"id":"stop_area:JDR:BERAU", "type":"stop_area"}}}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"},{"begin": "2014-04-29T16:52:00Z","end": "2014-05-22T02:15:00Z"}]}
         """
         Then the status code should be "201"
         And the header "Content-Type" should be "application/json"
@@ -499,8 +499,8 @@ Feature: Manipulate impacts in a Disruption
         And the field "impact.objects.0.id" should be "line:JDR:M1"
         And the field "impact.objects.1.type" should be "line_section"
         And the field "impact.objects.1.line_section.line.id" should be "line:JDR:M1"
-        And the field "impact.objects.1.line_section.start_point.id" should be "stop_area:JDR:SA:PTVIN"
-        And the field "impact.objects.1.line_section.end_point.id" should be "stop_area:JDR:SA:BERAU"
+        And the field "impact.objects.1.line_section.start_point.id" should be "stop_area:JDR:PTVIN"
+        And the field "impact.objects.1.line_section.end_point.id" should be "stop_area:JDR:BERAU"
 
     Scenario: Add an impact in a disruption with one object line_section with route valid
 
@@ -531,15 +531,15 @@ Feature: Manipulate impacts in a Disruption
         I fill navitia authorization in header
         When I post to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/impacts" with:
         """
-        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id":"line:JDR:M1", "type":"line_section","line_section": {"line":{"id":"line:JDR:M1","type":"line"}, "start_point":{"id":"stop_area:JDR:SA:PTVIN", "type":"stop_area"}, "end_point":{"id":"stop_area:JDR:SA:BERAU", "type":"stop_area"}, "routes":[{"type":"route", "id":"route:JDR:M14"}, {"type":"route", "id":"route:JDR:M1"}] }}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"},{"begin": "2014-04-29T16:52:00Z","end": "2014-05-22T02:15:00Z"}]}
+        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id":"line:JDR:M1", "type":"line_section","line_section": {"line":{"id":"line:JDR:M1","type":"line"}, "start_point":{"id":"stop_area:JDR:PTVIN", "type":"stop_area"}, "end_point":{"id":"stop_area:JDR:BERAU", "type":"stop_area"}, "routes":[{"type":"route", "id":"route:JDR:M14"}, {"type":"route", "id":"route:JDR:M1"}] }}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"},{"begin": "2014-04-29T16:52:00Z","end": "2014-05-22T02:15:00Z"}]}
         """
         Then the status code should be "201"
         And the header "Content-Type" should be "application/json"
         And the field "impact.objects" should exist
         And the field "impact.objects.0.type" should be "line_section"
         And the field "impact.objects.0.line_section.line.id" should be "line:JDR:M1"
-        And the field "impact.objects.0.line_section.start_point.id" should be "stop_area:JDR:SA:PTVIN"
-        And the field "impact.objects.0.line_section.end_point.id" should be "stop_area:JDR:SA:BERAU"
+        And the field "impact.objects.0.line_section.start_point.id" should be "stop_area:JDR:PTVIN"
+        And the field "impact.objects.0.line_section.end_point.id" should be "stop_area:JDR:BERAU"
         And the field "impact.objects.0.line_section.routes" should contain all of "{"type": "route", "id": "route:JDR:M1"}"
         And the field "impact.objects.0.line_section.routes" should contain all of "{"type": "route", "id": "route:JDR:M14"}"
 
@@ -572,7 +572,7 @@ Feature: Manipulate impacts in a Disruption
         I fill navitia authorization in header
         When I post to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/impacts" with:
         """
-        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id":"line:JDR:M1", "type":"line"},{"id":"line:JDR:M1", "type":"line_section","line_section": {"line":{"id":"line:JDR:M1","type":"line"}, "start_point":{"id":"stop_area:JDR:SA:PTVIN", "type":"stop_area"}, "end_point":{"id":"stop_area:JDR:SA:BERAU", "type":"stop_area"}, "routes":[{"type":"route", "id":"route:JDR:M14"}, {"type":"route", "id":"route:JDR:M1"}] }}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"},{"begin": "2014-04-29T16:52:00Z","end": "2014-05-22T02:15:00Z"}]}
+        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id":"line:JDR:M1", "type":"line"},{"id":"line:JDR:M1", "type":"line_section","line_section": {"line":{"id":"line:JDR:M1","type":"line"}, "start_point":{"id":"stop_area:JDR:PTVIN", "type":"stop_area"}, "end_point":{"id":"stop_area:JDR:BERAU", "type":"stop_area"}, "routes":[{"type":"route", "id":"route:JDR:M14"}, {"type":"route", "id":"route:JDR:M1"}] }}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"},{"begin": "2014-04-29T16:52:00Z","end": "2014-05-22T02:15:00Z"}]}
         """
         Then the status code should be "201"
         And the header "Content-Type" should be "application/json"
@@ -581,8 +581,8 @@ Feature: Manipulate impacts in a Disruption
         And the field "impact.objects.0.id" should be "line:JDR:M1"
         And the field "impact.objects.1.type" should be "line_section"
         And the field "impact.objects.1.line_section.line.id" should be "line:JDR:M1"
-        And the field "impact.objects.1.line_section.start_point.id" should be "stop_area:JDR:SA:PTVIN"
-        And the field "impact.objects.1.line_section.end_point.id" should be "stop_area:JDR:SA:BERAU"
+        And the field "impact.objects.1.line_section.start_point.id" should be "stop_area:JDR:PTVIN"
+        And the field "impact.objects.1.line_section.end_point.id" should be "stop_area:JDR:BERAU"
         And the field "impact.objects.1.line_section.routes" should contain all of "{"type": "route", "id": "route:JDR:M1"}"
         And the field "impact.objects.1.line_section.routes" should contain all of "{"type": "route", "id": "route:JDR:M14"}"
 
@@ -615,7 +615,7 @@ Feature: Manipulate impacts in a Disruption
         I fill navitia authorization in header
         When I post to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/impacts" with:
         """
-        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id":"line:JDR:M1", "type":"line"},{"id":"line:JDR:M1", "type":"line_section","line_section": {"line":{"id":"line:JDR:M1","type":"line"}, "start_point":{"id":"stop_area:JDR:SA:PTVIN", "type":"stop_area"}, "end_point":{"id":"stop_area:JDR:SA:BERAU", "type":"stop_area"}, "routes":[{"type":"route", "id":"route:JDR:M14"}, {"type":"route", "id":"route:JDR:M1"}]}}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"},{"begin": "2014-04-29T16:52:00Z","end": "2014-05-22T02:15:00Z"}]}
+        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id":"line:JDR:M1", "type":"line"},{"id":"line:JDR:M1", "type":"line_section","line_section": {"line":{"id":"line:JDR:M1","type":"line"}, "start_point":{"id":"stop_area:JDR:PTVIN", "type":"stop_area"}, "end_point":{"id":"stop_area:JDR:BERAU", "type":"stop_area"}, "routes":[{"type":"route", "id":"route:JDR:M14"}, {"type":"route", "id":"route:JDR:M1"}]}}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"},{"begin": "2014-04-29T16:52:00Z","end": "2014-05-22T02:15:00Z"}]}
         """
         Then the status code should be "201"
         And the header "Content-Type" should be "application/json"
@@ -624,8 +624,8 @@ Feature: Manipulate impacts in a Disruption
         And the field "impact.objects.0.id" should be "line:JDR:M1"
         And the field "impact.objects.1.type" should be "line_section"
         And the field "impact.objects.1.line_section.line.id" should be "line:JDR:M1"
-        And the field "impact.objects.1.line_section.start_point.id" should be "stop_area:JDR:SA:PTVIN"
-        And the field "impact.objects.1.line_section.end_point.id" should be "stop_area:JDR:SA:BERAU"
+        And the field "impact.objects.1.line_section.start_point.id" should be "stop_area:JDR:PTVIN"
+        And the field "impact.objects.1.line_section.end_point.id" should be "stop_area:JDR:BERAU"
         And the field "impact.objects.1.line_section.routes" should contain all of "{"type": "route", "id": "route:JDR:M1"}"
         And the field "impact.objects.1.line_section.routes" should contain all of "{"type": "route", "id": "route:JDR:M14"}"
 
@@ -658,7 +658,7 @@ Feature: Manipulate impacts in a Disruption
         I fill navitia authorization in header
         When I post to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/impacts" with:
         """
-        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id":"line:JDR:M1", "type":"line_section","line_section": {"line":{"id":"line:JDR:M1","type":"line"}, "start_point":{"id":"stop_area:Failed", "type":"stop_area"}, "end_point":{"id":"stop_area:JDR:SA:BERAU", "type":"stop_area"}}}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"},{"begin": "2014-04-29T16:52:00Z","end": "2014-05-22T02:15:00Z"}]}
+        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id":"line:JDR:M1", "type":"line_section","line_section": {"line":{"id":"line:JDR:M1","type":"line"}, "start_point":{"id":"stop_area:Failed", "type":"stop_area"}, "end_point":{"id":"stop_area:JDR:BERAU", "type":"stop_area"}}}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"},{"begin": "2014-04-29T16:52:00Z","end": "2014-05-22T02:15:00Z"}]}
         """
         Then the status code should be "404"
         And the header "Content-Type" should be "application/json"
@@ -691,15 +691,15 @@ Feature: Manipulate impacts in a Disruption
 
         Given I have the following ptobject in my database:
             | type         | uri                                              | created_at          | id                                         |
-            | stop_area    | stop_area:JDR:SA:BASTI                           | 2014-04-04T23:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b6       |
-            | stop_area    | stop_area:JDR:SA:CHVIN                           | 2014-04-04T23:52:12 | 2ffab232-3d48-4eea-aa2c-22f8680230b6       |
+            | stop_area    | stop_area:JDR:BASTI                           | 2014-04-04T23:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b6       |
+            | stop_area    | stop_area:JDR:CHVIN                           | 2014-04-04T23:52:12 | 2ffab232-3d48-4eea-aa2c-22f8680230b6       |
             | line_section | line:JDR:M1:7ffab234-3d49-4eea-aa2c-22f8680230b6 | 2014-04-04T23:52:12 | 3ffab232-3d48-4eea-aa2c-22f8680230b6       |
             | line         | line:JDR:M1                                      | 2014-04-06T22:52:12 | 4ffab232-3d48-4eea-aa2c-22f8680230b6       |
             | route        | route:JDR:M14                                    | 2014-04-06T22:52:12 | 5ffab200-3d48-4eea-aa2c-22f8680230b6       |
             | route        | route:JDR:M1_R                                   | 2014-04-06T22:52:12 | 6ffab200-3d48-4eea-aa2c-22f8680230b6       |
-            | stop_area    | stop_area:JDR:SA:NATIO                           | 2014-04-04T23:52:12 | 7ffab232-3d48-4eea-aa2c-22f8680230b6       |
-            | stop_area    | stop_area:JDR:SA:REUIL                           | 2014-04-04T23:52:12 | 8ffab232-3d48-4eea-aa2c-22f8680230b6       |
-            | network      | network:TAD:CanalTP                              | 2014-04-04T23:52:12 | 9ffab232-3d48-4eea-aa2c-22f8680230b6       |
+            | stop_area    | stop_area:JDR:NATIO                           | 2014-04-04T23:52:12 | 7ffab232-3d48-4eea-aa2c-22f8680230b6       |
+            | stop_area    | stop_area:JDR:REUIL                           | 2014-04-04T23:52:12 | 8ffab232-3d48-4eea-aa2c-22f8680230b6       |
+            | network      | network:TAD:1                              | 2014-04-04T23:52:12 | 9ffab232-3d48-4eea-aa2c-22f8680230b6       |
 
 
 
@@ -727,12 +727,12 @@ Feature: Manipulate impacts in a Disruption
         I fill navitia authorization in header
         When I put to "/disruptions/7ffab230-3d48-4eea-aa2c-22f8680230b6/impacts/7ffab232-3d47-4eea-aa2c-22f8680230b6" with:
         """
-        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "network:TAD:CanalTP","type": "network"}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}
+        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "network:TAD:1","type": "network"}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}
         """
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
         And the field "impact.objects" should have a size of 1
-        And the field "impact.objects.0.id" should be "network:TAD:CanalTP"
+        And the field "impact.objects.0.id" should be "network:TAD:1"
         And the field "impact.objects.0.type" should be "network"
 
     Scenario: Put impact with line_section : modify line of line_section
@@ -762,15 +762,15 @@ Feature: Manipulate impacts in a Disruption
 
         Given I have the following ptobject in my database:
             | type         | uri                                              | created_at          | id                                         |
-            | stop_area    | stop_area:JDR:SA:BASTI                           | 2014-04-04T23:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b6       |
-            | stop_area    | stop_area:JDR:SA:CHVIN                           | 2014-04-04T23:52:12 | 2ffab232-3d48-4eea-aa2c-22f8680230b6       |
+            | stop_area    | stop_area:JDR:BASTI                           | 2014-04-04T23:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b6       |
+            | stop_area    | stop_area:JDR:CHVIN                           | 2014-04-04T23:52:12 | 2ffab232-3d48-4eea-aa2c-22f8680230b6       |
             | line_section | line:JDR:M1:7ffab234-3d49-4eea-aa2c-22f8680230b6 | 2014-04-04T23:52:12 | 3ffab232-3d48-4eea-aa2c-22f8680230b6       |
             | line         | line:JDR:M1                                      | 2014-04-06T22:52:12 | 4ffab232-3d48-4eea-aa2c-22f8680230b6       |
             | route        | route:JDR:M14                                    | 2014-04-06T22:52:12 | 5ffab200-3d48-4eea-aa2c-22f8680230b6       |
             | route        | route:JDR:M1_R                                   | 2014-04-06T22:52:12 | 6ffab200-3d48-4eea-aa2c-22f8680230b6       |
-            | stop_area    | stop_area:JDR:SA:NATIO                           | 2014-04-04T23:52:12 | 7ffab232-3d48-4eea-aa2c-22f8680230b6       |
-            | stop_area    | stop_area:JDR:SA:REUIL                           | 2014-04-04T23:52:12 | 8ffab232-3d48-4eea-aa2c-22f8680230b6       |
-            | network      | network:TAD:CanalTP                              | 2014-04-04T23:52:12 | 9ffab232-3d48-4eea-aa2c-22f8680230b6       |
+            | stop_area    | stop_area:JDR:NATIO                           | 2014-04-04T23:52:12 | 7ffab232-3d48-4eea-aa2c-22f8680230b6       |
+            | stop_area    | stop_area:JDR:REUIL                           | 2014-04-04T23:52:12 | 8ffab232-3d48-4eea-aa2c-22f8680230b6       |
+            | network      | network:TAD:1                              | 2014-04-04T23:52:12 | 9ffab232-3d48-4eea-aa2c-22f8680230b6       |
 
 
 
@@ -798,7 +798,7 @@ Feature: Manipulate impacts in a Disruption
         I fill navitia authorization in header
         When I put to "/disruptions/7ffab230-3d48-4eea-aa2c-22f8680230b6/impacts/7ffab232-3d47-4eea-aa2c-22f8680230b6" with:
         """
-        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "network:JDR:1","type": "network"}, {"id":"line:JDR:M5", "type":"line_section","line_section": {"line":{"id":"line:JDR:M5","type":"line"}, "start_point":{"id":"stop_area:JDR:SA:BASTI", "type":"stop_area"}, "end_point":{"id":"stop_area:JDR:SA:CHVIN", "type":"stop_area"}, "routes":[{"type":"route", "id":"route:JDR:M14"}, {"type":"route", "id":"route:JDR:M1"}] }}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}
+        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "network:JDR:1","type": "network"}, {"id":"line:JDR:M5", "type":"line_section","line_section": {"line":{"id":"line:JDR:M5","type":"line"}, "start_point":{"id":"stop_area:JDR:BASTI", "type":"stop_area"}, "end_point":{"id":"stop_area:JDR:CHVIN", "type":"stop_area"}, "routes":[{"type":"route", "id":"route:JDR:M14"}, {"type":"route", "id":"route:JDR:M1"}] }}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}
         """
 
         Then the status code should be "200"
@@ -810,9 +810,9 @@ Feature: Manipulate impacts in a Disruption
         And the field "impact.objects.1.line_section.line.id" should be "line:JDR:M5"
         And the field "impact.objects.1.line_section.line.type" should be "line"
         And the field "impact.objects.1.line_section.start_point.type" should be "stop_area"
-        And the field "impact.objects.1.line_section.start_point.id" should be "stop_area:JDR:SA:BASTI"
+        And the field "impact.objects.1.line_section.start_point.id" should be "stop_area:JDR:BASTI"
         And the field "impact.objects.1.line_section.end_point.type" should be "stop_area"
-        And the field "impact.objects.1.line_section.end_point.id" should be "stop_area:JDR:SA:CHVIN"
+        And the field "impact.objects.1.line_section.end_point.id" should be "stop_area:JDR:CHVIN"
         And the field "impact.objects.1.line_section.routes" should have a size of 2
     Scenario: Put impact with line_section : delete pt_object simple
 
@@ -842,15 +842,15 @@ Feature: Manipulate impacts in a Disruption
 
         Given I have the following ptobject in my database:
             | type         | uri                                              | created_at          | id                                         |
-            | stop_area    | stop_area:JDR:SA:BASTI                           | 2014-04-04T23:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b6       |
-            | stop_area    | stop_area:JDR:SA:CHVIN                           | 2014-04-04T23:52:12 | 2ffab232-3d48-4eea-aa2c-22f8680230b6       |
+            | stop_area    | stop_area:JDR:BASTI                           | 2014-04-04T23:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b6       |
+            | stop_area    | stop_area:JDR:CHVIN                           | 2014-04-04T23:52:12 | 2ffab232-3d48-4eea-aa2c-22f8680230b6       |
             | line_section | line:JDR:M1:7ffab234-3d49-4eea-aa2c-22f8680230b6 | 2014-04-04T23:52:12 | 3ffab232-3d48-4eea-aa2c-22f8680230b6       |
             | line         | line:JDR:M1                                      | 2014-04-06T22:52:12 | 4ffab232-3d48-4eea-aa2c-22f8680230b6       |
             | route        | route:JDR:M14                                    | 2014-04-06T22:52:12 | 5ffab200-3d48-4eea-aa2c-22f8680230b6       |
             | route        | route:JDR:M1_R                                   | 2014-04-06T22:52:12 | 6ffab200-3d48-4eea-aa2c-22f8680230b6       |
-            | stop_area    | stop_area:JDR:SA:NATIO                           | 2014-04-04T23:52:12 | 7ffab232-3d48-4eea-aa2c-22f8680230b6       |
-            | stop_area    | stop_area:JDR:SA:REUIL                           | 2014-04-04T23:52:12 | 8ffab232-3d48-4eea-aa2c-22f8680230b6       |
-            | network      | network:TAD:CanalTP                              | 2014-04-04T23:52:12 | 9ffab232-3d48-4eea-aa2c-22f8680230b6       |
+            | stop_area    | stop_area:JDR:NATIO                           | 2014-04-04T23:52:12 | 7ffab232-3d48-4eea-aa2c-22f8680230b6       |
+            | stop_area    | stop_area:JDR:REUIL                           | 2014-04-04T23:52:12 | 8ffab232-3d48-4eea-aa2c-22f8680230b6       |
+            | network      | network:TAD:1                              | 2014-04-04T23:52:12 | 9ffab232-3d48-4eea-aa2c-22f8680230b6       |
 
         Given I have the following line_section in my database:
             | id                                    | line_object_id                        | created_at            | updated_at          | start_object_id                      |end_object_id                       |object_id                           |
@@ -877,7 +877,7 @@ Feature: Manipulate impacts in a Disruption
         I fill navitia authorization in header
         When I put to "/disruptions/7ffab230-3d48-4eea-aa2c-22f8680230b6/impacts/7ffab232-3d47-4eea-aa2c-22f8680230b6" with:
         """
-        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id":"line:JDR:M5", "type":"line_section","line_section": {"line":{"id":"line:JDR:M5","type":"line"}, "start_point":{"id":"stop_area:JDR:SA:BASTI", "type":"stop_area"}, "end_point":{"id":"stop_area:JDR:SA:CHVIN", "type":"stop_area"}, "routes":[{"type":"route", "id":"route:JDR:M14"}, {"type":"route", "id":"route:JDR:M1"}]}}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}
+        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id":"line:JDR:M5", "type":"line_section","line_section": {"line":{"id":"line:JDR:M5","type":"line"}, "start_point":{"id":"stop_area:JDR:BASTI", "type":"stop_area"}, "end_point":{"id":"stop_area:JDR:CHVIN", "type":"stop_area"}, "routes":[{"type":"route", "id":"route:JDR:M14"}, {"type":"route", "id":"route:JDR:M1"}]}}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}
         """
 
         Then the status code should be "200"
@@ -887,9 +887,9 @@ Feature: Manipulate impacts in a Disruption
         And the field "impact.objects.0.line_section.line.id" should be "line:JDR:M5"
         And the field "impact.objects.0.line_section.line.type" should be "line"
         And the field "impact.objects.0.line_section.start_point.type" should be "stop_area"
-        And the field "impact.objects.0.line_section.start_point.id" should be "stop_area:JDR:SA:BASTI"
+        And the field "impact.objects.0.line_section.start_point.id" should be "stop_area:JDR:BASTI"
         And the field "impact.objects.0.line_section.end_point.type" should be "stop_area"
-        And the field "impact.objects.0.line_section.end_point.id" should be "stop_area:JDR:SA:CHVIN"
+        And the field "impact.objects.0.line_section.end_point.id" should be "stop_area:JDR:CHVIN"
         And the field "impact.objects.0.line_section.routes" should have a size of 2
 
     Scenario: Put impact with line_section : add 2 wordings
@@ -920,13 +920,13 @@ Feature: Manipulate impacts in a Disruption
 
         Given I have the following ptobject in my database:
             | type         | uri                                              | created_at          | id                                         |
-            | stop_area    | stop_area:JDR:SA:BASTI                           | 2014-04-04T23:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b6       |
-            | stop_area    | stop_area:JDR:SA:CHVIN                           | 2014-04-04T23:52:12 | 2ffab232-3d48-4eea-aa2c-22f8680230b6       |
+            | stop_area    | stop_area:JDR:BASTI                           | 2014-04-04T23:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b6       |
+            | stop_area    | stop_area:JDR:CHVIN                           | 2014-04-04T23:52:12 | 2ffab232-3d48-4eea-aa2c-22f8680230b6       |
             | line_section | line:JDR:M1:7ffab234-3d49-4eea-aa2c-22f8680230b6 | 2014-04-04T23:52:12 | 3ffab232-3d48-4eea-aa2c-22f8680230b6       |
             | line         | line:JDR:M1                                      | 2014-04-06T22:52:12 | 4ffab232-3d48-4eea-aa2c-22f8680230b6       |
             | route        | route:JDR:M14                                    | 2014-04-06T22:52:12 | 5ffab200-3d48-4eea-aa2c-22f8680230b6       |
             | route        | route:JDR:M1_R                                   | 2014-04-06T22:52:12 | 6ffab200-3d48-4eea-aa2c-22f8680230b6       |
-            | network      | network:TAD:CanalTP                              | 2014-04-04T23:52:12 | 9ffab232-3d48-4eea-aa2c-22f8680230b6       |
+            | network      | network:TAD:1                              | 2014-04-04T23:52:12 | 9ffab232-3d48-4eea-aa2c-22f8680230b6       |
 
 
 
@@ -954,7 +954,7 @@ Feature: Manipulate impacts in a Disruption
         I fill navitia authorization in header
         When I put to "/disruptions/7ffab230-3d48-4eea-aa2c-22f8680230b6/impacts/7ffab232-3d47-4eea-aa2c-22f8680230b6" with:
         """
-        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id":"line:JDR:M5", "type":"line_section","line_section": {"line":{"id":"line:JDR:M5","type":"line"}, "start_point":{"id":"stop_area:JDR:SA:BASTI", "type":"stop_area"}, "end_point":{"id":"stop_area:JDR:SA:CHVIN", "type":"stop_area"}, "routes":[{"type":"route", "id":"route:JDR:M14"}, {"type":"route", "id":"route:JDR:M1"}], "metas":[{"key":"direction", "value":"12"}, {"key":"direction", "value":"34"}] }}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}
+        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id":"line:JDR:M5", "type":"line_section","line_section": {"line":{"id":"line:JDR:M5","type":"line"}, "start_point":{"id":"stop_area:JDR:BASTI", "type":"stop_area"}, "end_point":{"id":"stop_area:JDR:CHVIN", "type":"stop_area"}, "routes":[{"type":"route", "id":"route:JDR:M14"}, {"type":"route", "id":"route:JDR:M1"}], "metas":[{"key":"direction", "value":"12"}, {"key":"direction", "value":"34"}] }}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}
         """
 
         Then the status code should be "200"
@@ -964,9 +964,9 @@ Feature: Manipulate impacts in a Disruption
         And the field "impact.objects.0.line_section.line.id" should be "line:JDR:M5"
         And the field "impact.objects.0.line_section.line.type" should be "line"
         And the field "impact.objects.0.line_section.start_point.type" should be "stop_area"
-        And the field "impact.objects.0.line_section.start_point.id" should be "stop_area:JDR:SA:BASTI"
+        And the field "impact.objects.0.line_section.start_point.id" should be "stop_area:JDR:BASTI"
         And the field "impact.objects.0.line_section.end_point.type" should be "stop_area"
-        And the field "impact.objects.0.line_section.end_point.id" should be "stop_area:JDR:SA:CHVIN"
+        And the field "impact.objects.0.line_section.end_point.id" should be "stop_area:JDR:CHVIN"
         And the field "impact.objects.0.line_section.routes" should have a size of 2
         And the field "impact.objects.0.line_section.metas" should have a size of 2
 
@@ -999,13 +999,13 @@ Feature: Manipulate impacts in a Disruption
 
         Given I have the following ptobject in my database:
             | type         | uri                                              | created_at          | id                                         |
-            | stop_area    | stop_area:JDR:SA:BASTI                           | 2014-04-04T23:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b6       |
-            | stop_area    | stop_area:JDR:SA:CHVIN                           | 2014-04-04T23:52:12 | 2ffab232-3d48-4eea-aa2c-22f8680230b6       |
+            | stop_area    | stop_area:JDR:BASTI                           | 2014-04-04T23:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b6       |
+            | stop_area    | stop_area:JDR:CHVIN                           | 2014-04-04T23:52:12 | 2ffab232-3d48-4eea-aa2c-22f8680230b6       |
             | line_section | line:JDR:M1:7ffab234-3d49-4eea-aa2c-22f8680230b6 | 2014-04-04T23:52:12 | 3ffab232-3d48-4eea-aa2c-22f8680230b6       |
             | line         | line:JDR:M1                                      | 2014-04-06T22:52:12 | 4ffab232-3d48-4eea-aa2c-22f8680230b6       |
             | route        | route:JDR:M14                                    | 2014-04-06T22:52:12 | 5ffab200-3d48-4eea-aa2c-22f8680230b6       |
             | route        | route:JDR:M1_R                                   | 2014-04-06T22:52:12 | 6ffab200-3d48-4eea-aa2c-22f8680230b6       |
-            | network      | network:TAD:CanalTP                              | 2014-04-04T23:52:12 | 9ffab232-3d48-4eea-aa2c-22f8680230b6       |
+            | network      | network:TAD:1                              | 2014-04-04T23:52:12 | 9ffab232-3d48-4eea-aa2c-22f8680230b6       |
 
 
 
@@ -1043,7 +1043,7 @@ Feature: Manipulate impacts in a Disruption
         I fill navitia authorization in header
         When I put to "/disruptions/7ffab230-3d48-4eea-aa2c-22f8680230b6/impacts/7ffab232-3d47-4eea-aa2c-22f8680230b6" with:
         """
-        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id":"line:JDR:M5", "type":"line_section","line_section": {"line":{"id":"line:JDR:M5","type":"line"}, "start_point":{"id":"stop_area:JDR:SA:BASTI", "type":"stop_area"}, "end_point":{"id":"stop_area:JDR:SA:CHVIN", "type":"stop_area"}, "routes":[{"type":"route", "id":"route:JDR:M14"}, {"type":"route", "id":"route:JDR:M1"}], "metas":[{"key":"direction", "value":"1234"}] }}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}
+        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id":"line:JDR:M5", "type":"line_section","line_section": {"line":{"id":"line:JDR:M5","type":"line"}, "start_point":{"id":"stop_area:JDR:BASTI", "type":"stop_area"}, "end_point":{"id":"stop_area:JDR:CHVIN", "type":"stop_area"}, "routes":[{"type":"route", "id":"route:JDR:M14"}, {"type":"route", "id":"route:JDR:M1"}], "metas":[{"key":"direction", "value":"1234"}] }}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}
         """
 
         Then the status code should be "200"
@@ -1053,9 +1053,9 @@ Feature: Manipulate impacts in a Disruption
         And the field "impact.objects.0.line_section.line.id" should be "line:JDR:M5"
         And the field "impact.objects.0.line_section.line.type" should be "line"
         And the field "impact.objects.0.line_section.start_point.type" should be "stop_area"
-        And the field "impact.objects.0.line_section.start_point.id" should be "stop_area:JDR:SA:BASTI"
+        And the field "impact.objects.0.line_section.start_point.id" should be "stop_area:JDR:BASTI"
         And the field "impact.objects.0.line_section.end_point.type" should be "stop_area"
-        And the field "impact.objects.0.line_section.end_point.id" should be "stop_area:JDR:SA:CHVIN"
+        And the field "impact.objects.0.line_section.end_point.id" should be "stop_area:JDR:CHVIN"
         And the field "impact.objects.0.line_section.routes" should have a size of 2
         And the field "impact.objects.0.line_section.metas" should have a size of 1
         And the field "impact.objects.0.line_section.metas.0.key" should be "direction"
@@ -1088,13 +1088,13 @@ Feature: Manipulate impacts in a Disruption
 
         Given I have the following ptobject in my database:
             | type         | uri                                              | created_at          | id                                         |
-            | stop_area    | stop_area:JDR:SA:BASTI                           | 2014-04-04T23:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b6       |
-            | stop_area    | stop_area:JDR:SA:CHVIN                           | 2014-04-04T23:52:12 | 2ffab232-3d48-4eea-aa2c-22f8680230b6       |
+            | stop_area    | stop_area:JDR:BASTI                           | 2014-04-04T23:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b6       |
+            | stop_area    | stop_area:JDR:CHVIN                           | 2014-04-04T23:52:12 | 2ffab232-3d48-4eea-aa2c-22f8680230b6       |
             | line_section | line:JDR:M1:7ffab234-3d49-4eea-aa2c-22f8680230b6 | 2014-04-04T23:52:12 | 3ffab232-3d48-4eea-aa2c-22f8680230b6       |
             | line         | line:JDR:M1                                      | 2014-04-06T22:52:12 | 4ffab232-3d48-4eea-aa2c-22f8680230b6       |
             | route        | route:JDR:M14                                    | 2014-04-06T22:52:12 | 5ffab200-3d48-4eea-aa2c-22f8680230b6       |
             | route        | route:JDR:M1_R                                   | 2014-04-06T22:52:12 | 6ffab200-3d48-4eea-aa2c-22f8680230b6       |
-            | network      | network:TAD:CanalTP                              | 2014-04-04T23:52:12 | 9ffab232-3d48-4eea-aa2c-22f8680230b6       |
+            | network      | network:TAD:1                              | 2014-04-04T23:52:12 | 9ffab232-3d48-4eea-aa2c-22f8680230b6       |
 
 
 
@@ -1132,7 +1132,7 @@ Feature: Manipulate impacts in a Disruption
         I fill navitia authorization in header
         When I put to "/disruptions/7ffab230-3d48-4eea-aa2c-22f8680230b6/impacts/7ffab232-3d47-4eea-aa2c-22f8680230b6" with:
         """
-        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id":"line:JDR:M5", "type":"line_section","line_section": {"line":{"id":"line:JDR:M5","type":"line"}, "start_point":{"id":"stop_area:JDR:SA:BASTI", "type":"stop_area"}, "end_point":{"id":"stop_area:JDR:SA:CHVIN", "type":"stop_area"}, "routes":[{"type":"route", "id":"route:JDR:M14"}, {"type":"route", "id":"route:JDR:M1"}], "metas":[{"key":"direction"}] }}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}
+        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id":"line:JDR:M5", "type":"line_section","line_section": {"line":{"id":"line:JDR:M5","type":"line"}, "start_point":{"id":"stop_area:JDR:BASTI", "type":"stop_area"}, "end_point":{"id":"stop_area:JDR:CHVIN", "type":"stop_area"}, "routes":[{"type":"route", "id":"route:JDR:M14"}, {"type":"route", "id":"route:JDR:M1"}], "metas":[{"key":"direction"}] }}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}
         """
 
         Then the status code should be "400"
@@ -1167,13 +1167,13 @@ Feature: Manipulate impacts in a Disruption
 
         Given I have the following ptobject in my database:
             | type         | uri                                              | created_at          | id                                         |
-            | stop_area    | stop_area:JDR:SA:BASTI                           | 2014-04-04T23:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b6       |
-            | stop_area    | stop_area:JDR:SA:CHVIN                           | 2014-04-04T23:52:12 | 2ffab232-3d48-4eea-aa2c-22f8680230b6       |
+            | stop_area    | stop_area:JDR:BASTI                           | 2014-04-04T23:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b6       |
+            | stop_area    | stop_area:JDR:CHVIN                           | 2014-04-04T23:52:12 | 2ffab232-3d48-4eea-aa2c-22f8680230b6       |
             | line_section | line:JDR:M1:7ffab234-3d49-4eea-aa2c-22f8680230b6 | 2014-04-04T23:52:12 | 3ffab232-3d48-4eea-aa2c-22f8680230b6       |
             | line         | line:JDR:M1                                      | 2014-04-06T22:52:12 | 4ffab232-3d48-4eea-aa2c-22f8680230b6       |
             | route        | route:JDR:M14                                    | 2014-04-06T22:52:12 | 5ffab200-3d48-4eea-aa2c-22f8680230b6       |
             | route        | route:JDR:M1_R                                   | 2014-04-06T22:52:12 | 6ffab200-3d48-4eea-aa2c-22f8680230b6       |
-            | network      | network:TAD:CanalTP                              | 2014-04-04T23:52:12 | 9ffab232-3d48-4eea-aa2c-22f8680230b6       |
+            | network      | network:TAD:1                              | 2014-04-04T23:52:12 | 9ffab232-3d48-4eea-aa2c-22f8680230b6       |
 
 
 
@@ -1211,7 +1211,7 @@ Feature: Manipulate impacts in a Disruption
         I fill navitia authorization in header
         When I put to "/disruptions/7ffab230-3d48-4eea-aa2c-22f8680230b6/impacts/7ffab232-3d47-4eea-aa2c-22f8680230b6" with:
         """
-        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id":"line:JDR:M5", "type":"line_section","line_section": {"line":{"id":"line:JDR:M5","type":"line"}, "start_point":{"id":"stop_area:JDR:SA:BASTI", "type":"stop_area"}, "end_point":{"id":"stop_area:JDR:SA:CHVIN", "type":"stop_area"}, "routes":[{"type":"route", "id":"route:JDR:M14"}, {"type":"route", "id":"route:JDR:M1"}], "metas":[{"key":"direction"}] }}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}
+        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id":"line:JDR:M5", "type":"line_section","line_section": {"line":{"id":"line:JDR:M5","type":"line"}, "start_point":{"id":"stop_area:JDR:BASTI", "type":"stop_area"}, "end_point":{"id":"stop_area:JDR:CHVIN", "type":"stop_area"}, "routes":[{"type":"route", "id":"route:JDR:M14"}, {"type":"route", "id":"route:JDR:M1"}], "metas":[{"key":"direction"}] }}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}
         """
 
         Then the status code should be "400"
@@ -1224,7 +1224,7 @@ Feature: Manipulate impacts in a Disruption
         I fill navitia authorization in header
         When I put to "/disruptions/7ffab230-3d48-4eea-aa2c-22f8680230b6/impacts/7ffab232-3d47-4eea-aa2c-22f8680230b6" with:
         """
-        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id":"line:JDR:M5", "type":"line_section","line_section": {"line":{"id":"line:JDR:M5","type":"line"}, "start_point":{"id":"stop_area:JDR:SA:BASTI", "type":"stop_area"}, "end_point":{"id":"stop_area:JDR:SA:CHVIN", "type":"stop_area"}, "routes":[{"type":"route", "id":"route:JDR:M14"}, {"type":"route", "id":"route:JDR:M1"}], "metas":[] }}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}
+        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id":"line:JDR:M5", "type":"line_section","line_section": {"line":{"id":"line:JDR:M5","type":"line"}, "start_point":{"id":"stop_area:JDR:BASTI", "type":"stop_area"}, "end_point":{"id":"stop_area:JDR:CHVIN", "type":"stop_area"}, "routes":[{"type":"route", "id":"route:JDR:M14"}, {"type":"route", "id":"route:JDR:M1"}], "metas":[] }}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}
         """
 
         Then the status code should be "400"
