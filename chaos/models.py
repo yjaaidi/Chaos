@@ -2182,10 +2182,10 @@ class Export(TimestampMixin, db.Model):
         return '<Export %r>' % self.id
 
     @classmethod
-    def all(cls, client_id):
+    def all(cls, client_id, sort='created_at:desc'):
         return cls.query.filter_by(
             client_id=client_id
-        ).order_by(cls.created_at).all()
+        ).order_by(sort.replace(":", " ")).all()
 
     @classmethod
     def get(cls, client_id, id):
