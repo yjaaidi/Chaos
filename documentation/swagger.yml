@@ -1697,6 +1697,7 @@ paths:
       parameters:
         - $ref: "#/components/parameters/header_authorization"
         - $ref: "#/components/parameters/header_customer_id"
+        - $ref: "#/components/parameters/exports_sort"
       tags:
         - Export
       responses:
@@ -2006,6 +2007,18 @@ components:
       schema:
         type: integer
         default: 1
+    exports_sort:
+      in: query
+      name: sort
+      description: Sort exports list
+      required: false
+      schema:
+        type: string
+        enum:
+          - created_at
+          - created_at:asc
+          - created_at:desc
+        default: created_at:desc
   requestBodies:
     cause_creation:
       content:

@@ -1623,6 +1623,11 @@ class Property(flask_restful.Resource):
 class ImpactsExports(flask_restful.Resource):
     def __init__(self):
         self.parsers = {'get': reqparse.RequestParser()}
+        self.parsers['get'].add_argument(
+            'sort',
+            type=option_value(exports_sort_values),
+            default='created_at:desc'
+        )
         self.navitia = None
 
 
@@ -1665,7 +1670,8 @@ class ImpactsExports(flask_restful.Resource):
         if id:
             return marshal({'export': models.Export.get(client.id, id)}, one_export_fields)
         else:
-            return marshal({'exports':models.Export.all(client.id)}, exports_fields)
+            args = self.parsers['get'].parse_args()
+            return marshal({'exports':models.Export.all(client.id, args['sort'])}, exports_fields)
 
     @validate_client()
     @validate_navitia()
