@@ -2417,6 +2417,7 @@ components:
       required:
         - severity
         - objects
+        - application_periods
       properties:
         severity:
           type: object
