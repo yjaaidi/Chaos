@@ -11,6 +11,18 @@ def get_pos_time(sql_time):
     return 0
 
 
+def get_pos_date(sql_date):
+    if sql_date:
+        return int((sql_date - datetime.date(1970, 1, 1)).total_seconds())
+    return 0
+
+
+def get_time_seconds(time):
+    if time:
+        return int(datetime.timedelta(hours=time.hour, minutes=time.minute, seconds=time.second).total_seconds())
+    return 0
+
+
 def get_pt_object_type(type):
     collection = {
         "network": chaos_pb2.PtObject.network,
@@ -75,6 +87,28 @@ def populate_application_periods(impact, impact_pb):
             application_period_pb.end = get_pos_time(application_period.end_date)
 
 
+def populate_application_patterns(impact, impact_pb):
+    for pattern in impact.patterns:
+        pattern_pb = impact_pb.application_patterns.add()
+        pattern_pb.start_date = get_pos_date(pattern.start_date)
+        pattern_pb.end_date = get_pos_date(pattern.end_date)
+        pattern_pb.week_pattern.monday = bool(int(pattern.weekly_pattern[0]))
+        pattern_pb.week_pattern.tuesday = bool(int(pattern.weekly_pattern[1]))
+        pattern_pb.week_pattern.wednesday = bool(int(pattern.weekly_pattern[2]))
+        pattern_pb.week_pattern.thursday = bool(int(pattern.weekly_pattern[3]))
+        pattern_pb.week_pattern.friday = bool(int(pattern.weekly_pattern[4]))
+        pattern_pb.week_pattern.saturday = bool(int(pattern.weekly_pattern[5]))
+        pattern_pb.week_pattern.sunday = bool(int(pattern.weekly_pattern[6]))
+        populate_time_slot(pattern, pattern_pb)
+
+
+def populate_time_slot(pattern, pattern_pb):
+    for time_slot in pattern.time_slots:
+        time_slot_pb = pattern_pb.time_slots.add()
+        time_slot_pb.begin = get_time_seconds(time_slot.begin)
+        time_slot_pb.end = get_time_seconds(time_slot.end)
+
+
 def populate_channel_type(channel, channel_pb):
     if channel.channel_types:
         for type in channel.channel_types:
@@ -136,6 +170,7 @@ def populate_impact(disruption, disruption_pb):
             populate_application_periods(impact, impact_pb)
             populate_messages(impact, impact_pb)
             populate_pt_objects(impact, impact_pb)
+            populate_application_patterns(impact, impact_pb)
 
 
 def populate_localization(disruption, disruption_pb):
