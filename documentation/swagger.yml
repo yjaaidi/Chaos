@@ -2509,6 +2509,7 @@ components:
             oneOf:
               - $ref: "#/components/schemas/impact_object"
               - $ref: "#/components/schemas/impact_object_line_section"
+              - $ref: "#/components/schemas/impact_object_rail_section"
           uniqueItems: true
           minItems: 1
     impact_object:
@@ -2858,6 +2859,7 @@ components:
             oneOf:
               - $ref: "#/components/schemas/impact_object"
               - $ref: "#/components/schemas/impact_object_line_section"
+              - $ref: "#/components/schemas/impact_object_rail_section"
           uniqueItems: true
           minItems: 1
     disruption_in_impact:
