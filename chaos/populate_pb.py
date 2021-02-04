@@ -171,7 +171,7 @@ def populate_line_section(line_section, informed_entitie):
 
 
 def populate_rail_section(rail_section, informed_entitie):
-    if hasattr(rail_section, 'line'):
+    if hasattr(rail_section, 'line') and rail_section.line:
         populate_informed_entitie(rail_section.line, informed_entitie.pt_rail_section.line)
     populate_informed_entitie(rail_section.start_point, informed_entitie.pt_rail_section.start_point)
     populate_informed_entitie(rail_section.end_point, informed_entitie.pt_rail_section.end_point)
