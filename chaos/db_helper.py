@@ -18,7 +18,7 @@ def fill_and_get_pt_object(navitia, all_objects, json, add_to_db=True):
 
     if not navitia.get_pt_object(json['id'], json['type']):
         raise exceptions.ObjectUnknown(
-            '{} {} doesn\'t exist'.format(
+            "{} '{}' doesn't exist".format(
                 json['type'],
                 json['id']))
 
