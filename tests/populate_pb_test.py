@@ -639,6 +639,7 @@ def test_disruption_with_rail_section():
     disruption_pb = feed_entity.Extensions[chaos.chaos_pb2.disruption]
 
     # with line
+    eq_(disruption_pb.impacts[0].informed_entities[5].pt_rail_section.HasField('line'), True)
     eq_(disruption_pb.impacts[0].informed_entities[5].pt_rail_section.line.uri,
     disruption.impacts[0].objects[5].rail_section.line.uri)
     eq_(disruption_pb.impacts[0].informed_entities[5].pt_rail_section.line.pt_object_type,
@@ -654,15 +655,19 @@ def test_disruption_with_rail_section():
     eq_(disruption_pb.impacts[0].informed_entities[5].pt_rail_section.end_point.pt_object_type,
     get_pt_object_type(disruption.impacts[0].objects[5].rail_section.end_point.type))
 
+    eq_(len(disruption_pb.impacts[0].informed_entities[5].pt_rail_section.blocked_stop_areas), 1)
+    eq_(disruption_pb.impacts[0].informed_entities[5].pt_rail_section.blocked_stop_areas[0].uri,
+    'block_stop_area:1')
+    eq_(disruption_pb.impacts[0].informed_entities[5].pt_rail_section.blocked_stop_areas[0].order, 0)
+
+    eq_(len(disruption_pb.impacts[0].informed_entities[5].pt_rail_section.route_patterns), 1)
+    eq_(len(disruption_pb.impacts[0].informed_entities[5].pt_rail_section.route_patterns[0].ordered_pt_objects), 2)
+    eq_(disruption_pb.impacts[0].informed_entities[5].pt_rail_section.route_patterns[0].ordered_pt_objects[0].uri,
+    'block_stop_area:1')
+    eq_(disruption_pb.impacts[0].informed_entities[5].pt_rail_section.route_patterns[0].ordered_pt_objects[0].order, 0)
+    eq_(disruption_pb.impacts[0].informed_entities[5].pt_rail_section.route_patterns[0].ordered_pt_objects[1].uri,
+    'block_stop_area:2')
+    eq_(disruption_pb.impacts[0].informed_entities[5].pt_rail_section.route_patterns[0].ordered_pt_objects[1].order, 1)
+
     # without line
-    eq_(disruption_pb.impacts[0].informed_entities[6].pt_rail_section.line, None)
-
-    eq_(disruption_pb.impacts[0].informed_entities[6].pt_rail_section.start_point.uri,
-        disruption.impacts[0].objects[6].rail_section.start_point.uri)
-    eq_(disruption_pb.impacts[0].informed_entities[6].pt_rail_section.start_point.pt_object_type,
-        get_pt_object_type(disruption.impacts[0].objects[6].rail_section.start_point.type))
-
-    eq_(disruption_pb.impacts[0].informed_entities[6].pt_rail_section.end_point.uri,
-        disruption.impacts[0].objects[6].rail_section.end_point.uri)
-    eq_(disruption_pb.impacts[0].informed_entities[6].pt_rail_section.end_point.pt_object_type,
-        get_pt_object_type(disruption.impacts[0].objects[6].rail_section.end_point.type))
+    eq_(disruption_pb.impacts[0].informed_entities[6].pt_rail_section.HasField('line'), False)
