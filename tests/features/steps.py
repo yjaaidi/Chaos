@@ -6,7 +6,7 @@ from chaos import db
 from chaos.formats import id_format
 from chaos.models import Disruption, Severity, Cause, Impact, PTobject,\
     Channel, Message, ApplicationPeriods, Tag, associate_impact_pt_object,\
-    associate_disruption_tag, LineSection,\
+    associate_disruption_tag, LineSection, RailSection,\
     associate_line_section_route_object, \
     Client, Contributor, associate_disruption_pt_object, Category, Wording, \
     associate_wording_severity, Pattern, TimeSlot, ChannelType,\
@@ -32,6 +32,7 @@ model_classes = {
     'tag': Tag,
     'tags': Tag,
     'line_section': LineSection,
+    'rail_section': RailSection,
     'clients': Client,
     'client': Client,
     'contributors': Contributor,
