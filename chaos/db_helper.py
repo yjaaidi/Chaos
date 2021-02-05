@@ -37,7 +37,12 @@ def fill_and_get_pt_object(navitia, all_objects, json, add_to_db=True):
     return pt_object
 
 
-def manage_pt_object_without_line_section(navitia, db_objects, json_attribute, json_data):
+def is_composed_pt_object(pt_object_json):
+    return type(pt_object_json) is dict and \
+           pt_object_json.get('type', '') in ['line_section', 'rail_section']
+
+
+def manage_simple_pt_object(navitia, db_objects, json_attribute, json_data):
     '''
     :param navitia:
     :param db_objects: pt_object in database models : localisations, objects
@@ -52,9 +57,8 @@ def manage_pt_object_without_line_section(navitia, db_objects, json_attribute, j
     pt_object_dict = dict()
     if json_attribute in json_data:
         for pt_object_json in json_data[json_attribute]:
-            if pt_object_json["type"] in ['line_section', 'rail_section']:
+            if is_composed_pt_object(pt_object_json):
                 continue
-
             ptobject = fill_and_get_pt_object(navitia, pt_object_dict, pt_object_json, False)
 
             if ptobject.uri not in pt_object_db:
@@ -289,7 +293,7 @@ def create_or_update_impact(disruption, json_impact, navitia, impact_id=None):
     # in the json we have to handle it by using a dictionary. Each time we add a ptobject, we also
     # add it in the dictionary
     try:
-        manage_pt_object_without_line_section(navitia, impact_bd.objects, 'objects', json_impact)
+        manage_simple_pt_object(navitia, impact_bd.objects, 'objects', json_impact)
     except exceptions.ObjectUnknown:
         raise
     all_objects = dict()

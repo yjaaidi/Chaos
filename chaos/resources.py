@@ -297,7 +297,7 @@ class Disruptions(flask_restful.Resource):
 
         # Add localization present in Json
         try:
-            db_helper.manage_pt_object_without_line_section(
+            db_helper.manage_simple_pt_object(
                 self.navitia, disruption.localizations, 'localization', json)
         except exceptions.ObjectUnknown as e:
             response = self.get_post_error_response_and_log(e, 404)
@@ -386,7 +386,7 @@ class Disruptions(flask_restful.Resource):
 
         # Add localization present in Json
         try:
-            db_helper.manage_pt_object_without_line_section(
+            db_helper.manage_simple_pt_object(
                 self.navitia, disruption.localizations, 'localization', json)
         except exceptions.ObjectUnknown as e:
             response = self.get_put_error_response_and_log(e, 404)
