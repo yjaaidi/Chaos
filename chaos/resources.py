@@ -302,6 +302,9 @@ class Disruptions(flask_restful.Resource):
         except exceptions.ObjectUnknown as e:
             response = self.get_post_error_response_and_log(e, 404)
             return response, 404
+        except exceptions.Unauthorized as e:
+            response = self.get_post_error_response_and_log(e, 401)
+            return response, 401
 
         # Add all tags present in Json
         db_helper.manage_tags(disruption, json)
@@ -311,6 +314,9 @@ class Disruptions(flask_restful.Resource):
         except exceptions.ObjectUnknown as e:
             response = self.get_post_error_response_and_log(e, 404)
             return response, 404
+        except exceptions.Unauthorized as e:
+            response = self.get_post_error_response_and_log(e, 401)
+            return response, 401
 
         except exceptions.InvalidJson as e:
             response = self.get_post_error_response_and_log(e, 400)
@@ -385,6 +391,9 @@ class Disruptions(flask_restful.Resource):
         except exceptions.ObjectUnknown as e:
             response = self.get_put_error_response_and_log(e, 404)
             return response, 404
+        except exceptions.Unauthorized as e:
+            response = self.get_post_error_response_and_log(e, 401)
+            return response, 401
 
         # Add/delete tags present/ not present in Json
         db_helper.manage_tags(disruption, json)
@@ -395,6 +404,9 @@ class Disruptions(flask_restful.Resource):
         except exceptions.ObjectUnknown as e:
             response = self.get_put_error_response_and_log(e, 404)
             return response, 404
+        except exceptions.Unauthorized as e:
+            response = self.get_post_error_response_and_log(e, 401)
+            return response, 401
 
         except exceptions.InvalidJson as e:
             response = self.get_put_error_response_and_log(e, 400)
@@ -589,7 +601,8 @@ class ImpactsSearch(flask_restful.Resource):
                     'id': r.pattern_id,
                     'start_date': r.pattern_start_date,
                     'end_date': r.pattern_end_date,
-                    'weekly_pattern': r.pattern_weekly_pattern
+                    'weekly_pattern': r.pattern_weekly_pattern,
+                    'timezone': r.pattern_timezone
                 }
             if application_period_patterns_id not in time_slots:
                 time_slots[application_period_patterns_id] = {}
@@ -1210,6 +1223,9 @@ class Impacts(flask_restful.Resource):
         except exceptions.ObjectUnknown as e:
             return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 404
+        except exceptions.Unauthorized as e:
+            return marshal({'error': {'message': utils.parse_error(e)}},
+                           error_fields), 401
         except exceptions.InvalidJson as e:
             return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 400
 
@@ -1258,6 +1274,9 @@ class Impacts(flask_restful.Resource):
         except exceptions.ObjectUnknown as e:
             return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 404
+        except exceptions.Unauthorized as e:
+            return marshal({'error': {'message': utils.parse_error(e)}},
+                           error_fields), 401
         except exceptions.InvalidJson as e:
             return marshal({'error': {'message': '{}'.format(e.message)}}, error_fields), 400
         disruption = models.Disruption.get(disruption_id, contributor.id)
@@ -1605,6 +1624,11 @@ class Property(flask_restful.Resource):
 class ImpactsExports(flask_restful.Resource):
     def __init__(self):
         self.parsers = {'get': reqparse.RequestParser()}
+        self.parsers['get'].add_argument(
+            'sort',
+            type=option_value(exports_sort_values),
+            default='created_at:desc'
+        )
         self.navitia = None
 
 
@@ -1647,7 +1671,8 @@ class ImpactsExports(flask_restful.Resource):
         if id:
             return marshal({'export': models.Export.get(client.id, id)}, one_export_fields)
         else:
-            return marshal({'exports':models.Export.all(client.id)}, exports_fields)
+            args = self.parsers['get'].parse_args()
+            return marshal({'exports':models.Export.all(client.id, args['sort'])}, exports_fields)
 
     @validate_client()
     @validate_navitia()

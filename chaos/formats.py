@@ -2,7 +2,7 @@
 
 __all__ = ['disruptions_input_format', 'publication_status_values',
            'severity_input_format', 'id_format', 'cause_input_format',
-           'disruption_status_values']
+           'disruption_status_values', 'exports_sort_values']
 import re
 import pytz
 # see http://json-schema.org/
@@ -36,7 +36,7 @@ channel_type_values = [
     "beacon"
 ]
 disruption_status_values = ["published", "draft"]
-
+exports_sort_values = ["created_at", "created_at:asc", "created_at:desc"]
 
 def get_object_format(object_type):
     return {

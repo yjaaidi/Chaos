@@ -169,7 +169,7 @@ Feature: list disruptions
 
         Given I have the following ptobject in my database:
             | type     | uri                    | created_at          | updated_at          | id                                         |
-            | stop_area| stop_area:JDR:SA:CHVIN | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b6       |
+            | stop_area| stop_area:JDR:CHVIN | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b6       |
 
         Given I have the following disruptions in my database:
             | reference | note  | created_at          | updated_at          | status    | id                                   | start_publication_date | end_publication_date | cause_id                             | client_id                            | contributor_id                       |
@@ -192,16 +192,12 @@ Feature: list disruptions
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
         And the field "disruption.localization" should exist
-        And the field "disruption.localization.0.id" should be "stop_area:JDR:SA:CHVIN"
+        And the field "disruption.localization.0.id" should be "stop_area:JDR:CHVIN"
         And the field "disruption.localization.0.name" should be "Château de Vincennes"
         And the field "disruption.localization.0.label" should be "Château de Vincennes (Vincennes)"
         And the field "disruption.localization.0.type" should be "stop_area"
         And the field "disruption.localization.0.coord.lat" should be "48.844536"
         And the field "disruption.localization.0.coord.lon" should be "2.43951"
-        And the field "disruption.localization.0.codes.0.type" should be "external_code"
-        And the field "disruption.localization.0.codes.0.value" should be "JDRCHVIN"
-        And the field "disruption.localization.0.codes.1.type" should be "source"
-        And the field "disruption.localization.0.codes.1.value" should be "CHVIN"
 
     Scenario: list disruptions with localization not in navitia
 
@@ -219,7 +215,7 @@ Feature: list disruptions
 
         Given I have the following ptobject in my database:
             | type     | uri                    | created_at          | updated_at          | id                                         |
-            | stop_area| stop_area:JDR:SA:AAA | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b6       |
+            | stop_area| stop_area:JDR:AAA | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b6       |
 
         Given I have the following disruptions in my database:
             | reference | note  | created_at          | updated_at          | status    | id                                   | start_publication_date | end_publication_date | cause_id                             | client_id                            | contributor_id                       |
@@ -242,7 +238,7 @@ Feature: list disruptions
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
         And the field "disruption.localization" should exist
-        And the field "disruption.localization.0.id" should be "stop_area:JDR:SA:AAA"
+        And the field "disruption.localization.0.id" should be "stop_area:JDR:AAA"
         And the field "disruption.localization.0.type" should be "stop_area"
         And the field "disruption.localization.0.name" should be "Unable to find object"
 

@@ -1,11 +1,13 @@
 from nose.tools import *
 import chaos
-from chaos.populate_pb import populate_pb, get_pt_object_type, get_pos_time, get_channel_type, chaos_pb2
+from chaos.populate_pb import populate_pb, get_pt_object_type, get_pos_time, get_channel_type, chaos_pb2, get_pos_date
 from aniso8601 import parse_datetime
 import datetime
+from chaos.db_helper import manage_patterns, manage_application_periods
+from chaos.utils import get_application_periods
 
 
-def get_disruption(contributor_code, with_routes=True, with_message_meta=False):
+def get_disruption(contributor_code, with_routes=True, with_message_meta=False, with_patterns=False):
 
     # Disruption
     disruption = chaos.models.Disruption()
@@ -62,11 +64,22 @@ def get_disruption(contributor_code, with_routes=True, with_message_meta=False):
     impact.severity.effect = "no_service"
     impact.status = "published"
 
-    # ApplicationPeriods
-    application_period = chaos.models.ApplicationPeriods()
-    application_period.start_date = parse_datetime("2014-04-12T16:52:00").replace(tzinfo=None)
-    application_period.end_date = parse_datetime("2015-04-12T16:52:00").replace(tzinfo=None)
-    impact.application_periods.append(application_period)
+    if not with_patterns:
+        # ApplicationPeriods
+        application_period = chaos.models.ApplicationPeriods()
+        application_period.start_date = parse_datetime("2014-04-12T16:52:00").replace(tzinfo=None)
+        application_period.end_date = parse_datetime("2015-04-12T16:52:00").replace(tzinfo=None)
+        impact.application_periods.append(application_period)
+    else:
+        # ApplicationPeriods from pattern
+        json_pattern = {"application_period_patterns": [
+            {"start_date": "2015-02-01", "end_date": "2015-02-03", "weekly_pattern": "1111001",
+             "time_zone": "Europe/Paris", "time_slots": [{"begin": "08:45", "end": "09:30"}]},
+            {"start_date": "2015-02-05", "end_date": "2015-02-06", "weekly_pattern": "1111111",
+             "time_zone": "Europe/Paris", "time_slots": [{"begin": "17:45", "end": "19:30"}]}]}
+        manage_patterns(impact, json_pattern)
+        app_periods_by_pattern = get_application_periods(json_pattern)
+        manage_application_periods(impact, app_periods_by_pattern)
 
     # PTobject
     ptobject = chaos.models.PTobject()
@@ -215,6 +228,7 @@ def get_disruption(contributor_code, with_routes=True, with_message_meta=False):
     disruption.impacts.append(impact)
 
     return disruption
+
 
 def test_get_pos_time():
     dates = [
@@ -541,7 +555,7 @@ def test_disruption_without_routes():
     eq_(disruption_pb.impacts[0].messages[0].channel.name, disruption.impacts[0].messages[0].channel.name)
     eq_(disruption_pb.impacts[0].messages[0].channel.max_size, disruption.impacts[0].messages[0].channel.max_size)
     eq_(disruption_pb.impacts[0].messages[0].channel.content_type,
-    disruption.impacts[0].messages[0].channel.content_type)
+        disruption.impacts[0].messages[0].channel.content_type)
     eq_(disruption_pb.impacts[0].messages[0].channel.types[0], get_channel_type(disruption.impacts[0].messages[0].channel.channel_types[0].name))
     eq_(disruption_pb.impacts[0].messages[0].channel.types[1], get_channel_type(disruption.impacts[0].messages[0].channel.channel_types[1].name))
 
@@ -549,7 +563,7 @@ def test_disruption_without_routes():
     eq_(disruption_pb.impacts[0].messages[1].channel.name, disruption.impacts[0].messages[1].channel.name)
     eq_(disruption_pb.impacts[0].messages[1].channel.max_size, disruption.impacts[0].messages[1].channel.max_size)
     eq_(disruption_pb.impacts[0].messages[1].channel.content_type,
-    disruption.impacts[0].messages[1].channel.content_type)
+        disruption.impacts[0].messages[1].channel.content_type)
     eq_(disruption_pb.impacts[0].messages[1].channel.types[0], get_channel_type(disruption.impacts[0].messages[1].channel.channel_types[0].name))
     eq_(disruption_pb.impacts[0].messages[1].channel.types[1], get_channel_type(disruption.impacts[0].messages[1].channel.channel_types[1].name))
 
@@ -611,3 +625,55 @@ def test_disruption_with_message_meta():
     eq_(disruption_pb.impacts[0].messages[1].meta[0].value, disruption.impacts[0].messages[1].meta[0].value)
     eq_(disruption_pb.impacts[0].messages[1].meta[1].key, disruption.impacts[0].messages[1].meta[1].key)
     eq_(disruption_pb.impacts[0].messages[1].meta[1].value, disruption.impacts[0].messages[1].meta[1].value)
+
+
+def test_impact_with_application_period_patterns():
+    disruption = get_disruption(contributor_code='KISIO-DIGITAL', with_routes=False, with_message_meta=False,
+                                with_patterns=True)
+    feed_entity = populate_pb(disruption).entity[0]
+    eq_(feed_entity.is_deleted, False)
+    disruption_pb = feed_entity.Extensions[chaos.chaos_pb2.disruption]
+    eq_(len(disruption_pb.impacts), 3)
+    eq_(len(disruption_pb.impacts[0].application_patterns), 2)
+    eq_(len(disruption_pb.impacts[0].application_periods), 5)
+    # "start_date": "2015-02-01", "end_date": "2015-02-03", "weekly_pattern": "1111001"
+    eq_(disruption.impacts[0].patterns[0].weekly_pattern, '1111001')
+    eq_(disruption_pb.impacts[0].application_patterns[0].start_date,
+        get_pos_date(disruption.impacts[0].patterns[0].start_date))
+    eq_(disruption_pb.impacts[0].application_patterns[0].end_date,
+        get_pos_date(disruption.impacts[0].patterns[0].end_date))
+    eq_(disruption_pb.impacts[0].application_patterns[0].week_pattern.monday, True)
+    eq_(disruption_pb.impacts[0].application_patterns[0].week_pattern.tuesday, True)
+    eq_(disruption_pb.impacts[0].application_patterns[0].week_pattern.wednesday, True)
+    eq_(disruption_pb.impacts[0].application_patterns[0].week_pattern.thursday, True)
+    eq_(disruption_pb.impacts[0].application_patterns[0].week_pattern.friday, False)
+    eq_(disruption_pb.impacts[0].application_patterns[0].week_pattern.saturday, False)
+    eq_(disruption_pb.impacts[0].application_patterns[0].week_pattern.sunday, True)
+    eq_(len(disruption_pb.impacts[0].application_patterns[0].time_slots), 1)
+    # "time_slots": [{"begin": "08:45", "end": "09:30"}]
+    eq_(disruption_pb.impacts[0].application_patterns[0].time_slots[0].begin, 31500)
+    eq_(disruption_pb.impacts[0].application_patterns[0].time_slots[0].end, 34200)
+    eq_(disruption_pb.impacts[0].application_patterns[0].timezone, 'Europe/Paris')
+
+    # "start_date": "2015-02-05", "end_date": "2015-02-06", "weekly_pattern": "1111111",
+    eq_(disruption.impacts[0].patterns[1].weekly_pattern, '1111111')
+    eq_(disruption_pb.impacts[0].application_patterns[1].start_date,
+        get_pos_date(disruption.impacts[0].patterns[1].start_date))
+    eq_(disruption_pb.impacts[0].application_patterns[1].end_date,
+        get_pos_date(disruption.impacts[0].patterns[1].end_date))
+    # 1423094400 -> 2015-02-05 00:00:00
+    eq_(disruption_pb.impacts[0].application_patterns[1].start_date, 1423094400)
+    # 1423180800 -> 2015-02-06 00:00:00
+    eq_(disruption_pb.impacts[0].application_patterns[1].end_date, 1423180800)
+    eq_(disruption_pb.impacts[0].application_patterns[1].week_pattern.monday, True)
+    eq_(disruption_pb.impacts[0].application_patterns[1].week_pattern.tuesday, True)
+    eq_(disruption_pb.impacts[0].application_patterns[1].week_pattern.wednesday, True)
+    eq_(disruption_pb.impacts[0].application_patterns[1].week_pattern.thursday, True)
+    eq_(disruption_pb.impacts[0].application_patterns[1].week_pattern.friday, True)
+    eq_(disruption_pb.impacts[0].application_patterns[1].week_pattern.saturday, True)
+    eq_(disruption_pb.impacts[0].application_patterns[1].week_pattern.sunday, True)
+    eq_(len(disruption_pb.impacts[0].application_patterns[0].time_slots), 1)
+    # "time_slots": [{"begin": "17:45", "end": "19:30"}]
+    eq_(disruption_pb.impacts[0].application_patterns[1].time_slots[0].begin, 63900)
+    eq_(disruption_pb.impacts[0].application_patterns[1].time_slots[0].end, 70200)
+    eq_(disruption_pb.impacts[0].application_patterns[1].timezone, 'Europe/Paris')
