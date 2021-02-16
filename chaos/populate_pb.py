@@ -3,6 +3,7 @@
 import chaos_pb2
 import gtfs_realtime_pb2
 import datetime
+import json
 
 
 def get_pos_time(sql_time):
@@ -29,6 +30,7 @@ def get_pt_object_type(type):
         "stop_area": chaos_pb2.PtObject.stop_area,
         "line": chaos_pb2.PtObject.line,
         "line_section": chaos_pb2.PtObject.line_section,
+        "rail_section": chaos_pb2.PtObject.rail_section,
         "route": chaos_pb2.PtObject.route,
         "stop_point": chaos_pb2.PtObject.stop_point
     }
@@ -143,18 +145,46 @@ def populate_informed_entitie(pt_object, informed_entitie):
     created_upated_at(pt_object, informed_entitie)
 
 
+def populate_ordered_pt_object(ordered_pt_object, ordered_pt_object_pb):
+    ordered_pt_object_pb.order = ordered_pt_object['order']
+    ordered_pt_object_pb.uri = ordered_pt_object['id']
+
+
 def populate_pt_objects(impact, impact_pb):
     for pt_object in impact.objects:
         informed_entitie = impact_pb.informed_entities.add()
         populate_informed_entitie(pt_object, informed_entitie)
         if pt_object.type == 'line_section':
-            populate_informed_entitie(pt_object.line_section.line, informed_entitie.pt_line_section.line)
-            populate_informed_entitie(pt_object.line_section.start_point, informed_entitie.pt_line_section.start_point)
-            populate_informed_entitie(pt_object.line_section.end_point, informed_entitie.pt_line_section.end_point)
-            if hasattr(pt_object.line_section, 'routes'):
-                for route in pt_object.line_section.routes:
-                    route_pb = informed_entitie.pt_line_section.routes.add()
-                    populate_informed_entitie(route, route_pb)
+            populate_line_section(pt_object.line_section, informed_entitie)
+        if pt_object.type == 'rail_section':
+            populate_rail_section(pt_object.rail_section, informed_entitie)
+
+
+def populate_line_section(line_section, informed_entitie):
+    populate_informed_entitie(line_section.line, informed_entitie.pt_line_section.line)
+    populate_informed_entitie(line_section.start_point, informed_entitie.pt_line_section.start_point)
+    populate_informed_entitie(line_section.end_point, informed_entitie.pt_line_section.end_point)
+    if hasattr(line_section, 'routes'):
+        for route in line_section.routes:
+            route_pb = informed_entitie.pt_line_section.routes.add()
+            populate_informed_entitie(route, route_pb)
+
+
+def populate_rail_section(rail_section, informed_entitie):
+    if hasattr(rail_section, 'line') and rail_section.line:
+        populate_informed_entitie(rail_section.line, informed_entitie.pt_rail_section.line)
+    populate_informed_entitie(rail_section.start_point, informed_entitie.pt_rail_section.start_point)
+    populate_informed_entitie(rail_section.end_point, informed_entitie.pt_rail_section.end_point)
+    blocked_stop_areas = json.loads(rail_section.blocked_stop_areas)
+    for blocked_stop_area in blocked_stop_areas:
+        blocked_stop_area_pb = informed_entitie.pt_rail_section.blocked_stop_areas.add()
+        populate_ordered_pt_object(blocked_stop_area, blocked_stop_area_pb)
+    route_patterns = json.loads(rail_section.route_patterns)
+    for route_pattern in route_patterns:
+        route_pattern_pb = informed_entitie.pt_rail_section.route_patterns.add()
+        for ordered_pt_object in route_pattern:
+            ordered_pt_object_pb = route_pattern_pb.ordered_pt_objects.add()
+            populate_ordered_pt_object(ordered_pt_object, ordered_pt_object_pb)
 
 
 def populate_impact(disruption, disruption_pb):
