@@ -2678,6 +2678,11 @@ components:
                   required:
                     - id
                     - order
+                example:
+                  - id: string
+                    order: 0
+                  - id: string
+                    order: 1
                 minItems: 2
               minItems: 1
             line:
