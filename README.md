@@ -189,3 +189,4 @@ Tchat channel [`#navitia` on riot](https://riot.im/app/#/room/#navitia:matrix.or
 Forum [Navitia on googlegroups](https://groups.google.com/d/forum/navitia)
 
 www.navitia.io
+
