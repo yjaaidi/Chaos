@@ -2624,7 +2624,6 @@ components:
         rail_section:
           title: >
             "routes" or "line" property are mandatory.
-            If both are specified, "line" will be ignored. Only "routes" will be kept.
           type: object
           properties:
             start_point:
