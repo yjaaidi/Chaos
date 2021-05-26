@@ -2533,7 +2533,6 @@ components:
     impact_object_line_section:
       type: object
       required:
-        - id
         - type
       properties:
         id:
