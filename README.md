@@ -36,9 +36,25 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-#### Build protobufs
-- Install protoc building it from source : [protobuf v2.6.1](https://github.com/protocolbuffers/protobuf/releases/download/v2.6.1/protobuf-2.6.1.zip). You can use `sudo apt-get install protobuf-compiler` if you're sure it won't install version 3.x.x (incompatible).
-- Build protobufs
+#### Install & build protobuf
+- Install protobuf
+
+You can use `sudo apt-get install protobuf-compiler` if you're sure it won't install version 3.x.x (incompatible).
+
+Or install protoc building it from source : [protobuf v2.6.1](https://github.com/protocolbuffers/protobuf/releases/download/v2.6.1/protobuf-2.6.1.zip). After download, from inside the unziped folder :
+```
+./configure
+make
+make install
+ldconfig
+make clean
+```
+Check your version
+```
+protoc --version
+```
+
+- Build protobuf
 
 ```
 git submodule init
