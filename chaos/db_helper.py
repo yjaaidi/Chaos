@@ -110,7 +110,7 @@ def fill_and_add_line_section(navitia, all_objects, pt_object_json):
     """
     ptobject = models.PTobject()
     if 'line_section' in pt_object_json:
-        mapper.fill_from_json(ptobject, pt_object_json, mapper.complete_object_mapping)
+        mapper.fill_from_json(ptobject, pt_object_json, mapper.line_section_object_mapping)
     else:
         mapper.fill_from_json(ptobject, pt_object_json, mapper.object_mapping)
 

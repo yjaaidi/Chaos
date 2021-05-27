@@ -123,7 +123,7 @@ object_mapping = {
     "type": None
 }
 
-complete_object_mapping = {
+line_section_object_mapping = {
     "type": None
 }
 

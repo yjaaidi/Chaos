@@ -108,7 +108,7 @@ object_input_format = {
     'required': ['id', 'type']
 }
 
-complete_object_input_format = {
+line_section_input_format = {
     'type': 'object',
     'properties': {
         'id': {'type': 'string', 'maxLength': 250},
@@ -308,7 +308,7 @@ impact_input_format = {
             'items': {
                 'anyOf':[
                     object_input_format,
-                    complete_object_input_format
+                    line_section_input_format
                 ]
             },
             'uniqueItems': True,
