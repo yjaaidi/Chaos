@@ -15,9 +15,11 @@ pt_object_type_values = [
     "network",
     "stop_area",
     "line",
-    "line_section",
     "route",
     "stop_point"
+]
+complete_pt_object_type_values = [
+    "line_section"
 ]
 # Here Order of values is strict and is used to create query filters.
 application_status_values = ["past", "ongoing", "coming"]
@@ -101,10 +103,19 @@ object_input_format = {
     'type': 'object',
     'properties': {
         'id': {'type': 'string', 'maxLength': 250},
-        'type': {'enum': pt_object_type_values},
-        'line_section': line_section_format
+        'type': {'enum': pt_object_type_values}
     },
     'required': ['id', 'type']
+}
+
+line_section_input_format = {
+    'type': 'object',
+    'properties': {
+        'id': {'type': 'string', 'maxLength': 250},
+        'type': {'enum': complete_pt_object_type_values},
+        'line_section': line_section_format
+    },
+    'required': ['type']
 }
 
 localization_object_input_format = {
@@ -294,7 +305,12 @@ impact_input_format = {
         },
         'objects': {
             'type': 'array',
-            'items': object_input_format,
+            'items': {
+                'anyOf':[
+                    object_input_format,
+                    line_section_input_format
+                ]
+            },
             'uniqueItems': True,
             'minItems': 1
         },

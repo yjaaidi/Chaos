@@ -10,7 +10,7 @@ from jsonschema import validate, ValidationError
 from flask.ext.restful import abort
 from fields import *
 from formats import *
-from formats import impact_input_format, channel_input_format, pt_object_type_values,\
+from formats import impact_input_format, channel_input_format, pt_object_type_values, complete_pt_object_type_values,\
     tag_input_format, category_input_format, channel_type_values,\
     property_input_format, disruptions_search_input_format, application_status_values, \
     impacts_search_input_format, export_input_format, contributor_input_format
@@ -1131,7 +1131,7 @@ class ImpactsByObject(flask_restful.Resource):
         self.parsers = {}
         self.parsers["get"] = reqparse.RequestParser()
         parser_get = self.parsers["get"]
-        parser_get.add_argument("pt_object_type", type=option_value(pt_object_type_values))
+        parser_get.add_argument("pt_object_type", type=option_value(pt_object_type_values + complete_pt_object_type_values))
         parser_get.add_argument("start_date", type=utils.get_datetime, default=default_start_date)
         parser_get.add_argument("end_date", type=utils.get_datetime, default=default_end_date)
         parser_get.add_argument("uri[]", type=str, action="append")

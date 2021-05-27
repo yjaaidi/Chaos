@@ -1137,7 +1137,7 @@ Feature: Manipulate impacts in a Disruption
 
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
-        And the field "error.message" should be "'value' is a required property"
+        And the field "error.message" should be "{u'line_section': {u'routes': [{u'type': u'route', u'id': u'route:JDR:M14'}, {u'type': u'route', u'id': u'route:JDR:M1'}], u'end_point': {u'type': u'stop_area', u'id': u'stop_area:JDR:CHVIN'}, u'line': {u'type': u'line', u'id': u'line:JDR:M5'}, u'metas': [{u'key': u'direction'}], u'start_point': {u'type': u'stop_area', u'id': u'stop_area:JDR:BASTI'}}, u'type': u'line_section', u'id': u'line:JDR:M5'} is not valid under any of the given schemas"
 
         Scenario: Put impact with line_section invalid wording in json : 2 wordings in database
 
@@ -1216,7 +1216,7 @@ Feature: Manipulate impacts in a Disruption
 
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
-        And the field "error.message" should be "'value' is a required property"
+        And the field "error.message" should be "{u'line_section': {u'routes': [{u'type': u'route', u'id': u'route:JDR:M14'}, {u'type': u'route', u'id': u'route:JDR:M1'}], u'end_point': {u'type': u'stop_area', u'id': u'stop_area:JDR:CHVIN'}, u'line': {u'type': u'line', u'id': u'line:JDR:M5'}, u'metas': [{u'key': u'direction'}], u'start_point': {u'type': u'stop_area', u'id': u'stop_area:JDR:BASTI'}}, u'type': u'line_section', u'id': u'line:JDR:M5'} is not valid under any of the given schemas"
 
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Contributors" with "contrib1"
@@ -1229,7 +1229,7 @@ Feature: Manipulate impacts in a Disruption
 
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
-        And the field "error.message" should be "metas should not be empty"
+        And the field "error.message" should be "{u'line_section': {u'routes': [{u'type': u'route', u'id': u'route:JDR:M14'}, {u'type': u'route', u'id': u'route:JDR:M1'}], u'end_point': {u'type': u'stop_area', u'id': u'stop_area:JDR:CHVIN'}, u'line': {u'type': u'line', u'id': u'line:JDR:M5'}, u'metas': [], u'start_point': {u'type': u'stop_area', u'id': u'stop_area:JDR:BASTI'}}, u'type': u'line_section', u'id': u'line:JDR:M5'} is not valid under any of the given schemas"
 
     Scenario: Add an impact in a disruption with token invalid (no token file filter)
 
