@@ -305,10 +305,12 @@ impact_input_format = {
         },
         'objects': {
             'type': 'array',
-            "oneOf":[
-                {'items': object_input_format},
-                {'items': complete_object_input_format}
-            ],
+            'items': {
+                'anyOf':[
+                    object_input_format,
+                    complete_object_input_format
+                ]
+            },
             'uniqueItems': True,
             'minItems': 1
         },
