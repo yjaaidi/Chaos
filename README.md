@@ -54,7 +54,7 @@ Check your version
 protoc --version
 ```
 
-- Build protobuf
+- Build protobuf, back into Chaos project folder
 
 ```
 git submodule init
