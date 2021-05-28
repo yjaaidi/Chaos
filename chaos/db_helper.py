@@ -159,7 +159,10 @@ def fill_and_add_rail_section(navitia, all_objects, pt_object_json):
     :return: pt_object and modify all_objects param
     """
     ptobject = models.PTobject()
-    mapper.fill_from_json(ptobject, pt_object_json, mapper.object_mapping)
+    if 'rail_section' in pt_object_json:
+        mapper.fill_from_json(ptobject, pt_object_json, mapper.rail_section_object_mapping)
+    else:
+        mapper.fill_from_json(ptobject, pt_object_json, mapper.object_mapping)
 
     # Here we treat all the objects in rail_section like line, start_point, end_point
     if 'rail_section' not in pt_object_json:
