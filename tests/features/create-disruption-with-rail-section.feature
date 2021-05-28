@@ -57,7 +57,7 @@ Feature: Create Disruption with rail section
         """
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
-        And the field "error.message" should be "'start_point' is a required property"
+        And the field "error.message" should be "{u'rail_section': {u'end_point': {u'type': u'stop_area', u'id': u'stop_area:JDR:CHVIN'}, u'line': {u'type': u'line', u'id': u'line:JDR:M5'}}, u'type': u'rail_section', u'id': u'stop_area:JDR:BASTI:stop_area:JDR:CHVIN:1'} is not valid under any of the given schemas"
 
     Scenario: creation of disruption with one impact and ptobject rail_section without end_point
         When I post to "/disruptions" with:
@@ -66,5 +66,5 @@ Feature: Create Disruption with rail section
         """
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
-        And the field "error.message" should be "'end_point' is a required property"
+        And the field "error.message" should be "{u'rail_section': {u'line': {u'type': u'line', u'id': u'line:JDR:M5'}, u'start_point': {u'type': u'stop_area', u'id': u'stop_area:JDR:CHVIN'}}, u'type': u'rail_section', u'id': u'stop_area:JDR:BASTI:stop_area:JDR:CHVIN:1'} is not valid under any of the given schemas"
 
