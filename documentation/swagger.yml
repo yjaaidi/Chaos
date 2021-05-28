@@ -2620,7 +2620,6 @@ components:
     impact_object_rail_section:
       type: object
       required:
-        - id
         - type
       properties:
         id:
