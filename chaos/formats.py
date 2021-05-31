@@ -151,7 +151,6 @@ line_section_input_format = {
     'required': ['type']
 }
 
-
 rail_section_input_format = {
     'type': 'object',
     'properties': {

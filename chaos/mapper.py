@@ -127,11 +127,9 @@ line_section_object_mapping = {
     "type": None
 }
 
-
 rail_section_object_mapping = {
     "type": None
 }
-
 
 message_mapping = {
     "text": None,
