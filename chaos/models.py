@@ -561,6 +561,7 @@ class Disruption(TimestampMixin, db.Model):
             tags,
             uri,
             line_section,
+            rail_section,
             statuses,
             application_status=application_status_values,
             query=None,
@@ -599,6 +600,12 @@ class Disruption(TimestampMixin, db.Model):
                 query_line_section = query_line_section.filter(
                     and_(PTobject.type == "line_section", PTobject.uri.like(uri + ":%")))
 
+            # Here add a new query to find impacts with rail_section having uri as line
+            if rail_section:
+                query_rail_section = query
+                query_rail_section = query_rail_section.filter(
+                    and_(PTobject.type == "rail_section", PTobject.uri.like(uri + ":%")))
+
             query = query.filter(PTobject.uri == uri)
 
         publication_availlable_filters = {
@@ -612,6 +619,9 @@ class Disruption(TimestampMixin, db.Model):
             # For a query by uri use union with the query for line_section
             if uri and line_section:
                 query = query.union(query_line_section)
+            # For a query by uri use union with the query for rail_section
+            if uri and rail_section:
+                query = query.union(query_rail_section)
 
         else:
             filters = [publication_availlable_filters[status] for status in publication_status]
@@ -621,6 +631,10 @@ class Disruption(TimestampMixin, db.Model):
             if uri and line_section:
                 query_line_section = query_line_section.filter(or_(*filters))
                 query = query.union(query_line_section)
+            # For a query by uri use union with the query for rail_section
+            if uri and line_section:
+                query_rail_section = query_rail_section.filter(or_(*filters))
+                query = query.union(query_rail_section)
 
         application_status = set(application_status)
         if len(application_status) != len(application_status_values):
@@ -1256,6 +1270,7 @@ class Disruption(TimestampMixin, db.Model):
             tags,
             uri,
             line_section,
+            rail_section,
             statuses):
 
         return cls.get_query_with_args(
@@ -1266,6 +1281,7 @@ class Disruption(TimestampMixin, db.Model):
             tags=tags,
             uri=uri,
             line_section=line_section,
+            rail_section=rail_section,
             statuses=statuses
         )
 

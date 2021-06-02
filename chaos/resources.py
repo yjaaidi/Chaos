@@ -176,6 +176,7 @@ class Disruptions(flask_restful.Resource):
         parser_get.add_argument("current_time", type=utils.get_datetime)
         parser_get.add_argument("uri", type=str)
         parser_get.add_argument("line_section", type=types.boolean, default=False)
+        parser_get.add_argument("rail_section", type=types.boolean, default=False)
         parser_get.add_argument(
             "status[]",
             type=option_value(disruption_status_values),
@@ -222,6 +223,7 @@ class Disruptions(flask_restful.Resource):
         tags = args['tag[]']
         uri = args['uri']
         line_section = args['line_section']
+        rail_section = args['rail_section']
         statuses = args['status[]']
 
         result = models.Disruption.all_with_filter(
@@ -234,6 +236,7 @@ class Disruptions(flask_restful.Resource):
             tags=tags,
             uri=uri,
             line_section=line_section,
+            rail_section=rail_section,
             statuses=statuses
         )
 
