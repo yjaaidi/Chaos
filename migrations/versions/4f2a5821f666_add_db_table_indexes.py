@@ -12,36 +12,45 @@ down_revision = '2d8031cd6452'
 
 from alembic import op
 
+indexes_data = [
+    {'name': 'client_client_code_idx',                      'table': 'client',                      'columns': ['client_code']  },
+    {'name': 'disruption_created_at_idx',                   'table': 'disruption',                  'columns': ['created_at']   },
+    {'name': 'disruption_client_id_idx',                    'table': 'disruption',                  'columns': ['client_id']    },
+    {'name': 'category_name_idx',                           'table': 'category',                    'columns': ['name']         },
+    {'name': 'applicationperiods_start_date_idx',           'table': 'application_periods',         'columns': ['start_date']   },
+    {'name': 'applicationperiods_end_date_idx',             'table': 'application_periods',         'columns': ['end_date']     },
+    {'name': 'associate_wording_cause_wording_id_idx',      'table': 'associate_wording_cause',     'columns': ['wording_id']   },
+    {'name': 'associate_wording_cause_cause_id_idx',        'table': 'associate_wording_cause',     'columns': ['cause_id']     },
+    {'name': 'message_channel_id_idx',                      'table': 'message',                     'columns': ['channel_id']   },
+    {'name': 'channel_name_idx',                            'table': 'channel',                     'columns': ['name']         },
+    {'name': 'wording_key_idx',                             'table': 'wording',                     'columns': ['key']          },
+    {'name': 'cause_category_idx',                          'table': 'cause',                       'columns': ['category_id']  },
+    {'name': 'associate_impact_pt_object_impact_id_idx',    'table': 'associate_impact_pt_object',  'columns': ['impact_id']    },
+    {'name': 'pt_object_uri_idx',                           'table': 'pt_object',                   'columns': ['uri']          },
+]
+
 
 def upgrade():
-    op.create_index('client_client_code_idx', 'client', ['client_code'], 'public', unique=False)
-    op.create_index('disruption_created_at_idx', 'disruption', ['created_at'], 'public', unique=False)
-    op.create_index('disruption_client_id_idx', 'disruption', ['client_id'], 'public', unique=False)
-    op.create_index('category_name_idx', 'category', ['name'], 'public', unique=False)
-    op.create_index('applicationperiods_start_date_idx', 'application_periods', ['start_date'], 'public', unique=False)
-    op.create_index('applicationperiods_end_date_idx', 'application_periods', ['end_date'], 'public', unique=False)
-    op.create_index('associate_wording_cause_wording_id_idx', 'associate_wording_cause', ['wording_id'], 'public', unique=False)
-    op.create_index('associate_wording_cause_cause_id_idx', 'associate_wording_cause', ['cause_id'], 'public', unique=False)
-    op.create_index('message_channel_id_idx', 'message', ['channel_id'], 'public', unique=False)
-    op.create_index('channel_name_idx', 'channel', ['name'], 'public', unique=False)
-    op.create_index('wording_key_idx', 'wording', ['key'], 'public', unique=False)
-    op.create_index('cause_category_idx', 'cause', ['category_id'], 'public', unique=False)
-    op.create_index('associate_impact_pt_object_impact_id_idx', 'associate_impact_pt_object', ['impact_id'], 'public', unique=False)
-    op.create_index('pt_object_uri_idx', 'pt_object', ['uri'], 'public', unique=False)
+    for index_data in indexes_data :
+        create_non_unique_index_if_not_exists(index_data)
 
 
 def downgrade():
-    op.drop_index('client_client_code_idx', 'client', 'public')
-    op.drop_index('disruption_created_at_idx', 'disruption', 'public')
-    op.drop_index('disruption_client_id_idx', 'disruption', 'public')
-    op.drop_index('category_name_idx', 'category', 'public')
-    op.drop_index('applicationperiods_start_date_idx', 'application_periods', 'public')
-    op.drop_index('applicationperiods_end_date_idx', 'application_periods', 'public')
-    op.drop_index('associate_wording_cause_wording_id_idx', 'associate_wording_cause', 'public')
-    op.drop_index('associate_wording_cause_cause_id_idx', 'associate_wording_cause', 'public')
-    op.drop_index('message_channel_id_idx', 'message', 'public')
-    op.drop_index('channel_name_idx', 'channel', 'public')
-    op.drop_index('wording_key_idx', 'wording', 'public')
-    op.drop_index('cause_category_idx', 'cause', 'public')
-    op.drop_index('associate_impact_pt_object_impact_id_idx', 'associate_impact_pt_object', 'public')
-    op.drop_index('pt_object_uri_idx', 'pt_object', 'public')
+    for index_data in indexes_data :
+        remove_index(index_data)
+
+
+def index_exists(name):
+    connection = op.get_bind()
+    result = connection.execute("SELECT exists(SELECT 1 from pg_indexes where indexname = '{}') as ix_exists;" .format(name)).first()
+    return result.ix_exists
+
+
+def create_non_unique_index_if_not_exists(index_data):
+    index_name = index_data['name']
+    if not index_exists(index_name):
+        op.create_index(index_name, index_data['table'], index_data['columns'], 'public', unique=False)
+
+
+def remove_index(index_data) :
+    op.drop_index(index_data['name'], index_data['table'], 'public')
