@@ -81,6 +81,8 @@ ChannelTypeEnum = db.Enum(
 
 ExportStatusEnum = db.Enum('waiting', 'handling', 'error', 'done')
 
+DisruptionTypeEnum = db.Enum('unexpected')
+
 
 class Client(TimestampMixin, db.Model):
     __tablename__ = 'client'
@@ -429,6 +431,7 @@ class Disruption(TimestampMixin, db.Model):
     cause_id = db.Column(UUID, db.ForeignKey(Cause.id))
     cause = db.relationship('Cause', backref='disruption', lazy='joined')
     tags = db.relationship("Tag", secondary=associate_disruption_tag, backref="disruptions", lazy='joined')
+    type = db.Column(DisruptionTypeEnum, nullable=True)
     client_id = db.Column(UUID, db.ForeignKey(Client.id), nullable=False)
     client = db.relationship('Client', backref='disruptions')
     contributor_id = db.Column(UUID, db.ForeignKey(Contributor.id), nullable=False)
@@ -485,7 +488,7 @@ class Disruption(TimestampMixin, db.Model):
         query_parts = {
             'select_columns': [
                 'd.id', 'd.reference', 'd.note', 'd.status', 'd.version', 'd.created_at', 'd.updated_at',
-                'd.start_publication_date', 'd.end_publication_date', 'd.author',
+                'd.start_publication_date', 'd.end_publication_date', 'd.author', 'd.type',
                 'i.id AS impact_id', 'i.created_at AS impact_created_at', 'i.updated_at AS impact_updated_at',
                 'i.send_notifications AS impact_send_notifications', 'i.notification_date AS impact_notification_date',
                 'c.id AS cause_id', 'c.created_at AS cause_created_at', 'c.updated_at AS cause_updated_at',
@@ -1065,7 +1068,7 @@ class Disruption(TimestampMixin, db.Model):
 
         query_parts['select_columns'] = [
                 'd.id', 'd.reference', 'd.note', 'd.status', 'd.version', 'd.created_at', 'd.updated_at',
-                'd.start_publication_date', 'd.end_publication_date', 'd.author',
+                'd.start_publication_date', 'd.end_publication_date', 'd.author', 'd.type',
                 'i.id AS impact_id', 'i.created_at AS impact_created_at', 'i.updated_at AS impact_updated_at',
                 'i.send_notifications AS impact_send_notifications', 'i.notification_date AS impact_notification_date',
                 'c.id AS cause_id', 'c.created_at AS cause_created_at', 'c.updated_at AS cause_updated_at',
@@ -1113,7 +1116,7 @@ class Disruption(TimestampMixin, db.Model):
         query_parts = {}
         query_parts['select_columns'] = [
             'd.id', 'd.reference', 'd.note', 'd.status', 'd.version', 'd.created_at', 'd.updated_at',
-            'd.start_publication_date', 'd.end_publication_date, d.author,',
+            'd.start_publication_date', 'd.end_publication_date', 'd.author', 'd.type',
             'i.id AS impact_id', 'i.created_at AS impact_created_at', 'i.updated_at AS impact_updated_at',
             'i.send_notifications AS impact_send_notifications', 'i.notification_date AS impact_notification_date',
             'c.id AS cause_id', 'c.created_at AS cause_created_at', 'c.updated_at AS cause_updated_at',
@@ -1760,7 +1763,7 @@ class Impact(TimestampMixin, db.Model):
 
         query_parts['select_columns'] = [
                 'd.id', 'd.reference', 'd.note', 'd.status', 'd.version', 'd.created_at', 'd.updated_at',
-                'd.start_publication_date', 'd.end_publication_date', 'd.author',
+                'd.start_publication_date', 'd.end_publication_date', 'd.author', 'd.type',
                 'i.id AS impact_id', 'i.created_at AS impact_created_at', 'i.updated_at AS impact_updated_at',
                 'i.send_notifications AS impact_send_notifications', 'i.notification_date AS impact_notification_date',
                 'c.id AS cause_id', 'c.created_at AS cause_created_at', 'c.updated_at AS cause_updated_at',

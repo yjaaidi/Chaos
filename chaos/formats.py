@@ -39,6 +39,10 @@ channel_type_values = [
 ]
 disruption_status_values = ["published", "draft"]
 exports_sort_values = ["created_at", "created_at:asc", "created_at:desc"]
+disruption_type_values = [
+    None,
+    "unexpected"
+]
 
 def get_object_format(object_type):
     return {
@@ -366,6 +370,7 @@ disruptions_input_format = {
             },
             'uniqueItems': True
         },
+        'type': {'enum': disruption_type_values},
         'impacts': {
             'type': 'array',
             'items': impact_input_format,
