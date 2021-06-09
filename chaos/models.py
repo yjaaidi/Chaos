@@ -755,6 +755,12 @@ class Disruption(TimestampMixin, db.Model):
                 bindparams['uri_like'] = db.String
                 vars['po_type_line_section'] = 'line_section'
                 vars['uri_like'] = filter_params['uri'] + ':%'
+            if filter_params['rail_section']:
+                uri_filters.append('po.type = :po_type_rail_section AND po.uri LIKE :uri_like')
+                bindparams['po_type_rail_section'] = db.String
+                bindparams['uri_like'] = db.String
+                vars['po_type_rail_section'] = 'rail_section'
+                vars['uri_like'] = filter_params['uri'] + ':%'
             andwheres.append('(' + ' OR '.join(uri_filters) + ')')
         elif filter_params['ptObjectFilter'] is not None:
             pt_object_ids = [id for ids in filter_params['ptObjectFilter'].itervalues() for id in ids]
@@ -770,6 +776,12 @@ class Disruption(TimestampMixin, db.Model):
                     bindparams['po_line_section_lines'] = db.String
                     vars['po_type_line_section'] = 'line_section'
                     vars['po_line_section_lines'] = tuple(filter_params['ptObjectFilter']['lines'])
+                if rail_section and 'lines' in filter_params['ptObjectFilter'] and filter_params['ptObjectFilter']['lines']:
+                    uri_filters.append('(po.type = :po_type_rail_section AND por_line.uri IN :po_rail_section_lines)')
+                    bindparams['po_type_rail_section'] = db.String
+                    bindparams['po_rail_section_lines'] = db.String
+                    vars['po_type_rail_section'] = 'rail_section'
+                    vars['po_rail_section_lines'] = tuple(filter_params['ptObjectFilter']['lines'])
                 andwheres.append('(' + ' OR '.join(uri_filters) + ')')
 
         if isinstance(filter_params['cause_category_id'], basestring) and filter_params['cause_category_id']:
