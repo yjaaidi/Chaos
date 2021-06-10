@@ -494,29 +494,22 @@ class ImpactsSearch(flask_restful.Resource):
                            error_fields), 400
 
         g.current_time = args['current_time']
-        current_time = get_current_time()
-        application_status = json.get('application_status', application_status_values)
-        ptObjectFilter = json.get('ptObjectFilter', None)
-        application_period = json.get('application_period', None)
+        filter = {
+            'current_time': get_current_time(),
+            'contributor_id': contributor.id,
+            'application_status': json.get('application_status', application_status_values),
+            'ptObjectFilter': json.get('ptObjectFilter', None),
+            'application_period': json.get('application_period', None),
+            'cause_category_id': json.get('cause_category_id', None),
+            'page_index': args['start_page'],
+            'items_per_page': args['items_per_page'],
+            'with_disruption_type': json.get('with_disruption_type', None),
+            'without_disruption_type': json.get('without_disruption_type', None)
+        }
 
-        total_results_count = models.Impact.count_all_with_post_filter(
-            contributor_id=contributor.id,
-            application_status=application_status,
-            ptObjectFilter=ptObjectFilter,
-            cause_category_id=json.get('cause_category_id', None),
-            application_period=application_period,
-            current_time=current_time
-        )
+        total_results_count = models.Impact.count_all_with_post_filter(filter)
 
-        results = models.Impact.all_with_post_filter_native(
-            page_index=args['start_page'],
-            items_per_page=args['items_per_page'],
-            contributor_id=contributor.id,
-            application_status=application_status,
-            ptObjectFilter=ptObjectFilter,
-            cause_category_id=json.get('cause_category_id', None),
-            application_period=application_period,
-            current_time=current_time
+        results = models.Impact.all_with_post_filter_native(filter)
         )
 
         impacts= OrderedDict()
@@ -736,8 +729,8 @@ class ImpactsSearch(flask_restful.Resource):
 
         rawData = {'impacts': impacts.values(), 'meta': self.createPager(
             resultset = impacts.values(),
-            current_page=args['start_page'],
-            per_page = args['items_per_page'],
+            current_page=filter['start_page'],
+            per_page = filter['items_per_page'],
             total_results_count = total_results_count,
             endpoint = '')}
 
@@ -790,52 +783,34 @@ class DisruptionsSearch(flask_restful.Resource):
 
         g.current_time = args['current_time']
         g.display_impacts = args['depth'] > 1
-        current_time=get_current_time()
-        application_status=json.get('application_status', application_status_values)
-        uri=json.get('uri', None)
-        ptObjectFilter=json.get('ptObjectFilter', None)
-        application_period = json.get('application_period', None)
+        filter = {
+            'current_time': get_current_time()
+            'contributor_id': contributor.id,
+            'application_status': json.get('application_status', application_status_values),
+            'publication_status': json.get('publication_status', publication_status_values),
+            'uri': json.get('uri', None),
+            'ptObjectFilter': json.get('ptObjectFilter', None),
+            'application_period': json.get('application_period', None),
+            'ends_after_date': args['ends_after_date'],
+            'ends_before_date': args['ends_before_date'],
+            'tags': json.get('tag', None),
+            'line_section': args['line_section'],
+            'statuses': json.get('status', disruption_status_values),
+            'cause_category_id': json.get('cause_category_id', None),
+            'page_index': args['start_page'],
+            'items_per_page': args['items_per_page']
+        }
 
-        total_results_count = models.Disruption.count_all_with_post_filter(
-            contributor_id=contributor.id,
-            application_status=application_status,
-            publication_status=json.get('publication_status', publication_status_values),
-            ends_after_date=args['ends_after_date'],
-            ends_before_date=args['ends_before_date'],
-            tags=json.get('tag', None),
-            uri=uri,
-            line_section=args['line_section'],
-            statuses=json.get('status', disruption_status_values),
-            ptObjectFilter=ptObjectFilter,
-            cause_category_id=json.get('cause_category_id', None),
-            application_period=application_period,
-            current_time=current_time
-        )
+        total_results_count = models.Disruption.count_all_with_post_filter(filter)
 
-        results = models.Disruption.all_with_post_filter_native(
-            page_index=args['start_page'],
-            items_per_page=args['items_per_page'],
-            contributor_id=contributor.id,
-            application_status=application_status,
-            publication_status=json.get('publication_status', publication_status_values),
-            ends_after_date=args['ends_after_date'],
-            ends_before_date=args['ends_before_date'],
-            tags=json.get('tag', None),
-            uri=uri,
-            line_section=args['line_section'],
-            statuses=json.get('status', disruption_status_values),
-            ptObjectFilter=ptObjectFilter,
-            cause_category_id=json.get('cause_category_id', None),
-            application_period=application_period,
-            current_time=current_time
-        )
+        results = models.Disruption.all_with_post_filter_native(filter)
 
         disruptions = db_disruption_mapper.map_disruption(results)
 
         rawData = {'disruptions': disruptions.values(), 'meta': self.createPager(
             resultset = disruptions.values(),
-            current_page=args['start_page'],
-            per_page = args['items_per_page'],
+            current_page=filter['start_page'],
+            per_page = filter['items_per_page'],
             total_results_count = total_results_count,
             endpoint = 'disruption')}
 

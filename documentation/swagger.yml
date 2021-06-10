@@ -2875,6 +2875,20 @@ components:
           items:
             type: string
             format: uuid
+        with_disruption_type:
+          description: Filter by type (include)
+          type: array
+          items:
+            type: string
+            enum:
+              - expected
+        without_disruption_type:
+          description: Filter by type (exclude)
+          type: array
+          items:
+            type: string
+            enum:
+              - expected
         uri:
           description: Filter by uri of ptobject
           type: string
@@ -3243,6 +3257,20 @@ components:
           format: uuid
         ptObjectFilter:
           $ref: "#/components/schemas/pt_object_filter"
+        with_disruption_type:
+          description: Filter by type (include)
+          type: array
+          items:
+            type: string
+            enum:
+              - expected
+        without_disruption_type:
+          description: Filter by type (exclude)
+          type: array
+          items:
+            type: string
+            enum:
+              - expected
     message_type:
       type: object
       properties:
