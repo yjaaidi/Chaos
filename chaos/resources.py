@@ -728,7 +728,7 @@ class ImpactsSearch(flask_restful.Resource):
 
         rawData = {'impacts': impacts.values(), 'meta': self.createPager(
             resultset = impacts.values(),
-            current_page=filter['start_page'],
+            current_page=filter['page_index'],
             per_page = filter['items_per_page'],
             total_results_count = total_results_count,
             endpoint = '')}
@@ -808,7 +808,7 @@ class DisruptionsSearch(flask_restful.Resource):
 
         rawData = {'disruptions': disruptions.values(), 'meta': self.createPager(
             resultset = disruptions.values(),
-            current_page=filter['start_page'],
+            current_page=filter['page_index'],
             per_page = filter['items_per_page'],
             total_results_count = total_results_count,
             endpoint = 'disruption')}
