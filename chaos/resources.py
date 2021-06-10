@@ -510,7 +510,6 @@ class ImpactsSearch(flask_restful.Resource):
         total_results_count = models.Impact.count_all_with_post_filter(filter)
 
         results = models.Impact.all_with_post_filter_native(filter)
-        )
 
         impacts= OrderedDict()
         disruptions = {}
@@ -784,7 +783,7 @@ class DisruptionsSearch(flask_restful.Resource):
         g.current_time = args['current_time']
         g.display_impacts = args['depth'] > 1
         filter = {
-            'current_time': get_current_time()
+            'current_time': get_current_time(),
             'contributor_id': contributor.id,
             'application_status': json.get('application_status', application_status_values),
             'publication_status': json.get('publication_status', publication_status_values),
