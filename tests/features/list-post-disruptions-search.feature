@@ -608,6 +608,7 @@ Feature: list disruptions with ptObjects filter
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
         And the field "disruptions" should have a size of 2
+
         When I post to "/disruptions/_search" with:
         """
         {"current_time": "2014-04-15T14:00:00Z", "publication_status": ["ongoing"], "cause_category_id": "7ffab231-3d48-4eea-aa2c-22f8680230b6"}
@@ -643,6 +644,7 @@ Feature: list disruptions with ptObjects filter
         And the header "Content-Type" should be "application/json"
         And the field "disruptions" should have a size of 1
         And the field "disruptions.0.impacts.impacts" should have a size of 1
+
         When I post to "/disruptions/_search" with:
         """
         {"current_time": "2014-04-15T14:00:00Z", "depth":2, "application_status": ["coming"]}
@@ -651,6 +653,7 @@ Feature: list disruptions with ptObjects filter
         And the header "Content-Type" should be "application/json"
         And the field "disruptions" should have a size of 1
         And the field "disruptions.0.impacts.impacts" should have a size of 1
+
         When I post to "/disruptions/_search" with:
         """
         {"current_time": "2014-04-15T14:00:00Z", "depth":2, "application_status": ["past"]}
@@ -659,6 +662,7 @@ Feature: list disruptions with ptObjects filter
         And the header "Content-Type" should be "application/json"
         And the field "disruptions" should have a size of 1
         And the field "disruptions.0.impacts.impacts" should have a size of 1
+
         When I post to "/disruptions/_search" with:
         """
         {"current_time": "2014-04-15T14:00:00Z", "depth":2, "application_status": ["ongoing", "coming"]}
@@ -668,6 +672,7 @@ Feature: list disruptions with ptObjects filter
         And the field "disruptions" should have a size of 2
         And the field "disruptions.0.impacts.impacts" should have a size of 1
         And the field "disruptions.1.impacts.impacts" should have a size of 1
+
         When I post to "/disruptions/_search" with:
         """
         {"current_time": "2014-04-15T14:00:00Z", "depth":2}
@@ -712,6 +717,7 @@ Feature: list disruptions with ptObjects filter
         And the header "Content-Type" should be "application/json"
         And the field "disruptions" should have a size of 1
         And the field "disruptions.0.impacts.impacts" should have a size of 1
+
         When I post to "/disruptions/_search" with:
         """
         {"current_time": "2014-04-15T14:00:00Z", "depth":2, "application_status":["ongoing"], "ptObjectFilter": {"lines": ["line:JDR:M2"]}}
@@ -720,6 +726,7 @@ Feature: list disruptions with ptObjects filter
         And the header "Content-Type" should be "application/json"
         And the field "disruptions" should have a size of 1
         And the field "disruptions.0.impacts.impacts" should have a size of 1
+
         When I post to "/disruptions/_search" with:
         """
         {"current_time": "2014-04-15T14:00:00Z", "depth":2, "application_status":["ongoing"], "ptObjectFilter": {"lines": ["line:JDR:M2", "line:JDR:M1"]}}
@@ -769,6 +776,7 @@ Feature: list disruptions with ptObjects filter
         And the header "Content-Type" should be "application/json"
         And the field "disruptions" should have a size of 1
         And the field "disruptions.0.impacts.impacts" should have a size of 5
+
         When I post to "/disruptions/_search" with:
         """
         {"current_time": "2014-04-15T14:00:00Z", "depth":2, "application_period":{"begin": "2014-04-03T00:00:00Z", "end": "2014-04-05T23:59:00Z"}}
@@ -777,3 +785,42 @@ Feature: list disruptions with ptObjects filter
         And the header "Content-Type" should be "application/json"
         And the field "disruptions" should have a size of 1
         And the field "disruptions.0.impacts.impacts" should have a size of 4
+
+    Scenario: Filter on unexpected disruption
+
+        Given I have the following disruptions in my database:
+            | reference | note  | created_at          | updated_at          | status    | id                                   | cause_id                             | client_id                            | contributor_id                       | start_publication_date | end_publication_date | type       |
+            | foo       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab230-3d48-4eea-aa2c-22f868023042 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 | 2014-04-10T23:42:00    | 2014-04-20T23:42:00  | unexpected |
+
+        Given I have the following impacts in my database:
+            | created_at          | updated_at          | status    | id                                   | disruption_id                        |severity_id                          |
+            | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | published | 7ffab232-3d47-4eea-aa2c-22f8680230b6 | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |7ffab232-3d48-4eea-aa2c-22f8680230b6 |
+
+        Given I have the following ptobject in my database:
+            | type  | uri           | created_at          | id                                         |
+            | line  | line:JDR:M1   | 2014-04-04T23:52:12 | 3ffab232-3d48-4eea-aa2c-22f8680230b6       |
+
+        Given I have the relation associate_impact_pt_object in my database:
+            | pt_object_id                                  | impact_id                            |
+            | 3ffab232-3d48-4eea-aa2c-22f8680230b6          | 7ffab232-3d47-4eea-aa2c-22f8680230b6 |
+
+        Given I have the following applicationperiods in my database:
+            | created_at          | updated_at          |id                                   | impact_id                            |start_date                           |end_date            |
+            | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab232-3d47-4eea-aa2c-22f8680230b1 | 7ffab232-3d47-4eea-aa2c-22f8680230b6 |2014-04-10 16:52:00                  |2014-04-17 16:52:00 |
+
+        When I post to "/disruptions/_search" with:
+        """
+        {"current_time": "2014-04-15T14:00:00Z", "depth":2, "application_status":["ongoing"], "with_disruption_types": ["unexpected"]}
+        """
+        Then the status code should be "200"
+        And the header "Content-Type" should be "application/json"
+        And the field "disruptions" should have a size of 1
+        And the field "disruptions.0.impacts.impacts" should have a size of 1
+
+        When I post to "/disruptions/_search" with:
+        """
+        {"current_time": "2014-04-15T14:00:00Z", "depth":2, "application_status":["ongoing"], "without_disruption_types": ["unexpected"]}
+        """
+        Then the status code should be "200"
+        And the header "Content-Type" should be "application/json"
+        And the field "disruptions" should have a size of 0
