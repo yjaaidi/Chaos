@@ -30,8 +30,6 @@ Feature: list disruptions with ptObjects filter
             | wording   | color   | created_at          | updated_at          | is_visible | id                                   |client_id                            |
             | good news | #654321 | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | True       | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
 
-
-
     Scenario: Filter on network no return
 
         Given I have the following disruptions in my database:
@@ -436,7 +434,6 @@ Feature: list disruptions with ptObjects filter
         And the field "meta.pagination.start_page" should be 1
         And the field "meta.pagination.total_result" should be 5
 
-    @wip
     Scenario: Test errors about body when ptObjectFilter is empty
 
         When I post to "/impacts/_search" with:
@@ -446,7 +443,6 @@ Feature: list disruptions with ptObjects filter
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
         And the field "error.message" should be "{} is not valid under any of the given schemas"
-
 
     Scenario: Filter on stop_area
 
