@@ -494,7 +494,7 @@ class ImpactsSearch(flask_restful.Resource):
                            error_fields), 400
 
         g.current_time = args['current_time']
-        filter = {
+        filter_params = {
             'current_time': get_current_time(),
             'contributor_id': contributor.id,
             'application_status': json.get('application_status', application_status_values),
@@ -507,9 +507,9 @@ class ImpactsSearch(flask_restful.Resource):
             'without_disruption_types': json.get('without_disruption_types', None)
         }
 
-        total_results_count = models.Impact.count_all_with_post_filter(filter)
+        total_results_count = models.Impact.count_all_with_post_filter(filter_params)
 
-        results = models.Impact.all_with_post_filter_native(filter)
+        results = models.Impact.all_with_post_filter_native(filter_params)
 
         impacts= OrderedDict()
         cause_wordings = {}
@@ -726,8 +726,8 @@ class ImpactsSearch(flask_restful.Resource):
 
         rawData = {'impacts': impacts.values(), 'meta': self.createPager(
             resultset = impacts.values(),
-            current_page=filter['page_index'],
-            per_page = filter['items_per_page'],
+            current_page=filter_params['page_index'],
+            per_page = filter_params['items_per_page'],
             total_results_count = total_results_count,
             endpoint = '')}
 
@@ -780,7 +780,7 @@ class DisruptionsSearch(flask_restful.Resource):
 
         g.current_time = args['current_time']
         g.display_impacts = args['depth'] > 1
-        filter = {
+        filter_params = {
             'current_time': get_current_time(),
             'contributor_id': contributor.id,
             'application_status': json.get('application_status', application_status_values),
@@ -800,16 +800,16 @@ class DisruptionsSearch(flask_restful.Resource):
             'without_disruption_types': json.get('without_disruption_types', None)
         }
 
-        total_results_count = models.Disruption.count_all_with_post_filter(filter)
+        total_results_count = models.Disruption.count_all_with_post_filter(filter_params)
 
-        results = models.Disruption.all_with_post_filter_native(filter)
+        results = models.Disruption.all_with_post_filter_native(filter_params)
 
         disruptions = db_disruption_mapper.map_disruption(results)
 
         rawData = {'disruptions': disruptions.values(), 'meta': self.createPager(
             resultset = disruptions.values(),
-            current_page=filter['page_index'],
-            per_page = filter['items_per_page'],
+            current_page=filter_params['page_index'],
+            per_page = filter_params['items_per_page'],
             total_results_count = total_results_count,
             endpoint = 'disruption')}
 
