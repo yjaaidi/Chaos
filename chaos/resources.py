@@ -503,8 +503,8 @@ class ImpactsSearch(flask_restful.Resource):
             'cause_category_id': json.get('cause_category_id', None),
             'page_index': args['start_page'],
             'items_per_page': args['items_per_page'],
-            'with_disruption_type': json.get('with_disruption_type', None),
-            'without_disruption_type': json.get('without_disruption_type', None)
+            'with_disruption_types': json.get('with_disruption_types', None),
+            'without_disruption_types': json.get('without_disruption_types', None)
         }
 
         total_results_count = models.Impact.count_all_with_post_filter(filter)
@@ -512,7 +512,6 @@ class ImpactsSearch(flask_restful.Resource):
         results = models.Impact.all_with_post_filter_native(filter)
 
         impacts= OrderedDict()
-        disruptions = {}
         cause_wordings = {}
         severity_wordings = {}
         impact_pt_objects = {}
@@ -527,7 +526,6 @@ class ImpactsSearch(flask_restful.Resource):
         line_section_routes = {}
 
         for r in results:
-            disruptionId = r.id
             wordingId = r.cause_wording_id
             impact_id = r.impact_id
             severity_id = r.severity_id
@@ -797,7 +795,9 @@ class DisruptionsSearch(flask_restful.Resource):
             'statuses': json.get('status', disruption_status_values),
             'cause_category_id': json.get('cause_category_id', None),
             'page_index': args['start_page'],
-            'items_per_page': args['items_per_page']
+            'items_per_page': args['items_per_page'],
+            'with_disruption_types': json.get('with_disruption_types', None),
+            'without_disruption_types': json.get('without_disruption_types', None)
         }
 
         total_results_count = models.Disruption.count_all_with_post_filter(filter)

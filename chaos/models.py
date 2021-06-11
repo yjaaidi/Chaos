@@ -11,6 +11,7 @@ from formats import publication_status_values, application_status_values
 from sqlalchemy import or_, and_, between, bindparam, desc
 from sqlalchemy.orm import aliased
 from sqlalchemy.sql import text, func
+import logging
 
 #force the server to use UTC time for each connection checkouted from the pool
 import sqlalchemy
@@ -821,6 +822,16 @@ class Disruption(TimestampMixin, db.Model):
             vars['ap_start_date'] = filter['application_period']['begin']
             vars['ap_end_date'] = filter['application_period']['end']
 
+        if filter['with_disruption_types'] is not None:
+            andwheres.append('d.type IN :with_disruption_types')
+            vars['with_disruption_types'] = tuple(filter['with_disruption_types'])
+            bindparams['with_disruption_types'] = db.String
+
+        if filter['without_disruption_types'] is not None:
+            andwheres.append('(d.type NOT IN :without_disruption_types OR d.type IS NULL)')
+            vars['without_disruption_types'] = tuple(filter['without_disruption_types'])
+            bindparams['without_disruption_types'] = db.String
+
         return {
             'and_wheres': andwheres,
             'bindparams': bindparams,
@@ -1406,6 +1417,16 @@ class Impact(TimestampMixin, db.Model):
             bindparams['ap_end_date'] = db.Date
             vars['ap_start_date'] = filter['application_period']['begin']
             vars['ap_end_date'] = filter['application_period']['end']
+
+        if filter['with_disruption_types'] is not None:
+            andwheres.append('d.type IN :with_disruption_types')
+            vars['with_disruption_types'] = tuple(filter['with_disruption_types'])
+            bindparams['with_disruption_types'] = db.String
+
+        if filter['without_disruption_types'] is not None:
+            andwheres.append('(d.type NOT IN :without_disruption_types OR d.type IS NULL)')
+            vars['without_disruption_types'] = tuple(filter['without_disruption_types'])
+            bindparams['without_disruption_types'] = db.String
 
         return {
             'and_wheres': andwheres,

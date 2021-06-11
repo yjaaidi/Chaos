@@ -1138,7 +1138,7 @@ paths:
   /traffic_reports:
     get:
       deprecated: true
-      description: This service provides the state of public transport traffic
+      description: Use POST /traffic_reports instead
       parameters:
         - $ref: "#/components/parameters/header_authorization"
         - $ref: "#/components/parameters/header_coverage"
@@ -1200,7 +1200,8 @@ paths:
                 $ref: "#/components/schemas/error_occurred"
   /disruptions:
     get:
-      description: Return all visible disruptions
+      deprecated: true
+      description: Use POST /disruptions/_search instead
       parameters:
         - $ref: "#/components/parameters/header_authorization"
         - $ref: "#/components/parameters/header_coverage"
@@ -2875,14 +2876,14 @@ components:
           items:
             type: string
             format: uuid
-        with_disruption_type:
+        with_disruption_types:
           description: Filter by type (include)
           type: array
           items:
             type: string
             enum:
               - expected
-        without_disruption_type:
+        without_disruption_types:
           description: Filter by type (exclude)
           type: array
           items:
@@ -3257,14 +3258,14 @@ components:
           format: uuid
         ptObjectFilter:
           $ref: "#/components/schemas/pt_object_filter"
-        with_disruption_type:
+        with_disruption_types:
           description: Filter by type (include)
           type: array
           items:
             type: string
             enum:
               - expected
-        without_disruption_type:
+        without_disruption_types:
           description: Filter by type (exclude)
           type: array
           items:
