@@ -6,8 +6,6 @@ Feature: list disruptions with ptObjects filter
         I fill in header "X-Coverage" with "jdr"
         I fill in header "X-Contributors" with "contrib1"
 
-    Scenario: Filter on network no return
-
         Given I have the following contributors in my database:
             | contributor_code   | created_at          | updated_at          | id                                   |
             | contrib1           | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
@@ -16,18 +14,27 @@ Feature: list disruptions with ptObjects filter
             | client_code   | created_at          | updated_at          | id                                   |
             | 5             | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
 
+        Given I have the following categories in my database:
+            | name      | note  | created_at          | updated_at          | id                                   | client_id                            |
+            | foo       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
+            | goo       | helio | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab231-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
+
         Given I have the following causes in my database:
-            | wording   | created_at          | updated_at          | is_visible | id                                   |client_id                             |
-            | weather   | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | True       | 7ffab230-3d48-4eea-aa2c-22f868023042 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
+            | wording   |  created_at          | updated_at          | is_visible | category_id                          | id                                   | client_id                            |
+            | weather   |  2014-04-02T23:52:12 | 2014-04-02T23:55:12 | True       | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab230-3d48-4eea-aa2c-22f868023042 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
+            | strike    |  2014-04-04T23:52:12 | 2014-04-06T22:52:12 | True       | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab232-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
+            | nuke      |  2014-04-04T23:52:12 | 2014-04-06T22:52:12 | True       | 7ffab231-3d48-4eea-aa2c-22f8680230b6 | 7ffab233-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
+
+        Given I have the following severities in my database:
+            | wording   | color   | created_at          | updated_at          | is_visible | id                                   |client_id                            |
+            | good news | #654321 | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | True       | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
+
+    Scenario: Filter on network no return
 
         Given I have the following disruptions in my database:
             | reference | note  | created_at          | updated_at          | status    | id                                   | client_id                            | contributor_id                       | start_publication_date | end_publication_date | cause_id                             |
             | foo       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 | 2014-04-10T23:42:00    | 2014-04-20T23:42:00  | 7ffab230-3d48-4eea-aa2c-22f868023042 |
             | bar       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 2ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 | 2014-04-10T23:42:00    | 2014-04-20T23:42:00  | 7ffab230-3d48-4eea-aa2c-22f868023042 |
-
-        Given I have the following severities in my database:
-                | wording   | color   | created_at          | updated_at          | is_visible | id                                   |client_id                            |
-                | good news | #654321 | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | True       | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
 
         Given I have the following impacts in my database:
             | created_at          | updated_at          | status    | id                                   | disruption_id                        |severity_id                          |
@@ -64,14 +71,6 @@ Feature: list disruptions with ptObjects filter
 
     Scenario: Filter on network with empty publication_status
 
-        Given I have the following contributors in my database:
-            | contributor_code   | created_at          | updated_at          | id                                   |
-            | contrib1           | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
-
-        Given I have the following clients in my database:
-            | client_code   | created_at          | updated_at          | id                                   |
-            | 5             | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
-
         When I post to "/disruptions/_search" with:
         """
         {"current_time": "2014-04-15T14:00:00Z", "publication_status": [], "ptObjectFilter": {"networks": ["network:JDR:1"]}}
@@ -81,14 +80,6 @@ Feature: list disruptions with ptObjects filter
         And the field "error.message" should be "publication_status should not be empty"
 
     Scenario: Filter on network with empty status
-
-        Given I have the following contributors in my database:
-            | contributor_code   | created_at          | updated_at          | id                                   |
-            | contrib1           | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
-
-        Given I have the following clients in my database:
-            | client_code   | created_at          | updated_at          | id                                   |
-            | 5             | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
 
         When I post to "/disruptions/_search" with:
         """
@@ -100,26 +91,10 @@ Feature: list disruptions with ptObjects filter
 
     Scenario: Filter on network
 
-        Given I have the following contributors in my database:
-            | contributor_code   | created_at          | updated_at          | id                                   |
-            | contrib1           | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
-
-        Given I have the following clients in my database:
-            | client_code   | created_at          | updated_at          | id                                   |
-            | 5             | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
-
-        Given I have the following causes in my database:
-            | wording   | created_at          | updated_at          | is_visible | id                                   |client_id                             |
-            | weather   | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | True       | 7ffab230-3d48-4eea-aa2c-22f868023042 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
-
         Given I have the following disruptions in my database:
             | reference | note  | created_at          | updated_at          | status    | id                                   | client_id                            | contributor_id                       | start_publication_date | end_publication_date | cause_id                             |
             | foo       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 | 2014-04-10T23:42:00    | 2014-04-20T23:42:00  | 7ffab230-3d48-4eea-aa2c-22f868023042 |
             | bar       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 2ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 | 2014-04-10T23:42:00    | 2014-04-20T23:42:00  | 7ffab230-3d48-4eea-aa2c-22f868023042 |
-
-        Given I have the following severities in my database:
-                | wording   | color   | created_at          | updated_at          | is_visible | id                                   |client_id                            |
-                | good news | #654321 | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | True       | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
 
         Given I have the following impacts in my database:
             | created_at          | updated_at          | status    | id                                   | disruption_id                        |severity_id                          |
@@ -158,26 +133,10 @@ Feature: list disruptions with ptObjects filter
 
     Scenario: Filter on network and stop_area
 
-        Given I have the following contributors in my database:
-            | contributor_code   | created_at          | updated_at          | id                                   |
-            | contrib1           | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
-
-        Given I have the following clients in my database:
-            | client_code   | created_at          | updated_at          | id                                   |
-            | 5             | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
-
-        Given I have the following causes in my database:
-            | wording   | created_at          | updated_at          | is_visible | id                                   |client_id                             |
-            | weather   | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | True       | 7ffab230-3d48-4eea-aa2c-22f868023042 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
-
         Given I have the following disruptions in my database:
             | reference | note  | created_at          | updated_at          | status    | id                                   | client_id                            | contributor_id                       | start_publication_date | end_publication_date | cause_id                             |
             | foo       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 | 2014-04-10T23:42:00    | 2014-04-20T23:42:00  | 7ffab230-3d48-4eea-aa2c-22f868023042 |
             | bar       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 2ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 | 2014-04-10T23:42:00    | 2014-04-20T23:42:00  | 7ffab230-3d48-4eea-aa2c-22f868023042 |
-
-        Given I have the following severities in my database:
-                | wording   | color   | created_at          | updated_at          | is_visible | id                                   |client_id                            |
-                | good news | #654321 | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | True       | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
 
         Given I have the following impacts in my database:
             | created_at          | updated_at          | status    | id                                   | disruption_id                        |severity_id                          |
@@ -219,26 +178,10 @@ Feature: list disruptions with ptObjects filter
 
     Scenario: Filter on network return 2 disruptions
 
-        Given I have the following contributors in my database:
-            | contributor_code   | created_at          | updated_at          | id                                   |
-            | contrib1           | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
-
-        Given I have the following clients in my database:
-            | client_code   | created_at          | updated_at          | id                                   |
-            | 5             | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
-
-        Given I have the following causes in my database:
-            | wording   | created_at          | updated_at          | is_visible | id                                   |client_id                             |
-            | weather   | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | True       | 7ffab230-3d48-4eea-aa2c-22f868023042 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
-
         Given I have the following disruptions in my database:
             | reference | note  | created_at          | updated_at          | status    | id                                   | client_id                            | contributor_id                       | start_publication_date | end_publication_date | cause_id                             |
             | foo       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 | 2014-04-10T23:42:00    | 2014-04-20T23:42:00  | 7ffab230-3d48-4eea-aa2c-22f868023042 |
             | bar       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 2ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 | 2014-04-10T23:42:00    | 2014-04-20T23:42:00  | 7ffab230-3d48-4eea-aa2c-22f868023042 |
-
-        Given I have the following severities in my database:
-                | wording   | color   | created_at          | updated_at          | is_visible | id                                   |client_id                            |
-                | good news | #654321 | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | True       | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
 
         Given I have the following impacts in my database:
             | created_at          | updated_at          | status    | id                                   | disruption_id                        |severity_id                          |
@@ -273,26 +216,10 @@ Feature: list disruptions with ptObjects filter
 
     Scenario: Filter on line
 
-        Given I have the following clients in my database:
-            | client_code   | created_at          | updated_at          | id                                   |
-            | 5             | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
-
-        Given I have the following causes in my database:
-            | wording   | created_at          | updated_at          | is_visible | id                                   |client_id                             |
-            | weather   | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | True       | 7ffab230-3d48-4eea-aa2c-22f868023042 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
-
-        Given I have the following contributors in my database:
-            | contributor_code   | created_at          | updated_at          | id                                   |
-            | contrib1           | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
-
         Given I have the following disruptions in my database:
             | reference | note  | created_at          | updated_at          | status    | id                                   | client_id                            | contributor_id                       | start_publication_date | end_publication_date | cause_id                             |
             | foo       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 | 2014-04-10T23:42:00    | 2014-04-20T23:42:00  | 7ffab230-3d48-4eea-aa2c-22f868023042 |
             | bar       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 2ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 | 2014-04-10T23:42:00    | 2014-04-20T23:42:00  | 7ffab230-3d48-4eea-aa2c-22f868023042 |
-
-        Given I have the following severities in my database:
-                | wording   | color   | created_at          | updated_at          | is_visible | id                                   |client_id                            |
-                | good news | #654321 | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | True       | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
 
         Given I have the following impacts in my database:
             | created_at          | updated_at          | status    | id                                   | disruption_id                        |severity_id                          |
@@ -339,30 +266,10 @@ Feature: list disruptions with ptObjects filter
 
     Scenario: Filter on line no result
 
-        Given I have the following clients in my database:
-            | client_code   | created_at          | updated_at          | id                                   |
-            | 5             | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
-
-        Given I have the following causes in my database:
-            | wording   | created_at          | updated_at          | is_visible | id                                   |client_id                             |
-            | weather   | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | True       | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
-
-        Given I have the following contributors in my database:
-            | contributor_code   | created_at          | updated_at          | id                                   |
-            | contrib1           | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
-
-        Given I have the following causes in my database:
-            | wording   | created_at          | updated_at          | is_visible | id                                   |client_id                             |
-            | weather   | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | True       | 7ffab230-3d48-4eea-aa2c-22f868023042 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
-
         Given I have the following disruptions in my database:
             | reference | note  | created_at          | updated_at          | status    | id                                   | client_id                            | contributor_id                       | start_publication_date | end_publication_date | cause_id                             |
             | foo       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 | 2014-04-10T23:42:00    | 2014-04-20T23:42:00  | 7ffab230-3d48-4eea-aa2c-22f868023042 |
             | bar       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 2ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 | 2014-04-10T23:42:00    | 2014-04-20T23:42:00  | 7ffab230-3d48-4eea-aa2c-22f868023042 |
-
-        Given I have the following severities in my database:
-            | wording   | color   | created_at          | updated_at          | is_visible | id                                   |client_id                            |
-            | good news | #654321 | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | True       | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
 
         Given I have the following impacts in my database:
             | created_at          | updated_at          | status    | id                                   | disruption_id                        |severity_id                          |
@@ -409,29 +316,13 @@ Feature: list disruptions with ptObjects filter
 
     Scenario: Use pager and filter network
 
-        Given I have the following clients in my database:
-            | client_code   | created_at          | updated_at          | id                                   |
-            | 5             | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
-
-        Given I have the following causes in my database:
-            | wording   | created_at          | updated_at          | is_visible | id                                   |client_id                             |
-            | weather   | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | True       | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
-
-        Given I have the following contributors in my database:
-            | contributor_code   | created_at          | updated_at          | id                                   |
-            | contrib1           | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
-
         Given I have the following disruptions in my database:
             | reference | note  | created_at          | updated_at          | status    | id                                   |cause_id                              | client_id                            | contributor_id                       | start_publication_date | end_publication_date |
-            | foo       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 1ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 | 2014-04-10T23:42:00    | 2014-04-30T23:42:00  |
-            | bar       | bye   | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | published | 2ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 | 2014-04-10T23:42:00    | 2014-04-30T23:42:00  |
-            | toto      |       | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | published | 3ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 | 2014-04-10T23:42:00    | 2014-04-30T23:42:00  |
-            | chien     |       | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | published | 4ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 | 2014-04-10T23:42:00    | 2014-04-30T23:42:00  |
-            | clown     |       | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | published | 5ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 | 2014-04-10T23:42:00    | 2014-04-30T23:42:00  |
-
-        Given I have the following severities in my database:
-            | wording   | color   | created_at          | updated_at          | is_visible | id                                   | client_id                            |
-            | good news | #654321 | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | True       | 7ffab232-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
+            | foo       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 1ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab230-3d48-4eea-aa2c-22f868023042 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 | 2014-04-10T23:42:00    | 2014-04-30T23:42:00  |
+            | bar       | bye   | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | published | 2ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab230-3d48-4eea-aa2c-22f868023042 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 | 2014-04-10T23:42:00    | 2014-04-30T23:42:00  |
+            | toto      |       | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | published | 3ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab230-3d48-4eea-aa2c-22f868023042 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 | 2014-04-10T23:42:00    | 2014-04-30T23:42:00  |
+            | chien     |       | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | published | 4ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab230-3d48-4eea-aa2c-22f868023042 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 | 2014-04-10T23:42:00    | 2014-04-30T23:42:00  |
+            | clown     |       | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | published | 5ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab230-3d48-4eea-aa2c-22f868023042 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 | 2014-04-10T23:42:00    | 2014-04-30T23:42:00  |
 
         Given I have the following impacts in my database:
             | created_at          | updated_at          | status    | id                                   | disruption_id                        | severity_id                          |
@@ -517,29 +408,14 @@ Feature: list disruptions with ptObjects filter
         And the field "message" should be "items_per_page argument value can't be superior than 1000"
 
     Scenario: Test if about body when ptObjectFilter is not added
-        Given I have the following clients in my database:
-            | client_code   | created_at          | updated_at          | id                                   |
-            | 5             | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
-
-        Given I have the following causes in my database:
-            | wording   | created_at          | updated_at          | is_visible | id                                   |client_id                             |
-            | weather   | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | True       | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
-
-        Given I have the following contributors in my database:
-            | contributor_code   | created_at          | updated_at          | id                                   |
-            | contrib1           | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
 
         Given I have the following disruptions in my database:
             | reference | note  | created_at          | updated_at          | status    | id                                   |cause_id                              | client_id                            | contributor_id                       | start_publication_date | end_publication_date |
-            | foo       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 1ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 | 2014-04-10T23:42:00    | 2014-04-20T23:42:00  |
-            | bar       | bye   | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | published | 2ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 | 2014-04-10T23:42:00    | 2014-04-20T23:42:00  |
-            | toto      |       | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | published | 3ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 | 2014-04-10T23:42:00    | 2014-04-20T23:42:00  |
-            | chien     |       | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | published | 4ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 | 2014-04-10T23:42:00    | 2014-04-20T23:42:00  |
-            | clown     |       | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | published | 5ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 | 2014-04-10T23:42:00    | 2014-04-20T23:42:00  |
-
-        Given I have the following severities in my database:
-            | wording   | color   | created_at          | updated_at          | is_visible | id                                   | client_id                            |
-            | good news | #654321 | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | True       | 7ffab232-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
+            | foo       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 1ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab230-3d48-4eea-aa2c-22f868023042 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 | 2014-04-10T23:42:00    | 2014-04-20T23:42:00  |
+            | bar       | bye   | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | published | 2ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab230-3d48-4eea-aa2c-22f868023042 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 | 2014-04-10T23:42:00    | 2014-04-20T23:42:00  |
+            | toto      |       | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | published | 3ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab230-3d48-4eea-aa2c-22f868023042 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 | 2014-04-10T23:42:00    | 2014-04-20T23:42:00  |
+            | chien     |       | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | published | 4ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab230-3d48-4eea-aa2c-22f868023042 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 | 2014-04-10T23:42:00    | 2014-04-20T23:42:00  |
+            | clown     |       | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | published | 5ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab230-3d48-4eea-aa2c-22f868023042 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 | 2014-04-10T23:42:00    | 2014-04-20T23:42:00  |
 
         Given I have the following impacts in my database:
             | created_at          | updated_at          | status    | id                                   | disruption_id                        | severity_id                          |
@@ -577,35 +453,21 @@ Feature: list disruptions with ptObjects filter
         And the field "meta.pagination.total_result" should be 5
 
     Scenario: Test errors about body when ptObjectFilter is empty
+
         When I post to "/disruptions/_search" with:
         """
         {"ptObjectFilter": {}}
         """
-        Then the status code should be "404"
+        Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
+        And the field "error.message" should be "{} is not valid under any of the given schemas"
 
     Scenario: Filter on stop_area
-
-        Given I have the following contributors in my database:
-            | contributor_code   | created_at          | updated_at          | id                                   |
-            | contrib1           | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
-
-        Given I have the following clients in my database:
-            | client_code   | created_at          | updated_at          | id                                   |
-            | 5             | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
-
-        Given I have the following causes in my database:
-            | wording   | created_at          | updated_at          | is_visible | id                                   |client_id                             |
-            | weather   | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | True       | 7ffab230-3d48-4eea-aa2c-22f868023042 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
 
         Given I have the following disruptions in my database:
             | reference | note  | created_at          | updated_at          | status    | id                                   | client_id                            | contributor_id                       | start_publication_date | end_publication_date | cause_id                             |
             | foo       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 | 2014-04-10T23:42:00    | 2014-04-20T23:42:00  | 7ffab230-3d48-4eea-aa2c-22f868023042 |
             | bar       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 2ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 | 2014-04-10T23:42:00    | 2014-04-20T23:42:00  | 7ffab230-3d48-4eea-aa2c-22f868023042 |
-
-        Given I have the following severities in my database:
-                | wording   | color   | created_at          | updated_at          | is_visible | id                                   |client_id                            |
-                | good news | #654321 | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | True       | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
 
         Given I have the following impacts in my database:
             | created_at          | updated_at          | status    | id                                   | disruption_id                        |severity_id                          |
@@ -644,25 +506,9 @@ Feature: list disruptions with ptObjects filter
 
     Scenario: Filter on line section
 
-        Given I have the following clients in my database:
-            | client_code   | created_at          | updated_at          | id                                   |
-            | 5             | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
-
-        Given I have the following causes in my database:
-            | wording   | created_at          | updated_at          | is_visible | id                                   |client_id                             |
-            | weather   | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | True       | 7ffab230-3d48-4eea-aa2c-22f868023042 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
-
-        Given I have the following contributors in my database:
-            | contributor_code   | created_at          | updated_at          | id                                   |
-            | contrib1           | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
-
         Given I have the following disruptions in my database:
             | reference | note  | created_at          | updated_at          | status    | id                                   | cause_id                             | client_id                            | contributor_id                       | start_publication_date | end_publication_date |
             | foo       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab230-3d48-4eea-aa2c-22f868023042 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 | 2014-04-10T23:42:00    | 2014-04-20T23:42:00  |
-
-        Given I have the following severities in my database:
-                | wording   | color   | created_at          | updated_at          | is_visible | id                                   |client_id                            |
-                | good news | #654321 | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | True       | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
 
         Given I have the following impacts in my database:
             | created_at          | updated_at          | status    | id                                   | disruption_id                        |severity_id                          |
@@ -726,40 +572,18 @@ Feature: list disruptions with ptObjects filter
         And the field "disruptions" should have a size of 1
 
     Scenario: Filter on category
-        Given I have the following clients in my database:
-            | client_code   | created_at          | updated_at          | id                                   |
-            | 5             | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
-
-        Given I have the following contributors in my database:
-            | contributor_code   | created_at          | updated_at          | id                                   |
-            | contrib1           | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
-
-        Given I have the following categories in my database:
-            | name      | note  | created_at          | updated_at          | id                                   | client_id                            |
-            | foo       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
-            | goo       | helio | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab231-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
-
-        Given I have the following causes in my database:
-            | wording   |  created_at          | updated_at          | is_visible | category_id                          | id                                   | client_id                            |
-            | weather   |  2014-04-02T23:52:12 | 2014-04-02T23:55:12 | True       | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab234-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
-            | strike    |  2014-04-04T23:52:12 | 2014-04-06T22:52:12 | True       | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab232-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
-            | nuke      |  2014-04-04T23:52:12 | 2014-04-06T22:52:12 | True       | 7ffab231-3d48-4eea-aa2c-22f8680230b6 | 7ffab233-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
-
-        Given I have the following severities in my database:
-            | wording   | color   | created_at          | updated_at          | is_visible | id                                   | client_id                            |
-            | good news | #654321 | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | True       | 7ffab232-3d48-4eea-aa2c-22f8680230b7 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
 
         Given I have the following disruptions in my database:
             | reference | note  | created_at          | updated_at          | status    | id                                   | cause_id                             | client_id                            | contributor_id                       | start_publication_date | end_publication_date |
             | foo       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 7ffac230-3d48-4eea-aa2c-22f8680230b6 | 7ffab233-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 | 2014-04-10T23:42:00    | 2014-04-20T23:42:00  |
             | bar       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 2ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab232-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 | 2014-04-10T23:42:00    | 2014-04-20T23:42:00  |
-            | bar       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 3ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab234-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 | 2014-04-10T23:42:00    | 2014-04-20T23:42:00  |
+            | bar       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 3ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab230-3d48-4eea-aa2c-22f868023042 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 | 2014-04-10T23:42:00    | 2014-04-20T23:42:00  |
 
         Given I have the following impacts in my database:
             | created_at          | updated_at          | status    | id                                   | disruption_id                        | severity_id                          |
-            | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | published | 7ffab232-3d47-4eea-aa2c-22f8680230b6 | 2ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab232-3d48-4eea-aa2c-22f8680230b7 |
-            | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | published | 7ffab234-3d49-4eea-aa2c-22f8680230b3 | 3ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab232-3d48-4eea-aa2c-22f8680230b7 |
-            | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | published | 7ffab234-3d49-4eec-aa2c-22f8680230b7 | 7ffac230-3d48-4eea-aa2c-22f8680230b6 | 7ffab232-3d48-4eea-aa2c-22f8680230b7 |
+            | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | published | 7ffab232-3d47-4eea-aa2c-22f8680230b6 | 2ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |
+            | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | published | 7ffab234-3d49-4eea-aa2c-22f8680230b3 | 3ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |
+            | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | published | 7ffab234-3d49-4eec-aa2c-22f8680230b7 | 7ffac230-3d48-4eea-aa2c-22f8680230b6 | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |
 
         Given I have the following ptobject in my database:
             | type      | uri                    | created_at          | updated_at          | id                                         |
@@ -794,26 +618,10 @@ Feature: list disruptions with ptObjects filter
 
     Scenario: Filter on line with application_status
 
-        Given I have the following clients in my database:
-            | client_code   | created_at          | updated_at          | id                                   |
-            | 5             | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
-
-        Given I have the following causes in my database:
-            | wording   | created_at          | updated_at          | is_visible | id                                   |client_id                             |
-            | weather   | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | True       | 7ffab230-3d48-4eea-aa2c-22f868023042 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
-
-        Given I have the following contributors in my database:
-            | contributor_code   | created_at          | updated_at          | id                                   |
-            | contrib1           | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
-
         Given I have the following disruptions in my database:
             | reference | note  | created_at          | updated_at          | status    | id                                   | cause_id                             | client_id                            | contributor_id                       | start_publication_date | end_publication_date |
             | foo       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab230-3d48-4eea-aa2c-22f868023042 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 | 2014-04-10T23:42:00    | 2014-04-20T23:42:00  |
             | foo2      | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 7ffab230-3d48-4eea-aa2c-22f8680230b7 | 7ffab230-3d48-4eea-aa2c-22f868023042 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 | 2014-04-10T23:42:00    | 2014-04-20T23:42:00  |
-
-        Given I have the following severities in my database:
-                | wording   | color   | created_at          | updated_at          | is_visible | id                                   |client_id                            |
-                | good news | #654321 | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | True       | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
 
         Given I have the following impacts in my database:
             | created_at          | updated_at          | status    | id                                   | disruption_id                        |severity_id                          |
@@ -872,25 +680,9 @@ Feature: list disruptions with ptObjects filter
 
     Scenario: Filter on ptojbect return correct impacts
 
-        Given I have the following clients in my database:
-            | client_code   | created_at          | updated_at          | id                                   |
-            | 5             | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
-
-        Given I have the following causes in my database:
-            | wording   | created_at          | updated_at          | is_visible | id                                   |client_id                             |
-            | weather   | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | True       | 7ffab230-3d48-4eea-aa2c-22f868023042 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
-
-        Given I have the following contributors in my database:
-            | contributor_code   | created_at          | updated_at          | id                                   |
-            | contrib1           | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
-
         Given I have the following disruptions in my database:
             | reference | note  | created_at          | updated_at          | status    | id                                   | cause_id                             | client_id                            | contributor_id                       | start_publication_date | end_publication_date |
             | foo       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab230-3d48-4eea-aa2c-22f868023042 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 | 2014-04-10T23:42:00    | 2014-04-20T23:42:00  |
-
-        Given I have the following severities in my database:
-            | wording   | color   | created_at          | updated_at          | is_visible | id                                   |client_id                            |
-            | good news | #654321 | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | True       | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
 
         Given I have the following impacts in my database:
             | created_at          | updated_at          | status    | id                                   | disruption_id                        |severity_id                          |
@@ -939,25 +731,9 @@ Feature: list disruptions with ptObjects filter
 
     Scenario: Filter on application_period return correct impacts
 
-        Given I have the following clients in my database:
-            | client_code   | created_at          | updated_at          | id                                   |
-            | 5             | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
-
-        Given I have the following causes in my database:
-            | wording   | created_at          | updated_at          | is_visible | id                                   |client_id                             |
-            | weather   | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | True       | 7ffab230-3d48-4eea-aa2c-22f868023042 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
-
-        Given I have the following contributors in my database:
-            | contributor_code   | created_at          | updated_at          | id                                   |
-            | contrib1           | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
-
         Given I have the following disruptions in my database:
             | reference | note  | created_at          | updated_at          | status    | id                                   | cause_id                             | client_id                            | contributor_id                       | start_publication_date | end_publication_date |
             | foo       | hello | 2014-04-01T00:00:00 | 2014-04-01T00:00:00 | published | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab230-3d48-4eea-aa2c-22f868023042 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 | 2014-04-01T00:00:00    | 2014-04-20T23:42:00  |
-
-        Given I have the following severities in my database:
-            | wording   | color   | created_at          | updated_at          | is_visible | id                                   |client_id                            |
-            | good news | #654321 | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | True       | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
 
         Given I have the following impacts in my database:
             | created_at          | updated_at          | status    | id                                   | disruption_id                        |severity_id                          |
