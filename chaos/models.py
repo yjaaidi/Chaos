@@ -11,7 +11,6 @@ from formats import publication_status_values, application_status_values
 from sqlalchemy import or_, and_, between, bindparam, desc
 from sqlalchemy.orm import aliased
 from sqlalchemy.sql import text, func
-import logging
 
 #force the server to use UTC time for each connection checkouted from the pool
 import sqlalchemy
