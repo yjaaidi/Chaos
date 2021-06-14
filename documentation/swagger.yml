@@ -2882,14 +2882,14 @@ components:
           items:
             type: string
             enum:
-              - expected
+              - unexpected
         without_disruption_types:
           description: Filter by type (exclude)
           type: array
           items:
             type: string
             enum:
-              - expected
+              - unexpected
         uri:
           description: Filter by uri of ptobject
           type: string
@@ -3264,14 +3264,14 @@ components:
           items:
             type: string
             enum:
-              - expected
+              - unexpected
         without_disruption_types:
           description: Filter by type (exclude)
           type: array
           items:
             type: string
             enum:
-              - expected
+              - unexpected
     message_type:
       type: object
       properties:
