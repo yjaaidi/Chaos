@@ -92,7 +92,8 @@ disruption_mapping = {
         'end': Datetime(attribute='end_publication_date')
     },
     'cause': {'id': AliasText(attribute='cause_id')},
-    'author': None
+    'author': None,
+    'type': None
 }
 
 severity_mapping = {
