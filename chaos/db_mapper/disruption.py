@@ -243,6 +243,7 @@ def map_disruption(results):
                     }
                 },
                 'tags': [],
+                'type': r.type,
                 'impacts': [],
                 'properties': [],
                 'localizations': [],
