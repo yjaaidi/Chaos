@@ -18,9 +18,8 @@ pt_object_type_values = [
     "route",
     "stop_point"
 ]
-complete_pt_object_type_values = [
-    "line_section"
-]
+pt_object_type_line_section = ["line_section"]
+pt_object_type_rail_section = ["rail_section"]
 # Here Order of values is strict and is used to create query filters.
 application_status_values = ["past", "ongoing", "coming"]
 publication_status_values = ["past", "ongoing", "coming"]
@@ -54,6 +53,15 @@ def get_object_format(object_type):
         'required': ['id', 'type']
     }
 
+def get_order_object_format():
+    return {
+        'type': 'object',
+        'properties': {
+            'id': {'type': 'string', 'maxLength': 250},
+            'order': {'type': 'integer', 'minimum': 0}
+        },
+        'required': ['id', 'order']
+    }
 
 key_value_input_format = {
     'type': 'object',
@@ -103,6 +111,31 @@ line_section_format = {
     'required': ['line', 'start_point', 'end_point']
 }
 
+rail_section_format = {
+    'type': 'object',
+    'properties': {
+        'line': get_object_format('line'),
+        'start_point': get_object_format('stop_area'),
+        'end_point': get_object_format('stop_area'),
+        'blocked_stop_areas': {
+            'type': 'array',
+            'items': get_order_object_format(),
+            'uniqueItems': True,
+            'minItems': 1
+        },
+        'routes': {
+            'type': 'array',
+            'items': get_object_format('route'),
+            'uniqueItems': True
+        },
+    },
+    'required': ['start_point', 'end_point'],
+    'anyOf': [
+        {'required': ['line']},
+        {'required': ['routes']}
+    ]
+}
+
 object_input_format = {
     'type': 'object',
     'properties': {
@@ -116,8 +149,18 @@ line_section_input_format = {
     'type': 'object',
     'properties': {
         'id': {'type': 'string', 'maxLength': 250},
-        'type': {'enum': complete_pt_object_type_values},
+        'type': {'enum': pt_object_type_line_section},
         'line_section': line_section_format
+    },
+    'required': ['type']
+}
+
+rail_section_input_format = {
+    'type': 'object',
+    'properties': {
+        'id': {'type': 'string', 'maxLength': 250},
+        'type': {'enum': pt_object_type_rail_section},
+        'rail_section': rail_section_format
     },
     'required': ['type']
 }
@@ -312,7 +355,8 @@ impact_input_format = {
             'items': {
                 'anyOf':[
                     object_input_format,
-                    line_section_input_format
+                    line_section_input_format,
+                    rail_section_input_format
                 ]
             },
             'uniqueItems': True,

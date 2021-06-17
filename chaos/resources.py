@@ -10,8 +10,8 @@ from jsonschema import validate, ValidationError
 from flask.ext.restful import abort
 from fields import *
 from formats import *
-from formats import impact_input_format, channel_input_format, pt_object_type_values, complete_pt_object_type_values,\
-    tag_input_format, category_input_format, channel_type_values,\
+from formats import impact_input_format, channel_input_format, pt_object_type_values, pt_object_type_line_section,\
+    pt_object_type_rail_section, tag_input_format, category_input_format, channel_type_values,\
     property_input_format, disruptions_search_input_format, application_status_values, \
     impacts_search_input_format, export_input_format, contributor_input_format
 from chaos import mapper, exceptions
@@ -297,7 +297,7 @@ class Disruptions(flask_restful.Resource):
 
         # Add localization present in Json
         try:
-            db_helper.manage_pt_object_without_line_section(
+            db_helper.manage_simple_pt_object(
                 self.navitia, disruption.localizations, 'localization', json)
         except exceptions.ObjectUnknown as e:
             response = self.get_post_error_response_and_log(e, 404)
@@ -386,7 +386,7 @@ class Disruptions(flask_restful.Resource):
 
         # Add localization present in Json
         try:
-            db_helper.manage_pt_object_without_line_section(
+            db_helper.manage_simple_pt_object(
                 self.navitia, disruption.localizations, 'localization', json)
         except exceptions.ObjectUnknown as e:
             response = self.get_put_error_response_and_log(e, 404)
@@ -539,6 +539,7 @@ class ImpactsSearch(flask_restful.Resource):
             application_period_patterns_id = r.pattern_id
             time_slot_id = r.time_slot_id
             line_section_id = r.line_section_id
+            rail_section_id = r.rail_section_id
 
             if impact_id is not None:
                 impacts[impact_id] = {
@@ -700,6 +701,24 @@ class ImpactsSearch(flask_restful.Resource):
                         'metas': []
                     }
 
+                if rail_section_id is not None:
+                    impact_pt_objects[impact_id][impact_pt_object_id]['rail_section'] = {
+                        'line': {
+                            'uri': r.rail_section_line_uri,
+                            'type': r.rail_section_line_type
+                        },
+                        'start_point': {
+                            'uri': r.rail_section_start_uri,
+                            'type': r.rail_section_start_type
+                        },
+                        'end_point': {
+                            'uri': r.rail_section_end_uri,
+                            'type': r.rail_section_end_type
+                        },
+                        'blocked_stop_areas': r.rail_section_blocked_stop_areas,
+                        'routes': [],
+                    }
+
         for impact in impacts.values():
             impact_id = impact['id']
             impact['disruption']['cause']['wordings'] = cause_wordings[impact_id].values()
@@ -758,6 +777,7 @@ class DisruptionsSearch(flask_restful.Resource):
         parser_post.add_argument("ends_after_date", type=utils.get_datetime, location='json')
         parser_post.add_argument("ends_before_date", type=utils.get_datetime, location='json')
         parser_post.add_argument("line_section", type=types.boolean, default=False, location='json')
+        parser_post.add_argument("rail_section", type=types.boolean, default=False, location='json')
         parser_post.add_argument("current_time", type=utils.get_datetime, location='json')
         parser_post.add_argument("depth", type=int, default=1, location='json')
 
@@ -780,6 +800,7 @@ class DisruptionsSearch(flask_restful.Resource):
 
         g.current_time = args['current_time']
         g.display_impacts = args['depth'] > 1
+
         filter_params = {
             'current_time': get_current_time(),
             'contributor_id': contributor.id,
@@ -792,6 +813,7 @@ class DisruptionsSearch(flask_restful.Resource):
             'ends_before_date': args['ends_before_date'],
             'tags': json.get('tag', None),
             'line_section': args['line_section'],
+            'rail_section': args['rail_section'],
             'statuses': json.get('status', disruption_status_values),
             'cause_category_id': json.get('cause_category_id', None),
             'page_index': args['start_page'],
@@ -1105,7 +1127,7 @@ class ImpactsByObject(flask_restful.Resource):
         self.parsers = {}
         self.parsers["get"] = reqparse.RequestParser()
         parser_get = self.parsers["get"]
-        parser_get.add_argument("pt_object_type", type=option_value(pt_object_type_values + complete_pt_object_type_values))
+        parser_get.add_argument("pt_object_type", type=option_value(pt_object_type_values + pt_object_type_line_section + pt_object_type_rail_section))
         parser_get.add_argument("start_date", type=utils.get_datetime, default=default_start_date)
         parser_get.add_argument("end_date", type=utils.get_datetime, default=default_end_date)
         parser_get.add_argument("uri[]", type=str, action="append")

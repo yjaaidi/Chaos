@@ -128,6 +128,10 @@ line_section_object_mapping = {
     "type": None
 }
 
+rail_section_object_mapping = {
+    "type": None
+}
+
 message_mapping = {
     "text": None,
     'channel': {'id': AliasText(attribute='channel_id')}
@@ -154,6 +158,14 @@ line_section_mapping = {
     'line': None,
     'start_point': None,
     'end_point': None
+}
+
+rail_section_mapping = {
+    'line': None,
+    'start_point': None,
+    'end_point': None,
+    'blocked_stop_areas': None,
+    'routes': None,
 }
 
 pattern_mapping = {
