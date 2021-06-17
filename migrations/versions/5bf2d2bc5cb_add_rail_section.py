@@ -1,14 +1,14 @@
 """Add rail section table
 
 Revision ID: 5bf2d2bc5cb
-Revises: 4f2a5821f666
+Revises: 7c54e065a387
 Create Date: 2021-01-22 13:59:47.907869
 
 """
 
 # revision identifiers, used by Alembic.
 revision = '5bf2d2bc5cb'
-down_revision = '4f2a5821f666'
+down_revision = '7c54e065a387'
 
 from alembic import op
 import sqlalchemy as sa
