@@ -2634,75 +2634,85 @@ components:
         rail_section:
           title: >
             "routes" or "line" property are mandatory.
-          type: object
-          properties:
-            start_point:
-              type: object
-              properties:
-                id:
-                  type: string
-                type:
-                  type: string
-                  enum:
-                    - stop_area
+          allOf:
+            - type: object
               required:
-                - id
-                - type
-            end_point:
-              type: object
+                - start_point
+                - end_point
               properties:
-                id:
-                  type: string
-                type:
-                  type: string
-                  enum:
-                    - stop_area
-              required:
-                - id
-                - type
-            blocked_stop_areas:
-              type: array
-              items:
-                type: object
-                properties:
-                  id:
-                    type: string
-                  order:
-                    type: integer
-                    minimum: 0
+                start_point:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    type:
+                      type: string
+                      enum:
+                        - stop_area
+                  required:
+                    - id
+                    - type
+                end_point:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    type:
+                      type: string
+                      enum:
+                        - stop_area
+                  required:
+                    - id
+                    - type
+                blocked_stop_areas:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      order:
+                        type: integer
+                        minimum: 0
+                    required:
+                      - id
+                      - order
+                  minItems: 0
+            - anyOf:
+              - type: object
                 required:
-                  - id
-                  - order
-              minItems: 0
-            routes:
-              type: array
-              items:
-                type: object
+                  - routes
                 properties:
-                  id:
-                    type: string
-                  type:
-                    type: string
-                    enum:
-                      - route
+                  routes:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        type:
+                          type: string
+                          enum:
+                            - route
+                      required:
+                        - id
+                        - type
+              - type: object
                 required:
-                  - id
-                  - type
-            line:
-              type: object
-              properties:
-                id:
-                  type: string
-                type:
-                  type: string
-                  enum:
-                    - line
-              required:
-                - id
-                - type
-          required:
-            - start_point
-            - end_point
+                  - line
+                properties:
+                  line:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      type:
+                        type: string
+                        enum:
+                          - line
+                    required:
+                      - id
+                      - type
     disruption_impact_message:
       type: object
       required:
